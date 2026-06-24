@@ -11,6 +11,7 @@ Hubert Ożarowski (97692); supervisor Dr inż. Kamil Żyła.
 - **`docs/architecture/REQUIREMENTS-AND-ASSUMPTIONS.md`** — master spec: the 10 locked assumptions + functional scope.
 - **`docs/architecture/DOMAIN-MODEL-AND-DATABASE.md`** — full schema (ULID, audit, soft-delete, ownership, files→target, FTS, keyset).
 - **`docs/architecture/IMPLEMENTATION-PLAN.md`** — phased build plan (Phases 0–10) with per-phase steps, gotchas, Definition of Done, and START-OF-PHASE REMINDERS. Re-read the relevant phase block before coding.
+- **`docs/architecture/FOUNDATION-AND-SHARED-ABSTRACTIONS.md`** — Phase 0 result: every shared abstraction (SharedKernel / Common / Infrastructure / Api wiring) + the foundation assumptions every module inherits.
 - **`docs/db/permissions-acl-design.md`** — RBAC + bitmask ACL resolved in SQL.
 - **ADRs:** 0002 modular monolith · 0003 CQRS no MediatR · 0004 SQL ACL · 0005 migrations as k8s Job · **0006 ULID everywhere** · **0007 Argon2id** · **0008 direct-to-MinIO presigned uploads** · **0009 RabbitMQ integration events (outbox)** · **0010 WebSocket real-time (fetch-then-patch)**.
 - Shared scope contract with B: `../../docs/specs/forum-spec.md` + `../../docs/architecture/PROPOZYCJA-UJEDNOLICENIA-A-B.md`.
@@ -89,4 +90,12 @@ Each phase block has Goal · Depends on · Steps · Watch out · Definition of D
 When the user says "finished phase X, start phase Y", re-read that phase block + the referenced docs first.
 
 ## Current state
-Scaffold only: structure, `.csproj` graph, SharedKernel/Common foundation, Host wiring (OTel/health/security headers/startup runner — some `// TODO`), k8s/infra/scripts/CI, ACL design doc + 5 ADRs. No domain entities yet. Verify centrally-pinned NuGet versions on first restore.
+**Phase 0 complete** (branch `feat/phase-0-foundation`) — `dotnet build`/`test`/`format` green on .NET 10, `/health/live` smoke test passes, ArchitectureTests green.
+- **SharedKernel**: `Result`/`Error`, `Entity`, `AggregateRoot` (domain events + audit fields), `IAuditableEntity`/`IHasDomainEvents`/`ISoftDeletable`/`IOwned`.
+- **Forum.Common**: CQRS markers, `IModule`/`IEndpoint`, `IEventBus`+`IIntegrationEventHandler`, paging, `ICorrelationContext`, `ICurrentActor`.
+- **Forum.Infrastructure**: `ForumDbContext` base (no-tracking reads, soft-delete query filter, `SaveChangesAndDispatchEventsAsync`), `AuditInterceptor`, `DomainEventDispatcher`, `InMemoryEventBus`, `OutboxMessage`(+config), lazy `RabbitMqConnection`, `MinioObjectStorage`, `AddForumInfrastructure`, `ModuleDbContextRegistration` (snake_case + interceptor), `RunMigrationsAsync`.
+- **Forum.Api**: correlation-id middleware + `CorrelationContext`, ProblemDetails exception handler, CORS allow-list, rate limiter, JWT bearer + authz skeleton, `migrate` arg hook wired in `Program.cs`.
+- **Tests**: `ArchitectureTests` (boundary + Domain purity), `PostgresFixture` (Testcontainers), `HealthCheckTests` smoke test.
+- Build hygiene applied: CPM fixed (no `--` in XML comments), NuGet-audit + a few CA/style rules tuned in `.editorconfig`/`Directory.Build.props`.
+
+No domain entities yet. **Next: Phase 1 — Identity + Authz** (users, JWT+refresh rotation, Argon2id, RBAC + SQL bitmask ACL).

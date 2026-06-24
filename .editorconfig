@@ -23,7 +23,14 @@ dotnet_sort_system_directives_first = true
 dotnet_style_namespace_match_folder = true
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_prefer_braces = true:warning
-dotnet_style_require_accessibility_modifiers = always:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
 csharp_style_var_when_type_is_apparent = true:suggestion
 dotnet_diagnostic.CA2007.severity = none
+# Deliberate domain names kept despite CA design opinions:
+#   CA1716: `Error` (Result pattern) collides with the VB `Error` keyword (no VB interop here).
+#   CA1711: `IDomainEventHandler<T>` is a DDD handler interface, not a CLR event-handler delegate.
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1711.severity = none
+# CA1848 (LoggerMessage source-gen delegates) is high-ceremony for non-hot-path logging; keep as guidance, not a build break.
+dotnet_diagnostic.CA1848.severity = suggestion
 # Naming: interfaces start with I, async methods end with Async (enforced via analyzers)

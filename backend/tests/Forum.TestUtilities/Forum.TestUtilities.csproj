@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Shared test helpers (fixtures), referenced by the real test projects. Not itself a runnable test suite. -->
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shared\Forum.SharedKernel\Forum.SharedKernel.csproj" />
     <ProjectReference Include="..\..\src\Shared\Forum.Common\Forum.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="xunit" />
     <PackageReference Include="Testcontainers.PostgreSql" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,9 @@
+using Forum.Api.Correlation;
 using Forum.Api.Extensions;
+using Forum.Api.Middleware;
+using Forum.Common.Correlation;
 using Forum.Common.Modules;
+using Forum.Infrastructure;
 using Forum.Infrastructure.Startup;
 using Forum.Modules.Content;
 using Forum.Modules.Engagement;
@@ -24,6 +28,13 @@ IReadOnlyList<IModule> modules =
 ];
 
 builder.Services.AddModules(builder.Configuration, modules);
+builder.Services.AddForumInfrastructure(builder.Configuration);   // clock, audit, in-process bus, RabbitMQ, MinIO
+
+builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
+builder.Services.AddForumProblemDetails();                        // RFC 7807 for unhandled exceptions
+builder.Services.AddForumCors(builder.Configuration);             // SPA origin allow-list
+builder.Services.AddForumRateLimiting();                          // per-IP fixed window
+builder.Services.AddForumAuthentication(builder.Configuration);   // JWT bearer + authorization skeleton
 
 builder.AddForumObservability();          // OpenTelemetry traces + metrics (+ Prometheus endpoint)
 builder.Services.AddForumHealthChecks();  // /health/live, /health/ready
@@ -31,6 +42,16 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Migrations run as a one-shot Kubernetes Job (ADR 0005): `dotnet Forum.Api.dll migrate` applies them and exits.
+// No-op until a module registers a DbContext (Phase 1+).
+if (args.Contains("migrate"))
+{
+    await app.RunMigrationsAsync();
+    return;
+}
+
+app.UseExceptionHandler();
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseForumSecurityHeaders();
 
@@ -39,6 +60,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors(CorsExtensions.SpaPolicy);
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
