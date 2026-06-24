@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Bootstrap/">
+    <Project Path="src/Bootstrap/Forum.Api/Forum.Api.csproj" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="src/Shared/Forum.SharedKernel/Forum.SharedKernel.csproj" />
+    <Project Path="src/Shared/Forum.Common/Forum.Common.csproj" />
+    <Project Path="src/Shared/Forum.Infrastructure/Forum.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Modules/">
+    <Project Path="src/Modules/Identity/Forum.Modules.Identity/Forum.Modules.Identity.csproj" />
+    <Project Path="src/Modules/Content/Forum.Modules.Content/Forum.Modules.Content.csproj" />
+    <Project Path="src/Modules/Files/Forum.Modules.Files/Forum.Modules.Files.csproj" />
+    <Project Path="src/Modules/Engagement/Forum.Modules.Engagement/Forum.Modules.Engagement.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Forum.TestUtilities/Forum.TestUtilities.csproj" />
+    <Project Path="tests/Forum.ArchitectureTests/Forum.ArchitectureTests.csproj" />
+    <Project Path="tests/Forum.Modules.Identity.Tests/Forum.Modules.Identity.Tests.csproj" />
+    <Project Path="tests/Forum.Modules.Content.Tests/Forum.Modules.Content.Tests.csproj" />
+    <Project Path="tests/Forum.IntegrationTests/Forum.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

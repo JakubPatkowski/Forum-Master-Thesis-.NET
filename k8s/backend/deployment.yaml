@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: backend, namespace: forum-dotnet }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: backend } }
+  template:
+    metadata:
+      labels: { app: backend }
+      annotations: { prometheus.io/scrape: "true", prometheus.io/path: "/metrics", prometheus.io/port: "8080" }
+    spec:
+      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      containers:
+        - name: backend
+          image: forum-dotnet-api:local
+          imagePullPolicy: Never
+          ports: [{ containerPort: 8080 }]
+          envFrom: [{ configMapRef: { name: backend-config } }]
+          env:
+            - name: ConnectionStrings__Forum
+              valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }
+          resources:
+            requests: { cpu: "100m", memory: "192Mi" }
+            limits:   { cpu: "1000m", memory: "512Mi" }
+          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 5 }
+          livenessProbe:  { httpGet: { path: /health/live,  port: 8080 }, initialDelaySeconds: 10 }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }

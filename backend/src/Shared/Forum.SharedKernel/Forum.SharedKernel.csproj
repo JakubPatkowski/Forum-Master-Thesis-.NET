@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Ulid" />
+    <PackageReference Include="Ardalis.SmartEnum" />
+    <PackageReference Include="Throw" />
+  </ItemGroup>
+</Project>

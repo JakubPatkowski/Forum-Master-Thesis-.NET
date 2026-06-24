@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: backend-config, namespace: forum-dotnet }
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Otlp__Endpoint: "http://otel-collector:4317"
+  RabbitMq__Host: "rabbitmq"
+  Storage__Endpoint: "minio:9000"

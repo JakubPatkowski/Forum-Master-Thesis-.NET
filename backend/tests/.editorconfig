@@ -1,0 +1,4 @@
+# Test-project overrides (layers on top of the repo-root .editorconfig).
+[*.cs]
+# Test method names use the Method_Scenario_Expectation convention; underscores are idiomatic in xUnit.
+dotnet_diagnostic.CA1707.severity = none

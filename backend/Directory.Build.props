@@ -1,0 +1,29 @@
+<Project>
+
+  <!-- Shared settings for every project under backend/. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Compiler warnings are errors, but NuGet audit advisories (NU19xx) stay warnings:
+         a newly disclosed upstream CVE should not hard break the build. The weekly
+         security workflow and `dotnet list package` surface them instead. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);NU1901;NU1902;NU1903;NU1904</WarningsNotAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CS1591: missing XML doc comment — too noisy for a scaffold -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Company>Patkowski &amp; Ozarowski — praca magisterska</Company>
+  </PropertyGroup>
+
+  <!-- Test projects: do not require XML docs, allow test patterns. -->
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests')) or $(MSBuildProjectName.EndsWith('TestUtilities'))">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>

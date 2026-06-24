@@ -1,0 +1,19 @@
+# Migrations run as a one-shot Job (NOT at app startup) to avoid HPA replica races.
+# The Host image applies EF migrations + (re)creates SQL views/functions when invoked with "migrate".
+apiVersion: batch/v1
+kind: Job
+metadata: { name: db-migrate, namespace: forum-dotnet }
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: forum-dotnet-api:local
+          imagePullPolicy: Never
+          args: ["migrate"]
+          envFrom: [{ configMapRef: { name: backend-config } }]
+          env:
+            - name: ConnectionStrings__Forum
+              valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }

@@ -1,0 +1,20 @@
+<Project>
+
+  <!-- Inherit repo-wide settings, then add what every module shares. -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <ItemGroup Label="Every module is a vertical slice with the same baseline">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Scrutor" />
+  </ItemGroup>
+
+  <ItemGroup Label="Shared building blocks (cross-module access only via *.Contracts)">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../Shared/Forum.SharedKernel/Forum.SharedKernel.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../Shared/Forum.Common/Forum.Common.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../Shared/Forum.Infrastructure/Forum.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

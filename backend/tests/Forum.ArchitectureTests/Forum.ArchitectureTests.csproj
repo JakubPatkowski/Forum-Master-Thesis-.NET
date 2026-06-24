@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bootstrap\Forum.Api\Forum.Api.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Identity\Forum.Modules.Identity\Forum.Modules.Identity.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Content\Forum.Modules.Content\Forum.Modules.Content.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="Shouldly" />
+  </ItemGroup>
+</Project>
