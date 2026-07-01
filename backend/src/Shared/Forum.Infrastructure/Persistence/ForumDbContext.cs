@@ -25,6 +25,7 @@ public abstract class ForumDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        IgnoreDomainEvents(modelBuilder);
         ApplySoftDeleteQueryFilter(modelBuilder);
     }
 
@@ -47,6 +48,18 @@ public abstract class ForumDbContext : DbContext
 
         await _dispatcher.DispatchAsync(domainEvents, cancellationToken).ConfigureAwait(false);
         return affected;
+    }
+
+    // Domain events are transient (raised, dispatched, cleared) — never persisted.
+    private static void IgnoreDomainEvents(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(IHasDomainEvents).IsAssignableFrom(entityType.ClrType))
+            {
+                modelBuilder.Entity(entityType.ClrType).Ignore(nameof(IHasDomainEvents.DomainEvents));
+            }
+        }
     }
 
     private static void ApplySoftDeleteQueryFilter(ModelBuilder modelBuilder)

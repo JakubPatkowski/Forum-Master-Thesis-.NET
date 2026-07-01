@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Konscious.Security.Cryptography.Argon2" />
+    <PackageReference Include="Isopoh.Cryptography.Argon2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Forum.Modules.Identity.Tests" />
+    <!-- Lets NSubstitute / Castle DynamicProxy mock the module's internal ports in tests. -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 </Project>

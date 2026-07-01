@@ -1,0 +1,30 @@
+using Forum.Infrastructure.Messaging;
+using Forum.SharedKernel.Domain;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+
+namespace Forum.Modules.Identity.Infrastructure.Persistence;
+
+/// <summary>
+/// Design-time factory used by <c>dotnet ef migrations</c>. The connection string is never opened for scaffolding;
+/// the no-op dispatcher satisfies the context's constructor (events are never dispatched at design time).
+/// </summary>
+internal sealed class IdentityDbContextFactory : IDesignTimeDbContextFactory<IdentityDbContext>
+{
+    public IdentityDbContext CreateDbContext(string[] args)
+    {
+        var options = new DbContextOptionsBuilder<IdentityDbContext>()
+            .UseNpgsql("Host=localhost;Database=forum_net;Username=forum;Password=forum")
+            .UseSnakeCaseNamingConvention()
+            .Options;
+
+        return new IdentityDbContext(options, new NoOpDomainEventDispatcher());
+    }
+
+    private sealed class NoOpDomainEventDispatcher : IDomainEventDispatcher
+    {
+        public Task DispatchAsync(IReadOnlyCollection<IDomainEvent> domainEvents, CancellationToken cancellationToken = default) =>
+            Task.CompletedTask;
+    }
+}
