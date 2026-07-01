@@ -5,6 +5,10 @@ using Forum.TestUtilities;
 
 using Microsoft.EntityFrameworkCore;
 
+using Npgsql;
+
+using NpgsqlTypes;
+
 using Shouldly;
 
 using Xunit;
@@ -134,26 +138,40 @@ public sealed class AclSqlTests : IClassFixture<PostgresFixture>, IAsyncLifetime
             """
             INSERT INTO forum_authz.acl_entries
                 (acl_id, scope, scope_id, principal_type, principal_id, allow_bits, deny_bits)
-            VALUES ({0}, {1}, {2}, 'user', {3}, {4}, {5})
+            VALUES (@acl_id, @scope, @scope_id, 'user', @principal_id, @allow_bits, @deny_bits)
             """,
-            Ulid.NewUlid().ToString(), scope, scopeId ?? (object)DBNull.Value, userId, allowBits, denyBits);
+            new NpgsqlParameter("acl_id", Ulid.NewUlid().ToString()),
+            new NpgsqlParameter("scope", scope),
+            NullableText("scope_id", scopeId),
+            new NpgsqlParameter("principal_id", userId),
+            new NpgsqlParameter("allow_bits", allowBits),
+            new NpgsqlParameter("deny_bits", denyBits));
 
     private static async Task<int> EffectiveMask(IdentityDbContext db, string userId, string scope, string? scopeId)
     {
         var rows = await db.Database
             .SqlQueryRaw<int>(
-                "SELECT forum_authz.effective_mask({0}, {1}, {2}) AS \"Value\"",
-                userId, scope, scopeId ?? (object)DBNull.Value)
+                "SELECT forum_authz.effective_mask(@user_id, @scope, @scope_id) AS \"Value\"",
+                new NpgsqlParameter("user_id", userId),
+                new NpgsqlParameter("scope", scope),
+                NullableText("scope_id", scopeId))
             .ToListAsync();
         return rows[0];
     }
+
+    // A bare DBNull.Value has no store-type mapping; pin the type so a NULL scope_id resolves.
+    private static NpgsqlParameter NullableText(string name, string? value) =>
+        new(name, NpgsqlDbType.Text) { Value = value ?? (object)DBNull.Value };
 
     private static async Task<bool> HasPermission(IdentityDbContext db, string userId, string action, string scope, string? scopeId)
     {
         var rows = await db.Database
             .SqlQueryRaw<bool>(
-                "SELECT forum_authz.has_permission({0}, {1}, {2}, {3}) AS \"Value\"",
-                userId, action, scope, scopeId ?? (object)DBNull.Value)
+                "SELECT forum_authz.has_permission(@user_id, @action, @scope, @scope_id) AS \"Value\"",
+                new NpgsqlParameter("user_id", userId),
+                new NpgsqlParameter("action", action),
+                new NpgsqlParameter("scope", scope),
+                NullableText("scope_id", scopeId))
             .ToListAsync();
         return rows[0];
     }

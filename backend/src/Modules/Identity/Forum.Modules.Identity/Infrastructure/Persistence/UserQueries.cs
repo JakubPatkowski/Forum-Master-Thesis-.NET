@@ -28,7 +28,7 @@ internal sealed class UserQueries : IUserQueries
             ORDER BY id
             LIMIT @limit
             """;
-        command.AddParameter("@cursor", string.IsNullOrWhiteSpace(cursor) ? DBNull.Value : cursor);
+        command.AddParameter("@cursor", string.IsNullOrWhiteSpace(cursor) ? DBNull.Value : cursor, DbType.String);
         command.AddParameter("@limit", limit + 1);
 
         var opened = false;

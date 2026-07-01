@@ -6,6 +6,10 @@ using Forum.Modules.Identity.Infrastructure.Persistence;
 
 using Microsoft.EntityFrameworkCore;
 
+using Npgsql;
+
+using NpgsqlTypes;
+
 namespace Forum.Modules.Identity.Infrastructure.Authorization;
 
 /// <summary>Administration writes against the <c>forum_authz</c> RBAC + ACL tables, plus permission-cache upkeep.</summary>
@@ -83,15 +87,16 @@ internal sealed class AuthorizationStore : IAuthorizationStore
             """
             INSERT INTO forum_authz.acl_entries
                 (acl_id, scope, scope_id, principal_type, principal_id, allow_bits, deny_bits)
-            VALUES ({0}, {1}, {2}, 'user', {3}, {4}, {5})
+            VALUES (@acl_id, @scope, @scope_id, 'user', @principal_id, @allow_bits, @deny_bits)
             """,
             [
-                Ulid.NewUlid().ToString(),
-                entry.Scope,
-                entry.ScopeId?.ToString() ?? (object)DBNull.Value,
-                userId.ToString(),
-                entry.AllowBits,
-                entry.DenyBits,
+                new NpgsqlParameter("acl_id", Ulid.NewUlid().ToString()),
+                new NpgsqlParameter("scope", entry.Scope),
+                // Typed so a NULL scope_id (global entries) still resolves; a bare DBNull has no store mapping.
+                new NpgsqlParameter("scope_id", NpgsqlDbType.Text) { Value = entry.ScopeId?.ToString() ?? (object)DBNull.Value },
+                new NpgsqlParameter("principal_id", userId.ToString()),
+                new NpgsqlParameter("allow_bits", entry.AllowBits),
+                new NpgsqlParameter("deny_bits", entry.DenyBits),
             ],
             cancellationToken);
 

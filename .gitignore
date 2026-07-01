@@ -7,9 +7,10 @@ artifacts/
 *.coverage
 *.trx
 
-## Rider / VS
+## Rider / VS / VS Code
 .idea/
 .vs/
+.vscode/
 *.suo
 
 ## Node / frontend
