@@ -74,13 +74,25 @@ instead of a flat pile, and a module can later be extracted to a service as a un
 
 ## Quick start
 
+Runs on **WSL2 (Ubuntu) or Linux** with the repo on the Linux filesystem (not a
+`/mnt` mount). `make help` lists everything; `make preflight` checks the toolchain.
+
 ```bash
-docker compose up -d                         # Postgres + RabbitMQ + MinIO
-cd backend && dotnet run --project src/Bootstrap/Forum.Api
-# Cluster: ../scripts/setup-minikube.sh then ../scripts/deploy.sh
+cp .env.example .env
+make preflight            # docker / kubectl / minikube / dotnet / k6
+
+# Local inner loop (containers for infra, dotnet for the API):
+make infra-up             # Postgres + RabbitMQ + MinIO
+make api ARGS=--migrate   # migrate + run Forum.Api on :8080
+
+# Cluster (minikube):
+make mk-up                # start the cluster
+make mk-deploy            # build image into minikube + apply manifests
+make urls
 ```
 
-See `docs/runbooks/local-development.md`.
+Without `make`, call the scripts directly (`bash scripts/<name>.sh`).
+Full walkthrough incl. the WSL move: **`docs/runbooks/wsl-minikube-setup.md`**.
 
 ## Status
 
