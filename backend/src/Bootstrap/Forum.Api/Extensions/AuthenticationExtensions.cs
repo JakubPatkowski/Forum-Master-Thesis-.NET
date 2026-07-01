@@ -1,16 +1,20 @@
+using Forum.Common.Security;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Forum.Api.Extensions;
 
 /// <summary>
-/// Phase-0 auth skeleton so the pipeline's UseAuthentication/UseAuthorization are real. JWT bearer validates issuer/
-/// audience/lifetime; the signing key and token issuance (plus the httpOnly refresh cookie) are wired in Phase 1.
+/// JWT bearer authentication: validates issuer/audience/lifetime and the HS256 signature against the configured
+/// signing key (a k8s Secret in the cluster; a clearly-marked development fallback locally — see <see cref="JwtOptions"/>).
 /// </summary>
 public static class AuthenticationExtensions
 {
     public static IServiceCollection AddForumAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -20,9 +24,11 @@ public static class AuthenticationExtensions
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = false, // signing key configured in Phase 1
-                    ValidIssuer = configuration["Jwt:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwt.Issuer,
+                    ValidAudience = jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(jwt.SigningKeyBytes()),
+                    ClockSkew = TimeSpan.FromSeconds(30),
                 };
             });
 

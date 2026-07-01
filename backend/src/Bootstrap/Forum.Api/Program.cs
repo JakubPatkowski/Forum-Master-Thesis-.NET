@@ -38,7 +38,7 @@ builder.Services.AddForumAuthentication(builder.Configuration);   // JWT bearer 
 
 builder.AddForumObservability();          // OpenTelemetry traces + metrics (+ Prometheus endpoint)
 builder.Services.AddForumHealthChecks();  // /health/live, /health/ready
-builder.Services.AddOpenApi();
+builder.Services.AddForumOpenApi();       // OpenAPI document + JWT Bearer security scheme
 
 var app = builder.Build();
 
@@ -57,7 +57,8 @@ app.UseForumSecurityHeaders();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi();                       // GET /openapi/v1.json
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Forum API v1"));  // GET /swagger
 }
 
 app.UseCors(CorsExtensions.SpaPolicy);

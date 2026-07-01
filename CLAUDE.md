@@ -98,4 +98,11 @@ When the user says "finished phase X, start phase Y", re-read that phase block +
 - **Tests**: `ArchitectureTests` (boundary + Domain purity), `PostgresFixture` (Testcontainers), `HealthCheckTests` smoke test.
 - Build hygiene applied: CPM fixed (no `--` in XML comments), NuGet-audit + a few CA/style rules tuned in `.editorconfig`/`Directory.Build.props`.
 
-No domain entities yet. **Next: Phase 1 — Identity + Authz** (users, JWT+refresh rotation, Argon2id, RBAC + SQL bitmask ACL).
+**Phase 1 — Identity + Authz: code-complete (2026-06-27).** Module `Forum.Modules.Identity` (Domain/Application/Infrastructure/Presentation/Contracts), registered in `Program.cs`.
+- **`forum_identity`** (EF migration `InitialIdentity`): `users` (citext email, `username_lc` unique, **Argon2id** via Isopoh, status, audit) + `refresh_tokens` (family, SHA-256 hash, rotation chain). **`forum_authz`** (raw-SQL migration `AddAuthzSchema` in `Infrastructure/Acl/AuthzSchema.cs`): actions/roles/user_roles/acl_entries/effective_perm_cache, `int_or_agg`, `effective_mask()`/`has_permission()`/`recompute_user_perms()`, hot-path/partial/BRIN indexes, role+action seed.
+- **Use cases** (Result): register, login (non-revealing + dummy verify), refresh (rotation + **family reuse-detection**), logout, logout-all, admin list/roles/ACL/status. Endpoints `/api/identity/*` + `/admin/users/*`, httpOnly refresh cookie, tighter auth rate-limit.
+- **Shared authz surface** added to `Forum.Common`: `ICurrentUser`, `IPermissionService`, `RequirePermission` filter, `JwtOptions` (dev signing-key fallback), `RateLimitPolicies`, `ApiResults` (404→403→422). `CurrentUser` backs `ICurrentActor`; resolves `IPermissionService` lazily to avoid a DbContext↔AuditInterceptor DI cycle.
+- **Verified green:** `dotnet build`, `dotnet format --verify-no-changes`, 15 Identity unit tests, ArchitectureTests.
+- **Pending (Docker-blocked this session):** `AclSqlTests` + `IdentityFlowTests` need Postgres via Testcontainers — no container runtime would start here (see memory `container-runtime-unavailable`). Run `dotnet test Forum.slnx` once Docker is up to close the DoD. `dotnet ef` 10.0.2 pinned in `backend/.config/dotnet-tools.json`.
+
+**Next: finish Phase 1 verification (integration tests under Docker), then Phase 2 — Content.**

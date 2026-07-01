@@ -2,28 +2,31 @@ name: forum-dotnet
 services:
   postgres:
     image: postgres:17
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: forum_net
-      POSTGRES_USER: forum
-      POSTGRES_PASSWORD: forum_dev_only
+      POSTGRES_DB: ${POSTGRES_DB:-forum_net}
+      POSTGRES_USER: ${POSTGRES_USER:-forum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-forum_dev_only}
     ports: ["5432:5432"]
     volumes: ["pgdata:/var/lib/postgresql/data"]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U forum -d forum_net"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-forum} -d ${POSTGRES_DB:-forum_net}"]
       interval: 5s
       timeout: 3s
       retries: 10
 
   rabbitmq:
     image: rabbitmq:4-management
+    restart: unless-stopped
     ports: ["5672:5672", "15672:15672"]
 
   minio:
     image: minio/minio:latest
+    restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: minio
-      MINIO_ROOT_PASSWORD: minio_dev_only
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_dev_only}
     ports: ["9000:9000", "9001:9001"]
     volumes: ["miniodata:/data"]
 
