@@ -33,7 +33,7 @@ builder.Services.AddForumInfrastructure(builder.Configuration);   // clock, audi
 builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
 builder.Services.AddForumProblemDetails();                        // RFC 7807 for unhandled exceptions
 builder.Services.AddForumCors(builder.Configuration);             // SPA origin allow-list
-builder.Services.AddForumRateLimiting();                          // per-IP fixed window
+builder.Services.AddForumRateLimiting(builder.Configuration);     // per-IP fixed window
 builder.Services.AddForumAuthentication(builder.Configuration);   // JWT bearer + authorization skeleton
 
 builder.AddForumObservability();          // OpenTelemetry traces + metrics (+ Prometheus endpoint)

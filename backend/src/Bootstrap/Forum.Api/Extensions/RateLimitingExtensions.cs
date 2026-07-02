@@ -4,11 +4,18 @@ using Forum.Common.Security;
 
 namespace Forum.Api.Extensions;
 
-/// <summary>A baseline per-IP fixed-window limiter plus a tighter named policy for authentication endpoints.</summary>
+/// <summary>
+/// A baseline per-IP fixed-window limiter plus a tighter named policy for authentication endpoints.
+/// Limits are configurable (<c>RateLimiting:{Global,Auth}:PermitLimit</c>) so tests and load benchmarks can
+/// raise them without code changes; the defaults are the production posture.
+/// </summary>
 public static class RateLimitingExtensions
 {
-    public static IServiceCollection AddForumRateLimiting(this IServiceCollection services)
+    public static IServiceCollection AddForumRateLimiting(this IServiceCollection services, IConfiguration configuration)
     {
+        var globalLimit = configuration.GetValue("RateLimiting:Global:PermitLimit", 100);
+        var authLimit = configuration.GetValue("RateLimiting:Auth:PermitLimit", 10);
+
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -17,7 +24,7 @@ public static class RateLimitingExtensions
                     partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 100,
+                        PermitLimit = globalLimit,
                         Window = TimeSpan.FromMinutes(1),
                         QueueLimit = 0,
                     }));
@@ -28,7 +35,7 @@ public static class RateLimitingExtensions
                     partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                     factory: _ => new FixedWindowRateLimiterOptions
                     {
-                        PermitLimit = 10,
+                        PermitLimit = authLimit,
                         Window = TimeSpan.FromMinutes(1),
                         QueueLimit = 0,
                     }));

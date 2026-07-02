@@ -28,6 +28,10 @@ public sealed class ForumApiFactory : WebApplicationFactory<Program>, IAsyncLife
         }
 
         builder.UseSetting("Jwt:SigningKey", "forum-integration-tests-signing-key-0123456789-abcdefghijklmnop");
+
+        // Every test request shares one "IP" — raise the per-IP limits so suites don't trip 429s.
+        builder.UseSetting("RateLimiting:Global:PermitLimit", "10000");
+        builder.UseSetting("RateLimiting:Auth:PermitLimit", "1000");
     }
 
     public async Task InitializeAsync()

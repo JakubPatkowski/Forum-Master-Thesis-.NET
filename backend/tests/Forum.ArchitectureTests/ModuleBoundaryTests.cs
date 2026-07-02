@@ -16,12 +16,22 @@ public class ModuleBoundaryTests
     [Fact]
     public void Modules_communicate_only_through_contracts()
     {
-        Types.InAssembly(Identity).That().DoNotResideInNamespaceEndingWith("Contracts")
-            .ShouldNot().HaveDependencyOn("Forum.Modules.Content")
+        // Contracts/ is the sanctioned cross-module surface; every other layer of a module is off-limits
+        // to the outside (they are `internal` too — this guards against the rule ever being relaxed).
+        Types.InAssembly(Identity)
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Content.Domain",
+                "Forum.Modules.Content.Application",
+                "Forum.Modules.Content.Infrastructure",
+                "Forum.Modules.Content.Presentation")
             .GetResult().IsSuccessful.ShouldBeTrue("Identity may use Content only via Forum.Modules.Content.Contracts.");
 
-        Types.InAssembly(Content).That().DoNotResideInNamespaceEndingWith("Contracts")
-            .ShouldNot().HaveDependencyOn("Forum.Modules.Identity")
+        Types.InAssembly(Content)
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Identity.Domain",
+                "Forum.Modules.Identity.Application",
+                "Forum.Modules.Identity.Infrastructure",
+                "Forum.Modules.Identity.Presentation")
             .GetResult().IsSuccessful.ShouldBeTrue("Content may use Identity only via Forum.Modules.Identity.Contracts.");
     }
 
@@ -33,6 +43,15 @@ public class ModuleBoundaryTests
             .ShouldNot().HaveDependencyOnAny(
                 "Forum.Modules.Identity.Infrastructure",
                 "Forum.Modules.Identity.Presentation",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore")
+            .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");
+
+        Types.InAssembly(Content)
+            .That().ResideInNamespace("Forum.Modules.Content.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Content.Infrastructure",
+                "Forum.Modules.Content.Presentation",
                 "Microsoft.EntityFrameworkCore",
                 "Microsoft.AspNetCore")
             .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");

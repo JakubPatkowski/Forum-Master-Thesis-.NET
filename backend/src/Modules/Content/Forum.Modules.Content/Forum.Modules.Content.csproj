@@ -1,1 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup Label="Cross-module access goes through Identity's Contracts only (enforced by ArchitectureTests)">
+    <ProjectReference Include="..\..\Identity\Forum.Modules.Identity\Forum.Modules.Identity.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Forum.Modules.Content.Tests" />
+    <!-- Lets NSubstitute / Castle DynamicProxy mock the module's internal ports in tests. -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+</Project>
