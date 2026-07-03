@@ -18,6 +18,7 @@
     <Project Path="tests/Forum.ArchitectureTests/Forum.ArchitectureTests.csproj" />
     <Project Path="tests/Forum.Modules.Identity.Tests/Forum.Modules.Identity.Tests.csproj" />
     <Project Path="tests/Forum.Modules.Content.Tests/Forum.Modules.Content.Tests.csproj" />
+    <Project Path="tests/Forum.Modules.Files.Tests/Forum.Modules.Files.Tests.csproj" />
     <Project Path="tests/Forum.IntegrationTests/Forum.IntegrationTests.csproj" />
   </Folder>
 </Solution>

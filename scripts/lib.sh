@@ -43,6 +43,9 @@ load_env() {
   : "${POSTGRES_DB:=forum_net}"
   : "${POSTGRES_USER:=forum}"
   : "${POSTGRES_PASSWORD:=forum_dev_only}"
+  : "${MINIO_ROOT_USER:=minio}"
+  : "${MINIO_ROOT_PASSWORD:=minio_dev_only}"
+  : "${MINIO_BUCKET:=forum}"
   : "${MINIKUBE_PROFILE:=forum}"
   : "${MINIKUBE_CPUS:=4}"
   : "${MINIKUBE_MEMORY:=8192}"
@@ -53,6 +56,7 @@ load_env() {
   : "${INGRESS_HOST:=forum.local}"
   : "${APPLY_NETWORK_POLICIES:=false}"
   export POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD \
+         MINIO_ROOT_USER MINIO_ROOT_PASSWORD MINIO_BUCKET \
          MINIKUBE_PROFILE MINIKUBE_CPUS MINIKUBE_MEMORY MINIKUBE_DRIVER \
          K8S_NAMESPACE IMAGE_NAME IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES
 }
