@@ -4,8 +4,10 @@ using Forum.Common.Cqrs;
 using Forum.Common.Messaging;
 using Forum.Common.Modules;
 using Forum.Infrastructure.Persistence;
+using Forum.Modules.Content.Application;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Consumers;
+using Forum.Modules.Content.Contracts;
 using Forum.Modules.Content.Infrastructure.Messaging;
 using Forum.Modules.Content.Infrastructure.Persistence;
 using Forum.Modules.Identity.Contracts.IntegrationEvents;
@@ -36,6 +38,9 @@ public sealed class ContentModule : IModule
 
         // Cross-module consumers (dispatched in-process now, via the RabbitMQ relay from Phase 6).
         services.AddScoped<IIntegrationEventHandler<UserBlockedIntegrationEvent>, UserBlockedEventHandler>();
+
+        // Contracts surface: lets Files gate attach/detach with Content's own ownership/moderation rules.
+        services.AddScoped<IContentAuthorization, ContentAttachmentAuthorizer>();
 
         // Validators + CQRS handlers (handlers are internal, hence the non-public scans).
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);

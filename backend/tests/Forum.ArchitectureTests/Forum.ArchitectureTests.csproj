@@ -3,6 +3,7 @@
     <ProjectReference Include="..\..\src\Bootstrap\Forum.Api\Forum.Api.csproj" />
     <ProjectReference Include="..\..\src\Modules\Identity\Forum.Modules.Identity\Forum.Modules.Identity.csproj" />
     <ProjectReference Include="..\..\src\Modules\Content\Forum.Modules.Content\Forum.Modules.Content.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Files\Forum.Modules.Files\Forum.Modules.Files.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

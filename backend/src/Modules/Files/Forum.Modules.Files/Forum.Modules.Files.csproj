@@ -1,5 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup Label="Cross-module access goes through Content's Contracts only (enforced by ArchitectureTests)">
+    <ProjectReference Include="..\..\Content\Forum.Modules.Content\Forum.Modules.Content.csproj" />
+  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Minio" />
+    <InternalsVisibleTo Include="Forum.Modules.Files.Tests" />
+    <!-- FilesFlowTests drives the orphan sweeper directly until the Phase 6 relay wires the real triggers. -->
+    <InternalsVisibleTo Include="Forum.IntegrationTests" />
+    <!-- Lets NSubstitute / Castle DynamicProxy mock the module's internal ports in tests. -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 </Project>
