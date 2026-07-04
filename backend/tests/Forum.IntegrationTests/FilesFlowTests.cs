@@ -168,15 +168,17 @@ public sealed class FilesFlowTests : IClassFixture<ForumApiFactory>
         (await Send(client, erin, HttpMethod.Delete, $"/api/content/threads/{threadId}"))
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
 
-        // The relay lands in Phase 6 — drive the registered consumer directly, exactly as the bus will.
+        // The relay lands in Phase 6 — drive ALL registered consumers, exactly as the bus does (Engagement
+        // also subscribes to this event now, so resolving a single handler would pick the wrong module's).
         using (var scope = _factory.Services.CreateScope())
         {
-            var handler = scope.ServiceProvider
-                .GetRequiredService<IIntegrationEventHandler<ThreadDeletedIntegrationEvent>>();
-            await handler.HandleAsync(
-                new ThreadDeletedIntegrationEvent(
-                    Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow),
-                CancellationToken.None);
+            var integrationEvent = new ThreadDeletedIntegrationEvent(
+                Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow);
+            foreach (var handler in scope.ServiceProvider
+                         .GetServices<IIntegrationEventHandler<ThreadDeletedIntegrationEvent>>())
+            {
+                await handler.HandleAsync(integrationEvent, CancellationToken.None);
+            }
         }
 
         (await ListFiles(client, "thread", threadId)).ShouldBeEmpty();
