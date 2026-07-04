@@ -13,6 +13,7 @@ public class ModuleBoundaryTests
     private static readonly System.Reflection.Assembly Identity = Forum.Modules.Identity.AssemblyReference.Assembly;
     private static readonly System.Reflection.Assembly Content = Forum.Modules.Content.AssemblyReference.Assembly;
     private static readonly System.Reflection.Assembly Files = Forum.Modules.Files.AssemblyReference.Assembly;
+    private static readonly System.Reflection.Assembly Engagement = Forum.Modules.Engagement.AssemblyReference.Assembly;
 
     [Fact]
     public void Modules_communicate_only_through_contracts()
@@ -47,14 +48,33 @@ public class ModuleBoundaryTests
                 "Forum.Modules.Content.Presentation")
             .GetResult().IsSuccessful.ShouldBeTrue("Files may use Identity/Content only via their Contracts.");
 
-        // The dependency direction is one-way: upstream modules never reach into Files (not even its Contracts —
-        // reacting to Files happens via integration events, keeping Identity ← Content ← Files acyclic).
+        Types.InAssembly(Engagement)
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Identity.Domain",
+                "Forum.Modules.Identity.Application",
+                "Forum.Modules.Identity.Infrastructure",
+                "Forum.Modules.Identity.Presentation",
+                "Forum.Modules.Content.Domain",
+                "Forum.Modules.Content.Application",
+                "Forum.Modules.Content.Infrastructure",
+                "Forum.Modules.Content.Presentation",
+                "Forum.Modules.Files")
+            .GetResult().IsSuccessful.ShouldBeTrue(
+                "Engagement may use Identity/Content only via their Contracts and must not touch Files at all.");
+
+        // The dependency direction is one-way: upstream modules never reach into Files or Engagement (not even
+        // their Contracts — reacting to them happens via integration events, keeping the module graph acyclic:
+        // Identity ← Content ← Files/Engagement).
         foreach (var upstream in new[] { Identity, Content })
         {
             Types.InAssembly(upstream)
-                .ShouldNot().HaveDependencyOnAny("Forum.Modules.Files")
-                .GetResult().IsSuccessful.ShouldBeTrue("Upstream modules must not depend on Files.");
+                .ShouldNot().HaveDependencyOnAny("Forum.Modules.Files", "Forum.Modules.Engagement")
+                .GetResult().IsSuccessful.ShouldBeTrue("Upstream modules must not depend on Files/Engagement.");
         }
+
+        Types.InAssembly(Files)
+            .ShouldNot().HaveDependencyOnAny("Forum.Modules.Engagement")
+            .GetResult().IsSuccessful.ShouldBeTrue("Files must not depend on Engagement.");
     }
 
     [Fact]
@@ -83,6 +103,15 @@ public class ModuleBoundaryTests
             .ShouldNot().HaveDependencyOnAny(
                 "Forum.Modules.Files.Infrastructure",
                 "Forum.Modules.Files.Presentation",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore")
+            .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");
+
+        Types.InAssembly(Engagement)
+            .That().ResideInNamespace("Forum.Modules.Engagement.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Engagement.Infrastructure",
+                "Forum.Modules.Engagement.Presentation",
                 "Microsoft.EntityFrameworkCore",
                 "Microsoft.AspNetCore")
             .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");
