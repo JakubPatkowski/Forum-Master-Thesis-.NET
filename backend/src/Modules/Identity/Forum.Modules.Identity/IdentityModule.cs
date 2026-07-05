@@ -2,6 +2,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Modules;
 using Forum.Common.Security;
+using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Identity.Application.Abstractions;
 using Forum.Modules.Identity.Infrastructure.Authorization;
@@ -25,6 +26,10 @@ public sealed class IdentityModule : IModule
         services.AddHttpContextAccessor();
 
         services.AddModuleDbContext<IdentityDbContext>(configuration.GetConnectionString("Forum") ?? string.Empty);
+
+        // Messaging backbone: relay this module's outbox to its 'identity' exchange. Identity consumes nothing —
+        // authz cache recompute stays synchronous in-request (see AuthorizationStore), deliberately not evented.
+        services.AddModuleMessaging<IdentityDbContext>("identity");
 
         // Persistence ports.
         services.AddScoped<IUserRepository, UserRepository>();

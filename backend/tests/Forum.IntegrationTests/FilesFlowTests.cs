@@ -1,12 +1,9 @@
 using System.Buffers.Binary;
-using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-using Forum.Common.Messaging;
-using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Files.Application.Sweep;
 
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,9 +16,10 @@ using Xunit;
 namespace Forum.IntegrationTests;
 
 /// <summary>
-/// End-to-end Files flows against the real host + Postgres + MinIO: presigned upload (bytes never touch the
-/// API), commit verification of the REAL type/size, attach gated by Content's rules, presigned download,
-/// deletion-event detach and the orphan sweep. Skipped when Docker is unavailable.
+/// End-to-end Files flows against the real host + Postgres + MinIO + RabbitMQ: presigned upload (bytes never
+/// touch the API), commit verification of the REAL type/size, attach gated by Content's rules, presigned
+/// download, deletion-event detach via the real outbox → RabbitMQ → consumer pipeline, and the orphan sweep.
+/// Skipped when Docker is unavailable.
 /// </summary>
 public sealed class FilesFlowTests : IClassFixture<ForumApiFactory>
 {
@@ -168,20 +166,10 @@ public sealed class FilesFlowTests : IClassFixture<ForumApiFactory>
         (await Send(client, erin, HttpMethod.Delete, $"/api/content/threads/{threadId}"))
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
 
-        // The relay lands in Phase 6 — drive ALL registered consumers, exactly as the bus does (Engagement
-        // also subscribes to this event now, so resolving a single handler would pick the wrong module's).
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var integrationEvent = new ThreadDeletedIntegrationEvent(
-                Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow);
-            foreach (var handler in scope.ServiceProvider
-                         .GetServices<IIntegrationEventHandler<ThreadDeletedIntegrationEvent>>())
-            {
-                await handler.HandleAsync(integrationEvent, CancellationToken.None);
-            }
-        }
-
-        (await ListFiles(client, "thread", threadId)).ShouldBeEmpty();
+        // The real Phase 6 pipeline (outbox relay → RabbitMQ → Files' consumer) detaches asynchronously.
+        await TestWait.UntilAsync(
+            async () => (await ListFiles(client, "thread", threadId)).Count == 0,
+            "Files' ThreadDeleted consumer detaches the thread's attachments");
 
         // The unattached committed file is past its (zeroed) grace window — the sweep removes blob + row.
         var result = await RunSweep();

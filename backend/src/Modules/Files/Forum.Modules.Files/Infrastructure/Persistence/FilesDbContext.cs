@@ -1,4 +1,5 @@
 using Forum.Infrastructure.Messaging;
+using Forum.Infrastructure.Messaging.Inbox;
 using Forum.Infrastructure.Messaging.Outbox;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Files.Domain.Files;
@@ -27,6 +28,8 @@ internal sealed class FilesDbContext : ForumDbContext
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+    public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
@@ -34,6 +37,7 @@ internal sealed class FilesDbContext : ForumDbContext
         modelBuilder.ApplyConfiguration(new StoredFileConfiguration());
         modelBuilder.ApplyConfiguration(new FileAttachmentConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

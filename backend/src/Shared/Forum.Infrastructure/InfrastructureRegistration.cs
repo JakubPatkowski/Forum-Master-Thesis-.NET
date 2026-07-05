@@ -28,11 +28,13 @@ public static class InfrastructureRegistration
         services.AddScoped<AuditInterceptor>();
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
-        // In-process integration bus (RabbitMQ outbox relay replaces this in Phase 6).
-        services.AddSingleton<IEventBus, InMemoryEventBus>();
+        // In-process dispatch stage of the messaging backbone: the per-module RabbitMQ consumer hosts feed
+        // wire-delivered events into it. Scoped, so handlers resolve from the active consumer scope.
+        services.AddScoped<IEventBus, InMemoryEventBus>();
 
-        // RabbitMQ connection — registered, opened lazily, not consumed yet.
+        // RabbitMQ connection (lazy, shared by the outbox relays, consumer hosts and the readiness check).
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
+        services.Configure<MessagingOptions>(configuration.GetSection(MessagingOptions.SectionName));
         services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
 
         // MinIO object storage.

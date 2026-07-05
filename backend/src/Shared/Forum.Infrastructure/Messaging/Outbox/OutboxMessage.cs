@@ -16,6 +16,9 @@ public sealed class OutboxMessage
 
     public DateTimeOffset OccurredOnUtc { get; init; }
 
+    /// <summary>Correlation id of the originating request, carried onto the RabbitMQ message by the relay.</summary>
+    public string? CorrelationId { get; init; }
+
     public DateTimeOffset? ProcessedOnUtc { get; set; }
 
     public string? Error { get; set; }

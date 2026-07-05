@@ -1,13 +1,8 @@
-using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-using Forum.Common.Messaging;
-using Forum.Modules.Content.Contracts.IntegrationEvents;
-
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
 
@@ -16,10 +11,10 @@ using Xunit;
 namespace Forum.IntegrationTests;
 
 /// <summary>
-/// End-to-end Engagement flows against the real host + Postgres: idempotent like/unlike with trigger-maintained
-/// counters, batch summaries, the private-category/permission gate, deletion cascades driven through the
-/// registered consumers (as the Phase 6 bus will), and the user_stats_v karma view. Skipped when Docker is
-/// unavailable.
+/// End-to-end Engagement flows against the real host + Postgres + RabbitMQ: idempotent like/unlike with
+/// trigger-maintained counters, batch summaries, the private-category/permission gate, deletion cascades driven
+/// through the real outbox → RabbitMQ → consumer pipeline, and the user_stats_v karma view. Skipped when Docker
+/// is unavailable.
 /// </summary>
 public sealed class EngagementFlowTests : IClassFixture<ForumApiFactory>
 {
@@ -151,23 +146,20 @@ public sealed class EngagementFlowTests : IClassFixture<ForumApiFactory>
         (await PutLike(client, grace, "thread", threadId)).Count.ShouldBe(1);
         (await PutLike(client, frank, "comment", commentId)).Count.ShouldBe(1);
 
-        // Comment goes first: its reactions vanish, the thread's stay.
+        // Comment goes first: its reactions vanish (via the real outbox → RabbitMQ pipeline), the thread's stay.
         (await Send(client, grace, HttpMethod.Delete, $"/api/content/comments/{commentId}"))
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
-        await DispatchToAllConsumers(new CommentDeletedIntegrationEvent(
-            Ulid.NewUlid(), Ulid.Parse(commentId, CultureInfo.InvariantCulture),
-            Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow));
-
-        (await GetSummary(client, "comment", commentId)).Count.ShouldBe(0);
+        await TestWait.UntilAsync(
+            async () => (await GetSummary(client, "comment", commentId)).Count == 0,
+            "Engagement's CommentDeleted consumer removes the comment's reactions");
         (await GetSummary(client, "thread", threadId)).Count.ShouldBe(1);
 
         // Then the thread.
         (await Send(client, frank, HttpMethod.Delete, $"/api/content/threads/{threadId}"))
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
-        await DispatchToAllConsumers(new ThreadDeletedIntegrationEvent(
-            Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow));
-
-        (await GetSummary(client, "thread", threadId)).Count.ShouldBe(0);
+        await TestWait.UntilAsync(
+            async () => (await GetSummary(client, "thread", threadId)).Count == 0,
+            "Engagement's ThreadDeleted consumer removes the thread's reactions");
 
         // The rows are gone, not just the counters: grace's viewer state is false even when authenticated.
         var summary = await Send(client, grace, HttpMethod.Get, $"/api/engagement/reactions/thread/{threadId}");
@@ -204,17 +196,6 @@ public sealed class EngagementFlowTests : IClassFixture<ForumApiFactory>
 
         (await client.GetAsync($"/api/engagement/users/{Ulid.NewUlid()}/stats"))
             .StatusCode.ShouldBe(HttpStatusCode.NotFound);
-    }
-
-    private async Task DispatchToAllConsumers<TEvent>(TEvent integrationEvent)
-        where TEvent : class, IIntegrationEvent
-    {
-        // The relay lands in Phase 6 — drive ALL registered consumers, exactly as the bus does.
-        using var scope = _factory.Services.CreateScope();
-        foreach (var handler in scope.ServiceProvider.GetServices<IIntegrationEventHandler<TEvent>>())
-        {
-            await handler.HandleAsync(integrationEvent, CancellationToken.None);
-        }
     }
 
     // ---- flow helpers (same shape as ContentFlowTests/FilesFlowTests) ----

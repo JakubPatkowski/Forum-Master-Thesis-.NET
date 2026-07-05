@@ -11,6 +11,8 @@
     <PackageReference Include="Shouldly" />
     <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Testcontainers.Minio" />
+    <PackageReference Include="Testcontainers.RabbitMq" />
+    <PackageReference Include="RabbitMQ.Client" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
 </Project>

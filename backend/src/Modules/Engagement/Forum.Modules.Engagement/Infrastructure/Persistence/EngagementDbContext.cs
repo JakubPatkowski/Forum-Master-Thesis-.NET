@@ -1,4 +1,5 @@
 using Forum.Infrastructure.Messaging;
+using Forum.Infrastructure.Messaging.Inbox;
 using Forum.Infrastructure.Messaging.Outbox;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Engagement.Domain.Reactions;
@@ -27,12 +28,15 @@ internal sealed class EngagementDbContext : ForumDbContext
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+    public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
 
         modelBuilder.ApplyConfiguration(new ReactionConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }
