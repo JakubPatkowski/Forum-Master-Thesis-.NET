@@ -77,7 +77,7 @@ internal sealed class AddReactionCommandHandler : ICommandHandler<AddReactionCom
             _reactions.Add(new Reaction(userId, command.TargetType, command.TargetId, ReactionTypes.Like, now));
             _outbox.Enqueue(new ReactionAddedIntegrationEvent(
                 Ulid.NewUlid(), userId, ReactionTargets.ToWire(command.TargetType), command.TargetId,
-                ReactionTypes.Like, now));
+                ReactionTypes.Like, target.CategoryId, target.ThreadId, now));
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 

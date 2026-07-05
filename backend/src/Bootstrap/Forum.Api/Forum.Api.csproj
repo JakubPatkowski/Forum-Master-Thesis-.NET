@@ -3,6 +3,14 @@
     <UserSecretsId>forum-dotnet-api</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+  <ItemGroup Label="Test access (realtime hub internals)">
+    <InternalsVisibleTo Include="Forum.Api.Tests" />
+    <InternalsVisibleTo Include="Forum.IntegrationTests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+  <ItemGroup Label="Dev monitor page (served only in Development)">
+    <EmbeddedResource Include="DevTools\monitor.html" />
+  </ItemGroup>
   <ItemGroup Label="Shared">
     <ProjectReference Include="..\..\Shared\Forum.Common\Forum.Common.csproj" />
     <ProjectReference Include="..\..\Shared\Forum.Infrastructure\Forum.Infrastructure.csproj" />
@@ -15,6 +23,7 @@
   </ItemGroup>
   <ItemGroup Label="Host packages">
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Serilog.AspNetCore" />

@@ -65,7 +65,8 @@ internal sealed class DeleteCommentCommandHandler : ICommandHandler<DeleteCommen
             return result;
         }
 
-        _outbox.Enqueue(new CommentDeletedIntegrationEvent(Ulid.NewUlid(), comment.Id, comment.ThreadId, now));
+        _outbox.Enqueue(new CommentDeletedIntegrationEvent(
+            Ulid.NewUlid(), comment.Id, comment.ThreadId, thread.CategoryId, now));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

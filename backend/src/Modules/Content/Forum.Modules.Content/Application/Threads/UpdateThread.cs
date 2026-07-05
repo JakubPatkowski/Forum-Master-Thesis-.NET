@@ -66,7 +66,8 @@ internal sealed class UpdateThreadCommandHandler : ICommandHandler<UpdateThreadC
         }
 
         thread.Update(command.Title, command.Body);
-        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(Ulid.NewUlid(), thread.Id, _clock.GetUtcNow()));
+        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(
+            Ulid.NewUlid(), thread.Id, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

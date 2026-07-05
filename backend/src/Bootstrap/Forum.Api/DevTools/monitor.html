@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Forum Dev Monitor</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='5' cy='8' r='3.4' fill='%233987e5'/><circle cx='11' cy='8' r='3.4' fill='%239085e9' fill-opacity='.85'/></svg>">
+<style>
+/* ---- tokens (validated dark palette; see docs: dataviz reference) ---- */
+:root {
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --surface-2: #232322;
+  --surface-3: #2c2c2a;
+  --hairline: #2c2c2a;
+  --ring: rgba(255,255,255,.10);
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --ink-3: #898781;
+  --content: #3987e5;    /* categorical slot 1 */
+  --engagement: #199e70; /* slot 2 */
+  --identity: #c98500;   /* slot 3 */
+  --files: #008300;      /* slot 4 */
+  --hub: #9085e9;        /* slot 5 */
+  --critical: #d03b3b;
+  --warning: #fab219;
+  --good: #0ca30c;
+  --mono: ui-monospace, "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- header ---- */
+header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+  flex-wrap: wrap;
+}
+header h1 { font-size: 15px; font-weight: 650; margin: 0; letter-spacing: .2px; }
+header h1 small { color: var(--ink-3); font-weight: 400; margin-left: 6px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 999px;
+  border: 1px solid var(--ring);
+  background: var(--surface-2);
+  color: var(--ink-2); font-size: 12px; font-weight: 600;
+}
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+.pill.on .dot { background: var(--good); }
+.pill.off .dot { background: var(--critical); }
+.pill.wait .dot { background: var(--warning); animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+
+.tiles { display: flex; gap: 8px; margin-left: auto; }
+.tile {
+  background: var(--surface-2); border: 1px solid var(--ring); border-radius: 8px;
+  padding: 4px 12px; min-width: 74px; text-align: right;
+}
+.tile .k { display: block; font-size: 10px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .6px; }
+.tile .v { font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+/* ---- toolbars ---- */
+.bar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hairline);
+}
+.bar .group { display: flex; align-items: center; gap: 6px; }
+.bar .sep { width: 1px; align-self: stretch; background: var(--hairline); margin: 0 4px; }
+.bar label { color: var(--ink-2); display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+input[type=text], input[type=password], input[type=email], select {
+  background: var(--surface-2); color: var(--ink);
+  border: 1px solid var(--surface-3); border-radius: 6px;
+  padding: 6px 9px; font: inherit;
+}
+input:focus, select:focus { outline: none; border-color: var(--content); }
+input::placeholder { color: var(--ink-3); }
+.id-input { font-family: var(--mono); width: 250px; }
+button {
+  background: var(--surface-2); color: var(--ink);
+  border: 1px solid var(--surface-3); border-radius: 6px;
+  padding: 6px 12px; font: inherit; font-weight: 600; cursor: pointer;
+}
+button:hover:not(:disabled) { border-color: var(--ink-3); }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--content); border-color: var(--content); color: #fff; }
+button.primary:hover:not(:disabled) { filter: brightness(1.12); border-color: var(--content); }
+button.quiet { background: transparent; }
+input[type=checkbox] { accent-color: var(--content); width: 14px; height: 14px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--ring); border-radius: 999px;
+  padding: 3px 6px 3px 10px; font-size: 12px; color: var(--ink-2);
+}
+.chip b { color: var(--ink); font-weight: 600; }
+.chip .x { border: none; background: none; color: var(--ink-3); padding: 0 4px; font-size: 14px; line-height: 1; cursor: pointer; }
+.chip .x:hover { color: var(--critical); }
+.chip.pending { border-style: dashed; opacity: .7; }
+.chip.corr { border-color: var(--hub); color: var(--hub); }
+.chip code { font-family: var(--mono); font-size: 11px; }
+
+/* ---- main split ---- */
+main { flex: 1; display: flex; min-height: 0; }
+#log {
+  flex: 1; min-width: 320px; overflow-y: auto;
+  padding: 6px 0;
+  font-family: var(--mono); font-size: 12px;
+  scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent;
+}
+#resizer { width: 5px; cursor: col-resize; background: var(--hairline); flex: none; }
+#resizer:hover, #resizer.active { background: var(--content); }
+#details {
+  width: 460px; min-width: 260px; max-width: 70vw; flex: none;
+  overflow-y: auto; background: var(--surface);
+  border-left: 1px solid var(--hairline); padding: 14px 16px;
+  scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent;
+}
+
+/* ---- log rows ---- */
+.row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 3px 14px; cursor: pointer; white-space: nowrap;
+  border-left: 3px solid transparent;
+}
+.row:hover { background: var(--surface); }
+.row.sel { background: var(--surface-2); border-left-color: var(--hub); }
+.row .t { color: var(--ink-3); flex: none; }
+.row .badge {
+  flex: none; font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  padding: 1px 7px; border-radius: 4px; color: #0d0d0d;
+  font-family: system-ui, sans-serif;
+}
+.row .ev { font-weight: 650; color: var(--ink); }
+.row .sum { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.row .lat { margin-left: auto; color: var(--ink-3); flex: none; font-size: 11px; }
+.row.err .ev { color: var(--critical); }
+.row.sys { color: var(--ink-3); }
+.row.sys .ev { color: var(--ink-2); font-weight: 500; }
+
+.b-bus-content    { background: var(--content); }
+.b-bus-engagement { background: var(--engagement); }
+.b-bus-identity   { background: var(--identity); }
+.b-bus-files      { background: var(--files); color: #fff; }
+.b-hub            { background: var(--hub); }
+.b-sys            { background: var(--surface-3); color: var(--ink-2); }
+.b-err            { background: var(--critical); color: #fff; }
+
+/* ---- details pane ---- */
+#details h2 { font-size: 13px; margin: 0 0 10px; color: var(--ink); }
+#details h3 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .7px;
+  color: var(--ink-3); margin: 18px 0 6px; font-weight: 650;
+}
+.meta { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12px; }
+.meta .k { color: var(--ink-3); }
+.meta .v { font-family: var(--mono); word-break: break-all; color: var(--ink-2); }
+.meta .v.click { cursor: pointer; text-decoration: underline dotted; }
+.meta .v.click:hover { color: var(--content); }
+.jsonbox {
+  position: relative; background: var(--page);
+  border: 1px solid var(--hairline); border-radius: 8px;
+  padding: 10px 12px; overflow-x: auto;
+}
+.jsonbox pre { margin: 0; font: 12px/1.5 var(--mono); white-space: pre; }
+.jsonbox .copy {
+  position: absolute; top: 6px; right: 6px; padding: 2px 8px;
+  font-size: 11px; opacity: 0; transition: opacity .15s;
+}
+.jsonbox:hover .copy { opacity: 1; }
+.j-k { color: #7fb3f0; }        /* keys: content-blue tint      */
+.j-s { color: #a8c9a1; }        /* strings                      */
+.j-n { color: #d6a26a; }        /* numbers                      */
+.j-b { color: #b3a8f2; }        /* booleans                     */
+.j-0 { color: var(--ink-3); font-style: italic; } /* null       */
+
+.stats-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.stats-table td, .stats-table th { padding: 4px 8px; text-align: left; border-bottom: 1px solid var(--hairline); }
+.stats-table th { color: var(--ink-3); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+.stats-table td.n { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+.stats-table .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 7px; }
+.empty { color: var(--ink-3); text-align: center; padding: 48px 12px; }
+.hint { color: var(--ink-3); font-size: 12px; }
+kbd {
+  font-family: var(--mono); font-size: 11px; background: var(--surface-2);
+  border: 1px solid var(--surface-3); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Forum Dev Monitor<small>bus + websocket hub</small></h1>
+  <span class="pill off" id="busPill"><span class="dot"></span>BUS</span>
+  <span class="pill off" id="hubPill"><span class="dot"></span>HUB</span>
+  <div class="tiles">
+    <div class="tile"><span class="k">bus</span><span class="v" id="busCount">0</span></div>
+    <div class="tile"><span class="k">hub</span><span class="v" id="hubCount">0</span></div>
+    <div class="tile"><span class="k">uptime</span><span class="v" id="uptime">–</span></div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="group">
+    <button id="busBtn" class="primary">Connect bus</button>
+  </div>
+  <div class="sep"></div>
+  <div class="group" id="authGroup">
+    <input type="email" id="email" placeholder="email" autocomplete="off" style="width:190px">
+    <input type="password" id="password" placeholder="password" autocomplete="off" style="width:130px">
+    <button id="loginBtn">Log in</button>
+    <button id="registerBtn" class="quiet" title="Registers &lt;local-part&gt; of the email as a new user, then logs in">Register + log in</button>
+  </div>
+  <div class="group" id="userGroup" hidden>
+    <span class="chip"><b id="userLabel"></b><button class="x" id="logoutBtn" title="forget token">×</button></span>
+    <button id="hubBtn" class="primary">Connect hub</button>
+    <label title="On unexpected close: refresh token if needed, mint a fresh ticket, reconnect and resubscribe (the SPA contract)">
+      <input type="checkbox" id="autoReconnect" checked> auto-reconnect
+    </label>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <select id="subView">
+      <option value="category">category</option>
+      <option value="thread">thread</option>
+      <option value="user">user</option>
+    </select>
+    <input type="text" id="subId" class="id-input" placeholder="ULID (category/thread/user id)" spellcheck="false">
+    <button id="subBtn" disabled>Subscribe</button>
+    <span id="subChips"></span>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="group">
+    <input type="text" id="search" placeholder="filter… (text, id, event)" style="width:220px">
+    <select id="exchangeFilter"><option value="">all exchanges</option></select>
+    <select id="eventFilter"><option value="">all events</option></select>
+    <span id="corrChip"></span>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <label><input type="checkbox" id="showBus" checked> bus</label>
+    <label><input type="checkbox" id="showHub" checked> hub</label>
+    <label><input type="checkbox" id="showSys" checked> system</label>
+    <label><input type="checkbox" id="follow" checked> follow</label>
+  </div>
+  <div class="sep"></div>
+  <div class="group">
+    <button id="pauseBtn" title="Buffer incoming messages without rendering">Pause</button>
+    <button id="statsBtn" class="quiet">Stats</button>
+    <button id="exportBtn" class="quiet">Export</button>
+    <button id="clearBtn" class="quiet">Clear</button>
+  </div>
+</div>
+
+<main>
+  <div id="log"></div>
+  <div id="resizer"></div>
+  <aside id="details">
+    <div class="empty">
+      <p><b>Nothing selected</b></p>
+      <p class="hint">Connect the bus tap and/or log in and connect the hub.<br>
+      Click any row for full payload & metadata.<br>
+      Click a correlation id to trace one request across both streams.</p>
+    </div>
+  </aside>
+</main>
+
+<script>
+'use strict';
+
+/* ================= state ================= */
+const MAX_ROWS = 2000;
+const state = {
+  messages: [],          // { n, kind:'bus'|'hub'|'sys'|'err', time, exchange?, event, summary, corr?, body, raw, latencyMs?, el }
+  seq: 0,
+  selected: null,
+  paused: false,
+  buffer: [],
+  corrFilter: null,
+  startedAt: null,
+  counts: { bus: 0, hub: 0, perEvent: new Map(), perExchange: new Map() },
+  eventsByExchange: new Map(),
+  busWs: null, busWanted: false, busRetry: null,
+  hubWs: null, hubWanted: false, hubRetry: null,
+  token: null, userEmail: null,
+  subs: new Map(),       // "view:id" -> { view, id, acked }
+};
+
+const $ = id => document.getElementById(id);
+const log = $('log'), details = $('details');
+const wsBase = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host;
+
+/* ================= utilities ================= */
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const shortId = v => typeof v === 'string' && v.length === 26 ? '…' + v.slice(-6) : v;
+const now = () => new Date();
+const fmtTime = d => d.toTimeString().slice(0, 8) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+
+function highlight(value) {
+  const json = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  return esc(json).replace(
+    /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false)\b|\bnull\b|-?\d+(\.\d+)?([eE][+-]?\d+)?)/g,
+    m => {
+      let cls = 'j-n';
+      if (m.startsWith('"')) cls = m.endsWith(':') ? 'j-k' : 'j-s';
+      else if (m === 'true' || m === 'false') cls = 'j-b';
+      else if (m === 'null') cls = 'j-0';
+      return `<span class="${cls}">${m}</span>`;
+    });
+}
+
+/* Integration events serialize PascalCase; hub envelopes camelCase — read both. */
+const pick = (obj, ...names) => {
+  if (!obj || typeof obj !== 'object') return undefined;
+  for (const n of names) {
+    if (obj[n] !== undefined) return obj[n];
+    const c = n[0].toLowerCase() + n.slice(1);
+    if (obj[c] !== undefined) return obj[c];
+  }
+  return undefined;
+};
+
+async function api(path, opts = {}) {
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers);
+  if (state.token) opts.headers.Authorization = 'Bearer ' + state.token;
+  const res = await fetch(path, opts);
+  let body = null;
+  try { body = await res.json(); } catch { /* empty bodies are fine */ }
+  return { ok: res.ok, status: res.status, body };
+}
+
+/* ================= message pipeline ================= */
+function push(msg) {
+  if (state.paused) { state.buffer.push(msg); updatePauseLabel(); return; }
+  render(msg);
+}
+
+function render(msg) {
+  msg.n = ++state.seq;
+  state.messages.push(msg);
+  if (msg.kind === 'bus') { state.counts.bus++; bump(msg); }
+  if (msg.kind === 'hub' && msg.isNotification) { state.counts.hub++; bump(msg); }
+
+  const el = document.createElement('div');
+  el.className = 'row ' + (msg.kind === 'err' ? 'err' : msg.kind === 'sys' ? 'sys' : '');
+  const badgeCls = msg.kind === 'bus' ? 'b-bus-' + (msg.exchange || 'content')
+    : msg.kind === 'hub' ? 'b-hub' : msg.kind === 'err' ? 'b-err' : 'b-sys';
+  const badgeTxt = msg.kind === 'bus' ? msg.exchange : msg.kind === 'hub' ? 'hub' : msg.kind === 'err' ? 'err' : 'sys';
+  el.innerHTML =
+    `<span class="t">${fmtTime(msg.time)}</span>` +
+    `<span class="badge ${badgeCls}">${esc(badgeTxt || '?')}</span>` +
+    `<span class="ev">${esc(msg.event)}</span>` +
+    `<span class="sum">${esc(msg.summary || '')}</span>` +
+    (msg.latencyMs != null ? `<span class="lat">${msg.latencyMs} ms</span>` : '');
+  el.onclick = () => select(msg, el);
+  msg.el = el;
+  log.appendChild(el);
+
+  while (state.messages.length > MAX_ROWS) {
+    const old = state.messages.shift();
+    old.el?.remove();
+    if (state.selected === old) { state.selected = null; showIdle(); }
+  }
+  applyFilterTo(msg);
+  if ($('follow').checked) log.scrollTop = log.scrollHeight;
+  refreshTiles();
+}
+
+function bump(msg) {
+  const key = msg.event;
+  state.counts.perEvent.set(key, (state.counts.perEvent.get(key) || 0) + 1);
+  const ex = msg.kind === 'bus' ? msg.exchange : 'hub';
+  state.counts.perExchange.set(ex, (state.counts.perExchange.get(ex) || 0) + 1);
+  if (msg.kind === 'bus' && msg.exchange) {
+    if (!state.eventsByExchange.has(msg.exchange)) {
+      state.eventsByExchange.set(msg.exchange, new Set());
+      rebuildSelect($('exchangeFilter'), [...state.eventsByExchange.keys()].sort(), 'all exchanges');
+    }
+    const set = state.eventsByExchange.get(msg.exchange);
+    if (!set.has(key)) { set.add(key); rebuildEventFilter(); }
+  }
+}
+
+function rebuildSelect(sel, values, allLabel) {
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">${allLabel}</option>` +
+    values.map(v => `<option${v === cur ? ' selected' : ''}>${esc(v)}</option>`).join('');
+}
+
+function rebuildEventFilter() {
+  const ex = $('exchangeFilter').value;
+  const all = new Set();
+  for (const [e, set] of state.eventsByExchange) if (!ex || e === ex) set.forEach(v => all.add(v));
+  rebuildSelect($('eventFilter'), [...all].sort(), 'all events');
+}
+
+function sys(text, isError) {
+  push({ kind: isError ? 'err' : 'sys', time: now(), event: text, summary: '', body: null, raw: null });
+}
+
+/* ================= filtering ================= */
+function applyFilterTo(msg) {
+  if (!msg.el) return;
+  const q = $('search').value.toLowerCase();
+  const ex = $('exchangeFilter').value;
+  const ev = $('eventFilter').value;
+  let vis = true;
+  if (msg.kind === 'bus' && !$('showBus').checked) vis = false;
+  if (msg.kind === 'hub' && !$('showHub').checked) vis = false;
+  if ((msg.kind === 'sys' || msg.kind === 'err') && !$('showSys').checked) vis = false;
+  if (vis && ex && msg.exchange !== ex) vis = false;
+  if (vis && ev && msg.event !== ev) vis = false;
+  if (vis && state.corrFilter && msg.corr !== state.corrFilter) vis = false;
+  if (vis && q) {
+    const hay = (msg.event + ' ' + (msg.summary || '') + ' ' + (msg.corr || '') + ' ' +
+                 (msg.body ? JSON.stringify(msg.body) : '')).toLowerCase();
+    if (!hay.includes(q)) vis = false;
+  }
+  msg.el.style.display = vis ? '' : 'none';
+}
+function applyFilters() { state.messages.forEach(applyFilterTo); renderCorrChip(); }
+
+function setCorrFilter(corr) {
+  state.corrFilter = corr;
+  applyFilters();
+}
+function renderCorrChip() {
+  $('corrChip').innerHTML = state.corrFilter
+    ? `<span class="chip corr">corr <code>${esc(shortId(state.corrFilter))}</code>
+         <button class="x" onclick="setCorrFilter(null)" title="clear">×</button></span>`
+    : '';
+}
+
+/* ================= details pane ================= */
+function select(msg, el) {
+  document.querySelectorAll('.row.sel').forEach(r => r.classList.remove('sel'));
+  el.classList.add('sel');
+  state.selected = msg;
+
+  const rows = [];
+  const add = (k, v, opts = {}) => {
+    if (v == null || v === '') return;
+    const cls = 'v' + (opts.click ? ' click' : '');
+    const attr = opts.click ? ` onclick="setCorrFilter('${esc(v)}')" title="trace this request across bus + hub"` : '';
+    rows.push(`<span class="k">${k}</span><span class="${cls}"${attr}>${esc(v)}</span>`);
+  };
+  add('source', msg.kind === 'bus' ? `bus / ${msg.exchange}` : msg.kind);
+  add('event', msg.event);
+  if (msg.kind === 'bus') {
+    add('message id', pick(msg.raw, 'MessageId'));
+    add('clr type', pick(msg.raw, 'Type'));
+    add('redelivered', pick(msg.raw, 'Redelivered') ? 'yes' : null);
+    add('occurred', pick(msg.body, 'OccurredOnUtc'));
+    add('received', msg.raw?.receivedOnUtc ?? msg.raw?.ReceivedOnUtc);
+    if (msg.latencyMs != null) add('outbox → tap', msg.latencyMs + ' ms');
+  }
+  if (msg.corr) add('correlation', msg.corr, { click: true });
+
+  let html = `<h2>${esc(msg.event)}</h2><div class="meta">${rows.join('')}</div>`;
+  if (msg.body != null) {
+    html += `<h3>payload</h3>
+      <div class="jsonbox"><button class="copy" onclick="copyJson('body')">copy</button>
+      <pre>${highlight(msg.body)}</pre></div>`;
+  }
+  if (msg.raw != null) {
+    html += `<h3>raw frame</h3>
+      <div class="jsonbox"><button class="copy" onclick="copyJson('raw')">copy</button>
+      <pre>${highlight(msg.raw)}</pre></div>`;
+  }
+  details.innerHTML = html;
+}
+
+function copyJson(which) {
+  if (!state.selected) return;
+  navigator.clipboard.writeText(JSON.stringify(state.selected[which], null, 2));
+}
+
+function showIdle() {
+  details.innerHTML = `<div class="empty"><p><b>Nothing selected</b></p>
+    <p class="hint">Click any row for full payload & metadata.</p></div>`;
+}
+
+function showStats() {
+  const ev = [...state.counts.perEvent.entries()].sort((a, b) => b[1] - a[1]);
+  const ex = [...state.counts.perExchange.entries()].sort((a, b) => b[1] - a[1]);
+  const colors = { content: 'var(--content)', engagement: 'var(--engagement)', identity: 'var(--identity)', files: 'var(--files)', hub: 'var(--hub)' };
+  details.innerHTML =
+    `<h2>Stats</h2>
+     <h3>per source</h3>
+     <table class="stats-table">${ex.map(([k, v]) =>
+        `<tr><td><span class="swatch" style="background:${colors[k] || 'var(--ink-3)'}"></span>${esc(k)}</td><td class="n">${v}</td></tr>`).join('')}
+     </table>
+     <h3>per event</h3>
+     <table class="stats-table"><tr><th>event</th><th style="text-align:right">count</th></tr>${ev.map(([k, v]) =>
+        `<tr><td>${esc(k)}</td><td class="n">${v}</td></tr>`).join('')}
+     </table>`;
+}
+
+/* ================= tiles ================= */
+function refreshTiles() {
+  $('busCount').textContent = state.counts.bus;
+  $('hubCount').textContent = state.counts.hub;
+}
+setInterval(() => {
+  if (!state.startedAt) return;
+  const s = Math.floor((Date.now() - state.startedAt) / 1000);
+  $('uptime').textContent =
+    String(Math.floor(s / 3600)).padStart(2, '0') + ':' +
+    String(Math.floor(s / 60) % 60).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}, 1000);
+
+/* ================= bus tap ================= */
+function setPill(id, mode) { $(id).className = 'pill ' + mode; }
+
+function busConnect() {
+  state.busWanted = true;
+  clearTimeout(state.busRetry);
+  setPill('busPill', 'wait');
+  $('busBtn').textContent = 'Disconnect bus';
+  const ws = new WebSocket(wsBase + '/dev/monitor/bus');
+  state.busWs = ws;
+  ws.onopen = () => {
+    if (!state.startedAt) state.startedAt = Date.now();
+    setPill('busPill', 'on');
+    sys('bus tap connected — streaming all module exchanges');
+  };
+  ws.onmessage = e => {
+    let f; try { f = JSON.parse(e.data); } catch { return; }
+    if (f.kind === 'error') { sys('bus tap: ' + f.body, true); return; }
+    const body = f.body;
+    const occurred = pick(body, 'OccurredOnUtc');
+    const latencyMs = occurred ? Math.max(0, Math.round(new Date(f.receivedOnUtc) - new Date(occurred))) : null;
+    push({
+      kind: 'bus', time: now(),
+      exchange: f.exchange, event: f.routingKey,
+      corr: f.correlationId || null,
+      summary: summarize(body),
+      body, raw: f, latencyMs,
+    });
+  };
+  ws.onclose = () => {
+    state.busWs = null;
+    setPill('busPill', 'off');
+    if (state.busWanted) {
+      sys('bus tap lost — retrying in 2 s', true);
+      state.busRetry = setTimeout(busConnect, 2000);
+    } else {
+      $('busBtn').textContent = 'Connect bus';
+    }
+  };
+}
+function busDisconnect() {
+  state.busWanted = false;
+  clearTimeout(state.busRetry);
+  state.busWs?.close(1000);
+  $('busBtn').textContent = 'Connect bus';
+}
+$('busBtn').onclick = () => state.busWanted ? busDisconnect() : busConnect();
+
+function summarize(body) {
+  if (!body || typeof body !== 'object') return typeof body === 'string' ? body.slice(0, 80) : '';
+  const parts = [];
+  for (const key of ['ThreadId', 'CommentId', 'CategoryId', 'TargetId', 'UserId', 'FileId', 'OwnerId']) {
+    const v = pick(body, key);
+    if (v) parts.push(key.replace('Id', '').toLowerCase() + ' ' + shortId(v));
+  }
+  const title = pick(body, 'Title', 'Slug');
+  if (title) parts.unshift('“' + String(title).slice(0, 32) + '”');
+  return parts.join(' · ');
+}
+
+/* ================= identity / hub ================= */
+function setLoggedIn(email) {
+  state.userEmail = email;
+  $('authGroup').hidden = !!email;
+  $('userGroup').hidden = !email;
+  $('subBtn').disabled = !state.hubWs;
+  if (email) $('userLabel').textContent = email;
+}
+
+async function login() {
+  const email = $('email').value.trim(), password = $('password').value;
+  if (!email || !password) return sys('enter email + password first', true);
+  const r = await api('/api/identity/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+  if (!r.ok) return sys(`login failed (${r.status}) ${r.body?.description || ''}`, true);
+  state.token = r.body.accessToken;
+  setLoggedIn(email);
+  sys('logged in as ' + email);
+}
+
+async function registerAndLogin() {
+  const email = $('email').value.trim(), password = $('password').value;
+  if (!email || !password) return sys('enter email + password first', true);
+  const username = email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 30) || 'devuser';
+  const r = await api('/api/identity/register', {
+    method: 'POST', body: JSON.stringify({ username, email, displayName: username, password }),
+  });
+  if (!r.ok && r.status !== 409) return sys(`register failed (${r.status}) ${r.body?.description || ''}`, true);
+  await login();
+}
+
+async function refreshToken() {
+  const r = await api('/api/identity/refresh', { method: 'POST' });
+  if (r.ok) { state.token = r.body.accessToken; return true; }
+  return false;
+}
+
+async function mintTicket() {
+  let r = await api('/api/realtime/ticket', { method: 'POST' });
+  if (r.status === 401 && await refreshToken()) r = await api('/api/realtime/ticket', { method: 'POST' });
+  if (!r.ok) { sys(`ticket refused (${r.status}) — session expired?`, true); return null; }
+  return r.body.ticket;
+}
+
+async function hubConnect() {
+  state.hubWanted = true;
+  clearTimeout(state.hubRetry);
+  setPill('hubPill', 'wait');
+  $('hubBtn').textContent = 'Disconnect hub';
+  const ticket = await mintTicket();
+  if (!ticket) { hubTeardown(); return; }
+
+  const ws = new WebSocket(wsBase + '/api/realtime/ws?ticket=' + encodeURIComponent(ticket));
+  state.hubWs = ws;
+  ws.onopen = () => {
+    if (!state.startedAt) state.startedAt = Date.now();
+    setPill('hubPill', 'on');
+    $('subBtn').disabled = false;
+    sys('hub connected (single-use ticket redeemed)');
+    // The resync contract: after every (re)connect, re-establish the view subscriptions.
+    for (const sub of state.subs.values()) { sub.acked = false; sendSub('subscribe', sub); }
+    renderSubChips();
+  };
+  ws.onmessage = e => {
+    let f; try { f = JSON.parse(e.data); } catch { return; }
+    if (f.entity) {
+      push({
+        kind: 'hub', time: now(), isNotification: true,
+        event: `${f.entity}.${f.type}`,
+        summary: ['id ' + shortId(f.id), f.parentId && 'parent ' + shortId(f.parentId), f.categoryId && 'cat ' + shortId(f.categoryId)]
+          .filter(Boolean).join(' · '),
+        body: f, raw: f,
+      });
+      return;
+    }
+    if (f.type === 'subscribed' || f.type === 'unsubscribed') {
+      const key = keyOf(f.view, f.id);
+      if (f.type === 'subscribed' && state.subs.has(key)) state.subs.get(key).acked = true;
+      renderSubChips();
+      push({ kind: 'sys', time: now(), event: f.type, summary: `${f.view} ${shortId(f.id)}`, body: f, raw: f });
+      return;
+    }
+    push({ kind: 'err', time: now(), event: 'hub ' + (f.type || 'frame'), summary: f.reason || '', body: f, raw: f });
+  };
+  ws.onclose = ev => {
+    state.hubWs = null;
+    $('subBtn').disabled = true;
+    setPill('hubPill', 'off');
+    if (state.hubWanted && $('autoReconnect').checked) {
+      sys(`hub closed (${ev.code}) — reconnecting with a fresh ticket in 2 s`, true);
+      state.hubRetry = setTimeout(hubConnect, 2000);
+    } else {
+      hubTeardown();
+      sys(`hub disconnected (${ev.code})`);
+    }
+  };
+}
+function hubTeardown() {
+  state.hubWanted = false;
+  clearTimeout(state.hubRetry);
+  $('hubBtn').textContent = 'Connect hub';
+  setPill('hubPill', 'off');
+  $('subBtn').disabled = true;
+}
+$('hubBtn').onclick = () => {
+  if (state.hubWanted) { state.hubWanted = false; state.hubWs?.close(1000); hubTeardown(); }
+  else hubConnect();
+};
+
+/* ---- subscriptions ---- */
+const keyOf = (view, id) => view + ':' + id;
+function sendSub(action, sub) {
+  state.hubWs?.send(JSON.stringify({ action, view: sub.view, id: sub.id }));
+}
+$('subBtn').onclick = () => {
+  const view = $('subView').value, id = $('subId').value.trim();
+  if (!/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/i.test(id)) return sys('that is not a ULID', true);
+  const sub = { view, id, acked: false };
+  state.subs.set(keyOf(view, id), sub);
+  sendSub('subscribe', sub);
+  $('subId').value = '';
+  renderSubChips();
+};
+function unsubscribe(key) {
+  const sub = state.subs.get(key);
+  if (!sub) return;
+  state.subs.delete(key);
+  if (state.hubWs) sendSub('unsubscribe', sub);
+  renderSubChips();
+}
+function renderSubChips() {
+  $('subChips').innerHTML = [...state.subs.entries()].map(([key, s]) =>
+    `<span class="chip${s.acked ? '' : ' pending'}" title="${esc(s.id)}${s.acked ? '' : ' (awaiting ack)'}">
+       <b>${s.view}</b><code>${esc(shortId(s.id))}</code>
+       <button class="x" onclick="unsubscribe('${key}')">×</button></span>`).join(' ');
+}
+
+$('loginBtn').onclick = login;
+$('registerBtn').onclick = registerAndLogin;
+$('logoutBtn').onclick = () => {
+  state.token = null;
+  state.hubWanted = false; state.hubWs?.close(1000); hubTeardown();
+  setLoggedIn(null);
+};
+$('password').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+/* ================= toolbar wiring ================= */
+['search', 'showBus', 'showHub', 'showSys'].forEach(id =>
+  $(id).addEventListener('input', applyFilters));
+$('exchangeFilter').addEventListener('change', () => { rebuildEventFilter(); applyFilters(); });
+$('eventFilter').addEventListener('change', applyFilters);
+
+$('pauseBtn').onclick = () => {
+  state.paused = !state.paused;
+  if (!state.paused) { const b = state.buffer.splice(0); b.forEach(render); }
+  updatePauseLabel();
+};
+function updatePauseLabel() {
+  $('pauseBtn').textContent = state.paused ? `Resume (${state.buffer.length})` : 'Pause';
+}
+$('statsBtn').onclick = showStats;
+$('clearBtn').onclick = () => {
+  state.messages.forEach(m => m.el?.remove());
+  state.messages = []; state.buffer = []; state.selected = null;
+  state.counts = { bus: 0, hub: 0, perEvent: new Map(), perExchange: new Map() };
+  refreshTiles(); updatePauseLabel(); showIdle();
+};
+$('exportBtn').onclick = () => {
+  const data = state.messages.filter(m => m.raw).map(m => ({
+    n: m.n, kind: m.kind, time: m.time.toISOString(), event: m.event, frame: m.raw,
+  }));
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+  a.download = `forum-monitor-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+/* ---- resizer ---- */
+(() => {
+  const rs = $('resizer'), panel = $('details');
+  let drag = false;
+  rs.addEventListener('mousedown', () => { drag = true; rs.classList.add('active'); document.body.style.userSelect = 'none'; });
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    panel.style.width = Math.max(260, document.body.clientWidth - e.clientX) + 'px';
+  });
+  document.addEventListener('mouseup', () => { drag = false; rs.classList.remove('active'); document.body.style.userSelect = ''; });
+})();
+
+/* ---- boot ---- */
+sys('Forum Dev Monitor ready — development environment only');
+busConnect();
+</script>
+</body>
+</html>

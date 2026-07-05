@@ -61,7 +61,9 @@ internal sealed class ChangeThreadCategoryCommandHandler : ICommandHandler<Chang
             return result;
         }
 
-        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(Ulid.NewUlid(), thread.Id, _clock.GetUtcNow()));
+        // The event carries the thread's category AFTER the move — subscribers of the new home get the patch.
+        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(
+            Ulid.NewUlid(), thread.Id, target.Id, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

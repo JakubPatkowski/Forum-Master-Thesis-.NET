@@ -1,4 +1,5 @@
 using Forum.Api.Correlation;
+using Forum.Api.DevTools;
 using Forum.Api.Extensions;
 using Forum.Api.Middleware;
 using Forum.Common.Correlation;
@@ -35,6 +36,7 @@ builder.Services.AddForumProblemDetails();                        // RFC 7807 fo
 builder.Services.AddForumCors(builder.Configuration);             // SPA origin allow-list
 builder.Services.AddForumRateLimiting(builder.Configuration);     // per-IP fixed window
 builder.Services.AddForumAuthentication(builder.Configuration);   // JWT bearer + authorization skeleton
+builder.Services.AddForumRealtime(builder.Configuration);         // WebSocket hub: tickets + change-feed fan-out
 
 builder.AddForumObservability();          // OpenTelemetry traces + metrics (+ Prometheus endpoint)
 builder.Services.AddForumHealthChecks();  // /health/live, /health/ready
@@ -59,6 +61,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();                       // GET /openapi/v1.json
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Forum API v1"));  // GET /swagger
+    app.MapDevMonitor();                    // GET /dev/monitor — live bus + WebSocket-hub observability page
 }
 
 app.UseCors(CorsExtensions.SpaPolicy);
@@ -68,6 +71,7 @@ app.UseAuthorization();
 
 app.MapForumHealthChecks();
 app.MapPrometheusScrapingEndpoint();      // GET /metrics
+app.MapForumRealtime();                    // POST /api/realtime/ticket + GET /api/realtime/ws
 app.MapModules(modules);                   // each module maps its own endpoints
 
 await app.RunWithStartupTasksAsync();
