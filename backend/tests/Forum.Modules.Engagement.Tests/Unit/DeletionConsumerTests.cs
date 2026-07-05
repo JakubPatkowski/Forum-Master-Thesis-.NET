@@ -24,7 +24,8 @@ public sealed class DeletionConsumerTests
             _reactions, NullLogger<ThreadDeletedEventHandler>.Instance);
 
         await handler.HandleAsync(
-            new ContentEvents.ThreadDeletedIntegrationEvent(Ulid.NewUlid(), threadId, DateTimeOffset.UtcNow),
+            new ContentEvents.ThreadDeletedIntegrationEvent(
+                Ulid.NewUlid(), threadId, Ulid.NewUlid(), DateTimeOffset.UtcNow),
             CancellationToken.None);
 
         await _reactions.Received(1).DeleteAllForTargetAsync(
@@ -40,7 +41,7 @@ public sealed class DeletionConsumerTests
 
         await handler.HandleAsync(
             new ContentEvents.CommentDeletedIntegrationEvent(
-                Ulid.NewUlid(), commentId, Ulid.NewUlid(), DateTimeOffset.UtcNow),
+                Ulid.NewUlid(), commentId, Ulid.NewUlid(), Ulid.NewUlid(), DateTimeOffset.UtcNow),
             CancellationToken.None);
 
         await _reactions.Received(1).DeleteAllForTargetAsync(

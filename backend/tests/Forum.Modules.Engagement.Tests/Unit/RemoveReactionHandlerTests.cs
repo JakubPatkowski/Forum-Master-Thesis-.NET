@@ -33,7 +33,7 @@ public sealed class RemoveReactionHandlerTests
     {
         _currentUser.Id.Returns(_userId);
         _targets.GetAsync(ReactionTargetType.Comment, _commentId, Arg.Any<CancellationToken>())
-            .Returns(new ReactionTarget(_categoryId, Ulid.NewUlid(), CategoryIsPrivate: false));
+            .Returns(new ReactionTarget(_categoryId, Ulid.NewUlid(), CategoryIsPrivate: false, Ulid.NewUlid()));
         _currentUser.HasPermissionAsync(
                 Permissions.Like, PermissionScopes.Category, _categoryId, Arg.Any<CancellationToken>())
             .Returns(true);

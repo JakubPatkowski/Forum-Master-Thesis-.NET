@@ -34,7 +34,7 @@ public sealed class AddReactionHandlerTests
         _currentUser.Id.Returns(_userId);
         _currentUser.IsOwner(Arg.Any<Ulid>()).Returns(callInfo => callInfo.Arg<Ulid>() == _userId);
         _targets.GetAsync(ReactionTargetType.Thread, _threadId, Arg.Any<CancellationToken>())
-            .Returns(new ReactionTarget(_categoryId, categoryOwnerId ?? Ulid.NewUlid(), isPrivate));
+            .Returns(new ReactionTarget(_categoryId, categoryOwnerId ?? Ulid.NewUlid(), isPrivate, _threadId));
         _currentUser.HasPermissionAsync(
                 Permissions.Like, PermissionScopes.Category, _categoryId, Arg.Any<CancellationToken>())
             .Returns(true);

@@ -75,7 +75,7 @@ internal sealed class RemoveReactionCommandHandler : ICommandHandler<RemoveReact
             _reactions.Remove(existing);
             _outbox.Enqueue(new ReactionRemovedIntegrationEvent(
                 Ulid.NewUlid(), userId, ReactionTargets.ToWire(command.TargetType), command.TargetId,
-                ReactionTypes.Like, _clock.GetUtcNow()));
+                ReactionTypes.Like, target.CategoryId, target.ThreadId, _clock.GetUtcNow()));
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
 

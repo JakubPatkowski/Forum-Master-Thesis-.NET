@@ -4,6 +4,7 @@ using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Validation;
+using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Comments;
 using Forum.Modules.Content.Domain.Threads;
 using Forum.SharedKernel.Results;
@@ -25,20 +26,26 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
     private readonly ICommentRepository _comments;
     private readonly IThreadRepository _threads;
     private readonly ICurrentUser _currentUser;
+    private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly TimeProvider _clock;
 
     public UpdateCommentCommandHandler(
         IValidator<UpdateCommentCommand> validator,
         ICommentRepository comments,
         IThreadRepository threads,
         ICurrentUser currentUser,
-        IUnitOfWork unitOfWork)
+        IOutboxWriter outbox,
+        IUnitOfWork unitOfWork,
+        TimeProvider clock)
     {
         _validator = validator;
         _comments = comments;
         _threads = threads;
         _currentUser = currentUser;
+        _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _clock = clock;
     }
 
     public async Task<Result> Handle(UpdateCommentCommand command, CancellationToken cancellationToken)
@@ -67,6 +74,8 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
         }
 
         comment.Update(command.Body);
+        _outbox.Enqueue(new CommentUpdatedIntegrationEvent(
+            Ulid.NewUlid(), comment.Id, comment.ThreadId, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

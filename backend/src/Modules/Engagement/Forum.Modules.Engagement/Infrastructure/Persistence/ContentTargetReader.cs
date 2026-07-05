@@ -18,7 +18,7 @@ internal sealed class ContentTargetReader : IReactionTargetReader
 {
     private const string ThreadSql =
         """
-        SELECT t.category_id, c.owner_id, c.visibility
+        SELECT t.category_id, c.owner_id, c.visibility, t.id
         FROM forum_content.threads t
         JOIN forum_content.categories c ON c.id = t.category_id
         WHERE t.id = @targetId AND t.is_deleted = false AND c.is_deleted = false
@@ -26,7 +26,7 @@ internal sealed class ContentTargetReader : IReactionTargetReader
 
     private const string CommentSql =
         """
-        SELECT t.category_id, c.owner_id, c.visibility
+        SELECT t.category_id, c.owner_id, c.visibility, t.id
         FROM forum_content.comments cm
         JOIN forum_content.threads t ON t.id = cm.thread_id
         JOIN forum_content.categories c ON c.id = t.category_id
@@ -62,7 +62,8 @@ internal sealed class ContentTargetReader : IReactionTargetReader
             return new ReactionTarget(
                 Ulid.Parse(reader.GetString(0), CultureInfo.InvariantCulture),
                 Ulid.Parse(reader.GetString(1), CultureInfo.InvariantCulture),
-                CategoryIsPrivate: reader.GetString(2) == "private");
+                CategoryIsPrivate: reader.GetString(2) == "private",
+                Ulid.Parse(reader.GetString(3), CultureInfo.InvariantCulture));
         }
         finally
         {

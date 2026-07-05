@@ -52,7 +52,7 @@ internal sealed class DeleteThreadCommandHandler : ICommandHandler<DeleteThreadC
             return result;
         }
 
-        _outbox.Enqueue(new ThreadDeletedIntegrationEvent(Ulid.NewUlid(), thread.Id, now));
+        _outbox.Enqueue(new ThreadDeletedIntegrationEvent(Ulid.NewUlid(), thread.Id, thread.CategoryId, now));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();

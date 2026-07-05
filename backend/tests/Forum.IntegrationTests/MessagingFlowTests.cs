@@ -85,7 +85,8 @@ public sealed class MessagingFlowTests : IClassFixture<ForumApiFactory>
 
         // Fabricate one ThreadDeleted event and deliver it twice — as broker redelivery or a relay retry would.
         var integrationEvent = new ThreadDeletedIntegrationEvent(
-            Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow);
+            Ulid.NewUlid(), Ulid.Parse(threadId, CultureInfo.InvariantCulture),
+            Ulid.Parse(categoryId, CultureInfo.InvariantCulture), DateTimeOffset.UtcNow);
         var body = JsonSerializer.SerializeToUtf8Bytes(integrationEvent, IntegrationEventJson.SerializerOptions);
         await PublishRawAsync("content", "ThreadDeletedIntegrationEvent", body);
         await PublishRawAsync("content", "ThreadDeletedIntegrationEvent", body);

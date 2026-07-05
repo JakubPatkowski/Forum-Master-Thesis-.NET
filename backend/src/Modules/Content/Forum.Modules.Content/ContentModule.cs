@@ -44,8 +44,10 @@ public sealed class ContentModule : IModule
         // Cross-module consumers (dispatched in-process now, via the RabbitMQ relay from Phase 6).
         services.AddScoped<IIntegrationEventHandler<UserBlockedIntegrationEvent>, UserBlockedEventHandler>();
 
-        // Contracts surface: lets Files gate attach/detach with Content's own ownership/moderation rules.
+        // Contracts surface: lets Files gate attach/detach with Content's own ownership/moderation rules,
+        // and lets the WebSocket hub re-check category visibility before every push (Phase 7).
         services.AddScoped<IContentAuthorization, ContentAttachmentAuthorizer>();
+        services.AddScoped<IContentVisibility, CategoryAccessReader>();
 
         // Validators + CQRS handlers (handlers are internal, hence the non-public scans).
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);

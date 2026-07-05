@@ -111,7 +111,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
 
         _comments.Add(comment);
         _outbox.Enqueue(new CommentCreatedIntegrationEvent(
-            Ulid.NewUlid(), comment.Id, thread.Id, comment.ParentId, ownerId, _clock.GetUtcNow()));
+            Ulid.NewUlid(), comment.Id, thread.Id, comment.ParentId, ownerId, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

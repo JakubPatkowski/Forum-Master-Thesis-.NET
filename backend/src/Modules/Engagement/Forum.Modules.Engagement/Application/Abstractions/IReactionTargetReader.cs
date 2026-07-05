@@ -13,5 +13,8 @@ internal interface IReactionTargetReader
     Task<ReactionTarget?> GetAsync(ReactionTargetType targetType, Ulid targetId, CancellationToken cancellationToken);
 }
 
-/// <summary>The owning category of a reaction target: scope for the permission check plus the visibility gate.</summary>
-internal sealed record ReactionTarget(Ulid CategoryId, Ulid CategoryOwnerId, bool CategoryIsPrivate);
+/// <summary>
+/// The owning category of a reaction target (scope for the permission check plus the visibility gate) and its
+/// containing thread — the thread itself for thread targets — so reaction events can be routed to thread views.
+/// </summary>
+internal sealed record ReactionTarget(Ulid CategoryId, Ulid CategoryOwnerId, bool CategoryIsPrivate, Ulid ThreadId);

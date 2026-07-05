@@ -54,7 +54,8 @@ internal sealed class PinThreadCommandHandler : ICommandHandler<PinThreadCommand
             thread.Unpin();
         }
 
-        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(Ulid.NewUlid(), thread.Id, _clock.GetUtcNow()));
+        _outbox.Enqueue(new ThreadUpdatedIntegrationEvent(
+            Ulid.NewUlid(), thread.Id, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success();
