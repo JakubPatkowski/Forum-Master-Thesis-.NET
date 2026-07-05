@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Messaging;
 using Forum.Common.Modules;
+using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Engagement.Application.Abstractions;
@@ -24,6 +25,11 @@ public sealed class EngagementModule : IModule
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddModuleDbContext<EngagementDbContext>(configuration.GetConnectionString("Forum") ?? string.Empty);
+
+        // Messaging backbone: relay this module's outbox to its 'engagement' exchange; consume what it handles.
+        services.AddModuleMessaging<EngagementDbContext>("engagement", messaging => messaging
+            .Consume<ThreadDeletedIntegrationEvent>()
+            .Consume<CommentDeletedIntegrationEvent>());
 
         // Persistence ports.
         services.AddScoped<IReactionRepository, ReactionRepository>();

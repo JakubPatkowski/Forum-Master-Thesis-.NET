@@ -1,3 +1,5 @@
+using Forum.Api.HealthChecks;
+
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Forum.Api.Extensions;
@@ -8,8 +10,10 @@ public static class HealthCheckExtensions
 
     public static IServiceCollection AddForumHealthChecks(this IServiceCollection services)
     {
-        services.AddHealthChecks();
-        // TODO: .AddNpgSql(...).AddRabbitMQ(...) tagged "ready" for readiness gating.
+        // Liveness stays dependency-free; readiness gates on the stateful dependencies being reachable.
+        services.AddHealthChecks()
+            .AddCheck<PostgresHealthCheck>("postgres", tags: [Ready])
+            .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: [Ready]);
         return services;
     }
 

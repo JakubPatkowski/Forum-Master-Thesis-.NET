@@ -1,4 +1,5 @@
 using Forum.Infrastructure.Messaging;
+using Forum.Infrastructure.Messaging.Inbox;
 using Forum.Infrastructure.Messaging.Outbox;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Identity.Domain.Tokens;
@@ -28,6 +29,8 @@ internal sealed class IdentityDbContext : ForumDbContext
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+    public DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Schema);
@@ -36,6 +39,7 @@ internal sealed class IdentityDbContext : ForumDbContext
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
 
         base.OnModelCreating(modelBuilder);
     }

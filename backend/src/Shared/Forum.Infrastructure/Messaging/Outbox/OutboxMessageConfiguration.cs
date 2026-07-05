@@ -12,6 +12,7 @@ public sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outbox
         builder.HasKey(message => message.Id);
         builder.Property(message => message.Type).HasMaxLength(512);
         builder.Property(message => message.Payload).HasColumnType("jsonb");
+        builder.Property(message => message.CorrelationId).HasMaxLength(64);
 
         // The relay polls for unprocessed rows; index the predicate it scans.
         builder.HasIndex(message => message.ProcessedOnUtc);

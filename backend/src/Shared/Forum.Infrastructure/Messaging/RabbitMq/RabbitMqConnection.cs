@@ -20,6 +20,11 @@ internal sealed class RabbitMqConnection : IRabbitMqConnection
             Port = value.Port,
             UserName = value.Username,
             Password = value.Password,
+
+            // The relay/consumer hosts own reconnection (they re-request the connection when their channel
+            // dies). Client-side auto-recovery running next to that would race it and leak a second
+            // connection with recovered consumers — one recovery mechanism only.
+            AutomaticRecoveryEnabled = false,
         };
     }
 
@@ -35,6 +40,12 @@ internal sealed class RabbitMqConnection : IRabbitMqConnection
         {
             if (_connection is not { IsOpen: true })
             {
+                if (_connection is not null)
+                {
+                    await _connection.DisposeAsync().ConfigureAwait(false);
+                    _connection = null;
+                }
+
                 _connection = await _factory.CreateConnectionAsync(cancellationToken).ConfigureAwait(false);
             }
 

@@ -5,8 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Forum.Infrastructure.Messaging;
 
 /// <summary>
-/// Phase-0 in-process integration bus: publishes to any in-process <see cref="IIntegrationEventHandler{TEvent}"/>.
-/// Replaced by the transactional-outbox + RabbitMQ relay in Phase 6; modules keep using <see cref="IEventBus"/> unchanged.
+/// The in-process dispatch stage of the messaging backbone: fans an integration event out to every registered
+/// <see cref="IIntegrationEventHandler{TEvent}"/>. Fed by the per-module RabbitMQ consumer hosts, which
+/// deserialize wire-delivered outbox messages and publish them here — handlers never see the broker.
+/// Registered scoped so the handlers resolve from the active consumer scope.
 /// </summary>
 internal sealed class InMemoryEventBus : IEventBus
 {

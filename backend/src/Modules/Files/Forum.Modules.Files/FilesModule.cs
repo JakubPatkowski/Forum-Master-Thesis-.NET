@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Messaging;
 using Forum.Common.Modules;
+using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Files.Application;
@@ -29,6 +30,11 @@ public sealed class FilesModule : IModule
         services.AddModuleDbContext<FilesDbContext>(configuration.GetConnectionString("Forum") ?? string.Empty);
 
         services.Configure<FilesOptions>(configuration.GetSection(FilesOptions.SectionName));
+
+        // Messaging backbone: relay this module's outbox to its 'files' exchange; consume what it handles.
+        services.AddModuleMessaging<FilesDbContext>("files", messaging => messaging
+            .Consume<ThreadDeletedIntegrationEvent>()
+            .Consume<CommentDeletedIntegrationEvent>());
 
         // Persistence ports.
         services.AddScoped<IStoredFileRepository, StoredFileRepository>();

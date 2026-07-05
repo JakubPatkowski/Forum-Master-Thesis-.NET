@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Messaging;
 using Forum.Common.Modules;
+using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
 using Forum.Modules.Content.Application;
 using Forum.Modules.Content.Application.Abstractions;
@@ -26,6 +27,10 @@ public sealed class ContentModule : IModule
     public IServiceCollection RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddModuleDbContext<ContentDbContext>(configuration.GetConnectionString("Forum") ?? string.Empty);
+
+        // Messaging backbone: relay this module's outbox to its 'content' exchange; consume what it handles.
+        services.AddModuleMessaging<ContentDbContext>("content", messaging => messaging
+            .Consume<UserBlockedIntegrationEvent>());
 
         // Persistence ports.
         services.AddScoped<ICategoryRepository, CategoryRepository>();
