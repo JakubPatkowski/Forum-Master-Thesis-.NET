@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+  </style>
+</helmet>
+<div data-screen-label="Error states" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="none" hint-size="100%,118px"></dc-import>
+    <div style="max-width:900px; margin:0 auto; padding:32px 32px 64px; display:flex; flex-direction:column; gap:28px">
+      <div>
+        <h1 style="font-size:26px; font-weight:700; letter-spacing:-0.01em">Error states</h1>
+        <p style="font-size:14px; color:var(--color-text-secondary); margin-top:6px; max-width:640px; text-wrap:pretty">Every failure carries an RFC7807 body — read the human message from <code>title</code>, the machine code from <code>code</code>, the category from <code>errorType</code>. Exceptions: 429 has an empty body; a few auth/admin edge cases omit <code>code</code>/<code>errorType</code> — always fall back to the generic template.</p>
+      </div>
+
+      <section>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">404 · NOT FOUND — full page</span>
+        </div>
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:64px 32px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center; position:relative">
+          <span style="position:absolute; top:-1px; left:-1px; width:12px; height:12px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+          <span style="position:absolute; bottom:-1px; right:-1px; width:12px; height:12px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+          <div style="font-family:var(--font-mono); font-size:56px; font-weight:700; letter-spacing:0.06em; color:var(--color-accent-base); line-height:1">404</div>
+          <div style="font-size:18px; font-weight:600">Thread not found</div>
+          <div style="font-size:13px; color:var(--color-text-secondary); max-width:380px; text-wrap:pretty">It may have been deleted — soft-deleted threads return 404 with no placeholder.</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-600)">errorType: NotFound · code: thread.not_found</div>
+          <div style="margin-top:6px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="secondary" size="md" onClick="{{ goHome }}" hint-size="150px,40px">← Back to forum</x-import>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">403 · FORBIDDEN — full page, also shown when an action bounces</span>
+        </div>
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:64px 32px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center">
+          <span style="width:48px; height:48px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-warning)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z"></path></svg>
+          </span>
+          <div style="font-size:18px; font-weight:600">You can't do that here</div>
+          <div style="font-size:13px; color:var(--color-text-secondary); max-width:420px; text-wrap:pretty">Permission is resolved server-side per action — seeing a button never guarantees the action. Some admin-route 403s arrive without <code>code</code> or <code>errorType</code>; treat any 403 the same way.</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-600)">errorType: Forbidden (may be absent)</div>
+        </div>
+      </section>
+
+      <section>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">422 · VALIDATION — inline at the field, never a page</span>
+        </div>
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:28px 32px; display:flex; flex-direction:column; gap:16px">
+          <div style="max-width:420px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" label="Tags" value="Fly Fishing!!" error="Tags must be lowercase-kebab-case, max 32 chars. (tag.invalid_slug)" hint-size="100%,90px"></x-import>
+          </div>
+          <div style="display:flex; gap:10px; align-items:start; background:rgba(239,68,68,0.08); border:1px solid var(--color-error); padding:10px 12px; max-width:560px">
+            <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-error-light); padding-top:2px">422</span>
+            <div>
+              <div style="font-size:13px; font-weight:600; color:var(--color-error-light)">Comments may only nest 5 levels deep.</div>
+              <div style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary); margin-top:2px">code: comment.max_depth_exceeded · errorType: Validation — banner form, for errors without a field</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">429 · RATE LIMITED — toast only; response body is EMPTY, key copy off the status alone</span>
+        </div>
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:28px 32px; display:flex; align-items:center; justify-content:center">
+          <div style="display:flex; gap:12px; align-items:start; background:rgba(245,158,11,0.12); border:1px solid var(--color-warning); padding:14px 16px; max-width:400px; width:100%; box-shadow:var(--shadow-lg)">
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--color-warning); margin-top:5px; flex-shrink:0"></span>
+            <div style="flex:1">
+              <div style="font-size:14px; font-weight:600; color:var(--color-warning-light)">Slow down a little</div>
+              <div style="font-size:13px; color:var(--color-text-secondary); margin-top:2px">Too many requests — try again in a moment.</div>
+            </div>
+            <button style="background:none; border:none; color:var(--color-text-tertiary); font-size:14px; padding:0" style-hover="color:var(--color-text-primary)">×</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">GENERIC — error boundary & unknown envelopes (e.g. bespoke 400 from bad ACL scopeId)</span>
+        </div>
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:48px 32px; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center">
+          <div style="font-family:var(--font-mono); font-size:13px; letter-spacing:0.2em; color:var(--color-error)">// SIGNAL LOST</div>
+          <div style="font-size:18px; font-weight:600">Something broke on our side</div>
+          <div style="font-size:13px; color:var(--color-text-secondary); max-width:380px">Reload the page, or head back to the forum. If it keeps happening, it's us — not you.</div>
+          <div style="display:flex; gap:10px; margin-top:6px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="secondary" size="md" onClick="{{ reload }}" hint-size="110px,40px">Reload</x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="ghost" size="md" onClick="{{ goHome }}" hint-size="130px,40px">Back to forum</x-import>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      goHome: () => { window.location.href = "Home.dc.html"; },
+      reload: () => { window.location.reload(); },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+.skeleton {
+  display: inline-block;
+  background: var(--color-neutral-800);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  padding: 14px 16px;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+  </style>
+</helmet>
+<div data-screen-label="Auth" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent 0%, var(--color-neutral-950) 85%)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="none" authed="{{ false }}" hint-size="100%,118px"></dc-import>
+    <div style="max-width:440px; margin:56px auto 80px; padding:0 24px">
+      <div style="position:relative; background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+        <span style="position:absolute; top:-1px; left:-1px; width:12px; height:12px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+        <span style="position:absolute; top:-1px; right:-1px; width:12px; height:12px; border-top:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+        <span style="position:absolute; bottom:-1px; left:-1px; width:12px; height:12px; border-bottom:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+        <span style="position:absolute; bottom:-1px; right:-1px; width:12px; height:12px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+
+        <div style="padding:28px 28px 0; display:flex; flex-direction:column; align-items:center; gap:12px">
+          <span style="width:34px; height:34px; border:2px solid var(--color-cyan-base); display:grid; place-items:center">
+            <span style="width:10px; height:10px; background:var(--color-accent-base); display:block"></span>
+          </span>
+          <div style="font-family:var(--font-mono); font-weight:700; font-size:16px; letter-spacing:0.08em">FORUM<span style="color:var(--color-cyan-base)">://</span>SIGNAL</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; margin-top:20px; border-bottom:1px solid var(--color-border-default)">
+          <sc-if value="{{ onLogin }}" hint-placeholder-val="{{ true }}">
+            <button style="padding:12px; font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; font-weight:700; color:var(--color-accent-base); background:transparent; border:none; border-bottom:2px solid var(--color-accent-base)">LOG IN</button>
+            <button onClick="{{ toRegister }}" style="padding:12px; font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; color:var(--color-text-tertiary); background:transparent; border:none; border-bottom:2px solid transparent" style-hover="color:var(--color-text-primary)">REGISTER</button>
+          </sc-if>
+          <sc-if value="{{ onRegister }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ toLogin }}" style="padding:12px; font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; color:var(--color-text-tertiary); background:transparent; border:none; border-bottom:2px solid transparent" style-hover="color:var(--color-text-primary)">LOG IN</button>
+            <button style="padding:12px; font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; font-weight:700; color:var(--color-accent-base); background:transparent; border:none; border-bottom:2px solid var(--color-accent-base)">REGISTER</button>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ onLogin }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:24px 28px 28px; display:flex; flex-direction:column; gap:16px">
+            <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:10px; align-items:start; background:rgba(239,68,68,0.1); border:1px solid var(--color-error); padding:10px 12px">
+                <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-error-light); padding-top:2px">401</span>
+                <div>
+                  <div style="font-size:13px; font-weight:600; color:var(--color-error-light)">Invalid email or password.</div>
+                  <div style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary); margin-top:2px">errorType: Unauthorized</div>
+                </div>
+              </div>
+            </sc-if>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" type="email" label="Email" placeholder="you@example.com" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" type="password" label="Password" placeholder="••••••••••" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="lg" loading="{{ loginLoading }}" onClick="{{ submitLogin }}" hint-size="100%,48px">Log in</x-import>
+            <div style="text-align:center; font-size:13px; color:var(--color-text-tertiary)">No account? <button onClick="{{ toRegister }}" style="color:var(--color-accent-base); background:none; border:none; padding:0; font-size:13px; font-weight:600" style-hover="color:var(--color-accent-light)">Register</button></div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ onRegister }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:24px 28px 28px; display:flex; flex-direction:column; gap:16px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" label="Username" placeholder="lowercase, 3–32 chars" error="{{ regUsernameError }}" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" label="Display name" placeholder="Shown next to your posts" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" type="email" label="Email" placeholder="you@example.com" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" type="password" label="Password" placeholder="Min. 10 characters" hint-size="100%,70px"></x-import>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="lg" loading="{{ regLoading }}" onClick="{{ submitRegister }}" hint-size="100%,48px">Create account</x-import>
+            <div style="text-align:center; font-size:13px; color:var(--color-text-tertiary)">Already registered? <button onClick="{{ toLogin }}" style="color:var(--color-accent-base); background:none; border:none; padding:0; font-size:13px; font-weight:600" style-hover="color:var(--color-accent-light)">Log in</button></div>
+          </div>
+        </sc-if>
+
+        <div style="padding:12px 28px; border-top:1px solid var(--color-border-default); text-align:center">
+          <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary)">ACCESS TOKEN 15 MIN · REFRESH COOKIE 14 D · SAMESITE=STRICT</span>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:14px">
+        <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-600)">POST /api/identity/login · POST /api/identity/register</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1440, &quot;height&quot;: 900}}">
+class Component extends DCLogic {
+  state = { tab: "login", loginLoading: false, loginError: false, regLoading: false, regUsernameError: null };
+
+  renderVals() {
+    return {
+      onLogin: this.state.tab === "login",
+      onRegister: this.state.tab === "register",
+      toLogin: () => this.setState({ tab: "login" }),
+      toRegister: () => this.setState({ tab: "register" }),
+      loginLoading: this.state.loginLoading,
+      loginError: this.state.loginError,
+      regLoading: this.state.regLoading,
+      regUsernameError: this.state.regUsernameError,
+      // Demo: submit → loading → RFC7807 error surface (401 has no field mapping → banner)
+      submitLogin: () => {
+        this.setState({ loginLoading: true, loginError: false });
+        setTimeout(() => this.setState({ loginLoading: false, loginError: true }), 900);
+      },
+      // Demo: 409 Conflict `identity.username_taken` maps to an inline field error
+      submitRegister: () => {
+        this.setState({ regLoading: true, regUsernameError: null });
+        setTimeout(() => this.setState({ regLoading: false, regUsernameError: "Username is already taken. (409 · Conflict)" }), 900);
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

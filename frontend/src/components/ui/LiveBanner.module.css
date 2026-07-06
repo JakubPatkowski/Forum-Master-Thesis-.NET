@@ -1,0 +1,39 @@
+.banner {
+  position: relative;
+  background: rgba(0, 217, 255, 0.05);
+  border: 1px solid rgba(0, 217, 255, 0.25);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.live {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--color-cyan-base);
+  flex-shrink: 0;
+}
+
+.message {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.action {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-cyan-base);
+  background: transparent;
+  border: 1px solid rgba(0, 217, 255, 0.4);
+  padding: 7px 14px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.action:hover {
+  background: rgba(0, 217, 255, 0.12);
+}

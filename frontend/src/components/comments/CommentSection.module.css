@@ -1,0 +1,68 @@
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 2px 8px;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+}
+
+.composer {
+  margin-bottom: 20px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+}
+
+.composer > :first-child {
+  border: none;
+  background: transparent;
+}
+
+.composerFooter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.composerNote {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-tertiary);
+}
+
+.anonNote {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

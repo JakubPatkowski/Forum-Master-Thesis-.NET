@@ -1,0 +1,22 @@
+.wrap {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fallback {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-cyan-base);
+  user-select: none;
+}

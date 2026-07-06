@@ -1,0 +1,193 @@
+/* .NET Forum Design System — Typography Tokens */
+
+:root {
+  /* === FONT FAMILIES === */
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  /* === FONT WEIGHTS === */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* === DISPLAY / HEADLINE SCALE === */
+  /* For page titles, hero text */
+  --font-size-display-lg: 3.5rem;  /* 56px */
+  --line-height-display-lg: 1.1;
+  --letter-spacing-display-lg: -0.02em;
+
+  --font-size-display: 2.75rem;  /* 44px */
+  --line-height-display: 1.2;
+  --letter-spacing-display: -0.01em;
+
+  --font-size-display-sm: 2rem;  /* 32px */
+  --line-height-display-sm: 1.3;
+  --letter-spacing-display-sm: -0.005em;
+
+  /* === HEADING SCALE === */
+  /* For section titles, card headers */
+  --font-size-h1: 1.875rem;  /* 30px */
+  --line-height-h1: 1.3;
+  --letter-spacing-h1: -0.003em;
+
+  --font-size-h2: 1.5rem;  /* 24px */
+  --line-height-h2: 1.35;
+  --letter-spacing-h2: 0;
+
+  --font-size-h3: 1.25rem;  /* 20px */
+  --line-height-h3: 1.4;
+  --letter-spacing-h3: 0;
+
+  --font-size-h4: 1.125rem;  /* 18px */
+  --line-height-h4: 1.45;
+  --letter-spacing-h4: 0;
+
+  /* === BODY TEXT === */
+  /* For content, paragraphs */
+  --font-size-body-lg: 1.0625rem;  /* 17px, rendered markdown baseline */
+  --line-height-body-lg: 1.6;
+  --letter-spacing-body-lg: 0;
+
+  --font-size-body: 1rem;  /* 16px, default */
+  --line-height-body: 1.6;
+  --letter-spacing-body: 0;
+
+  --font-size-body-sm: 0.9375rem;  /* 15px */
+  --line-height-body-sm: 1.55;
+  --letter-spacing-body-sm: 0;
+
+  /* === SMALL / UI TEXT === */
+  /* For labels, captions, UI elements */
+  --font-size-sm: 0.875rem;  /* 14px */
+  --line-height-sm: 1.5;
+  --letter-spacing-sm: 0;
+
+  --font-size-xs: 0.8125rem;  /* 13px */
+  --line-height-xs: 1.45;
+  --letter-spacing-xs: 0;
+
+  /* === MONOSPACE TEXT === */
+  /* For code blocks, inline code */
+  --font-size-mono: 0.875rem;  /* 14px */
+  --line-height-mono: 1.5;
+  --letter-spacing-mono: 0;
+
+  --font-size-mono-sm: 0.8125rem;  /* 13px */
+  --line-height-mono-sm: 1.45;
+  --letter-spacing-mono-sm: 0;
+}
+
+/* === NAMED TEXT STYLES (applied as utilities) === */
+
+.text-display-lg {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-display-lg);
+  letter-spacing: var(--letter-spacing-display-lg);
+}
+
+.text-display {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--letter-spacing-display);
+}
+
+.text-display-sm {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-display-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-display-sm);
+  letter-spacing: var(--letter-spacing-display-sm);
+}
+
+.text-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-h1);
+  letter-spacing: var(--letter-spacing-h1);
+}
+
+.text-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h2);
+  letter-spacing: var(--letter-spacing-h2);
+}
+
+.text-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h3);
+  letter-spacing: var(--letter-spacing-h3);
+}
+
+.text-h4 {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-h4);
+  letter-spacing: var(--letter-spacing-h4);
+}
+
+.text-body-lg {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body-lg);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-lg);
+  letter-spacing: var(--letter-spacing-body-lg);
+}
+
+.text-body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+.text-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body-sm);
+  letter-spacing: var(--letter-spacing-body-sm);
+}
+
+.text-sm {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  letter-spacing: var(--letter-spacing-sm);
+}
+
+.text-xs {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-xs);
+  letter-spacing: var(--letter-spacing-xs);
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-mono);
+  letter-spacing: var(--letter-spacing-mono);
+}
+
+.text-mono-sm {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-mono-sm);
+  letter-spacing: var(--letter-spacing-mono-sm);
+}

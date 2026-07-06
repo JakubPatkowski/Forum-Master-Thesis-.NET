@@ -1,0 +1,150 @@
+.tagCloud {
+  padding: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.activityList {
+  padding: 6px 0;
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+}
+
+.squareCyan,
+.squareAccent,
+.squareNeutral {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+}
+
+.squareCyan {
+  background: var(--color-cyan-base);
+}
+
+.squareAccent {
+  background: var(--color-accent-base);
+}
+
+.squareNeutral {
+  background: var(--color-neutral-500);
+}
+
+.activityText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityTime {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+.activityEmpty {
+  padding: 16px 14px;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.activityFooter {
+  padding: 10px 14px;
+  border-top: 1px solid var(--color-border-default);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-tertiary);
+}
+
+/* Key/value rows for the ABOUT panels */
+.kvList {
+  padding: 8px 14px 12px;
+}
+
+.kvRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+
+.kvRow:last-child {
+  border-bottom: none;
+}
+
+.kvKey {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+}
+
+.kvValue {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kvLink {
+  font-size: 12px;
+  color: var(--color-accent-base);
+  text-decoration: none;
+}
+
+.kvLink:hover {
+  color: var(--color-accent-light);
+}
+
+.subscribedNote {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+}
+
+.tocList {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tocLink {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-left: 1px solid var(--color-neutral-700);
+}
+
+.tocLink:hover {
+  color: var(--color-accent-base);
+  border-left-color: var(--color-accent-base);
+}
+
+.tocNested {
+  padding-left: 20px;
+}

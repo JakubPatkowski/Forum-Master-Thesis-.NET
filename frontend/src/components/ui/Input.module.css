@@ -1,0 +1,33 @@
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  font-size: 15px;
+  border-radius: 2px;
+}
+
+.invalid {
+  border-color: var(--color-error);
+}
+
+.error {
+  font-size: 13px;
+  color: var(--color-error);
+  margin-top: 6px;
+}
+
+.hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 6px;
+}

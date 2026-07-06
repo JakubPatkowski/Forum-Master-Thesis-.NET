@@ -1,0 +1,83 @@
+/* .NET Forum Design System — Spacing Tokens */
+
+:root {
+  /* === BASE SPACING SCALE === */
+  /* 4px base unit for crisp alignment */
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 1.75rem; /* 28px */
+  --space-8: 2rem; /* 32px */
+  --space-9: 2.25rem; /* 36px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-14: 3.5rem; /* 56px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+
+  /* === SEMANTIC SPACING SHORTCUTS === */
+  /* Commonly paired: padding-inside / gap-between / margin-around */
+  --space-xs: var(--space-2); /* 8px: tight spacing */
+  --space-sm: var(--space-3); /* 12px: compact spacing */
+  --space-md: var(--space-4); /* 16px: normal spacing */
+  --space-lg: var(--space-6); /* 24px: generous spacing */
+  --space-xl: var(--space-8); /* 32px: large spacing */
+  --space-2xl: var(--space-12); /* 48px: extra large */
+
+  /* === CONTAINER SIZING === */
+  --container-mobile: 100%;
+  --container-sm: 24rem; /* 384px */
+  --container-md: 28rem; /* 448px */
+  --container-lg: 32rem; /* 512px */
+  --container-xl: 36rem; /* 576px */
+  --container-2xl: 42rem; /* 672px */
+  --container-3xl: 48rem; /* 768px */
+  --container-4xl: 56rem; /* 896px */
+  --container-5xl: 64rem; /* 1024px */
+  --container-6xl: 72rem; /* 1152px */
+  --container-7xl: 80rem; /* 1280px */
+
+  /* === LAYOUT GRID === */
+  /* For component internal grids and page layouts */
+  --grid-gap-xs: var(--space-2);
+  --grid-gap-sm: var(--space-3);
+  --grid-gap: var(--space-4);
+  --grid-gap-lg: var(--space-6);
+  --grid-gap-xl: var(--space-8);
+
+  /* === COMPONENT PADDING === */
+  /* Button, input, card internal padding */
+  --padding-xs: var(--space-2);
+  --padding-sm: var(--space-3);
+  --padding: var(--space-4);
+  --padding-lg: var(--space-6);
+  --padding-xl: var(--space-8);
+
+  /* === BORDER RADIUS === */
+  /* Sharp theme: minimal/no rounding */
+  --radius-none: 0;
+  --radius-xs: 0.125rem; /* 2px: imperceptible */
+  --radius-sm: 0.25rem; /* 4px: subtle */
+  --radius-md: 0.5rem; /* 8px: small buttons/inputs */
+  --radius-lg: 1rem; /* 16px: cards, modals */
+
+  /* === SHADOW TOKENS === */
+  /* Monochromatic shadows for depth */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.32);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.48);
+  --shadow-2xl: 0 24px 48px rgba(0, 0, 0, 0.56);
+
+  /* === FOCUS / RING === */
+  /* For keyboard navigation outline */
+  --ring-width: 2px; /* @kind spacing */
+  --ring-color: var(--color-accent-base);
+  --ring-offset: 0; /* @kind spacing */
+}

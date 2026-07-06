@@ -1,0 +1,144 @@
+.slot {
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+}
+
+.elbow {
+  width: 14px;
+  height: 24px;
+  border-left: 1px solid var(--color-neutral-700);
+  border-bottom: 1px solid var(--color-neutral-700);
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.card {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  padding: 14px 16px;
+}
+
+.cardNew {
+  animation: new-glow 2.4s ease-out;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.author {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.author:hover {
+  color: var(--color-accent-base);
+}
+
+.meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.deleted {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8px;
+}
+
+.body {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.body :global(p) {
+  margin-bottom: var(--space-2);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.action {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.action:hover {
+  color: var(--color-accent-base);
+}
+
+.actionDanger {
+  composes: action;
+}
+
+.actionDanger:hover {
+  color: var(--color-error-light);
+}
+
+.maxDepth {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--color-neutral-600);
+  cursor: not-allowed;
+}
+
+.replyBox,
+.editBox {
+  margin-top: 12px;
+  background: var(--color-neutral-950);
+  border: 1px solid var(--color-border-default);
+}
+
+.replyArea,
+.editArea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  resize: vertical;
+}
+
+.replyArea:focus,
+.editArea:focus {
+  outline: none;
+  background: transparent;
+}
+
+.replyActions,
+.editActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--color-border-default);
+  justify-content: flex-end;
+}
+
+.spacer {
+  flex: 1;
+}

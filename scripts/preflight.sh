@@ -23,7 +23,14 @@ check docker   "Docker Engine, or enable Docker Desktop's WSL integration"
 check kubectl  "https://kubernetes.io/docs/tasks/tools/"
 check minikube "https://minikube.sigs.k8s.io/docs/start/"
 check dotnet   "install the .NET 10 SDK"
+check node     "install Node.js 20+ (see frontend/.nvmrc) — needed for the frontend"
+check npm      "ships with Node.js — needed for the frontend"
 check k6       "optional — only used by scripts/run-load-test.sh"
+
+if command -v node >/dev/null 2>&1; then
+  node_major="$(node -v | sed -E 's/^v([0-9]+).*/\1/')"
+  (( node_major >= 20 )) || warn "Node $(node -v) found — frontend/.nvmrc pins 20+."
+fi
 
 # Docker daemon reachable?
 if command -v docker >/dev/null 2>&1; then

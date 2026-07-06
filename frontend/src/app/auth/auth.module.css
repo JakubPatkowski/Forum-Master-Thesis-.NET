@@ -1,0 +1,142 @@
+.wrap {
+  max-width: 440px;
+  margin: 32px auto 80px;
+}
+
+.card {
+  position: relative;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+}
+
+.logoBlock {
+  padding: 28px 28px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoMark {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--color-cyan-base);
+  display: grid;
+  place-items: center;
+}
+
+.logoDot {
+  width: 10px;
+  height: 10px;
+  background: var(--color-accent-base);
+  display: block;
+}
+
+.logoText {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+}
+
+.logoSlashes {
+  color: var(--color-cyan-base);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.tab,
+.tabActive {
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.tab {
+  color: var(--color-text-tertiary);
+}
+
+.tab:hover {
+  color: var(--color-text-primary);
+}
+
+.tabActive {
+  font-weight: 700;
+  color: var(--color-accent-base);
+  border-bottom-color: var(--color-accent-base);
+}
+
+.form {
+  padding: 24px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.errorBanner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error);
+  padding: 10px 12px;
+}
+
+.errorStatus {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-error-light);
+  padding-top: 2px;
+}
+
+.errorTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-error-light);
+}
+
+.errorMeta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}
+
+.switchNote {
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.switchLink {
+  color: var(--color-accent-base);
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.switchLink:hover {
+  color: var(--color-accent-light);
+}
+
+.footer {
+  padding: 12px 28px;
+  border-top: 1px solid var(--color-border-default);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--color-text-tertiary);
+}
