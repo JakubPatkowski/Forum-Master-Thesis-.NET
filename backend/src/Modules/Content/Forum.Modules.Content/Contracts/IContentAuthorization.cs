@@ -8,6 +8,7 @@ public enum ContentAttachmentTarget
     Thread,
     Comment,
     CategoryIcon,
+    ThreadIcon,
 }
 
 /// <summary>

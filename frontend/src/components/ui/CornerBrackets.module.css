@@ -1,0 +1,32 @@
+.corner {
+  position: absolute;
+  pointer-events: none;
+}
+
+.tl {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--color-cyan-base);
+  border-left: 2px solid var(--color-cyan-base);
+}
+
+.tr {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid var(--color-cyan-base);
+  border-right: 2px solid var(--color-cyan-base);
+}
+
+.bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid var(--color-cyan-base);
+  border-left: 2px solid var(--color-cyan-base);
+}
+
+.br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--color-cyan-base);
+  border-right: 2px solid var(--color-cyan-base);
+}

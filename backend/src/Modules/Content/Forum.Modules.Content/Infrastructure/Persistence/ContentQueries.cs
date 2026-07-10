@@ -7,6 +7,7 @@ using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Categories;
 using Forum.Modules.Content.Application.Comments;
 using Forum.Modules.Content.Application.Paging;
+using Forum.Modules.Content.Application.Tags;
 using Forum.Modules.Content.Application.Threads;
 using Forum.Modules.Content.Domain.Categories;
 
@@ -224,6 +225,162 @@ internal sealed class ContentQueries : IContentQueries
             }
         }
     }
+
+    public async Task<CursorPage<ThreadFeedItemResponse>> GetThreadsByOwnerAsync(
+        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken)
+    {
+        var connection = _db.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
+
+        // Plain chronological keyset — is_pinned is a category-feed concept, not an activity one.
+        command.CommandText =
+            $"""
+            SELECT {FeedColumns}
+            FROM forum_content.thread_feed_v
+            WHERE owner_id = @ownerId
+              AND (@cursorId IS NULL
+                   OR created_on_utc < @cursorCreated
+                   OR (created_on_utc = @cursorCreated AND id < @cursorId))
+            ORDER BY created_on_utc DESC, id DESC
+            LIMIT @limit
+            """;
+        command.AddParameter("@ownerId", ownerId.ToString(), DbType.String);
+        command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
+        command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
+        command.AddParameter("@limit", limit + 1);
+
+        var items = await ReadFeedRowsAsync(connection, command, limit, cancellationToken);
+        var hasMore = items.Count > limit;
+        if (hasMore)
+        {
+            items.RemoveAt(items.Count - 1);
+        }
+
+        var last = items.Count > 0 ? items[^1] : null;
+        var nextCursor = hasMore && last is not null
+            ? new OwnerActivityCursor(last.CreatedOnUtc, last.Id).Encode()
+            : null;
+
+        return new CursorPage<ThreadFeedItemResponse>(items, nextCursor, hasMore);
+    }
+
+    public async Task<CursorPage<CommentActivityItemResponse>> GetCommentsByOwnerAsync(
+        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken)
+    {
+        var connection = _db.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
+
+        // Tombstoned comments and comments on deleted threads are noise in a profile timeline —
+        // both filters are deliberate (comment_tree_v keeps them for the tree view instead).
+        command.CommandText =
+            """
+            SELECT c.id, c.thread_id, t.title, c.body, c.created_on_utc
+            FROM forum_content.comments AS c
+            JOIN forum_content.threads AS t ON t.id = c.thread_id AND t.is_deleted = false
+            WHERE c.owner_id = @ownerId
+              AND c.is_deleted = false
+              AND (@cursorId IS NULL
+                   OR c.created_on_utc < @cursorCreated
+                   OR (c.created_on_utc = @cursorCreated AND c.id < @cursorId))
+            ORDER BY c.created_on_utc DESC, c.id DESC
+            LIMIT @limit
+            """;
+        command.AddParameter("@ownerId", ownerId.ToString(), DbType.String);
+        command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
+        command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
+        command.AddParameter("@limit", limit + 1);
+
+        var opened = await EnsureOpenAsync(connection, cancellationToken);
+        List<CommentActivityItemResponse> items;
+        try
+        {
+            items = new List<CommentActivityItemResponse>(limit + 1);
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                items.Add(new CommentActivityItemResponse(
+                    ReadUlid(reader, 0),
+                    ReadUlid(reader, 1),
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    reader.GetFieldValue<DateTimeOffset>(4)));
+            }
+        }
+        finally
+        {
+            if (opened)
+            {
+                await connection.CloseAsync();
+            }
+        }
+
+        var hasMore = items.Count > limit;
+        if (hasMore)
+        {
+            items.RemoveAt(items.Count - 1);
+        }
+
+        var last = items.Count > 0 ? items[^1] : null;
+        var nextCursor = hasMore && last is not null
+            ? new OwnerActivityCursor(last.CreatedOnUtc, last.Id).Encode()
+            : null;
+
+        return new CursorPage<CommentActivityItemResponse>(items, nextCursor, hasMore);
+    }
+
+    public async Task<IReadOnlyList<TagSuggestionResponse>> SuggestTagsAsync(
+        string? slugFilter, int limit, CancellationToken cancellationToken)
+    {
+        var connection = _db.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
+
+        // Usage counts only live threads (the join condition drops soft-deleted ones), but a
+        // zero-usage tag still lists — autocomplete should offer every known slug.
+        command.CommandText =
+            """
+            SELECT t.slug, t.name, COUNT(th.id)::int AS usage_count
+            FROM forum_content.tags AS t
+            LEFT JOIN forum_content.thread_tags AS tt ON tt.tag_id = t.id
+            LEFT JOIN forum_content.threads AS th ON th.id = tt.thread_id AND th.is_deleted = false
+            WHERE @pattern IS NULL OR t.slug LIKE @pattern
+            GROUP BY t.slug, t.name
+            ORDER BY usage_count DESC, t.slug
+            LIMIT @limit
+            """;
+        command.AddParameter(
+            "@pattern",
+            slugFilter is null ? (object)DBNull.Value : $"%{EscapeLike(slugFilter)}%",
+            DbType.String);
+        command.AddParameter("@limit", limit);
+
+        var opened = await EnsureOpenAsync(connection, cancellationToken);
+        try
+        {
+            var items = new List<TagSuggestionResponse>(limit);
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                items.Add(new TagSuggestionResponse(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetInt32(2)));
+            }
+
+            return items;
+        }
+        finally
+        {
+            if (opened)
+            {
+                await connection.CloseAsync();
+            }
+        }
+    }
+
+    private static string EscapeLike(string value) => value
+        .Replace("\\", "\\\\", StringComparison.Ordinal)
+        .Replace("%", "\\%", StringComparison.Ordinal)
+        .Replace("_", "\\_", StringComparison.Ordinal);
 
     private static async Task<List<ThreadFeedItemResponse>> ReadFeedRowsAsync(
         DbConnection connection,

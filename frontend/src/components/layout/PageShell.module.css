@@ -1,0 +1,46 @@
+.shell {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
+  position: relative;
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.fade {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px);
+}
+
+.content {
+  position: relative;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+.containerNarrow {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+}
+
+@media (max-width: 720px) {
+  .container,
+  .containerNarrow {
+    padding: 16px 16px 48px;
+  }
+}

@@ -1,0 +1,96 @@
+.panel {
+  position: relative;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  padding: 64px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.code404 {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-base);
+  line-height: 1;
+}
+
+.signalLost {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--color-error);
+}
+
+.lockIcon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-warning);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  max-width: 420px;
+  text-wrap: pretty;
+}
+
+.detail {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-neutral-600);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.banner {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid var(--color-error);
+  padding: 10px 12px;
+}
+
+.bannerStatus {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-error-light);
+  padding-top: 2px;
+}
+
+.bannerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.bannerTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-error-light);
+}
+
+.bannerMeta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 2px;
+}

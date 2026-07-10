@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+    @keyframes live-dot { 0% { box-shadow: 0 0 0 0 rgba(0,217,255,0.45); } 70% { box-shadow: 0 0 0 7px rgba(0,217,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,217,255,0); } }
+    @keyframes newGlow { 0% { border-color: rgba(0,217,255,0.55); box-shadow: 0 0 0 1px rgba(0,217,255,0.35); } 100% { border-color: var(--color-border-default); box-shadow: none; } }
+    .thr-sb::-webkit-scrollbar { width: 8px; }
+    .thr-sb::-webkit-scrollbar-track { background: var(--color-neutral-950); }
+    .thr-sb::-webkit-scrollbar-thumb { background: var(--color-neutral-700); border: 2px solid var(--color-neutral-900); border-radius: 6px; }
+    .thr-sb::-webkit-scrollbar-thumb:hover { background: var(--color-accent-dark); }
+  </style>
+</helmet>
+<div data-screen-label="Thread detail" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="forum" hint-size="100%,118px"></dc-import>
+    <div style="max-width:1400px; margin:0 auto; padding:24px 32px 64px; display:grid; grid-template-columns:264px minmax(0,1fr) 290px; gap:24px; align-items:start">
+
+      <!-- LEFT: author panel -->
+      <aside style="position:sticky; top:24px; display:flex; flex-direction:column; gap:16px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+          <div style="padding:20px 18px 16px; display:flex; flex-direction:column; align-items:center; gap:12px; border-bottom:1px solid var(--color-border-default)">
+            <div style="position:relative">
+              <span style="width:72px; height:72px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:26px; font-weight:700; color:var(--color-cyan-base)">T</span>
+              <span style="position:absolute; top:-1px; left:-1px; width:9px; height:9px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+              <span style="position:absolute; bottom:-1px; right:-1px; width:9px; height:9px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+            </div>
+            <div style="text-align:center">
+              <a href="Profile.dc.html" style="font-size:16px; font-weight:700; color:var(--color-text-primary); text-decoration:none" style-hover="color:var(--color-accent-base)">Tomasz Labiak</a>
+              <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); margin-top:3px">@tomek_labs</div>
+            </div>
+            <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 8px; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); color:var(--color-accent-base)">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4z"></path></svg>OP · THREAD AUTHOR
+            </span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr">
+            <div style="padding:12px 8px; text-align:center; border-right:1px solid var(--color-border-default); border-bottom:1px solid var(--color-border-default)">
+              <div style="font-family:var(--font-mono); font-size:18px; font-weight:700">38</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary); margin-top:2px">THREADS</div>
+            </div>
+            <div style="padding:12px 8px; text-align:center; border-bottom:1px solid var(--color-border-default)">
+              <div style="font-family:var(--font-mono); font-size:18px; font-weight:700">210</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary); margin-top:2px">COMMENTS</div>
+            </div>
+            <div style="padding:12px 8px; text-align:center; border-right:1px solid var(--color-border-default)">
+              <div style="font-family:var(--font-mono); font-size:18px; font-weight:700; color:var(--color-accent-base)">640</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary); margin-top:2px">KARMA</div>
+            </div>
+            <div style="padding:12px 8px; text-align:center">
+              <div style="font-family:var(--font-mono); font-size:18px; font-weight:700">1 y</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary); margin-top:2px">MEMBER</div>
+            </div>
+          </div>
+          <div style="padding:12px; display:flex; gap:8px; border-bottom:1px solid var(--color-border-default)">
+            <button onClick="{{ openMessage }}" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-inverse); background:var(--color-accent-base); border:none; padding:9px; border-radius:2px" style-hover="background:var(--color-accent-dark)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1z"></path></svg>MESSAGE
+            </button>
+            <button onClick="{{ addFriend }}" title="Send friend request" style="width:40px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px" style-hover="color:var(--color-cyan-base); border-color:var(--color-cyan-base)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"></path></svg>
+            </button>
+          </div>
+          <div style="padding:12px 14px 6px; display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:11px; background:var(--color-cyan-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-secondary)">MORE FROM @tomek_labs</span>
+          </div>
+          <div class="thr-sb" style="max-height:196px; overflow-y:auto; padding:4px 8px 10px; display:flex; flex-direction:column; gap:2px">
+            <sc-for list="{{ authorThreads }}" as="a" hint-placeholder-count="4">
+              <a href="Thread.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px; text-decoration:none; border:1px solid transparent" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-default)">
+                <span style="width:26px; height:26px; display:grid; place-items:center; background:{{ a.iconBg }}; border:1px solid {{ a.iconBorder }}; font-family:var(--font-mono); font-size:10px; font-weight:700; color:{{ a.iconColor }}; flex-shrink:0">{{ a.mono }}</span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                  <span style="font-size:12px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ a.title }}</span>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ a.meta }}</span>
+                </span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </aside>
+
+      <!-- CENTER: thread -->
+      <main style="display:flex; flex-direction:column; gap:24px; min-width:0">
+        <nav style="display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em">
+          <a href="Home.dc.html" style="color:var(--color-text-tertiary); text-decoration:none" style-hover="color:var(--color-accent-base)">FORUM</a>
+          <span style="color:var(--color-neutral-700)">/</span>
+          <a href="Category.dc.html" style="color:var(--color-text-tertiary); text-decoration:none" style-hover="color:var(--color-accent-base)">ELECTRONICS &amp; DIY</a>
+          <span style="color:var(--color-neutral-700)">/</span>
+          <span style="color:var(--color-text-secondary)">THREAD</span>
+        </nav>
+
+        <article style="background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+          <div style="padding:24px 28px 0">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px">
+              <span style="width:44px; height:44px; display:grid; place-items:center; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--color-accent-base); flex-shrink:0">EL</span>
+              <div style="min-width:0">
+                <a href="Category.dc.html" style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-cyan-base); text-decoration:none" style-hover="color:var(--color-accent-base)">ELECTRONICS &amp; DIY</a>
+                <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); margin-top:2px">2 H AGO · thread icon</div>
+              </div>
+            </div>
+            <h1 style="font-size:30px; font-weight:700; letter-spacing:-0.01em; line-height:1.25; text-wrap:pretty; margin-bottom:16px">My sourdough starter is a bioreactor — logging CO₂ with an MH-Z19</h1>
+            <div style="display:flex; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--color-border-default)">
+              <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--color-cyan-base)">T</span>
+              <div>
+                <div style="font-size:14px; font-weight:600">Tomasz Labiak</div>
+                <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@tomek_labs</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="markdown-body" style="padding:24px 28px; font-size:16px">
+            <p>My sourdough starter lives in a jar on the kitchen counter. Naturally, I put a CO₂ sensor on it. This thread documents the rig, the code, and 48 hours of fermentation data.</p>
+            <h2 id="setup" style="font-size:22px">Setup</h2>
+            <ul>
+              <li>MH-Z19B NDIR CO₂ sensor, UART mode</li>
+              <li>Raspberry Pi Zero 2 W</li>
+              <li>BME280 for temperature compensation</li>
+              <li>3D-printed jar collar to hold the sensor above the starter</li>
+            </ul>
+
+            <figure style="margin:0 0 var(--space-4)">
+              <div style="position:relative; aspect-ratio:16/9; border:1px solid var(--color-border-default); background:repeating-linear-gradient(45deg, var(--color-neutral-800), var(--color-neutral-800) 12px, var(--color-neutral-900) 12px, var(--color-neutral-900) 24px); display:grid; place-items:center">
+                <div style="text-align:center; display:flex; flex-direction:column; gap:8px; align-items:center; color:var(--color-neutral-500)">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg>
+                  <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary)">rig-photo.jpg · 1600×1200</span>
+                </div>
+                <span style="position:absolute; top:8px; left:10px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-cyan-base); background:rgba(7,9,13,0.65); padding:2px 6px">INLINE IMAGE</span>
+              </div>
+              <figcaption style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); margin-top:6px; text-align:center">The jar collar, sensor, and Pi Zero mounted on a scrap of MDF.</figcaption>
+            </figure>
+
+            <p>The read loop is deliberately boring — poll every ten seconds, average over a minute, log to InfluxDB:</p>
+            <pre><code>import serial, time
+
+z19 = serial.Serial("/dev/ttyAMA0", 9600)
+READ = b"\xff\x01\x86\x00\x00\x00\x00\x00\x79"
+
+while True:
+    z19.write(READ)
+    hi, lo = z19.read(9)[2:4]
+    print(hi * 256 + lo, "ppm")
+    time.sleep(10)</code></pre>
+            <h2 id="results" style="font-size:22px">Results</h2>
+            <p>Peak fermentation hits <code>~4,800 ppm</code> inside the collar about five hours after feeding, then decays overnight. Here's the whole rise-and-fall as a timelapse:</p>
+
+            <figure style="margin:0 0 var(--space-4)">
+              <div style="position:relative; aspect-ratio:16/9; border:1px solid var(--color-border-default); background:var(--color-neutral-950); overflow:hidden">
+                <div style="position:absolute; inset:0; background:repeating-linear-gradient(45deg, rgba(26,31,46,0.6), rgba(26,31,46,0.6) 12px, rgba(15,18,25,0.6) 12px, rgba(15,18,25,0.6) 24px)"></div>
+                <div style="position:absolute; inset:0; display:grid; place-items:center">
+                  <button style="width:60px; height:60px; display:grid; place-items:center; border-radius:50%; background:rgba(255,107,53,0.92); color:var(--color-text-inverse); border:none" style-hover="background:var(--color-accent-base); transform:scale(1.06)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                  </button>
+                </div>
+                <span style="position:absolute; top:8px; left:10px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-cyan-base); background:rgba(7,9,13,0.65); padding:2px 6px">INLINE VIDEO</span>
+                <div style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:10px; padding:9px 12px; background:linear-gradient(to top, rgba(7,9,13,0.92), transparent)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--color-neutral-200)"><path d="M8 5v14l11-7z"></path></svg>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-200)">0:00</span>
+                  <span style="flex:1; height:3px; background:var(--color-neutral-700); position:relative"><span style="position:absolute; inset:0; width:22%; background:var(--color-accent-base)"></span><span style="position:absolute; left:22%; top:50%; width:9px; height:9px; border-radius:50%; background:var(--color-accent-base); transform:translate(-50%,-50%)"></span></span>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-400)">1:12</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--color-neutral-300)"><path d="M3 9v6h4l5 5V4L7 9H3zm13 3a4 4 0 0 0-2-3.5v7A4 4 0 0 0 16 12z"></path></svg>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-neutral-300)"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm16 0v6h-6v-2h4v-4h2z"></path></svg>
+                </div>
+              </div>
+              <figcaption style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); margin-top:6px; text-align:center">bench-timelapse.mp4 · 48 h compressed to 72 s.</figcaption>
+            </figure>
+
+            <blockquote>Feeding the starter is now a monitored production event. My kitchen has observability.</blockquote>
+          </div>
+
+          <!-- Downloadable attachments -->
+          <div style="padding:0 28px 20px">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-text-secondary)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>
+              <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; color:var(--color-text-secondary)">ATTACHMENTS · DOWNLOADS</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px">
+              <sc-for list="{{ downloads }}" as="f" hint-placeholder-count="3">
+                <a href="#" style="display:flex; align-items:center; gap:12px; text-decoration:none; background:var(--color-neutral-950); border:1px solid var(--color-border-default); padding:10px 12px" style-hover="border-color:var(--color-accent-base); background:var(--color-neutral-800)">
+                  <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:9px; font-weight:700; color:{{ f.extColor }}; flex-shrink:0">{{ f.ext }}</span>
+                  <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                    <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ f.filename }}</span>
+                    <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ f.size }}</span>
+                  </span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--color-text-tertiary)" style="flex-shrink:0"><path d="M12 16 6 10h4V3h4v7h4l-6 6zm-7 3h14v2H5z"></path></svg>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding:0 28px 20px; display:flex; gap:8px; flex-wrap:wrap">
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#fermentation</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#sensors</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#arduino</a>
+          </div>
+
+          <div style="padding:16px 28px; border-top:1px solid var(--color-border-default); display:flex; align-items:center; gap:12px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.ReactionButton" count="{{ threadLikeCount }}" reacted="{{ threadReacted }}" onToggle="{{ toggleThreadLike }}" hint-size="70px,34px"></x-import>
+            <span style="flex:1"></span>
+            <sc-if value="{{ viewAsOwner }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:8px">
+                <a href="Compose.dc.html" style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:7px 14px; border-radius:2px; text-decoration:none" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">EDIT</a>
+                <button style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-error-light); background:transparent; border:1px solid var(--color-border-default); padding:7px 14px; border-radius:2px" style-hover="border-color:var(--color-error)">DELETE</button>
+              </div>
+            </sc-if>
+          </div>
+        </article>
+
+        <section>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px">
+            <h2 style="font-size:20px; font-weight:700">Comments</h2>
+            <span style="font-family:var(--font-mono); font-size:12px; padding:2px 8px; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-text-secondary)">{{ commentCount }}</span>
+          </div>
+
+          <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); margin-bottom:20px">
+            <div style="display:flex; align-items:center; gap:4px; padding:8px 10px; border-bottom:1px solid var(--color-border-default); flex-wrap:wrap">
+              <button onClick="{{ cBold }}" title="Bold" style="width:26px; height:26px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)">B</button>
+              <button onClick="{{ cItalic }}" title="Italic" style="width:26px; height:26px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; font-style:italic; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)">I</button>
+              <button onClick="{{ cStrike }}" title="Strikethrough" style="width:26px; height:26px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; text-decoration:line-through; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)">S</button>
+              <button onClick="{{ cQuote }}" title="Quote" style="width:26px; height:26px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)">"</button>
+              <button onClick="{{ cCode }}" title="Code" style="width:30px; height:26px; display:grid; place-items:center; font-family:var(--font-mono); font-size:10px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)">&lt;/&gt;</button>
+              <button onClick="{{ cLink }}" title="Link" style="width:26px; height:26px; display:grid; place-items:center; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); background:var(--color-neutral-800)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg></button>
+              <span style="width:1px; height:16px; background:var(--color-border-default); margin:0 4px"></span>
+              <button onClick="{{ cImage }}" title="Insert image at cursor" style="display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 8px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.08em; color:var(--color-cyan-base); background:rgba(0,217,255,0.06); border:1px solid rgba(0,217,255,0.3); border-radius:2px" style-hover="background:rgba(0,217,255,0.14)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg>IMG</button>
+              <button onClick="{{ cVideo }}" title="Insert video at cursor" style="display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 8px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.08em; color:var(--color-cyan-base); background:rgba(0,217,255,0.06); border:1px solid rgba(0,217,255,0.3); border-radius:2px" style-hover="background:rgba(0,217,255,0.14)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h11a1 1 0 0 1 1 1v3l4-2v12l-4-2v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"></path></svg>VID</button>
+            </div>
+            <textarea ref="{{ rootRef }}" value="{{ draftRoot }}" onChange="{{ setDraftRoot }}" placeholder="Write a comment… Markdown supported. Drop images, videos, or files inline." rows="3" style="width:100%; background:transparent; border:none; border-radius:0; padding:14px 16px; font-size:14px; font-family:var(--font-sans); resize:vertical"></textarea>
+            <div style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-top:1px solid var(--color-border-default)">
+              <button style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:7px 12px; border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>ADD FILES
+              </button>
+              <span style="flex:1; font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-tertiary)">IMAGES INLINE · DOCS AS ATTACHMENTS</span>
+              <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="sm" disabled="{{ rootEmpty }}" onClick="{{ postRoot }}" hint-size="120px,32px">Post comment</x-import>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <sc-for list="{{ comments }}" as="c" hint-placeholder-count="4">
+              <div style="{{ c.indent }}">
+                <div style="display:flex">
+                  <sc-if value="{{ c.indented }}" hint-placeholder-val="{{ false }}">
+                    <span style="width:14px; height:24px; border-left:1px solid var(--color-neutral-700); border-bottom:1px solid var(--color-neutral-700); flex-shrink:0; margin-right:8px"></span>
+                  </sc-if>
+                  <div style="{{ c.cardStyle }}">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+                      <span style="width:26px; height:26px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">{{ c.initial }}</span>
+                      <span style="font-size:13px; font-weight:600">{{ c.displayName }}</span>
+                      <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@{{ c.username }} · {{ c.timeLabel }}</span>
+                      <sc-if value="{{ c.isOp }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 6px; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); color:var(--color-accent-base)">OP</span></sc-if>
+                      <sc-if value="{{ c.isOwn }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 6px; border:1px solid var(--color-border-default); color:var(--color-text-tertiary)">YOU</span></sc-if>
+                      <sc-if value="{{ c.isNew }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 6px; border:1px solid rgba(0,217,255,0.4); color:var(--color-cyan-base)"><span style="width:5px; height:5px; border-radius:50%; background:var(--color-cyan-base); animation:live-dot 2s ease-out infinite"></span>NEW</span></sc-if>
+                    </div>
+                    <sc-if value="{{ c.isDeleted }}" hint-placeholder-val="{{ false }}">
+                      <p style="font-size:14px; font-style:italic; color:var(--color-text-tertiary); margin-bottom:8px">[deleted]</p>
+                    </sc-if>
+                    <sc-if value="{{ c.notDeleted }}" hint-placeholder-val="{{ true }}">
+                      <p style="font-size:14px; line-height:1.6; color:var(--color-neutral-200); margin-bottom:10px; text-wrap:pretty">{{ c.body }}</p>
+                      <sc-if value="{{ c.hasImage }}" hint-placeholder-val="{{ false }}">
+                        <figure style="margin:0 0 10px; max-width:340px">
+                          <div style="position:relative; aspect-ratio:16/10; border:1px solid var(--color-border-default); background:repeating-linear-gradient(45deg, var(--color-neutral-800), var(--color-neutral-800) 10px, var(--color-neutral-900) 10px, var(--color-neutral-900) 20px); display:grid; place-items:center">
+                            <div style="display:flex; flex-direction:column; gap:5px; align-items:center; color:var(--color-neutral-500)">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg>
+                              <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-secondary)">{{ c.imageName }}</span>
+                            </div>
+                            <span style="position:absolute; top:6px; left:8px; font-family:var(--font-mono); font-size:8px; letter-spacing:0.1em; color:var(--color-cyan-base); background:rgba(7,9,13,0.65); padding:1px 5px">INLINE</span>
+                          </div>
+                        </figure>
+                      </sc-if>
+                      <sc-if value="{{ c.hasAttachment }}" hint-placeholder-val="{{ false }}">
+                        <a href="#" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none; background:var(--color-neutral-950); border:1px solid var(--color-border-default); padding:7px 10px; margin-bottom:10px" style-hover="border-color:var(--color-accent-base)">
+                          <span style="width:26px; height:26px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:8px; font-weight:700; color:{{ c.attExtColor }}">{{ c.attExt }}</span>
+                          <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-primary)">{{ c.attName }}</span>
+                          <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ c.attSize }}</span>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-text-tertiary)"><path d="M12 16 6 10h4V3h4v7h4l-6 6zm-7 3h14v2H5z"></path></svg>
+                        </a>
+                      </sc-if>
+                      <div style="display:flex; align-items:center; gap:16px">
+                        <button onClick="{{ c.toggleLike }}" style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; color:{{ c.likeColor }}; background:transparent; border:none; padding:0">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>
+                          {{ c.count }}
+                        </button>
+                        <sc-if value="{{ c.canReply }}" hint-placeholder-val="{{ true }}">
+                          <button onClick="{{ c.openReply }}" style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:none; padding:0" style-hover="color:var(--color-accent-base)">REPLY</button>
+                        </sc-if>
+                        <sc-if value="{{ c.maxDepth }}" hint-placeholder-val="{{ false }}">
+                          <span title="Comments may only nest 5 levels deep." style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-neutral-600); cursor:not-allowed">REPLY · MAX DEPTH</span>
+                        </sc-if>
+                        <sc-if value="{{ c.isOwn }}" hint-placeholder-val="{{ false }}">
+                          <button style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:none; padding:0" style-hover="color:var(--color-accent-base)">EDIT</button>
+                          <button style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:none; padding:0" style-hover="color:var(--color-error-light)">DELETE</button>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ c.isDeleted }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex; align-items:center; gap:16px">
+                        <sc-if value="{{ c.canReply }}" hint-placeholder-val="{{ false }}">
+                          <button onClick="{{ c.openReply }}" style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:none; padding:0" style-hover="color:var(--color-accent-base)">REPLY</button>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                    <sc-if value="{{ c.showReply }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:12px; background:var(--color-neutral-950); border:1px solid var(--color-border-default)">
+                        <textarea value="{{ draftReply }}" onChange="{{ setDraftReply }}" placeholder="Reply… Markdown &amp; inline media supported." rows="2" autoFocus="{{ true }}" style="width:100%; background:transparent; border:none; border-radius:0; padding:10px 12px; font-size:13px; font-family:var(--font-sans); resize:vertical"></textarea>
+                        <div style="display:flex; align-items:center; gap:8px; padding:8px 10px; border-top:1px solid var(--color-border-default)">
+                          <button title="Add files" style="width:28px; height:28px; display:grid; place-items:center; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg></button>
+                          <span style="flex:1"></span>
+                          <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="ghost" size="sm" onClick="{{ cancelReply }}" hint-size="80px,32px">Cancel</x-import>
+                          <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="sm" disabled="{{ replyEmpty }}" onClick="{{ c.submitReply }}" hint-size="80px,32px">Reply</x-import>
+                        </div>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </main>
+
+      <!-- RIGHT: about + toc + related -->
+      <aside style="display:flex; flex-direction:column; gap:16px; position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">ABOUT THREAD</span>
+          </div>
+          <div style="padding:8px 14px 12px">
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">CREATED</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">2 H AGO</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">CATEGORY</span>
+              <a href="Category.dc.html" style="font-size:12px; color:var(--color-accent-base); text-decoration:none" style-hover="color:var(--color-accent-light)">Electronics &amp; DIY</a>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">LIKES</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">{{ threadLikeCount }}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">COMMENTS</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">{{ commentCount }}</span>
+            </div>
+          </div>
+        </section>
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-cyan-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">ON THIS PAGE</span>
+          </div>
+          <div style="padding:10px 14px; display:flex; flex-direction:column; gap:2px">
+            <a href="#setup" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); text-decoration:none; padding:6px 8px; border-left:1px solid var(--color-neutral-700)" style-hover="color:var(--color-accent-base); border-left-color:var(--color-accent-base)">Setup</a>
+            <a href="#results" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); text-decoration:none; padding:6px 8px; border-left:1px solid var(--color-neutral-700)" style-hover="color:var(--color-accent-base); border-left-color:var(--color-accent-base)">Results</a>
+          </div>
+        </section>
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">RELATED THREADS</span>
+          </div>
+          <div class="thr-sb" style="max-height:220px; overflow-y:auto; padding:6px">
+            <sc-for list="{{ related }}" as="r" hint-placeholder-count="4">
+              <a href="Thread.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px; text-decoration:none; border:1px solid transparent" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-default)">
+                <span style="width:28px; height:28px; display:grid; place-items:center; background:{{ r.iconBg }}; border:1px solid {{ r.iconBorder }}; font-family:var(--font-mono); font-size:10px; font-weight:700; color:{{ r.iconColor }}; flex-shrink:0">{{ r.mono }}</span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                  <span style="font-size:12px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.title }}</span>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ r.meta }}</span>
+                </span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;viewAsOwner&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Permissions&quot;}, &quot;highlightNew&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Realtime&quot;}}">
+class Component extends DCLogic {
+  // Comment rows follow CommentResponse — GET /api/content/threads/{threadId}/comments
+  // Flat list, ordered depth-first by `path`. Max depth = 5. Soft-deleted keep author + children.
+  constructor(props) {
+    super(props);
+    this.rootRef = React.createRef();
+  }
+
+  state = {
+    threadLikeCount: 12,
+    threadReacted: false,
+    replyTo: null,
+    draftRoot: "",
+    draftReply: "",
+    comments: [
+      { id: "01C1", parentId: null, depth: 0, body: "Great writeup. What sampling interval are you using for the MH-Z19? Mine drifts if I poll faster than 10 s. Datasheet attached for reference.", isDeleted: false, username: "stella_obs", displayName: "Stella Obrycka", minutesAgo: 90, count: 4, viewerReacted: false, isNew: false, att: { name: "mh-z19-datasheet.pdf", ext: "PDF", size: "1.1 MB" } },
+      { id: "01C2", parentId: "01C1", depth: 1, body: "10 s exactly — and I average over a minute before logging. The sensor auto-calibrates every 24 h, which is its own adventure.", isDeleted: false, username: "tomek_labs", displayName: "Tomasz Labiak", minutesAgo: 85, count: 2, viewerReacted: false, isNew: false },
+      { id: "01C3", parentId: "01C2", depth: 2, body: "Auto-calibration bit me on a CO₂ traffic-light project too — you can disable ABC with a UART command if the drift bothers you. Here's my wiring:", isDeleted: false, username: "nadia_dev", displayName: "Nadia Kowalczyk", minutesAgo: 80, count: 5, viewerReacted: false, isNew: false, img: "wiring-abc-off.png" },
+      { id: "01C4", parentId: "01C3", depth: 3, body: "[deleted]", isDeleted: true, username: "piotr_gm", displayName: "Piotr Gmerek", minutesAgo: 70, count: 0, viewerReacted: false, isNew: false },
+      { id: "01C5", parentId: "01C4", depth: 4, body: "For anyone finding this later: the ABC-off command is 0xFF 0x01 0x79 0x00 … — send it after every power cycle.", isDeleted: false, username: "stella_obs", displayName: "Stella Obrycka", minutesAgo: 60, count: 1, viewerReacted: false, isNew: false },
+      { id: "01C6", parentId: "01C5", depth: 5, body: "Confirmed working on firmware 5.2. Thanks!", isDeleted: false, username: "tomek_labs", displayName: "Tomasz Labiak", minutesAgo: 55, count: 0, viewerReacted: false, isNew: false },
+      { id: "01C7", parentId: null, depth: 0, body: "Would love the Grafana dashboard JSON if you're willing to share it.", isDeleted: false, username: "dev_ola", displayName: "Aleksandra Nowak", minutesAgo: 3, count: 3, viewerReacted: false, isNew: true },
+    ],
+  };
+
+  timeLabel(mins) {
+    if (mins < 60) return mins + " MIN";
+    if (mins < 1440) return Math.round(mins / 60) + " H";
+    return Math.round(mins / 1440) + " D";
+  }
+
+  docColor(ext) {
+    return ({ PDF: "var(--color-error-light)", XLSX: "var(--color-success-light)", DOCX: "var(--color-info-light)", TXT: "var(--color-text-secondary)", ZIP: "var(--color-warning-light)", JSON: "var(--color-cyan-base)" })[ext] || "var(--color-text-secondary)";
+  }
+
+  insertRoot(before, after, placeholder) {
+    const el = this.rootRef.current;
+    const body = this.state.draftRoot;
+    let start = body.length, end = body.length;
+    if (el && typeof el.selectionStart === "number") { start = el.selectionStart; end = el.selectionEnd; }
+    const sel = body.slice(start, end) || placeholder;
+    const next = body.slice(0, start) + before + sel + after + body.slice(end);
+    const cs = start + before.length, ce = cs + sel.length;
+    this.setState({ draftRoot: next });
+    setTimeout(() => { const e2 = this.rootRef.current; if (e2) { e2.focus(); e2.setSelectionRange(cs, ce); } }, 0);
+  }
+
+  toggleCommentLike(id) {
+    this.setState(s => ({
+      comments: s.comments.map(c => c.id === id
+        ? { ...c, viewerReacted: !c.viewerReacted, count: c.count + (c.viewerReacted ? -1 : 1) }
+        : c),
+    }));
+  }
+
+  submitReply(parentId) {
+    const body = this.state.draftReply.trim();
+    if (!body) return;
+    this.setState(s => {
+      const idx = s.comments.findIndex(c => c.id === parentId);
+      const parent = s.comments[idx];
+      let insertAt = idx + 1;
+      while (insertAt < s.comments.length && s.comments[insertAt].depth > parent.depth) insertAt++;
+      const next = [...s.comments];
+      next.splice(insertAt, 0, {
+        id: "new-" + Date.now(), parentId, depth: parent.depth + 1, body,
+        isDeleted: false, username: "nadia_dev", displayName: "Nadia Kowalczyk",
+        minutesAgo: 0, count: 0, viewerReacted: false, isNew: false,
+      });
+      return { comments: next, replyTo: null, draftReply: "" };
+    });
+  }
+
+  renderVals() {
+    const highlightNew = this.props.highlightNew ?? true;
+    const comments = this.state.comments.map(c => ({
+      ...c,
+      initial: c.displayName[0].toUpperCase(),
+      indent: { marginLeft: (c.depth * 26) + "px" },
+      indented: c.depth > 0,
+      notDeleted: !c.isDeleted,
+      isOp: c.username === "tomek_labs",
+      isOwn: !c.isDeleted && c.username === "nadia_dev",
+      isNew: highlightNew && c.isNew,
+      cardStyle: (highlightNew && c.isNew)
+        ? "flex:1; min-width:0; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:14px 16px; animation:newGlow 2.4s ease-out"
+        : "flex:1; min-width:0; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:14px 16px",
+      timeLabel: c.minutesAgo === 0 ? "JUST NOW" : this.timeLabel(c.minutesAgo),
+      likeColor: c.viewerReacted ? "var(--color-accent-base)" : "var(--color-neutral-500)",
+      canReply: c.depth < 5,
+      maxDepth: !c.isDeleted && c.depth >= 5,
+      showReply: this.state.replyTo === c.id,
+      hasImage: !!c.img,
+      imageName: c.img || "",
+      hasAttachment: !!c.att,
+      attName: c.att ? c.att.name : "",
+      attExt: c.att ? c.att.ext : "",
+      attSize: c.att ? c.att.size : "",
+      attExtColor: c.att ? this.docColor(c.att.ext) : "var(--color-text-secondary)",
+      toggleLike: () => this.toggleCommentLike(c.id),
+      openReply: () => this.setState({ replyTo: c.id, draftReply: "" }),
+      submitReply: () => this.submitReply(c.id),
+    }));
+    const authorThreads = [
+      { title: "Home NAS on a shoestring — my parts list", mono: "EL", meta: "Electronics · 28 ♥", tone: "el" },
+      { title: "Reflow oven from a toaster + PID", mono: "EL", meta: "Electronics · 51 ♥", tone: "el" },
+      { title: "Cheap soil-moisture mesh with ESP-NOW", mono: "EL", meta: "Electronics · 14 ♥", tone: "el" },
+      { title: "Why my multimeter lies below 2 V", mono: "EL", meta: "Electronics · 33 ♥", tone: "el" },
+    ].map(t => ({ ...t, iconBg: "var(--color-accent-subtle)", iconBorder: "var(--color-accent-dark)", iconColor: "var(--color-accent-base)" }));
+    const relatedRaw = [
+      { title: "Best NDIR CO₂ sensors compared (2026)", mono: "EL", meta: "Electronics · 62 ♥", tone: "el" },
+      { title: "InfluxDB vs Timescale for home telemetry", mono: "PR", meta: "Programming · 40 ♥", tone: "pr" },
+      { title: "3D-printing food-safe jar collars", mono: "EL", meta: "Electronics · 19 ♥", tone: "el" },
+      { title: "Grafana dashboards worth stealing", mono: "PR", meta: "Programming · 88 ♥", tone: "pr" },
+    ];
+    const toneMap = {
+      el: { iconBg: "var(--color-accent-subtle)", iconBorder: "var(--color-accent-dark)", iconColor: "var(--color-accent-base)" },
+      pr: { iconBg: "rgba(0,217,255,0.08)", iconBorder: "rgba(0,217,255,0.3)", iconColor: "var(--color-cyan-base)" },
+    };
+    const related = relatedRaw.map(r => ({ ...r, ...toneMap[r.tone] }));
+    const downloads = [
+      { name: "grafana-dashboard", ext: "JSON", size: "34 KB" },
+      { name: "co2-48h-dataset", ext: "ZIP", size: "1.8 MB" },
+      { name: "collar-model", ext: "ZIP", size: "640 KB" },
+    ].map(f => ({ ...f, filename: f.name + "." + f.ext.toLowerCase(), extColor: this.docColor(f.ext) }));
+    const cb = (before, after, ph) => () => this.insertRoot(before, after, ph);
+    return {
+      comments,
+      commentCount: this.state.comments.length,
+      threadLikeCount: this.state.threadLikeCount,
+      threadReacted: this.state.threadReacted,
+      viewAsOwner: this.props.viewAsOwner ?? false,
+      authorThreads,
+      related,
+      downloads,
+      draftRoot: this.state.draftRoot,
+      draftReply: this.state.draftReply,
+      rootRef: this.rootRef,
+      rootEmpty: this.state.draftRoot.trim() === "",
+      replyEmpty: this.state.draftReply.trim() === "",
+      setDraftRoot: (e) => this.setState({ draftRoot: e.target.value }),
+      setDraftReply: (e) => this.setState({ draftReply: e.target.value }),
+      cancelReply: () => this.setState({ replyTo: null, draftReply: "" }),
+      cBold: cb("**", "**", "bold"),
+      cItalic: cb("*", "*", "italic"),
+      cStrike: cb("~~", "~~", "strikethrough"),
+      cQuote: cb("\n> ", "", "Quote"),
+      cCode: cb("`", "`", "code"),
+      cLink: cb("[", "](https://)", "label"),
+      cImage: () => this.insertRoot("\n![", "](image:filename.png)\n", "caption"),
+      cVideo: () => this.insertRoot("\n@video(", ")\n", "clip.mp4"),
+      openMessage: () => { window.location.href = "Social.dc.html"; },
+      addFriend: () => { window.location.href = "Social.dc.html"; },
+      toggleThreadLike: () => this.setState(s => ({
+        threadReacted: !s.threadReacted,
+        threadLikeCount: s.threadLikeCount + (s.threadReacted ? -1 : 1),
+      })),
+      postRoot: () => {
+        const body = this.state.draftRoot.trim();
+        if (!body) return;
+        this.setState(s => ({
+          comments: [...s.comments, {
+            id: "new-" + Date.now(), parentId: null, depth: 0, body,
+            isDeleted: false, username: "nadia_dev", displayName: "Nadia Kowalczyk",
+            minutesAgo: 0, count: 0, viewerReacted: false, isNew: false,
+          }],
+          draftRoot: "",
+        }));
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

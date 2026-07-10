@@ -88,4 +88,15 @@ internal sealed class User : AggregateRoot<Ulid>
 
     /// <summary>Replaces the stored hash (rehash-on-login when Argon2 parameters are raised).</summary>
     public void SetPasswordHash(string passwordHash) => PasswordHash = passwordHash;
+
+    /// <summary>Renames the account. Uniqueness of the lower-cased form is checked by the caller.</summary>
+    public void ChangeUsername(string username)
+    {
+        var normalized = username.Trim();
+        Username = normalized;
+        UsernameLc = normalized.ToLowerInvariant();
+    }
+
+    /// <summary>Replaces the account email. Uniqueness (citext) is checked by the caller.</summary>
+    public void ChangeEmail(string email) => Email = email.Trim();
 }

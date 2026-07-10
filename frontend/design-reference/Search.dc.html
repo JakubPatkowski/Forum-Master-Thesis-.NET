@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+  </style>
+</helmet>
+<div data-screen-label="Search" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="search" hint-size="100%,118px"></dc-import>
+    <div style="max-width:820px; margin:0 auto; padding:32px 32px 64px">
+      <div style="position:relative; margin-bottom:8px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position:absolute; left:16px; top:50%; transform:translateY(-50%); color:var(--color-neutral-500)"><circle cx="11" cy="11" r="7"></circle><path d="M20.5 20.5 16 16"></path></svg>
+        <input value="{{ query }}" onChange="{{ setQuery }}" placeholder="Search threads…" style="font-family:var(--font-mono); font-size:16px; width:100%; padding:16px 18px 16px 46px; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px; color:var(--color-text-primary)" style-focus="border-color:var(--color-accent-base); background:var(--color-neutral-800); outline:none">
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px">
+        <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-tertiary); flex:1">GET /api/content/search?q= · KEYSET CURSOR · NO TOTAL COUNT</span>
+        <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-tertiary)">FILTERS</span>
+        <span title="Category/tag/author filters need new API parameters — not in the contract yet" style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 6px; border:1px solid var(--color-warning); color:var(--color-warning)">SOON</span>
+      </div>
+
+      <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px">
+          <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+          <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">RESULTS FOR "{{ query }}"</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px">
+          <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
+            <a href="Thread.dc.html" style="display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center; text-decoration:none; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:14px 16px" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-subtle)">
+              <span style="display:flex; flex-direction:column; gap:4px; min-width:0">
+                <span style="display:flex; align-items:center; gap:10px">
+                  <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-cyan-base)">{{ r.categoryLabel }}</span>
+                  <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">{{ r.timeLabel }}</span>
+                </span>
+                <span style="font-size:16px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.title }}</span>
+                <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@{{ r.username }}</span>
+              </span>
+              <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:13px; color:var(--color-neutral-500)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>
+                {{ r.likeCount }}
+              </span>
+            </a>
+          </sc-for>
+        </div>
+        <button style="width:100%; margin-top:12px; padding:12px; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">LOAD MORE ↓</button>
+      </sc-if>
+
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:64px 24px; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center">
+          <span style="width:44px; height:44px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-neutral-500)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"></circle><path d="M20.5 20.5 16 16"></path></svg>
+          </span>
+          <div style="font-size:16px; font-weight:600">No results for "{{ query }}"</div>
+          <div style="font-size:13px; color:var(--color-text-secondary); max-width:300px">Try different keywords, or start the thread yourself.</div>
+          <div style="margin-top:6px">
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ goCompose }}" hint-size="150px,40px">Start a thread</x-import>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;noResultsState&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Data&quot;}}">
+class Component extends DCLogic {
+  // GET /api/content/search?q=&cursor=&limit= — ThreadFeedItemResponse[], same shape as the feed.
+  // No total count is ever returned; malformed cursor → 422.
+  state = { query: "co2 sensor" };
+
+  static RESULTS = [
+    { id: "01S1", categoryName: "Electronics & DIY", title: "My sourdough starter is a bioreactor — logging CO₂ with an MH-Z19", username: "tomek_labs", likeCount: 12, minutesAgo: 122 },
+    { id: "01S2", categoryName: "Electronics & DIY", title: "3D printer enclosure — where do I put the VOC sensor?", username: "ana_lens", likeCount: 4, minutesAgo: 3300 },
+    { id: "01S3", categoryName: "Science & Space", title: "Calibrating cheap NDIR CO₂ sensors against a reference meter", username: "stella_obs", likeCount: 21, minutesAgo: 8600 },
+  ];
+
+  timeLabel(mins) {
+    if (mins < 60) return mins + " MIN";
+    if (mins < 1440) return Math.round(mins / 60) + " H";
+    return Math.round(mins / 1440) + " D";
+  }
+
+  renderVals() {
+    const empty = this.props.noResultsState ?? false;
+    return {
+      query: this.state.query,
+      setQuery: (e) => this.setState({ query: e.target.value }),
+      results: Component.RESULTS.map(r => ({ ...r, categoryLabel: r.categoryName.toUpperCase(), timeLabel: this.timeLabel(r.minutesAgo) })),
+      hasResults: !empty,
+      noResults: empty,
+      goCompose: () => { window.location.href = "Compose.dc.html"; },
+    };
+  }
+}
+</script>
+</body>
+</html>

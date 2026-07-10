@@ -1,0 +1,96 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.row,
+.rowActive {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+.row:hover {
+  background: var(--color-neutral-800);
+}
+
+.rowActive {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent-dark);
+}
+
+.name {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nameActive {
+  composes: name;
+  font-weight: 600;
+  color: var(--color-accent-base);
+}
+
+.allTile,
+.allTileActive {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.allTileActive {
+  background: var(--color-neutral-950);
+  border-color: var(--color-accent-dark);
+  color: var(--color-accent-base);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 4px;
+}
+
+.empty {
+  padding: 16px 10px;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.addButton {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.addButton:hover {
+  background: var(--color-neutral-800);
+  border-color: var(--color-accent-base);
+  color: var(--color-accent-base);
+}

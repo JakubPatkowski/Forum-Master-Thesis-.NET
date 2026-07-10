@@ -2,6 +2,7 @@ using Forum.Common.Paging;
 using Forum.Modules.Content.Application.Categories;
 using Forum.Modules.Content.Application.Comments;
 using Forum.Modules.Content.Application.Paging;
+using Forum.Modules.Content.Application.Tags;
 using Forum.Modules.Content.Application.Threads;
 
 namespace Forum.Modules.Content.Application.Abstractions;
@@ -31,4 +32,16 @@ internal interface IContentQueries
 
     /// <summary>The full tree of a thread in <c>ORDER BY path</c> (depth-first) order, deleted rows included.</summary>
     Task<IReadOnlyList<CommentResponse>> GetCommentTreeAsync(Ulid threadId, CancellationToken cancellationToken);
+
+    /// <summary>Tags ranked by live-thread usage; optional lower-case substring filter on slug.</summary>
+    Task<IReadOnlyList<TagSuggestionResponse>> SuggestTagsAsync(
+        string? slugFilter, int limit, CancellationToken cancellationToken);
+
+    /// <summary>A user's live threads, newest first (keyset). Unknown owner → empty page.</summary>
+    Task<CursorPage<ThreadFeedItemResponse>> GetThreadsByOwnerAsync(
+        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken);
+
+    /// <summary>A user's live comments on live threads, newest first (keyset). Unknown owner → empty page.</summary>
+    Task<CursorPage<CommentActivityItemResponse>> GetCommentsByOwnerAsync(
+        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken);
 }

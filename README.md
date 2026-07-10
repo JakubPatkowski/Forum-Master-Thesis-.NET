@@ -79,17 +79,21 @@ Runs on **WSL2 (Ubuntu) or Linux** with the repo on the Linux filesystem (not a
 
 ```bash
 cp .env.example .env
-make preflight            # docker / kubectl / minikube / dotnet / k6
+make preflight            # docker / kubectl / minikube / dotnet / node / k6
 
-# Local inner loop (containers for infra, dotnet for the API):
+# Local inner loop (containers for infra, dotnet for the API, Next.js for the SPA):
 make infra-up             # Postgres + RabbitMQ + MinIO
 make api ARGS=--migrate   # migrate + run Forum.Api on :8080
+make web                  # npm install (if needed) + frontend dev server on :3000
 
 # Cluster (minikube):
 make mk-up                # start the cluster
 make mk-deploy            # build image into minikube + apply manifests
 make urls
 ```
+
+`make web` runs against `make api` (`:8080`); see `frontend/README.md` for the alternative
+plain-`dotnet run` + `npm run dev` workflow, which lands on `:5099` instead.
 
 Without `make`, call the scripts directly (`bash scripts/<name>.sh`).
 Full walkthrough incl. the WSL move: **`docs/runbooks/wsl-minikube-setup.md`**.

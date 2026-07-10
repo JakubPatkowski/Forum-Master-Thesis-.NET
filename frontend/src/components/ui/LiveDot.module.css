@@ -1,0 +1,41 @@
+.dot {
+  display: inline-block;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cyan {
+  background: var(--color-cyan-base);
+}
+
+.amber {
+  background: var(--color-warning);
+}
+
+.red {
+  background: var(--color-error);
+}
+
+.green {
+  background: var(--color-success);
+}
+
+.accent {
+  background: var(--color-accent-base);
+}
+
+.pulse.cyan {
+  animation: live-dot 2s ease-out infinite;
+}
+
+.pulse.amber {
+  animation: ws-pulse-amber 1.2s ease-out infinite;
+}
+
+.pulse.green {
+  animation: live-dot 2.2s ease-out infinite;
+}
+
+.pulse.accent {
+  animation: unread-pulse 2s ease-out infinite;
+}

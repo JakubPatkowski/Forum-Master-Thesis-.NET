@@ -4,7 +4,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help preflight infra-up infra-down api migrate test format build \
+.PHONY: help preflight infra-up infra-down api web migrate test format build \
         mk-up mk-deploy mk-down mk-reset-db load pods logs urls
 
 help: ## Show this help
@@ -21,6 +21,8 @@ infra-down: ## Stop local infra   (make infra-down ARGS=--volumes to wipe data)
 	@bash scripts/infra-down.sh $(ARGS)
 api:        ## Run the API locally (make api ARGS=--migrate to migrate first)
 	@bash scripts/dev-api.sh $(ARGS)
+web:        ## Run the frontend dev server (npm install if needed) on :3000
+	@bash scripts/dev-web.sh
 migrate:    ## Apply migrations + views against local infra
 	@cd backend && dotnet run --project src/Bootstrap/Forum.Api -- migrate
 build:      ## dotnet build the solution

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+  </style>
+</helmet>
+<div data-screen-label="Profile" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="profile" hint-size="100%,118px"></dc-import>
+    <div style="max-width:1140px; margin:0 auto; padding:24px 32px 64px; display:grid; grid-template-columns:320px minmax(0,1fr); gap:24px; align-items:start">
+
+      <aside style="position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+          <div style="padding:28px 24px 20px; display:flex; flex-direction:column; align-items:center; gap:14px; border-bottom:1px solid var(--color-border-default)">
+            <div style="position:relative">
+              <span style="width:96px; height:96px; display:grid; place-items:center; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:36px; font-weight:700; color:var(--color-accent-base)">{{ initial }}</span>
+              <span style="position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+              <span style="position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:20px; font-weight:700">{{ displayName }}</div>
+              <div style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-tertiary); margin-top:4px">@{{ username }}</div>
+            </div>
+            <sc-if value="{{ isOwn }}" hint-placeholder-val="{{ true }}">
+              <button style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:6px 12px; border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">CHANGE AVATAR</button>
+            </sc-if>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr">
+            <div style="padding:16px 8px; text-align:center; border-right:1px solid var(--color-border-default)">
+              <div style="font-family:var(--font-mono); font-size:22px; font-weight:700; color:var(--color-text-primary)">{{ threadCount }}</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">THREADS</div>
+            </div>
+            <div style="padding:16px 8px; text-align:center; border-right:1px solid var(--color-border-default)">
+              <div style="font-family:var(--font-mono); font-size:22px; font-weight:700; color:var(--color-text-primary)">{{ commentCount }}</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">COMMENTS</div>
+            </div>
+            <div style="padding:16px 8px; text-align:center">
+              <div style="font-family:var(--font-mono); font-size:22px; font-weight:700; color:var(--color-accent-base)">{{ karma }}</div>
+              <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">KARMA</div>
+            </div>
+          </div>
+          <sc-if value="{{ isOwn }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:14px; border-top:1px solid var(--color-border-default); display:flex; flex-direction:column; gap:8px">
+              <button style="width:100%; font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-error-light); background:transparent; border:1px solid var(--color-border-default); padding:9px; border-radius:2px" style-hover="border-color:var(--color-error); background:rgba(239,68,68,0.08)">LOG OUT ALL DEVICES</button>
+              <span style="font-family:var(--font-mono); font-size:9px; color:var(--color-neutral-600); text-align:center">POST /api/identity/logout-all · revokes every refresh token</span>
+            </div>
+          </sc-if>
+        </section>
+        <div style="margin-top:12px; text-align:center">
+          <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-neutral-600)">GET /api/engagement/users/{{ curly }}userId{{ curlyEnd }}/stats</span>
+        </div>
+      </aside>
+
+      <main style="min-width:0">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary); flex:1">RECENT ACTIVITY</span>
+            <span title="Requires a feed filter by ownerId — not in the API yet; mock data" style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 6px; border:1px solid var(--color-warning); color:var(--color-warning)">SOON</span>
+          </div>
+          <sc-if value="{{ hasActivity }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column">
+              <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+                <a href="Thread.dc.html" style="display:flex; align-items:center; gap:14px; padding:14px 16px; text-decoration:none; border-bottom:1px solid var(--color-neutral-800)" style-hover="background:var(--color-neutral-800)">
+                  <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:3px 7px; border:1px solid {{ a.chipBorder }}; color:{{ a.chipColor }}; flex-shrink:0; min-width:72px; text-align:center">{{ a.kind }}</span>
+                  <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                    <span style="font-size:14px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ a.title }}</span>
+                    <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">{{ a.meta }}</span>
+                  </span>
+                  <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary); flex-shrink:0">{{ a.timeLabel }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noActivity }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:64px 24px; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center">
+              <span style="width:44px; height:44px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-neutral-500)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1zm3 5h10v2H7V9z"></path></svg>
+              </span>
+              <div style="font-size:16px; font-weight:600">No activity yet</div>
+              <div style="font-size:13px; color:var(--color-text-secondary); max-width:280px">Threads and comments will show up here once this user starts posting.</div>
+              <sc-if value="{{ isOwn }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px">
+                  <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ goCompose }}" hint-size="150px,40px">Start a thread</x-import>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;viewAs&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;own&quot;, &quot;other&quot;], &quot;default&quot;: &quot;own&quot;, &quot;tsType&quot;: &quot;'own' | 'other'&quot;, &quot;section&quot;: &quot;Permissions&quot;}, &quot;zeroState&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Data&quot;}}">
+class Component extends DCLogic {
+  // Stats follow GET /api/engagement/users/{userId}/stats:
+  // { userId, username, displayName, threadCount, commentCount, karma }
+  // A real user with zero content still returns 200 with all-zero counts (toggle `zeroState`).
+  static ACTIVITY = [
+    { kind: "THREAD", title: ".NET 10 minimal APIs — what surprised you after the migration?", meta: "in Programming", minutesAgo: 1440 },
+    { kind: "COMMENT", title: "Auto-calibration bit me on a CO₂ traffic-light project too…", meta: "on: My sourdough starter is a bioreactor", minutesAgo: 80 },
+    { kind: "COMMENT", title: "You can pin a compose lockfile version to dodge that.", meta: "on: Patch 6.1 broke modded saves", minutesAgo: 2000 },
+    { kind: "THREAD", title: "Keyset pagination in Postgres — ULID cursors that don't leak", meta: "in Programming", minutesAgo: 4400 },
+    { kind: "COMMENT", title: "Seconding the MX Clear recommendation for silent-ish tactile.", meta: "on: Show your desk setup — 2026 edition", minutesAgo: 7300 },
+  ];
+
+  timeLabel(mins) {
+    if (mins < 60) return mins + " MIN";
+    if (mins < 1440) return Math.round(mins / 60) + " H";
+    return Math.round(mins / 1440) + " D";
+  }
+
+  renderVals() {
+    const viewAs = this.props.viewAs ?? "own";
+    const zero = this.props.zeroState ?? false;
+    const own = viewAs === "own";
+    const user = own
+      ? { username: "nadia_dev", displayName: "Nadia Kowalczyk", threadCount: 12, commentCount: 148, karma: 305 }
+      : { username: "stella_obs", displayName: "Stella Obrycka", threadCount: 34, commentCount: 512, karma: 1289 };
+    const activity = zero ? [] : Component.ACTIVITY.map(a => ({
+      ...a,
+      timeLabel: this.timeLabel(a.minutesAgo),
+      chipColor: a.kind === "THREAD" ? "var(--color-cyan-base)" : "var(--color-text-tertiary)",
+      chipBorder: a.kind === "THREAD" ? "rgba(0,217,255,0.4)" : "var(--color-border-default)",
+    }));
+    return {
+      ...user,
+      threadCount: zero ? 0 : user.threadCount,
+      commentCount: zero ? 0 : user.commentCount,
+      karma: zero ? 0 : user.karma,
+      initial: user.displayName[0].toUpperCase(),
+      isOwn: own,
+      activity,
+      hasActivity: activity.length > 0,
+      noActivity: activity.length === 0,
+      curly: "{", curlyEnd: "}",
+      goCompose: () => { window.location.href = "Compose.dc.html"; },
+    };
+  }
+}
+</script>
+</body>
+</html>

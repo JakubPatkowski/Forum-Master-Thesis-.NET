@@ -1,0 +1,42 @@
+.chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-primary);
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+  padding: 4px 10px;
+  text-decoration: none;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--color-accent-base);
+  color: var(--color-accent-base);
+}
+
+.chipStatic {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-primary);
+  background: var(--color-neutral-700);
+  padding: 4px 6px 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.remove {
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  padding: 0 2px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.remove:hover {
+  color: var(--color-error-light);
+}

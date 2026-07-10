@@ -1,0 +1,17 @@
+.loadMore {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--color-text-secondary);
+}
+
+.loadMore:hover:not(:disabled) {
+  border-color: var(--color-accent-base);
+  color: var(--color-accent-base);
+}

@@ -1,0 +1,134 @@
+.grid {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.left,
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 24px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.header {
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-default);
+  padding: 20px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 200px;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.headerTitle {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.slug {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-neutral-600);
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 6px;
+  text-wrap: pretty;
+}
+
+.headerActions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--color-text-secondary);
+}
+
+.popular {
+  border-left: 2px solid var(--color-cyan-base);
+}
+
+.feedHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.feedTitle {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.feedNote {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--color-text-tertiary);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .right {
+    display: none;
+  }
+}
+
+@media (max-width: 780px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .left {
+    position: static;
+  }
+}
+
+.hidden {
+  display: none;
+}

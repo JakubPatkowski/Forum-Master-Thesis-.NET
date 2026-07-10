@@ -1,0 +1,86 @@
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.select {
+  width: 100%;
+  font-size: 15px;
+  border-radius: 2px;
+}
+
+.editNote {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-top: 6px;
+}
+
+.footerNote {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+}
+
+.iconRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  background: var(--color-neutral-950);
+  border: 1px solid var(--color-border-default);
+  border-radius: 2px;
+}
+
+.iconTile {
+  flex-shrink: 0;
+}
+
+.iconImage {
+  display: block;
+  object-fit: cover;
+  border: 1px solid var(--color-border-default);
+}
+
+.iconMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.iconMeta .label {
+  margin-bottom: 0;
+}
+
+.iconHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 4px;
+}
+
+.slugStatic {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-neutral-800);
+  border: 1px solid var(--color-border-default);
+  padding: 8px 12px;
+  border-radius: 2px;
+}
+
+.hidden {
+  display: none;
+}

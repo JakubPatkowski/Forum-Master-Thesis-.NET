@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+    @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+    @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(16px) scale(0.985); } to { opacity: 1; transform: none; } }
+    @keyframes insertFlash { 0% { background: var(--color-accent-subtle); } 100% { background: transparent; } }
+    .cmp-sb::-webkit-scrollbar { width: 10px; }
+    .cmp-sb::-webkit-scrollbar-track { background: var(--color-neutral-950); }
+    .cmp-sb::-webkit-scrollbar-thumb { background: var(--color-neutral-700); border: 3px solid var(--color-neutral-900); border-radius: 8px; }
+    .cmp-sb::-webkit-scrollbar-thumb:hover { background: var(--color-accent-dark); }
+  </style>
+</helmet>
+<div data-screen-label="Compose thread (modal)" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative; overflow:hidden">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+
+  <!-- Ghosted forum backdrop -->
+  <div style="position:relative; filter:blur(2px) saturate(0.7); opacity:0.42; pointer-events:none; user-select:none">
+    <dc-import name="TopNav" active="forum" hint-size="100%,118px"></dc-import>
+    <div style="max-width:1400px; margin:0 auto; padding:24px 32px; display:grid; grid-template-columns:250px minmax(0,1fr) 300px; gap:24px; align-items:start">
+      <div style="height:320px; background:var(--color-neutral-900); border:1px solid var(--color-border-default)"></div>
+      <div style="display:flex; flex-direction:column; gap:8px">
+        <sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="5">
+          <div style="display:grid; grid-template-columns:40px 1fr 60px; gap:14px; align-items:center; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:16px; min-height:78px">
+            <span style="width:40px; height:40px; background:var(--color-neutral-800); border:1px solid var(--color-border-default)"></span>
+            <span style="display:flex; flex-direction:column; gap:8px">
+              <span style="width:70%; height:12px; background:var(--color-neutral-800)"></span>
+              <span style="width:40%; height:9px; background:var(--color-neutral-800)"></span>
+            </span>
+            <span style="width:34px; height:12px; background:var(--color-neutral-800); justify-self:end"></span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="height:260px; background:var(--color-neutral-900); border:1px solid var(--color-border-default)"></div>
+    </div>
+  </div>
+
+  <!-- Scrim -->
+  <div onClick="{{ closeModal }}" style="position:fixed; inset:0; background:var(--color-surface-overlay); animation:backdropIn 0.2s ease; z-index:50"></div>
+
+  <!-- Modal -->
+  <div style="position:fixed; inset:0; display:grid; place-items:center; padding:28px 20px; z-index:60; pointer-events:none">
+    <div style="pointer-events:auto; position:relative; width:min(780px, 100%); max-height:calc(100vh - 56px); display:flex; flex-direction:column; background:var(--color-neutral-900); border:1px solid var(--color-border-subtle); box-shadow:var(--shadow-2xl); animation:modalIn 0.24s cubic-bezier(0.16,1,0.3,1)">
+      <span style="position:absolute; top:-1px; left:-1px; width:12px; height:12px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+      <span style="position:absolute; top:-1px; right:-1px; width:12px; height:12px; border-top:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+      <span style="position:absolute; bottom:-1px; left:-1px; width:12px; height:12px; border-bottom:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+      <span style="position:absolute; bottom:-1px; right:-1px; width:12px; height:12px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+
+      <!-- Header -->
+      <div style="display:flex; align-items:center; gap:16px; padding:20px 24px; border-bottom:1px solid var(--color-border-default)">
+        <div style="flex:1; min-width:0">
+          <h1 style="font-size:22px; font-weight:700; letter-spacing:-0.01em">{{ heading }}</h1>
+          <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">{{ endpointNote }}</div>
+        </div>
+        <span style="display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-cyan-base); padding:5px 9px; border:1px solid rgba(0,217,255,0.3)">
+          <span style="width:6px; height:6px; border-radius:50%; background:var(--color-cyan-base)"></span>DRAFT · AUTOSAVED
+        </span>
+        <button onClick="{{ closeModal }}" title="Close" style="width:34px; height:34px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base); transform:rotate(90deg)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <!-- Scrollable body -->
+      <div class="cmp-sb" style="overflow-y:auto; overflow-x:hidden; padding:22px 24px; display:flex; flex-direction:column; gap:20px">
+        <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Input" label="Title" placeholder="A clear, specific question or statement" value="{{ title }}" onChange="{{ setTitle }}" error="{{ titleError }}" hint-size="100%,70px"></x-import>
+
+        <div style="display:grid; grid-template-columns:1fr auto; gap:18px; align-items:start">
+          <div style="display:flex; flex-direction:column; min-width:0">
+            <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:600">Category</label>
+            <select style="width:100%; font-size:15px">
+              <option>Programming</option>
+              <option>Science &amp; Space</option>
+              <option selected="{{ true }}">Electronics &amp; DIY</option>
+              <option>Gaming</option>
+              <option>Photography</option>
+              <option disabled="{{ true }}">Staff Lounge — private, membership required</option>
+            </select>
+            <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-warning); margin-top:6px">MOVING A THREAD USES PATCH /threads/{{ curly }}id{{ curlyEnd }}/category — MODERATOR ONLY</span>
+            </sc-if>
+          </div>
+          <div style="display:flex; flex-direction:column">
+            <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:600">Thread icon <span style="font-family:var(--font-mono); font-size:11px; font-weight:400; color:var(--color-text-tertiary)">· optional</span></label>
+            <div style="display:flex; align-items:center; gap:12px">
+              <sc-if value="{{ iconOn }}" hint-placeholder-val="{{ true }}">
+                <div style="position:relative; width:56px; height:56px; display:grid; place-items:center; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); flex-shrink:0">
+                  <span style="font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--color-accent-base)">EL</span>
+                  <span style="position:absolute; bottom:2px; right:2px; width:14px; height:14px; display:grid; place-items:center; background:var(--color-neutral-950); border:1px solid var(--color-accent-dark); color:var(--color-accent-base)"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg></span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px">
+                  <div style="display:flex; gap:6px">
+                    <button onClick="{{ addIcon }}" style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:6px 10px; border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">REPLACE</button>
+                    <button onClick="{{ removeIcon }}" style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-error-light); background:transparent; border:1px solid var(--color-border-default); padding:6px 10px; border-radius:2px" style-hover="border-color:var(--color-error)">REMOVE</button>
+                  </div>
+                  <span style="font-family:var(--font-mono); font-size:9px; color:var(--color-neutral-600)">square · ≤2 MiB</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ noIcon }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ addIcon }}" style="width:56px; height:56px; display:grid; place-items:center; background:transparent; border:1px dashed var(--color-border-subtle); color:var(--color-text-tertiary); flex-shrink:0" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+                </button>
+                <div style="display:flex; flex-direction:column; gap:4px">
+                  <span style="font-size:12px; color:var(--color-text-secondary)">Falls back to a monogram</span>
+                  <span style="font-family:var(--font-mono); font-size:9px; color:var(--color-neutral-600)">square looks best</span>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column">
+          <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:600">Tags <span style="font-family:var(--font-mono); font-size:11px; font-weight:400; color:var(--color-text-tertiary)">· {{ tagCount }}/5</span></label>
+          <div style="position:relative">
+            <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--color-surface-secondary); border:1px solid var(--color-border-default); border-radius:2px; padding:8px 10px; min-height:46px">
+              <sc-for list="{{ tags }}" as="t" hint-placeholder-count="2">
+                <span style="display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-700); padding:4px 6px 4px 10px; border-radius:2px" style-hover="background:var(--color-neutral-600)">#{{ t.slug }}<button onClick="{{ t.remove }}" style="background:none; border:none; color:var(--color-text-tertiary); padding:0 2px; font-size:14px; line-height:1" style-hover="color:var(--color-error-light)">×</button></span>
+              </sc-for>
+              <sc-if value="{{ canAddTags }}" hint-placeholder-val="{{ true }}">
+                <input value="{{ tagInput }}" onChange="{{ setTagInput }}" onKeyDown="{{ tagKeyDown }}" onFocus="{{ openSuggestions }}" placeholder="{{ tagPlaceholder }}" style="flex:1; min-width:140px; background:transparent; border:none; border-radius:0; padding:4px; font-family:var(--font-mono); font-size:13px" style-focus="outline:none; background:transparent; border:none"></input>
+              </sc-if>
+            </div>
+            <sc-if value="{{ showSuggestions }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; left:0; right:0; top:calc(100% + 4px); background:var(--color-neutral-900); border:1px solid var(--color-border-default); box-shadow:var(--shadow-lg); z-index:30">
+                <div style="display:flex; align-items:center; gap:8px; padding:8px 12px; border-bottom:1px solid var(--color-border-default)">
+                  <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.12em; color:var(--color-text-tertiary); flex:1">EXISTING TAGS</span>
+                  <span title="Requires GET /api/content/tags?query= — proposed endpoint, mock data" style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 5px; border:1px solid var(--color-warning); color:var(--color-warning)">SOON</span>
+                </div>
+                <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="3">
+                  <button onClick="{{ s.pick }}" style="display:flex; width:100%; align-items:center; gap:10px; padding:9px 12px; background:transparent; border:none; text-align:left" style-hover="background:var(--color-neutral-800)">
+                    <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary)">#{{ s.slug }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <sc-if value="{{ tagError }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px; color:var(--color-error); margin-top:6px">{{ tagErrorMsg }}</span>
+          </sc-if>
+        </div>
+
+        <div style="display:flex; flex-direction:column">
+          <label style="display:block; margin-bottom:8px; font-size:14px; font-weight:600">Body <span style="font-family:var(--font-mono); font-size:11px; font-weight:400; color:var(--color-text-tertiary)">· markdown · insert media at the cursor</span></label>
+          <div style="border:1px solid var(--color-border-default); background:var(--color-surface-secondary)">
+            <div style="display:flex; align-items:center; gap:4px; padding:8px 10px; border-bottom:1px solid var(--color-border-default); flex-wrap:wrap">
+              <button onClick="{{ mdBold }}" title="Bold" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">B</button>
+              <button onClick="{{ mdItalic }}" title="Italic" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; font-style:italic; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">I</button>
+              <button onClick="{{ mdStrike }}" title="Strikethrough" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; text-decoration:line-through; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">S</button>
+              <button onClick="{{ mdHeading }}" title="Heading" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">H</button>
+              <span style="width:1px; height:18px; background:var(--color-border-default); margin:0 4px"></span>
+              <button onClick="{{ mdBullet }}" title="Bullet list" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">•</button>
+              <button onClick="{{ mdNumber }}" title="Numbered list" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">1.</button>
+              <button onClick="{{ mdQuote }}" title="Quote" style="width:28px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">"</button>
+              <button onClick="{{ mdCode }}" title="Code block" style="width:34px; height:28px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)">&lt;/&gt;</button>
+              <button onClick="{{ mdLink }}" title="Link" style="width:28px; height:28px; display:grid; place-items:center; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle); background:var(--color-neutral-800)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg></button>
+              <span style="width:1px; height:18px; background:var(--color-border-default); margin:0 4px"></span>
+              <button onClick="{{ mdImage }}" title="Insert image at cursor" style="display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 9px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; color:var(--color-cyan-base); background:rgba(0,217,255,0.06); border:1px solid rgba(0,217,255,0.3); border-radius:2px" style-hover="background:rgba(0,217,255,0.14); border-color:var(--color-cyan-base)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg>IMAGE</button>
+              <button onClick="{{ mdVideo }}" title="Insert video at cursor" style="display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 9px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; color:var(--color-cyan-base); background:rgba(0,217,255,0.06); border:1px solid rgba(0,217,255,0.3); border-radius:2px" style-hover="background:rgba(0,217,255,0.14); border-color:var(--color-cyan-base)"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h11a1 1 0 0 1 1 1v3l4-2v12l-4-2v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"></path></svg>VIDEO</button>
+              <span style="flex:1"></span>
+              <sc-if value="{{ writing }}" hint-placeholder-val="{{ true }}">
+                <button style="padding:5px 12px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-text-inverse); background:var(--color-accent-base); border:none; border-radius:2px">WRITE</button>
+                <button onClick="{{ toPreview }}" style="padding:5px 12px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary)">PREVIEW</button>
+              </sc-if>
+              <sc-if value="{{ previewing }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ toWrite }}" style="padding:5px 12px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); border-radius:2px" style-hover="color:var(--color-text-primary)">WRITE</button>
+                <button style="padding:5px 12px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-text-inverse); background:var(--color-accent-base); border:none; border-radius:2px">PREVIEW</button>
+              </sc-if>
+            </div>
+            <sc-if value="{{ writing }}" hint-placeholder-val="{{ true }}">
+              <textarea ref="{{ bodyRef }}" value="{{ body }}" onChange="{{ setBody }}" rows="12" placeholder="Raw Markdown. Rendered &amp; sanitized on display." style="width:100%; background:transparent; border:none; border-radius:0; padding:14px 16px; font-family:var(--font-mono); font-size:13px; line-height:1.7; resize:vertical" style-focus="outline:none; border:none; background:transparent"></textarea>
+            </sc-if>
+            <sc-if value="{{ previewing }}" hint-placeholder-val="{{ false }}">
+              <div class="markdown-body" style="padding:16px 20px; min-height:200px; font-size:15px">{{ previewNodes }}</div>
+            </sc-if>
+          </div>
+          <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary); margin-top:6px">IMAGE &amp; VIDEO INSERT A TAG AT THE CURSOR — RENDERED INLINE WHERE YOU PLACE IT</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column">
+          <label style="display:block; margin-bottom:4px; font-size:14px; font-weight:600">Attachments <span style="font-family:var(--font-mono); font-size:11px; font-weight:400; color:var(--color-text-tertiary)">· {{ docCount }}/10 · downloadable files</span></label>
+          <span style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:10px; text-wrap:pretty">Documents that can't render inline — PDF, DOCX, XLSX, TXT, ZIP — attach here for readers to download.</span>
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <sc-for list="{{ docs }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:12px; background:var(--color-neutral-950); border:1px solid var(--color-border-default); padding:10px 12px">
+                <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:9px; font-weight:700; color:{{ d.extColor }}; flex-shrink:0">{{ d.ext }}</span>
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:4px">
+                  <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ d.filename }}</span>
+                  <sc-if value="{{ d.uploading }}" hint-placeholder-val="{{ false }}">
+                    <span style="height:3px; background:var(--color-neutral-800); position:relative"><span style="position:absolute; inset:0; width:{{ d.pctText }}; background:var(--color-accent-base)"></span></span>
+                  </sc-if>
+                  <sc-if value="{{ d.ready }}" hint-placeholder-val="{{ true }}">
+                    <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-text-tertiary)">{{ d.size }}</span>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ d.uploading }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-accent-base)">UPLOADING {{ d.pctText }}</span>
+                </sc-if>
+                <sc-if value="{{ d.ready }}" hint-placeholder-val="{{ true }}">
+                  <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-success)">READY</span>
+                </sc-if>
+                <button onClick="{{ d.remove }}" title="Detach" style="width:24px; height:24px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); font-size:13px; line-height:1; flex-shrink:0" style-hover="color:var(--color-error-light); border-color:var(--color-error)">×</button>
+              </div>
+            </sc-for>
+            <button style="display:flex; align-items:center; justify-content:center; gap:8px; padding:12px; background:transparent; border:1px dashed var(--color-border-subtle); color:var(--color-text-tertiary)" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em">ATTACH FILES · ≤5 MiB EACH</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="display:flex; align-items:center; gap:12px; padding:16px 24px; border-top:1px solid var(--color-border-default); background:var(--color-neutral-900)">
+        <span style="flex:1; font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">STORED AS RAW MARKDOWN · SANITIZED CLIENT-SIDE</span>
+        <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="ghost" size="md" onClick="{{ closeModal }}" hint-size="90px,40px">Cancel</x-import>
+        <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ publish }}" hint-size="150px,40px">{{ submitLabel }}</x-import>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mode&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;create&quot;, &quot;edit&quot;], &quot;default&quot;: &quot;create&quot;, &quot;tsType&quot;: &quot;'create' | 'edit'&quot;, &quot;section&quot;: &quot;Mode&quot;}, &quot;hasIcon&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Thread icon&quot;}}">
+class Component extends DCLogic {
+  // POST /api/content/threads { categoryId, title, body, tagSlugs?, iconFileId? } → 201 { threadId }
+  static SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  static SUGGESTIONS = ["home-lab", "rust", "astro-imaging", "3d-printing", "fermentation", "mechanical-keyboards", "sensors", "arduino", "dotnet", "grafana"];
+
+  constructor(props) {
+    super(props);
+    this.bodyRef = React.createRef();
+  }
+
+  state = {
+    title: "My sourdough starter is a bioreactor — logging CO₂ with an MH-Z19",
+    titleError: null,
+    body: "My sourdough starter lives in a jar on the kitchen counter. Naturally, I put a CO2 sensor on it.\n\n## Setup\n\n- MH-Z19B NDIR CO2 sensor, UART mode\n- Raspberry Pi Zero 2 W\n- BME280 for temperature compensation\n\n![CO2 vs time — first 48 hours](image:chart-co2-48h.png)\n\n```\nz19.write(READ)\nhi, lo = z19.read(9)[2:4]\n```\n\n## Results\n\nPeak fermentation hits ~4,800 ppm about five hours after feeding, then decays overnight. Full timelapse below.\n\n@video(bench-timelapse.mp4)\n\n> Feeding the starter is now a monitored production event.",
+    view: "write",
+    tags: ["fermentation", "sensors"],
+    tagInput: "",
+    suggestionsOpen: false,
+    tagErrorMsg: null,
+    iconOn: null,
+    docs: [
+      { id: "d1", name: "parts-list", ext: "PDF", size: "220 KB", status: "READY", pct: 100 },
+      { id: "d2", name: "bom", ext: "XLSX", size: "18 KB", status: "UPLOADING", pct: 40 },
+      { id: "d3", name: "build-notes", ext: "TXT", size: "4 KB", status: "READY", pct: 100 },
+    ],
+  };
+
+  addTag(slug) {
+    const s = slug.trim();
+    if (!s) return;
+    if (!Component.SLUG_RE.test(s) || s.length > 32) {
+      this.setState({ tagErrorMsg: "Tags must be lowercase-kebab-case, max 32 chars. (422 · Validation)" });
+      return;
+    }
+    this.setState(st => st.tags.includes(s) || st.tags.length >= 5 ? { tagInput: "" } : { tags: [...st.tags, s], tagInput: "", tagErrorMsg: null, suggestionsOpen: false });
+  }
+
+  insertAtCursor(before, after, placeholder) {
+    const el = this.bodyRef.current;
+    const body = this.state.body;
+    let start = body.length, end = body.length;
+    if (el && typeof el.selectionStart === "number") { start = el.selectionStart; end = el.selectionEnd; }
+    const sel = body.slice(start, end) || placeholder;
+    const next = body.slice(0, start) + before + sel + after + body.slice(end);
+    const caretStart = start + before.length;
+    const caretEnd = caretStart + sel.length;
+    this.setState({ body: next, view: "write" });
+    setTimeout(() => {
+      const e2 = this.bodyRef.current;
+      if (e2) { e2.focus(); e2.setSelectionRange(caretStart, caretEnd); }
+    }, 0);
+  }
+
+  docColor(ext) {
+    return ({ PDF: "var(--color-error-light)", XLSX: "var(--color-success-light)", DOCX: "var(--color-info-light)", TXT: "var(--color-text-secondary)", ZIP: "var(--color-warning-light)" })[ext] || "var(--color-text-secondary)";
+  }
+
+  previewImage(alt, name, key) {
+    return React.createElement("figure", { key, style: { margin: "0 0 16px" } }, [
+      React.createElement("div", { key: "i", style: { position: "relative", aspectRatio: "16/9", border: "1px solid var(--color-border-default)", background: "repeating-linear-gradient(45deg, var(--color-neutral-800), var(--color-neutral-800) 10px, var(--color-neutral-900) 10px, var(--color-neutral-900) 20px)", display: "grid", placeItems: "center" } },
+        React.createElement("div", { style: { textAlign: "center", display: "flex", flexDirection: "column", gap: "6px", alignItems: "center", color: "var(--color-neutral-500)" } }, [
+          React.createElement("svg", { key: "s", width: "24", height: "24", viewBox: "0 0 24 24", fill: "currentColor" }, React.createElement("path", { d: "M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z" })),
+          React.createElement("span", { key: "n", style: { fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--color-text-secondary)" } }, name),
+        ])
+      ),
+      React.createElement("figcaption", { key: "c", style: { fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--color-text-tertiary)", marginTop: "6px", textAlign: "center" } }, alt),
+    ]);
+  }
+
+  previewVideo(name, key) {
+    return React.createElement("div", { key, style: { position: "relative", aspectRatio: "16/9", border: "1px solid var(--color-border-default)", background: "var(--color-neutral-950)", marginBottom: "16px", overflow: "hidden" } }, [
+      React.createElement("div", { key: "p", style: { position: "absolute", inset: 0, display: "grid", placeItems: "center" } },
+        React.createElement("div", { style: { width: "54px", height: "54px", display: "grid", placeItems: "center", borderRadius: "50%", background: "rgba(255,107,53,0.9)", color: "var(--color-text-inverse)" } },
+          React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "currentColor" }, React.createElement("path", { d: "M8 5v14l11-7z" }))
+        )
+      ),
+      React.createElement("div", { key: "b", style: { position: "absolute", left: 0, right: 0, bottom: 0, display: "flex", alignItems: "center", gap: "10px", padding: "8px 10px", background: "linear-gradient(to top, rgba(7,9,13,0.9), transparent)" } }, [
+        React.createElement("span", { key: "t", style: { fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--color-neutral-200)" } }, "0:00"),
+        React.createElement("span", { key: "s", style: { flex: 1, height: "3px", background: "var(--color-neutral-700)", position: "relative" } }, React.createElement("span", { style: { position: "absolute", inset: 0, width: "0%", background: "var(--color-accent-base)" } })),
+        React.createElement("span", { key: "d", style: { fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--color-neutral-400)" } }, "1:12"),
+      ]),
+      React.createElement("span", { key: "f", style: { position: "absolute", top: "8px", left: "10px", fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--color-neutral-300)", background: "rgba(7,9,13,0.6)", padding: "2px 6px" } }, name),
+    ]);
+  }
+
+  renderPreview() {
+    const out = [];
+    let list = null, code = null, key = 0;
+    const flush = () => {
+      if (list) { out.push(React.createElement("ul", { key: key++ }, list)); list = null; }
+      if (code !== null) { out.push(React.createElement("pre", { key: key++ }, React.createElement("code", null, code.join("\n")))); code = null; }
+    };
+    for (const line of this.state.body.split("\n")) {
+      if (code !== null) { if (line.startsWith("```")) flush(); else code.push(line); continue; }
+      if (line.startsWith("```")) { if (list) flush(); code = []; continue; }
+      const img = line.match(/^!\[(.*?)\]\(image:(.*?)\)\s*$/);
+      if (img) { flush(); out.push(this.previewImage(img[1], img[2], key++)); continue; }
+      const vid = line.match(/^@video\((.*?)\)\s*$/);
+      if (vid) { flush(); out.push(this.previewVideo(vid[1], key++)); continue; }
+      if (line.startsWith("## ")) { flush(); out.push(React.createElement("h2", { key: key++, style: { fontSize: "20px" } }, line.slice(3))); continue; }
+      if (line.startsWith("> ")) { flush(); out.push(React.createElement("blockquote", { key: key++ }, line.slice(2))); continue; }
+      if (line.startsWith("- ")) { if (!list) list = []; list.push(React.createElement("li", { key: key++ }, line.slice(2))); continue; }
+      flush();
+      if (line.trim()) out.push(React.createElement("p", { key: key++ }, line));
+    }
+    flush();
+    return out;
+  }
+
+  renderVals() {
+    const mode = this.props.mode ?? "create";
+    const iconOn = this.state.iconOn ?? (this.props.hasIcon ?? true);
+    const filtered = Component.SUGGESTIONS
+      .filter(s => !this.state.tags.includes(s) && s.includes(this.state.tagInput.trim()))
+      .slice(0, 5)
+      .map(slug => ({ slug, pick: () => this.addTag(slug) }));
+    const docs = this.state.docs.map(d => ({
+      ...d,
+      filename: d.name + "." + d.ext.toLowerCase(),
+      extColor: this.docColor(d.ext),
+      uploading: d.status === "UPLOADING",
+      ready: d.status === "READY",
+      pctText: d.pct + "%",
+      remove: () => this.setState(s => ({ docs: s.docs.filter(x => x.id !== d.id) })),
+    }));
+    const tb = (before, after, ph) => () => this.insertAtCursor(before, after, ph);
+    return {
+      heading: mode === "edit" ? "Edit thread" : "New thread",
+      endpointNote: mode === "edit" ? "PUT /api/content/threads/{id} · owner or moderator" : "POST /api/content/threads",
+      submitLabel: mode === "edit" ? "Save changes" : "Publish thread",
+      isEdit: mode === "edit",
+      curly: "{", curlyEnd: "}",
+      ghostRows: [0, 1, 2, 3, 4],
+      title: this.state.title,
+      titleError: this.state.titleError,
+      setTitle: (e) => this.setState({ title: e.target.value, titleError: null }),
+      body: this.state.body,
+      setBody: (e) => this.setState({ body: e.target.value }),
+      bodyRef: this.bodyRef,
+      writing: this.state.view === "write",
+      previewing: this.state.view === "preview",
+      toWrite: () => this.setState({ view: "write" }),
+      toPreview: () => this.setState({ view: "preview" }),
+      previewNodes: this.renderPreview(),
+      iconOn,
+      noIcon: !iconOn,
+      addIcon: () => this.setState({ iconOn: true }),
+      removeIcon: () => this.setState({ iconOn: false }),
+      docs,
+      docCount: docs.length,
+      mdBold: tb("**", "**", "bold text"),
+      mdItalic: tb("*", "*", "italic"),
+      mdStrike: tb("~~", "~~", "strikethrough"),
+      mdHeading: tb("\n## ", "", "Heading"),
+      mdBullet: tb("\n- ", "", "List item"),
+      mdNumber: tb("\n1. ", "", "List item"),
+      mdQuote: tb("\n> ", "", "Quote"),
+      mdCode: tb("\n```\n", "\n```\n", "code"),
+      mdLink: tb("[", "](https://)", "label"),
+      mdImage: () => this.insertAtCursor("\n![", "](image:filename.png)\n", "caption"),
+      mdVideo: () => this.insertAtCursor("\n@video(", ")\n", "clip.mp4"),
+      tags: this.state.tags.map(slug => ({ slug, remove: () => this.setState(s => ({ tags: s.tags.filter(t => t !== slug) })) })),
+      tagCount: this.state.tags.length,
+      canAddTags: this.state.tags.length < 5,
+      tagPlaceholder: this.state.tags.length ? "add another…" : "e.g. home-lab",
+      tagInput: this.state.tagInput,
+      setTagInput: (e) => this.setState({ tagInput: e.target.value, suggestionsOpen: true, tagErrorMsg: null }),
+      tagKeyDown: (e) => { if (e.key === "Enter") { e.preventDefault(); this.addTag(this.state.tagInput); } if (e.key === "Escape") this.setState({ suggestionsOpen: false }); },
+      openSuggestions: () => this.setState({ suggestionsOpen: true }),
+      showSuggestions: this.state.suggestionsOpen && filtered.length > 0 && this.state.tags.length < 5,
+      suggestions: filtered,
+      tagError: !!this.state.tagErrorMsg,
+      tagErrorMsg: this.state.tagErrorMsg,
+      closeModal: () => { window.location.href = "Home.dc.html"; },
+      goHome: () => { window.location.href = "Home.dc.html"; },
+      publish: () => {
+        if (!this.state.title.trim()) { this.setState({ titleError: "Title is required. (422 · Validation)" }); return; }
+        window.location.href = "Thread.dc.html";
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

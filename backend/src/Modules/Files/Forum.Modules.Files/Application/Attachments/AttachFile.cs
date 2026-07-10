@@ -14,8 +14,8 @@ namespace Forum.Modules.Files.Application.Attachments;
 /// only the uploader may attach their file, and the module that owns the target decides whether the user
 /// may modify it — thread/comment/category targets are gated by Content's <see cref="IContentAuthorization"/>
 /// contract (owner-or-moderator, 404 → 403 preserved), an avatar is self-authorized (target = the requesting
-/// user), and DM targets are rejected until the Social module lands (Phase 5). Avatars and category icons use
-/// replace semantics (one live attachment per target); threads/comments are additive up to the configured cap.
+/// user), and DM targets are rejected until the Social module lands (Phase 5). Avatars, category icons and thread
+/// icons use replace semantics (one live attachment per target); threads/comments are additive up to the cap.
 /// </summary>
 internal sealed record AttachFileCommand(Ulid FileId, string TargetType, Ulid? TargetId) : ICommand;
 
@@ -109,7 +109,7 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
             return Result.Success(); // Idempotent: the link already exists.
         }
 
-        if (targetType is FileTargetType.Avatar or FileTargetType.CategoryIcon)
+        if (targetType is FileTargetType.Avatar or FileTargetType.CategoryIcon or FileTargetType.ThreadIcon)
         {
             // Single-slot targets: attaching a new avatar/icon replaces the previous one, which the
             // orphan sweep removes once its grace window passes (if nothing else references it).

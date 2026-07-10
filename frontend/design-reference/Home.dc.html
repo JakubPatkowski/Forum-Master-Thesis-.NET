@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+    @keyframes live-dot { 0% { box-shadow: 0 0 0 0 rgba(0,217,255,0.45); } 70% { box-shadow: 0 0 0 7px rgba(0,217,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,217,255,0); } }
+    .home-sb::-webkit-scrollbar { width: 8px; }
+    .home-sb::-webkit-scrollbar-track { background: var(--color-neutral-950); }
+    .home-sb::-webkit-scrollbar-thumb { background: var(--color-neutral-700); border: 2px solid var(--color-neutral-900); border-radius: 6px; }
+    .home-sb::-webkit-scrollbar-thumb:hover { background: var(--color-accent-dark); }
+  </style>
+</helmet>
+<div data-screen-label="Home" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="forum" status="{{ wsStatus }}" authed="{{ authed }}" hint-size="100%,118px"></dc-import>
+    <div style="max-width:1400px; margin:0 auto; padding:24px 32px 64px; display:grid; grid-template-columns:250px minmax(0,1fr) 300px; gap:24px; align-items:start">
+
+      <aside style="display:flex; flex-direction:column; gap:16px; position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">CATEGORIES</span>
+          </div>
+          <nav class="home-sb" style="display:flex; flex-direction:column; padding:6px; max-height:316px; overflow-y:auto; overflow-x:hidden">
+            <a href="Home.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); border-radius:2px">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-950); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-accent-base)">✱</span>
+              <span style="font-size:13px; font-weight:600; color:var(--color-accent-base)">All threads</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">PR</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Programming</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">SC</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Science &amp; Space</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">EL</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Electronics &amp; DIY</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">GA</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Gaming</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">PH</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Photography</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-text-secondary)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z"></path></svg></span>
+              <span style="font-size:13px; color:var(--color-text-primary); flex:1">Staff Lounge</span>
+              <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 5px; border:1px solid var(--color-border-default); color:var(--color-text-tertiary)">PRIVATE</span>
+            </a>
+          </nav>
+        </section>
+      </aside>
+
+      <main style="display:flex; flex-direction:column; gap:20px; min-width:0">
+        <sc-if value="{{ liveBanner }}" hint-placeholder-val="{{ true }}">
+          <div data-comment-anchor="live-banner" style="position:relative; background:rgba(0,217,255,0.05); border:1px solid rgba(0,217,255,0.25); padding:12px 16px; display:flex; align-items:center; gap:12px">
+            <span style="position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+            <span style="position:absolute; top:-1px; right:-1px; width:10px; height:10px; border-top:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+            <span style="position:absolute; bottom:-1px; left:-1px; width:10px; height:10px; border-bottom:2px solid var(--color-cyan-base); border-left:2px solid var(--color-cyan-base)"></span>
+            <span style="position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom:2px solid var(--color-cyan-base); border-right:2px solid var(--color-cyan-base)"></span>
+            <span style="width:8px; height:8px; border-radius:50%; background:var(--color-cyan-base); animation:live-dot 2s ease-out infinite; flex-shrink:0"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em; color:var(--color-cyan-base); flex-shrink:0">LIVE</span>
+            <span style="font-size:14px; color:var(--color-text-primary); flex:1">2 new threads arrived while you were reading</span>
+            <button style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-cyan-base); background:transparent; border:1px solid rgba(0,217,255,0.4); padding:7px 14px; border-radius:2px" style-hover="background:rgba(0,217,255,0.12)">LOAD NEW ↓</button>
+          </div>
+        </sc-if>
+
+        <section>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-accent-base)"><path d="M14 3h-4v2h1v5l-3 3v2h4v6l1 1 1-1v-6h4v-2l-3-3V5h1V3z"></path></svg>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">PINNED</span>
+          </div>
+          <a href="Thread.dc.html" style="display:block; text-decoration:none; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-left:2px solid var(--color-accent-base); padding:20px 24px" style-hover="border-color:var(--color-border-subtle); border-left-color:var(--color-accent-base); background:var(--color-neutral-800)">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px">
+              <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-cyan-base)">META</span>
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; padding:2px 7px; background:var(--color-accent-subtle); color:var(--color-accent-base); border:1px solid var(--color-accent-dark)">PINNED</span>
+            </div>
+            <h2 style="font-size:24px; font-weight:700; letter-spacing:-0.01em; color:var(--color-text-primary); margin-bottom:10px; text-wrap:pretty">Community rules &amp; posting guide — read before your first thread</h2>
+            <div style="display:flex; align-items:center; gap:14px">
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-tertiary)">@forum_staff · 92 D AGO</span>
+              <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)"><svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-neutral-500)"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>128</span>
+            </div>
+          </a>
+        </section>
+
+        <section>
+          <div style="display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:12px">
+            <div>
+              <h1 style="font-size:24px; font-weight:700; letter-spacing:-0.01em">Latest threads</h1>
+              <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">NEWEST FIRST · CURSOR PAGED</div>
+            </div>
+            <sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ goCompose }}" hint-size="150px,40px">+ New thread</x-import>
+            </sc-if>
+            <sc-if value="{{ anon }}" hint-placeholder-val="{{ false }}">
+              <a href="Auth.dc.html" style="font-size:13px; font-weight:600; color:var(--color-accent-base); text-decoration:none" style-hover="color:var(--color-accent-light)">Log in to post →</a>
+            </sc-if>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <sc-for list="{{ threads }}" as="t" hint-placeholder-count="6">
+              <a href="Thread.dc.html" style="display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; align-items:start; text-decoration:none; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:14px 16px" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-subtle)">
+                <span style="width:44px; height:44px; display:grid; place-items:center; background:{{ t.iconBg }}; border:1px solid {{ t.iconBorder }}; font-family:var(--font-mono); font-size:13px; font-weight:700; color:{{ t.iconColor }}">{{ t.monogram }}</span>
+                <span style="display:flex; flex-direction:column; gap:5px; min-width:0">
+                  <span style="display:flex; align-items:center; gap:10px">
+                    <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; color:var(--color-cyan-base)">{{ t.categoryLabel }}</span>
+                    <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">{{ t.timeLabel }}</span>
+                    <sc-if value="{{ t.edited }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 5px; border:1px solid var(--color-border-default); color:var(--color-text-tertiary)">EDITED</span></sc-if>
+                  </span>
+                  <span style="font-size:16px; font-weight:600; color:var(--color-text-primary); text-wrap:pretty">{{ t.title }}</span>
+                  <span style="font-size:13px; line-height:1.55; color:var(--color-text-secondary); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-wrap:pretty">{{ t.excerpt }}</span>
+                  <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@{{ t.username }}</span>
+                </span>
+                <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:13px; color:{{ t.likeColor }}; align-self:start; padding-top:2px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>
+                  {{ t.likeCount }}
+                </span>
+              </a>
+            </sc-for>
+          </div>
+          <button style="width:100%; margin-top:12px; padding:12px; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">LOAD MORE ↓</button>
+        </section>
+      </main>
+
+      <aside style="display:flex; flex-direction:column; gap:16px; position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary); flex:1">POPULAR TAGS</span>
+            <span title="Requires GET /api/content/tags — endpoint does not exist yet; mock data" style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 6px; border:1px solid var(--color-warning); color:var(--color-warning)">SOON</span>
+          </div>
+          <div style="padding:14px; display:flex; flex-wrap:wrap; gap:8px">
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#home-lab</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#rust</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#astro-imaging</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#3d-printing</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#fermentation</a>
+            <a href="Search.dc.html" style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); background:var(--color-neutral-800); border:1px solid var(--color-border-default); padding:4px 10px; text-decoration:none; border-radius:2px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">#mechanical-keyboards</a>
+          </div>
+        </section>
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:7px; height:7px; border-radius:50%; background:var(--color-cyan-base); animation:live-dot 2s ease-out infinite"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">LIVE ACTIVITY</span>
+          </div>
+          <div style="padding:6px 0">
+            <div style="display:flex; align-items:center; gap:10px; padding:9px 14px">
+              <span style="width:6px; height:6px; background:var(--color-cyan-base); flex-shrink:0"></span>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">thread.created · science-space</span>
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">2 MIN</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; padding:9px 14px">
+              <span style="width:6px; height:6px; background:var(--color-accent-base); flex-shrink:0"></span>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">reaction · Rust vs C# for modding…</span>
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">6 MIN</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; padding:9px 14px">
+              <span style="width:6px; height:6px; background:var(--color-neutral-500); flex-shrink:0"></span>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">comment.created · gaming</span>
+              <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">11 MIN</span>
+            </div>
+          </div>
+          <div style="padding:10px 14px; border-top:1px solid var(--color-border-default)">
+            <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-text-tertiary)">WS NOTIFY → RE-FETCH · NO PAYLOADS</span>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;wsStatus&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;live&quot;, &quot;reconnecting&quot;, &quot;offline&quot;], &quot;default&quot;: &quot;live&quot;, &quot;tsType&quot;: &quot;'live' | 'reconnecting' | 'offline'&quot;, &quot;section&quot;: &quot;Realtime&quot;}, &quot;liveBanner&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Realtime&quot;}, &quot;authed&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Session&quot;}}">
+class Component extends DCLogic {
+  // Feed rows follow ThreadFeedItemResponse — GET /api/content/threads?cursor=&limit=
+  // (commentCount intentionally NOT rendered: hard-coded 0 in SQL today, see brief §4.4)
+  // likeCount + viewerReacted hydrated via GET /api/engagement/reactions/batch?targetType=thread&targetIds=…
+  static FEED = [
+    { id: "01J1A", categorySlug: "science-space", categoryName: "Science & Space", title: "JWST caught a strange absorption line on WASP-39b — amateur spectroscopy inside", excerpt: "Pulled a clean spectrum from my backyard rig and there's an absorption dip I can't explain against the published transmission spectrum. Raw frames and my reduction steps are attached — tell me where I went wrong.", isPinned: false, ownerId: "01U2", username: "stella_obs", displayName: "Stella Obrycka", likeCount: 42, viewerReacted: true, minutesAgo: 14, lastModifiedOnUtc: null },
+    { id: "01J1B", categorySlug: "programming", categoryName: "Programming", title: "Rust vs C# for writing game-modding tools — real-world experience?", excerpt: "I maintain a couple of modding utilities and I'm tempted to rewrite them in Rust. Curious who has actually shipped tooling in each, and where the real pain was — startup time, distribution, or the ecosystem.", isPinned: false, ownerId: "01U3", username: "dev_ola", displayName: "Aleksandra Nowak", likeCount: 17, viewerReacted: false, minutesAgo: 48, lastModifiedOnUtc: null },
+    { id: "01J1C", categorySlug: "diy-electronics", categoryName: "Electronics & DIY", title: "My sourdough starter is a bioreactor — logging CO₂ with an MH-Z19", excerpt: "I strapped an MH-Z19 CO₂ sensor to a jar of starter and logged 48 hours of fermentation. Peak output lands about five hours after feeding. Full rig, code and dataset inside.", isPinned: false, ownerId: "01U4", username: "tomek_labs", displayName: "Tomasz Labiak", likeCount: 12, viewerReacted: false, minutesAgo: 122, lastModifiedOnUtc: null },
+    { id: "01J1D", categorySlug: "gaming", categoryName: "Gaming", title: "Patch 6.1 broke modded saves — workarounds & load-order thread", excerpt: "6.1 quietly changed the save format and half my load order is broken. Collecting confirmed workarounds and a safe re-order here so nobody else loses a 40-hour run.", isPinned: false, ownerId: "01U5", username: "piotr_gm", displayName: "Piotr Gmerek", likeCount: 31, viewerReacted: false, minutesAgo: 300, lastModifiedOnUtc: null },
+    { id: "01J1E", categorySlug: "photography", categoryName: "Photography", title: "Show your desk setup — 2026 edition", excerpt: "Post your 2026 battlestation — bonus points for cable management and the one upgrade you'd redo. I'll start with mine and the monitor arm I regret buying.", isPinned: false, ownerId: "01U6", username: "ana_lens", displayName: "Anna Lenska", likeCount: 56, viewerReacted: true, minutesAgo: 540, lastModifiedOnUtc: "2026-07-05T09:00:00Z" },
+    { id: "01J1F", categorySlug: "programming", categoryName: "Programming", title: ".NET 10 minimal APIs — what surprised you after the migration?", excerpt: "Migrated a mid-size service last month. A few things genuinely surprised me — mostly good, one sharp edge around endpoint filters and DI ordering. Notes and a before/after inside.", isPinned: false, ownerId: "01U1", username: "nadia_dev", displayName: "Nadia Kowalczyk", likeCount: 9, viewerReacted: false, minutesAgo: 1440, lastModifiedOnUtc: null },
+  ];
+
+  timeLabel(mins) {
+    if (mins < 60) return mins + " MIN";
+    if (mins < 1440) return Math.round(mins / 60) + " H";
+    return Math.round(mins / 1440) + " D";
+  }
+
+  renderVals() {
+    const toneMap = {
+      accent: { iconBg: "var(--color-accent-subtle)", iconBorder: "var(--color-accent-dark)", iconColor: "var(--color-accent-base)" },
+      cyan: { iconBg: "rgba(0,217,255,0.08)", iconBorder: "rgba(0,217,255,0.3)", iconColor: "var(--color-cyan-base)" },
+    };
+    const catTone = { "science-space": "cyan", "programming": "accent", "diy-electronics": "accent", "gaming": "cyan", "photography": "cyan" };
+    const threads = Component.FEED.map(t => ({
+      ...t,
+      ...(toneMap[catTone[t.categorySlug]] || toneMap.accent),
+      monogram: t.categoryName.replace(/&/g, "").split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase(),
+      categoryLabel: t.categoryName.toUpperCase(),
+      timeLabel: this.timeLabel(t.minutesAgo),
+      edited: !!t.lastModifiedOnUtc,
+      likeColor: t.viewerReacted ? "var(--color-accent-base)" : "var(--color-neutral-500)",
+    }));
+    const authed = this.props.authed ?? true;
+    return {
+      threads,
+      wsStatus: this.props.wsStatus ?? "live",
+      liveBanner: this.props.liveBanner ?? true,
+      authed,
+      anon: !authed,
+      goCompose: () => { window.location.href = "Compose.dc.html"; },
+    };
+  }
+}
+</script>
+</body>
+</html>

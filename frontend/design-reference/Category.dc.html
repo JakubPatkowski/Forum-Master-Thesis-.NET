@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+    @keyframes live-dot { 0% { box-shadow: 0 0 0 0 rgba(0,217,255,0.45); } 70% { box-shadow: 0 0 0 7px rgba(0,217,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,217,255,0); } }
+    .cat-sb::-webkit-scrollbar { width: 8px; }
+    .cat-sb::-webkit-scrollbar-track { background: var(--color-neutral-950); }
+    .cat-sb::-webkit-scrollbar-thumb { background: var(--color-neutral-700); border: 2px solid var(--color-neutral-900); border-radius: 6px; }
+    .cat-sb::-webkit-scrollbar-thumb:hover { background: var(--color-accent-dark); }
+  </style>
+</helmet>
+<div data-screen-label="Category" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="forum" hint-size="100%,118px"></dc-import>
+    <div style="max-width:1400px; margin:0 auto; padding:24px 32px 64px; display:grid; grid-template-columns:250px minmax(0,1fr) 300px; gap:24px; align-items:start">
+
+      <aside style="position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">CATEGORIES</span>
+          </div>
+          <nav class="cat-sb" style="display:flex; flex-direction:column; padding:6px; max-height:316px; overflow-y:auto; overflow-x:hidden">
+            <a href="Home.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">✱</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">All threads</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">PR</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Programming</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">SC</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Science &amp; Space</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); border-radius:2px">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-950); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-accent-base)">EL</span>
+              <span style="font-size:13px; font-weight:600; color:var(--color-accent-base)">Electronics &amp; DIY</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">GA</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Gaming</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">PH</span>
+              <span style="font-size:13px; color:var(--color-text-primary)">Photography</span>
+            </a>
+            <a href="Category.dc.html" style="display:flex; align-items:center; gap:10px; padding:8px 10px; text-decoration:none; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800)">
+              <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-text-secondary)"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z"></path></svg></span>
+              <span style="font-size:13px; color:var(--color-text-primary); flex:1">Staff Lounge</span>
+              <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 5px; border:1px solid var(--color-border-default); color:var(--color-text-tertiary)">PRIVATE</span>
+            </a>
+          </nav>
+        </section>
+      </aside>
+
+      <main style="display:flex; flex-direction:column; gap:20px; min-width:0">
+        <header style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:20px 24px; display:flex; gap:16px; align-items:center">
+          <span title="iconFileId is null — icon upload wiring lands in a later phase" style="width:56px; height:56px; display:grid; place-items:center; background:var(--color-neutral-950); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:18px; font-weight:700; color:var(--color-text-secondary); flex-shrink:0">EL</span>
+          <div style="flex:1; min-width:0">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap">
+              <h1 style="font-size:24px; font-weight:700; letter-spacing:-0.01em">Electronics &amp; DIY</h1>
+              <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:2px 7px; border:1px solid var(--color-border-default); color:var(--color-text-tertiary)">PUBLIC</span>
+              <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-neutral-600)">/diy-electronics</span>
+            </div>
+            <p style="font-size:14px; color:var(--color-text-secondary); margin-top:6px; text-wrap:pretty">Sensors, soldering, home labs, repairs and things that beep when they shouldn't.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-shrink:0">
+            <sc-if value="{{ viewAsModerator }}" hint-placeholder-val="{{ false }}">
+              <button style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:9px 14px; border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">EDIT CATEGORY</button>
+            </sc-if>
+            <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ goCompose }}" hint-size="150px,40px">+ New thread</x-import>
+          </div>
+        </header>
+
+        <sc-if value="{{ hasThreads }}" hint-placeholder-val="{{ true }}">
+          <section>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--color-accent-base)"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>
+              <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">MOST POPULAR</span>
+            </div>
+            <a href="Thread.dc.html" style="display:grid; grid-template-columns:54px minmax(0,1fr) auto; gap:16px; align-items:start; text-decoration:none; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-left:2px solid var(--color-cyan-base); padding:18px 22px" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-subtle); border-left-color:var(--color-cyan-base)">
+              <span style="position:relative; width:54px; height:54px; display:grid; place-items:center; background:rgba(0,217,255,0.08); border:1px solid rgba(0,217,255,0.35); font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--color-cyan-base)">OS<span style="position:absolute; bottom:2px; right:2px; width:14px; height:14px; display:grid; place-items:center; background:var(--color-neutral-950); border:1px solid rgba(0,217,255,0.35); color:var(--color-cyan-base)"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11 11 14l3.5-4.5L19 16H5l3.5-5z"></path></svg></span></span>
+              <span style="display:flex; flex-direction:column; gap:7px; min-width:0">
+                <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">3 D AGO</span>
+                <h2 style="font-size:20px; font-weight:700; color:var(--color-text-primary); text-wrap:pretty">Repairing a 1987 oscilloscope — full recap walkthrough with photos</h2>
+                <p style="font-size:13px; line-height:1.55; color:var(--color-text-secondary); text-wrap:pretty">A full teardown, recap and calibration of a dead analog scope. Plenty of before/after photos and the exact capacitors I used. It lives again — and holds cal.</p>
+                <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@marek_soldering</span>
+              </span>
+              <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; color:var(--color-accent-base); align-self:start; padding-top:2px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>96</span>
+            </a>
+          </section>
+        </sc-if>
+
+        <section>
+          <div style="display:flex; align-items:end; justify-content:space-between; gap:16px; margin-bottom:12px">
+            <div>
+              <h2 style="font-size:20px; font-weight:700">Threads</h2>
+              <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">GET /api/content/threads?categoryId=01K2 · PINNED FIRST</div>
+            </div>
+          </div>
+          <sc-if value="{{ hasThreads }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ threads }}" as="t" hint-placeholder-count="5">
+                <a href="Thread.dc.html" style="display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; align-items:start; text-decoration:none; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-left:2px solid {{ t.railColor }}; padding:14px 16px" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-subtle)">
+                  <span style="width:44px; height:44px; display:grid; place-items:center; background:{{ t.iconBg }}; border:1px solid {{ t.iconBorder }}; font-family:var(--font-mono); font-size:13px; font-weight:700; color:{{ t.iconColor }}">{{ t.mono }}</span>
+                  <span style="display:flex; flex-direction:column; gap:5px; min-width:0">
+                    <span style="display:flex; align-items:center; gap:10px">
+                      <sc-if value="{{ t.isPinned }}" hint-placeholder-val="{{ false }}">
+                        <span style="display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:1px 6px; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); color:var(--color-accent-base)"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M14 3h-4v2h1v5l-3 3v2h4v6l1 1 1-1v-6h4v-2l-3-3V5h1V3z"></path></svg>PINNED</span>
+                      </sc-if>
+                      <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">{{ t.timeLabel }}</span>
+                    </span>
+                    <span style="font-size:16px; font-weight:600; color:var(--color-text-primary); text-wrap:pretty">{{ t.title }}</span>
+                    <span style="font-size:13px; line-height:1.55; color:var(--color-text-secondary); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-wrap:pretty">{{ t.excerpt }}</span>
+                    <span style="font-family:var(--font-mono); font-size:11px; color:var(--color-text-tertiary)">@{{ t.username }}</span>
+                  </span>
+                  <span style="display:inline-flex; align-items:center; gap:14px; align-self:start; padding-top:2px">
+                    <sc-if value="{{ viewAsModerator }}" hint-placeholder-val="{{ false }}">
+                      <button onClick="{{ t.togglePin }}" style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:5px 10px; border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">{{ t.pinLabel }}</button>
+                    </sc-if>
+                    <span style="display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:13px; color:{{ t.likeColor }}">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"></path></svg>
+                      {{ t.likeCount }}
+                    </span>
+                  </span>
+                </a>
+              </sc-for>
+            </div>
+            <button style="width:100%; margin-top:12px; padding:12px; background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">LOAD MORE ↓</button>
+          </sc-if>
+          <sc-if value="{{ noThreads }}" hint-placeholder-val="{{ false }}">
+            <div style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:64px 24px; display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center">
+              <span style="width:44px; height:44px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-neutral-500)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1zm3 5h10v2H7V9z"></path></svg>
+              </span>
+              <div style="font-size:16px; font-weight:600">No threads here yet</div>
+              <div style="font-size:13px; color:var(--color-text-secondary); max-width:300px">Be the first to post in Electronics &amp; DIY.</div>
+              <div style="margin-top:6px">
+                <x-import component-from-global-scope="NETForumDesignSystem_fe5576.Button" variant="primary" size="md" onClick="{{ goCompose }}" hint-size="150px,40px">Start a thread</x-import>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+      </main>
+
+      <aside style="display:flex; flex-direction:column; gap:16px; position:sticky; top:24px">
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">ABOUT CATEGORY</span>
+          </div>
+          <div style="padding:8px 14px 12px">
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">SLUG</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">diy-electronics</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">VISIBILITY</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">public</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--color-neutral-800)">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">OWNER</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">@forum_staff</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; padding:7px 0">
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--color-text-tertiary)">CREATED</span>
+              <span style="font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary)">2026-03-14</span>
+            </div>
+          </div>
+        </section>
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default); border-radius:2px">
+          <div style="padding:12px 14px; display:flex; align-items:center; gap:10px">
+            <span style="width:7px; height:7px; border-radius:50%; background:var(--color-cyan-base); animation:live-dot 2s ease-out infinite; flex-shrink:0"></span>
+            <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-secondary)">SUBSCRIBED · view=category</span>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;viewAsModerator&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Permissions&quot;}, &quot;emptyState&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Data&quot;}}">
+class Component extends DCLogic {
+  // GET /api/content/threads?categoryId=&cursor=&limit= — ThreadFeedItemResponse[]
+  // Pinned sort first. Pin/unpin: POST /api/content/threads/{id}/pin — category moderator only.
+  state = {
+    threads: [
+      { id: "01T1", title: "Fire safety when charging LiPo packs — read this first", excerpt: "LiPo fires are fast, toxic and very hard to stop once they start. This is the checklist I run every single charge — bag, surface, current limit, and never leaving the room. Add yours below.", mono: "FS", tone: "accent", isPinned: true, username: "forum_staff", likeCount: 74, viewerReacted: false, minutesAgo: 20160 },
+      { id: "01T2", title: "My sourdough starter is a bioreactor — logging CO₂ with an MH-Z19", excerpt: "I strapped an MH-Z19 CO₂ sensor to a jar of starter and logged 48 hours of fermentation. Peak output lands about five hours after feeding. Full rig, code and dataset inside.", mono: "SD", tone: "cyan", isPinned: false, username: "tomek_labs", likeCount: 12, viewerReacted: false, minutesAgo: 122 },
+      { id: "01T3", title: "Building a home NAS on a shoestring — my parts list", excerpt: "Four drives, a used mini-PC and a lot of patience. Here's the exact parts list, what I'd change next time, and the idle power draw after two months of uptime.", mono: "NA", tone: "accent", isPinned: false, username: "marek_soldering", likeCount: 28, viewerReacted: true, minutesAgo: 800 },
+      { id: "01T4", title: "Mechanical keyboard from scratch — PCB design questions", excerpt: "First custom PCB and KiCad keeps fighting me on the switch matrix. A couple of diode-orientation questions and one footprint I can't source. Schematic attached.", mono: "MK", tone: "cyan", isPinned: false, username: "dev_ola", likeCount: 7, viewerReacted: false, minutesAgo: 2100 },
+      { id: "01T5", title: "3D printer enclosure — where do I put the VOC sensor?", excerpt: "Building an enclosure for ABS and want to monitor VOCs properly. Airflow makes placement tricky — near the hotend, the door, or the exhaust? Looking for real measurements.", mono: "3D", tone: "accent", isPinned: false, username: "ana_lens", likeCount: 4, viewerReacted: false, minutesAgo: 3300 },
+    ],
+  };
+
+  timeLabel(mins) {
+    if (mins < 60) return mins + " MIN";
+    if (mins < 1440) return Math.round(mins / 60) + " H";
+    return Math.round(mins / 1440) + " D";
+  }
+
+  renderVals() {
+    const empty = this.props.emptyState ?? false;
+    const sorted = [...this.state.threads].sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+    const toneMap = {
+      accent: { iconBg: "var(--color-accent-subtle)", iconBorder: "var(--color-accent-dark)", iconColor: "var(--color-accent-base)" },
+      cyan: { iconBg: "rgba(0,217,255,0.08)", iconBorder: "rgba(0,217,255,0.3)", iconColor: "var(--color-cyan-base)" },
+    };
+    const threads = sorted.map(t => ({
+      ...t,
+      ...(toneMap[t.tone] || toneMap.accent),
+      timeLabel: this.timeLabel(t.minutesAgo),
+      likeColor: t.viewerReacted ? "var(--color-accent-base)" : "var(--color-neutral-500)",
+      railColor: t.isPinned ? "var(--color-accent-base)" : "transparent",
+      pinLabel: t.isPinned ? "UNPIN" : "PIN",
+      togglePin: (e) => {
+        e.preventDefault();
+        this.setState(s => ({ threads: s.threads.map(x => x.id === t.id ? { ...x, isPinned: !x.isPinned } : x) }));
+      },
+    }));
+    return {
+      threads,
+      hasThreads: !empty,
+      noThreads: empty,
+      viewAsModerator: this.props.viewAsModerator ?? false,
+      goCompose: () => { window.location.href = "Compose.dc.html"; },
+    };
+  }
+}
+</script>
+</body>
+</html>

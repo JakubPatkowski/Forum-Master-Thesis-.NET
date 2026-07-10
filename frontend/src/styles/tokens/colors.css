@@ -1,0 +1,61 @@
+/* .NET Forum Design System — Color Tokens */
+
+:root {
+  /* === NEUTRALS === */
+  /* Dark theme: black-to-white gradient */
+  --color-neutral-950: #07090d; /* Nearly black, darkest bg */
+  --color-neutral-900: #0f1219; /* Dark bg, app shell */
+  --color-neutral-800: #1a1f2e; /* Card backgrounds */
+  --color-neutral-700: #2d3748; /* Subtle borders, disabled states */
+  --color-neutral-600: #4a5568; /* Secondary text */
+  --color-neutral-500: #718096; /* Muted text */
+  --color-neutral-400: #a0aec0; /* Tertiary text */
+  --color-neutral-300: #cbd5e0; /* Light text */
+  --color-neutral-200: #e2e8f0; /* Lighter text */
+  --color-neutral-100: #f7fafc; /* Almost white */
+
+  /* === PRIMARY ACCENT === */
+  /* Neon orange for primary actions, highlights */
+  --color-accent-base: #ff6b35; /* Main accent */
+  --color-accent-dark: #e55a2b; /* Darker variant, hover */
+  --color-accent-light: #ff7f4d; /* Lighter variant */
+  --color-accent-subtle: #ff6b3530; /* Semi-transparent bg */
+
+  /* === SEMANTIC COLORS === */
+  --color-success: #10b981; /* For positive feedback, valid state */
+  --color-success-light: #6ee7b7;
+  --color-warning: #f59e0b; /* For warnings, attention */
+  --color-warning-light: #fcd34d;
+  --color-error: #ef4444; /* For errors, destructive actions */
+  --color-error-light: #fca5a5;
+  --color-info: #3b82f6; /* For informational messages */
+  --color-info-light: #93c5fd;
+
+  /* === CYAN / SECONDARY === */
+  /* Subtle cyan for secondary accents, highlights, grid texture */
+  --color-cyan-base: #00d9ff; /* Bright cyan, sparingly used */
+  --color-cyan-subtle: #00d9ff15; /* Very transparent, texture/grid background */
+
+  /* === SEMANTIC TEXT COLORS === */
+  --color-text-primary: var(--color-neutral-100); /* Main text */
+  --color-text-secondary: var(--color-neutral-400); /* Secondary text */
+  --color-text-tertiary: var(--color-neutral-500); /* Disabled, muted */
+  --color-text-inverse: var(--color-neutral-950); /* Text on light/accent bg */
+
+  /* === SURFACE COLORS === */
+  --color-surface-primary: var(--color-neutral-900); /* Main bg */
+  --color-surface-secondary: var(--color-neutral-800); /* Cards, panels */
+  --color-surface-tertiary: var(--color-neutral-700); /* Hover state elevations */
+  --color-surface-overlay: rgba(7, 9, 13, 0.8); /* Modal/overlay bg */
+
+  /* === BORDER COLORS === */
+  --color-border-default: var(--color-neutral-700);
+  --color-border-subtle: var(--color-neutral-600);
+  --color-border-accent: var(--color-accent-base);
+
+  /* === INTERACTIVE STATES === */
+  --color-interactive-hover: var(--color-neutral-700);
+  --color-interactive-active: var(--color-accent-base);
+  --color-interactive-disabled: var(--color-neutral-600);
+  --color-interactive-focus: var(--color-accent-base);
+}

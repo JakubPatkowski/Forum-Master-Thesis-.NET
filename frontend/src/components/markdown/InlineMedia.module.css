@@ -1,0 +1,48 @@
+/* <img>/<video> are rendered inside markdown <p> elements, so the wrapper is a styled
+   <span> (block-level display) rather than <figure> to keep the HTML valid. */
+
+.figure {
+  display: block;
+  margin: 0 0 var(--space-4);
+}
+
+.media {
+  display: block;
+  max-width: 100%;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-neutral-950);
+}
+
+.caption {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-top: 6px;
+  text-align: center;
+}
+
+.placeholder {
+  display: block;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border-default);
+  background: var(--color-neutral-900);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  margin: 0 0 var(--space-4);
+}
+
+.unavailable {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px dashed var(--color-border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin: 0 0 var(--space-4);
+}

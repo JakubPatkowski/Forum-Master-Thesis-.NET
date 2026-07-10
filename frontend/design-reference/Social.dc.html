@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/styles.css">
+  <script src="_ds/net-forum-design-system-fe5576d4-a5bb-4ce0-9b80-8abe4bac97b2/_ds_bundle.js"></script>
+  <style>
+    body { background: var(--color-neutral-950); }
+    @keyframes live-dot { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+    @keyframes railIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+    @keyframes chatPop { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
+    @keyframes unreadPulse { 0% { box-shadow: 0 0 0 0 rgba(255,107,53,0.5); } 70% { box-shadow: 0 0 0 5px rgba(255,107,53,0); } 100% { box-shadow: 0 0 0 0 rgba(255,107,53,0); } }
+    .soc-sb::-webkit-scrollbar { width: 8px; }
+    .soc-sb::-webkit-scrollbar-track { background: var(--color-neutral-950); }
+    .soc-sb::-webkit-scrollbar-thumb { background: var(--color-neutral-700); border: 2px solid var(--color-neutral-900); border-radius: 6px; }
+    .soc-sb::-webkit-scrollbar-thumb:hover { background: var(--color-accent-dark); }
+  </style>
+</helmet>
+<div data-screen-label="Social" style="min-height:100vh; font-family:var(--font-sans); color:var(--color-text-primary); position:relative">
+  <div style="position:fixed; inset:0; pointer-events:none; background-image:linear-gradient(var(--color-cyan-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--color-cyan-subtle) 1px, transparent 1px); background-size:44px 44px"></div>
+  <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(to bottom, transparent, var(--color-neutral-950) 560px)"></div>
+  <div style="position:relative">
+    <dc-import name="TopNav" active="forum" hint-size="100%,118px"></dc-import>
+
+    <!-- Forum backdrop (context under the floating widgets) -->
+    <div style="max-width:1400px; margin:0 auto; padding:24px 32px 64px; display:grid; grid-template-columns:250px minmax(0,1fr); gap:24px; align-items:start; pointer-events:none">
+      <aside>
+        <section style="background:var(--color-neutral-900); border:1px solid var(--color-border-default)">
+          <div style="padding:12px 14px; border-bottom:1px solid var(--color-border-default); display:flex; align-items:center; gap:8px">
+            <span style="width:3px; height:12px; background:var(--color-accent-base)"></span>
+            <span style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; color:var(--color-text-secondary)">CATEGORIES</span>
+          </div>
+          <div style="padding:6px; display:flex; flex-direction:column">
+            <sc-for list="{{ backdropCats }}" as="c" hint-placeholder-count="5">
+              <div style="display:flex; align-items:center; gap:10px; padding:8px 10px">
+                <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary)">{{ c.mono }}</span>
+                <span style="font-size:13px; color:var(--color-text-primary)">{{ c.name }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </aside>
+      <main style="display:flex; flex-direction:column; gap:16px">
+        <div>
+          <h1 style="font-size:24px; font-weight:700; letter-spacing:-0.01em">Community</h1>
+          <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; color:var(--color-text-tertiary); margin-top:4px">FRIENDS · GROUPS · MESSAGES — WS REALTIME</div>
+        </div>
+        <sc-for list="{{ backdropThreads }}" as="t" hint-placeholder-count="3">
+          <div style="display:grid; grid-template-columns:44px minmax(0,1fr) auto; gap:14px; align-items:start; background:var(--color-neutral-900); border:1px solid var(--color-border-default); padding:14px 16px">
+            <span style="width:44px; height:44px; display:grid; place-items:center; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--color-accent-base)">{{ t.mono }}</span>
+            <span style="display:flex; flex-direction:column; gap:5px; min-width:0">
+              <span style="font-size:16px; font-weight:600; color:var(--color-text-primary)">{{ t.title }}</span>
+              <span style="font-size:13px; line-height:1.5; color:var(--color-text-secondary); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden">{{ t.excerpt }}</span>
+            </span>
+            <span style="font-family:var(--font-mono); font-size:13px; color:var(--color-neutral-500); align-self:start; padding-top:2px">♥ {{ t.likes }}</span>
+          </div>
+        </sc-for>
+      </main>
+    </div>
+
+    <!-- Soft scrim to lift the widgets -->
+    <div style="position:fixed; inset:0; pointer-events:none; background:linear-gradient(90deg, transparent 45%, rgba(7,9,13,0.55) 78%)"></div>
+
+    <!-- FLOATING: Friends / social rail -->
+    <aside style="position:fixed; top:118px; right:0; bottom:0; width:322px; display:flex; flex-direction:column; background:var(--color-neutral-900); border-left:1px solid var(--color-border-subtle); box-shadow:var(--shadow-2xl); z-index:45; animation:railIn 0.28s cubic-bezier(0.16,1,0.3,1)">
+      <div style="display:flex; align-items:center; gap:10px; padding:16px 16px 12px; border-bottom:1px solid var(--color-border-default)">
+        <span style="width:8px; height:8px; border-radius:50%; background:var(--color-success); animation:live-dot 2.2s ease-out infinite"></span>
+        <span style="font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; color:var(--color-text-primary); flex:1">SOCIAL</span>
+        <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ onlineCount }} online</span>
+        <a href="Home.dc.html" title="Close" style="width:26px; height:26px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </a>
+      </div>
+
+      <div style="display:flex; padding:0 8px; border-bottom:1px solid var(--color-border-default)">
+        <button onClick="{{ tabFriends }}" style="{{ friendsTabStyle }}">Friends</button>
+        <button onClick="{{ tabRequests }}" style="{{ requestsTabStyle }}">Requests<sc-if value="{{ hasRequests }}" hint-placeholder-val="{{ true }}"><span style="margin-left:6px; min-width:16px; height:16px; padding:0 4px; display:inline-grid; place-items:center; border-radius:8px; background:var(--color-accent-base); color:var(--color-neutral-950); font-size:9px; font-weight:700; animation:unreadPulse 2s ease-out infinite">{{ requestCount }}</span></sc-if></button>
+        <button onClick="{{ tabGroups }}" style="{{ groupsTabStyle }}">Groups</button>
+        <button onClick="{{ tabIgnored }}" style="{{ ignoredTabStyle }}">Ignored</button>
+      </div>
+
+      <div class="soc-sb" style="flex:1; overflow-y:auto; overflow-x:hidden">
+        <!-- FRIENDS -->
+        <sc-if value="{{ isFriends }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:12px 14px 8px">
+            <div style="position:relative">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--color-neutral-500)"><circle cx="11" cy="11" r="7"></circle><path d="M20.5 20.5 16 16"></path></svg>
+              <input placeholder="Find a friend…" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:8px 10px 8px 32px; background:var(--color-neutral-950); border:1px solid var(--color-border-default); border-radius:2px" style-focus="border-color:var(--color-accent-base); outline:none"></input>
+            </div>
+          </div>
+          <div style="padding:4px 8px 0">
+            <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); padding:6px 8px">ONLINE · {{ onlineCount }}</div>
+            <sc-for list="{{ friendsOnline }}" as="f" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:11px; padding:8px; border:1px solid transparent; border-radius:2px" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-default)">
+                <span style="position:relative; flex-shrink:0">
+                  <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-cyan-base)">{{ f.initial }}</span>
+                  <span style="position:absolute; bottom:-2px; right:-2px; width:11px; height:11px; border-radius:50%; background:{{ f.statusColor }}; border:2px solid var(--color-neutral-900)"></span>
+                </span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                  <span style="font-size:13px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ f.name }}</span>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:{{ f.statusColor }}">{{ f.statusLabel }}</span>
+                </span>
+                <button onClick="{{ f.message }}" title="Message" style="width:30px; height:30px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px; flex-shrink:0" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1z"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+            <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); padding:12px 8px 6px">OFFLINE · {{ offlineCount }}</div>
+            <sc-for list="{{ friendsOffline }}" as="f" hint-placeholder-count="2">
+              <div style="display:flex; align-items:center; gap:11px; padding:8px; border:1px solid transparent; border-radius:2px; opacity:0.7" style-hover="background:var(--color-neutral-800); border-color:var(--color-border-default); opacity:1">
+                <span style="position:relative; flex-shrink:0">
+                  <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-text-secondary)">{{ f.initial }}</span>
+                  <span style="position:absolute; bottom:-2px; right:-2px; width:11px; height:11px; border-radius:50%; background:{{ f.statusColor }}; border:2px solid var(--color-neutral-900)"></span>
+                </span>
+                <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                  <span style="font-size:13px; font-weight:600; color:var(--color-text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ f.name }}</span>
+                  <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">last seen {{ f.last }}</span>
+                </span>
+                <button onClick="{{ f.message }}" title="Message" style="width:30px; height:30px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px; flex-shrink:0" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1z"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- REQUESTS -->
+        <sc-if value="{{ isRequests }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px 12px 6px">
+            <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); padding:2px 4px 8px">INCOMING</div>
+            <sc-if value="{{ hasIncoming }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; gap:8px">
+                <sc-for list="{{ incoming }}" as="r" hint-placeholder-count="2">
+                  <div style="background:var(--color-neutral-950); border:1px solid var(--color-border-default); padding:10px 11px">
+                    <div style="display:flex; align-items:center; gap:11px">
+                      <span style="width:34px; height:34px; display:grid; place-items:center; background:var(--color-accent-subtle); border:1px solid var(--color-accent-dark); font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--color-accent-base); flex-shrink:0">{{ r.initial }}</span>
+                      <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                        <span style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.name }}</span>
+                        <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">@{{ r.username }} · {{ r.mutual }} mutual</span>
+                      </span>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:10px">
+                      <button onClick="{{ r.accept }}" style="flex:1; font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-inverse); background:var(--color-accent-base); border:none; padding:7px; border-radius:2px" style-hover="background:var(--color-accent-dark)">ACCEPT</button>
+                      <button onClick="{{ r.decline }}" style="flex:1; font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:7px; border-radius:2px" style-hover="color:var(--color-error-light); border-color:var(--color-error)">DECLINE</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noIncoming }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:24px 12px; text-align:center; font-size:13px; color:var(--color-text-tertiary)">No pending requests.</div>
+            </sc-if>
+            <div style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.14em; color:var(--color-text-tertiary); padding:16px 4px 8px">SENT</div>
+            <sc-for list="{{ outgoing }}" as="r" hint-placeholder-count="1">
+              <div style="display:flex; align-items:center; gap:11px; padding:8px 4px">
+                <span style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-text-secondary); flex-shrink:0">{{ r.initial }}</span>
+                <span style="flex:1; min-width:0; font-size:13px; color:var(--color-text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ r.name }}</span>
+                <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; padding:3px 7px; border:1px solid var(--color-warning); color:var(--color-warning)">PENDING</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <!-- GROUPS -->
+        <sc-if value="{{ isGroups }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px">
+            <button style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; background:transparent; border:1px dashed var(--color-border-subtle); color:var(--color-text-secondary); margin-bottom:10px" style-hover="border-color:var(--color-accent-base); color:var(--color-accent-base)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+              <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em">NEW GROUP</span>
+            </button>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+                <div style="display:flex; align-items:center; gap:11px; background:var(--color-neutral-950); border:1px solid var(--color-border-default); padding:10px 11px" style-hover="border-color:var(--color-border-subtle)">
+                  <span style="width:36px; height:36px; display:grid; place-items:center; background:{{ g.iconBg }}; border:1px solid {{ g.iconBorder }}; font-family:var(--font-mono); font-size:11px; font-weight:700; color:{{ g.iconColor }}; flex-shrink:0">{{ g.initial }}</span>
+                  <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px">
+                    <span style="font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ g.name }}</span>
+                    <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-tertiary)">{{ g.members }} members · {{ g.online }} online</span>
+                  </span>
+                  <button onClick="{{ g.open }}" style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:7px 10px; border-radius:2px; flex-shrink:0" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)">OPEN</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- IGNORED -->
+        <sc-if value="{{ isIgnored }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:12px">
+            <p style="font-size:12px; color:var(--color-text-tertiary); line-height:1.5; margin-bottom:12px; text-wrap:pretty">Ignored users can't message you or see your online status. Their posts are collapsed behind a notice.</p>
+            <sc-if value="{{ hasIgnored }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex; flex-direction:column; gap:8px">
+                <sc-for list="{{ ignored }}" as="u" hint-placeholder-count="2">
+                  <div style="display:flex; align-items:center; gap:11px; padding:8px 10px; background:var(--color-neutral-950); border:1px solid var(--color-border-default)">
+                    <span style="width:32px; height:32px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); color:var(--color-neutral-500); flex-shrink:0"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2c1.8 0 3.4.6 4.7 1.6L5.6 16.7A8 8 0 0 1 12 4zm0 16c-1.8 0-3.4-.6-4.7-1.6L18.4 7.3A8 8 0 0 1 12 20z"></path></svg></span>
+                    <span style="flex:1; min-width:0; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">@{{ u.username }}</span>
+                    <button onClick="{{ u.unignore }}" style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; color:var(--color-text-secondary); background:transparent; border:1px solid var(--color-border-default); padding:6px 10px; border-radius:2px; flex-shrink:0" style-hover="color:var(--color-success-light); border-color:var(--color-success)">UNIGNORE</button>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ noIgnored }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:24px 12px; text-align:center; font-size:13px; color:var(--color-text-tertiary)">You haven't ignored anyone.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </aside>
+
+    <!-- FLOATING: chat dock -->
+    <div style="position:fixed; right:338px; bottom:0; display:flex; align-items:flex-end; gap:12px; z-index:46">
+      <sc-for list="{{ chatPills }}" as="p" hint-placeholder-count="1">
+        <button onClick="{{ p.restore }}" style="display:flex; align-items:center; gap:10px; width:210px; padding:10px 12px; background:var(--color-neutral-900); border:1px solid var(--color-border-subtle); border-bottom:none; box-shadow:var(--shadow-lg)" style-hover="background:var(--color-neutral-800)">
+          <span style="position:relative; flex-shrink:0">
+            <span style="width:28px; height:28px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--color-cyan-base)">{{ p.initial }}</span>
+            <span style="position:absolute; bottom:-2px; right:-2px; width:9px; height:9px; border-radius:50%; background:{{ p.statusColor }}; border:2px solid var(--color-neutral-900)"></span>
+          </span>
+          <span style="flex:1; min-width:0; font-size:13px; font-weight:600; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ p.name }}</span>
+          <sc-if value="{{ p.hasUnread }}" hint-placeholder-val="{{ false }}">
+            <span style="min-width:16px; height:16px; padding:0 4px; display:grid; place-items:center; border-radius:8px; background:var(--color-accent-base); color:var(--color-neutral-950); font-family:var(--font-mono); font-size:9px; font-weight:700">{{ p.unread }}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+
+      <sc-for list="{{ chatWindows }}" as="w" hint-placeholder-count="2">
+        <div style="width:328px; height:436px; display:flex; flex-direction:column; background:var(--color-neutral-900); border:1px solid var(--color-border-subtle); border-bottom:none; box-shadow:var(--shadow-2xl); animation:chatPop 0.24s cubic-bezier(0.16,1,0.3,1)">
+          <div style="display:flex; align-items:center; gap:10px; padding:11px 12px; border-bottom:1px solid var(--color-border-default); background:var(--color-neutral-900)">
+            <span style="position:relative; flex-shrink:0">
+              <span style="width:32px; height:32px; display:grid; place-items:center; background:{{ w.avatarBg }}; border:1px solid {{ w.avatarBorder }}; font-family:var(--font-mono); font-size:12px; font-weight:700; color:{{ w.avatarColor }}">{{ w.initial }}</span>
+              <sc-if value="{{ w.isDm }}" hint-placeholder-val="{{ true }}"><span style="position:absolute; bottom:-2px; right:-2px; width:10px; height:10px; border-radius:50%; background:{{ w.statusColor }}; border:2px solid var(--color-neutral-900)"></span></sc-if>
+            </span>
+            <span style="flex:1; min-width:0; display:flex; flex-direction:column; gap:1px">
+              <span style="font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ w.name }}</span>
+              <span style="font-family:var(--font-mono); font-size:10px; color:{{ w.subColor }}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ w.subLabel }}</span>
+            </span>
+            <button onClick="{{ w.minimize }}" title="Minimize" style="width:24px; height:24px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px" style-hover="color:var(--color-text-primary); border-color:var(--color-border-subtle)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"></path></svg></button>
+            <button onClick="{{ w.close }}" title="Close" style="width:24px; height:24px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px" style-hover="color:var(--color-error-light); border-color:var(--color-error)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+
+          <div class="soc-sb" style="flex:1; overflow-y:auto; overflow-x:hidden; padding:12px; display:flex; flex-direction:column; gap:9px; background:var(--color-neutral-950)">
+            <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--color-neutral-600); text-align:center; padding:2px 0 4px">END-TO-END WITHIN THE FORUM · WS DELIVERY</span>
+            <sc-for list="{{ w.messages }}" as="m" hint-placeholder-count="4">
+              <div style="display:flex; justify-content:{{ m.rowJustify }}">
+                <div style="display:flex; flex-direction:column; gap:3px; max-width:84%">
+                  <sc-if value="{{ m.showAuthor }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:flex; align-items:center; gap:6px; padding-left:2px">
+                      <span style="width:16px; height:16px; display:grid; place-items:center; background:var(--color-neutral-800); border:1px solid var(--color-border-default); font-family:var(--font-mono); font-size:8px; font-weight:700; color:var(--color-cyan-base)">{{ m.authorInitial }}</span>
+                      <span style="font-family:var(--font-mono); font-size:10px; color:var(--color-text-secondary)">{{ m.authorName }}</span>
+                    </span>
+                  </sc-if>
+                  <span style="{{ m.bubbleStyle }}">{{ m.text }}</span>
+                  <span style="font-family:var(--font-mono); font-size:9px; color:var(--color-text-tertiary); align-self:{{ m.timeAlign }}">{{ m.timeLabel }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; padding:9px 10px; border-top:1px solid var(--color-border-default)">
+            <button title="Attach" style="width:30px; height:30px; display:grid; place-items:center; background:transparent; border:1px solid var(--color-border-default); color:var(--color-text-secondary); border-radius:2px; flex-shrink:0" style-hover="color:var(--color-accent-base); border-color:var(--color-accent-base)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg></button>
+            <input value="{{ w.draft }}" onChange="{{ w.setDraft }}" onKeyDown="{{ w.onKey }}" placeholder="Message…" style="flex:1; min-width:0; font-size:13px; padding:8px 10px; background:var(--color-neutral-950); border:1px solid var(--color-border-default); border-radius:2px" style-focus="border-color:var(--color-accent-base); outline:none"></input>
+            <button onClick="{{ w.send }}" title="Send" style="width:30px; height:30px; display:grid; place-items:center; background:var(--color-accent-base); color:var(--color-text-inverse); border:none; border-radius:2px; flex-shrink:0" style-hover="background:var(--color-accent-dark)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5 21 12 3 3.5 3 10l12 2-12 2z"></path></svg></button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1400, &quot;height&quot;: 900}}">
+class Component extends DCLogic {
+  state = {
+    tab: "friends",
+    friends: [
+      { initial: "T", name: "Tomasz Labiak", username: "tomek_labs", status: "online", chatId: "dm-tomek" },
+      { initial: "O", name: "Aleksandra Nowak", username: "dev_ola", status: "online", chatId: "dm-ola" },
+      { initial: "P", name: "Piotr Gmerek", username: "piotr_gm", status: "away", chatId: "dm-piotr" },
+      { initial: "A", name: "Anna Lenska", username: "ana_lens", status: "offline", last: "2 h", chatId: "dm-ana" },
+      { initial: "M", name: "Marek Kowal", username: "marek_soldering", status: "offline", last: "1 d", chatId: "dm-marek" },
+    ],
+    incoming: [
+      { id: "r1", initial: "S", name: "Stella Obrycka", username: "stella_obs", mutual: 4 },
+      { id: "r2", initial: "K", name: "Kuba Rybak", username: "kuba_fish", mutual: 1 },
+    ],
+    outgoing: [
+      { id: "o1", initial: "L", name: "Lab Rat", username: "lab_rat" },
+    ],
+    ignored: [
+      { id: "i1", username: "spammer_01" },
+      { id: "i2", username: "troll_ka" },
+    ],
+    groups: [
+      { id: "grp-homelab", initial: "HL", name: "Home Lab Crew", members: 5, online: 3, tone: "accent" },
+      { id: "grp-astro", initial: "AI", name: "Astro Imagers", members: 12, online: 4, tone: "cyan" },
+      { id: "grp-dotnet", initial: "NW", name: ".NET Wrocław", members: 28, online: 9, tone: "accent" },
+      { id: "grp-ferment", initial: "FM", name: "Fermenters", members: 7, online: 2, tone: "cyan" },
+    ],
+    chats: [
+      {
+        id: "dm-tomek", kind: "dm", name: "Tomasz Labiak", username: "tomek_labs", initial: "T", status: "online", minimized: false, unread: 0, draft: "",
+        messages: [
+          { id: 1, me: false, text: "Did you disable ABC on the MH-Z19 in the end?", mins: 24 },
+          { id: 2, me: true, text: "Yeah — sending the 0x79 command on boot killed the drift completely.", mins: 20 },
+          { id: 3, me: false, text: "Nice. Mind sharing the systemd unit?", mins: 12 },
+          { id: 4, me: true, text: "One sec, pushing it to a gist now.", mins: 2 },
+        ],
+      },
+      {
+        id: "grp-homelab", kind: "group", name: "Home Lab Crew", initial: "HL", status: "online", sub: "5 members · 3 online", minimized: false, unread: 0, draft: "", tone: "accent",
+        messages: [
+          { id: 1, me: false, author: "Aleksandra", initial: "O", text: "Rack arrived. It is bigger than the doorway.", mins: 40 },
+          { id: 2, me: false, author: "Piotr", initial: "P", text: "Classic. Measure twice, order once.", mins: 36 },
+          { id: 3, me: true, text: "Post a photo when it is racked — I need enclosure ideas.", mins: 18 },
+          { id: 4, me: false, author: "Stella", initial: "S", text: "Adding a shelf for the Pi cluster tonight.", mins: 6 },
+        ],
+      },
+      {
+        id: "dm-stella", kind: "dm", name: "Stella Obrycka", username: "stella_obs", initial: "S", status: "away", minimized: true, unread: 2, draft: "",
+        messages: [
+          { id: 1, me: false, text: "Those spectra look great btw", mins: 120 },
+        ],
+      },
+    ],
+  };
+
+  statusColor(s) { return s === "online" ? "var(--color-success)" : s === "away" ? "var(--color-warning)" : "var(--color-neutral-500)"; }
+  statusLabel(s) { return s === "online" ? "Active now" : s === "away" ? "Away" : "Offline"; }
+  timeLabel(mins) { return mins === 0 ? "now" : mins < 60 ? mins + "m" : Math.round(mins / 60) + "h"; }
+
+  setTab(tab) { this.setState({ tab }); }
+
+  ensureChat(id, factory) {
+    this.setState(s => {
+      const existing = s.chats.find(c => c.id === id);
+      if (existing) return { chats: s.chats.map(c => c.id === id ? { ...c, minimized: false, unread: 0 } : c) };
+      return { chats: [...s.chats, factory()] };
+    });
+  }
+
+  openFriend(f) {
+    this.ensureChat(f.chatId, () => ({
+      id: f.chatId, kind: "dm", name: f.name, username: f.username, initial: f.initial, status: f.status,
+      minimized: false, unread: 0, draft: "",
+      messages: [{ id: 1, me: false, text: "Hey! Thanks for the add.", mins: 3 }],
+    }));
+  }
+
+  openGroup(g) {
+    this.ensureChat(g.id, () => ({
+      id: g.id, kind: "group", name: g.name, initial: g.initial, status: "online", tone: g.tone,
+      sub: g.members + " members · " + g.online + " online", minimized: false, unread: 0, draft: "",
+      messages: [
+        { id: 1, me: false, author: "Aleksandra", initial: "O", text: "Welcome to " + g.name + "!", mins: 30 },
+        { id: 2, me: false, author: "Piotr", initial: "P", text: "Drop your build logs here.", mins: 14 },
+      ],
+    }));
+  }
+
+  setDraft(id, val) { this.setState(s => ({ chats: s.chats.map(c => c.id === id ? { ...c, draft: val } : c) })); }
+  send(id) {
+    this.setState(s => ({
+      chats: s.chats.map(c => {
+        if (c.id !== id || !c.draft.trim()) return c;
+        return { ...c, draft: "", messages: [...c.messages, { id: Date.now(), me: true, text: c.draft.trim(), mins: 0 }] };
+      }),
+    }));
+  }
+  toggleMin(id, minimized) { this.setState(s => ({ chats: s.chats.map(c => c.id === id ? { ...c, minimized, unread: 0 } : c) })); }
+  closeChat(id) { this.setState(s => ({ chats: s.chats.filter(c => c.id !== id) })); }
+
+  accept(id) {
+    this.setState(s => {
+      const r = s.incoming.find(x => x.id === id);
+      if (!r) return {};
+      return {
+        incoming: s.incoming.filter(x => x.id !== id),
+        friends: [{ initial: r.initial, name: r.name, username: r.username, status: "online", chatId: "dm-" + r.username }, ...s.friends],
+      };
+    });
+  }
+  decline(id) { this.setState(s => ({ incoming: s.incoming.filter(x => x.id !== id) })); }
+  unignore(id) { this.setState(s => ({ ignored: s.ignored.filter(x => x.id !== id) })); }
+
+  tabStyle(name) {
+    const active = this.state.tab === name;
+    return "flex:1; padding:11px 4px; font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; background:transparent; border:none; border-bottom:2px solid " +
+      (active ? "var(--color-accent-base)" : "transparent") + "; color:" + (active ? "var(--color-accent-base)" : "var(--color-text-secondary)") +
+      "; font-weight:" + (active ? "700" : "400") + "; display:inline-flex; align-items:center; justify-content:center";
+  }
+
+  toneFields(tone) {
+    return tone === "cyan"
+      ? { iconBg: "rgba(0,217,255,0.08)", iconBorder: "rgba(0,217,255,0.3)", iconColor: "var(--color-cyan-base)" }
+      : { iconBg: "var(--color-accent-subtle)", iconBorder: "var(--color-accent-dark)", iconColor: "var(--color-accent-base)" };
+  }
+
+  mapMessages(chat) {
+    return chat.messages.map(m => ({
+      ...m,
+      rowJustify: m.me ? "flex-end" : "flex-start",
+      timeAlign: m.me ? "flex-end" : "flex-start",
+      showAuthor: chat.kind === "group" && !m.me,
+      authorInitial: m.initial || "?",
+      authorName: m.author || "",
+      timeLabel: this.timeLabel(m.mins),
+      bubbleStyle: m.me
+        ? "background:var(--color-accent-base); color:var(--color-text-inverse); padding:8px 11px; font-size:13px; line-height:1.45; border-radius:3px; text-wrap:pretty"
+        : "background:var(--color-neutral-800); color:var(--color-neutral-100); padding:8px 11px; font-size:13px; line-height:1.45; border:1px solid var(--color-border-default); border-radius:3px; text-wrap:pretty",
+    }));
+  }
+
+  renderVals() {
+    const tab = this.state.tab;
+    const online = this.state.friends.filter(f => f.status !== "offline");
+    const offline = this.state.friends.filter(f => f.status === "offline");
+    const friendsOnline = online.map(f => ({ ...f, statusColor: this.statusColor(f.status), statusLabel: this.statusLabel(f.status), message: () => this.openFriend(f) }));
+    const friendsOffline = offline.map(f => ({ ...f, statusColor: this.statusColor(f.status), message: () => this.openFriend(f) }));
+    const incoming = this.state.incoming.map(r => ({ ...r, accept: () => this.accept(r.id), decline: () => this.decline(r.id) }));
+    const groups = this.state.groups.map(g => ({ ...g, ...this.toneFields(g.tone), open: () => this.openGroup(g) }));
+    const ignored = this.state.ignored.map(u => ({ ...u, unignore: () => this.unignore(u.id) }));
+    const windows = this.state.chats.filter(c => !c.minimized).map(c => {
+      const av = c.kind === "group" ? this.toneFields(c.tone) : { iconBg: "var(--color-neutral-800)", iconBorder: "var(--color-border-default)", iconColor: "var(--color-cyan-base)" };
+      return {
+        ...c,
+        avatarBg: av.iconBg, avatarBorder: av.iconBorder, avatarColor: av.iconColor,
+        isDm: c.kind === "dm",
+        statusColor: this.statusColor(c.status),
+        subLabel: c.kind === "group" ? c.sub : this.statusLabel(c.status),
+        subColor: c.kind === "dm" ? this.statusColor(c.status) : "var(--color-text-tertiary)",
+        messages: this.mapMessages(c),
+        setDraft: (e) => this.setDraft(c.id, e.target.value),
+        onKey: (e) => { if (e.key === "Enter") { e.preventDefault(); this.send(c.id); } },
+        send: () => this.send(c.id),
+        minimize: () => this.toggleMin(c.id, true),
+        close: () => this.closeChat(c.id),
+      };
+    });
+    const pills = this.state.chats.filter(c => c.minimized).map(c => ({
+      ...c,
+      statusColor: this.statusColor(c.status),
+      hasUnread: c.unread > 0,
+      restore: () => this.toggleMin(c.id, false),
+    }));
+    return {
+      backdropCats: [
+        { mono: "PR", name: "Programming" }, { mono: "SC", name: "Science & Space" },
+        { mono: "EL", name: "Electronics & DIY" }, { mono: "GA", name: "Gaming" }, { mono: "PH", name: "Photography" },
+      ],
+      backdropThreads: [
+        { mono: "SD", title: "My sourdough starter is a bioreactor", excerpt: "Logging 48 hours of CO₂ with an MH-Z19. Peak output lands five hours after feeding.", likes: 12 },
+        { mono: "NA", title: "Building a home NAS on a shoestring", excerpt: "Four drives, a used mini-PC and a lot of patience. Full parts list inside.", likes: 28 },
+      ],
+      onlineCount: online.length,
+      offlineCount: offline.length,
+      isFriends: tab === "friends",
+      isRequests: tab === "requests",
+      isGroups: tab === "groups",
+      isIgnored: tab === "ignored",
+      tabFriends: () => this.setTab("friends"),
+      tabRequests: () => this.setTab("requests"),
+      tabGroups: () => this.setTab("groups"),
+      tabIgnored: () => this.setTab("ignored"),
+      friendsTabStyle: this.tabStyle("friends"),
+      requestsTabStyle: this.tabStyle("requests"),
+      groupsTabStyle: this.tabStyle("groups"),
+      ignoredTabStyle: this.tabStyle("ignored"),
+      requestCount: this.state.incoming.length,
+      hasRequests: this.state.incoming.length > 0,
+      friendsOnline, friendsOffline,
+      incoming,
+      hasIncoming: incoming.length > 0,
+      noIncoming: incoming.length === 0,
+      outgoing: this.state.outgoing,
+      groups,
+      ignored,
+      hasIgnored: ignored.length > 0,
+      noIgnored: ignored.length === 0,
+      chatWindows: windows,
+      chatPills: pills,
+    };
+  }
+}
+</script>
+</body>
+</html>
