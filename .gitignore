@@ -33,3 +33,6 @@ Thumbs.db
 
 ## Load test output
 load/results/
+
+## Graphify
+graphify-out/

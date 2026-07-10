@@ -1,6 +1,8 @@
 using System.Net.WebSockets;
 using System.Text.Json;
 
+using Forum.Common.Telemetry;
+
 using Microsoft.Extensions.Options;
 
 namespace Forum.Api.Realtime;
@@ -23,15 +25,18 @@ internal sealed class RealtimeSocketHandler
 
     private readonly RealtimeConnectionRegistry _registry;
     private readonly RealtimeOptions _options;
+    private readonly ForumMetrics _metrics;
     private readonly ILogger<RealtimeSocketHandler> _logger;
 
     public RealtimeSocketHandler(
         RealtimeConnectionRegistry registry,
         IOptions<RealtimeOptions> options,
+        ForumMetrics metrics,
         ILogger<RealtimeSocketHandler> logger)
     {
         _registry = registry;
         _options = options.Value;
+        _metrics = metrics;
         _logger = logger;
     }
 
@@ -39,6 +44,7 @@ internal sealed class RealtimeSocketHandler
     {
         using var connection = new RealtimeConnection(socket, userId);
         _registry.Add(connection);
+        _metrics.WsConnectionOpened();
         if (_logger.IsEnabled(LogLevel.Debug))
         {
             _logger.LogDebug("Realtime socket {ConnectionId} opened for user {UserId}.", connection.Id, userId);
@@ -76,6 +82,9 @@ internal sealed class RealtimeSocketHandler
         finally
         {
             _registry.Remove(connection);
+            _metrics.WsConnectionClosed();
+            // The connection's remaining subscriptions die with it — release them from the gauge in one step.
+            _metrics.WsSubscriptionsChanged(-connection.Subscriptions.Count);
             if (_logger.IsEnabled(LogLevel.Debug))
             {
                 _logger.LogDebug("Realtime socket {ConnectionId} closed.", connection.Id);
@@ -105,6 +114,9 @@ internal sealed class RealtimeSocketHandler
             return new RealtimeControlMessage("error", parsed.View, parsed.Id, "unknown-view");
         }
 
+        // Only this connection's read loop mutates its subscription set, so before/after counts are race-free;
+        // the delta keeps the gauge honest when a subscribe/unsubscribe is an ack-only no-op (already present/absent).
+        var countBefore = connection.Subscriptions.Count;
         switch (parsed.Action)
         {
             case "subscribe":
@@ -119,10 +131,12 @@ internal sealed class RealtimeSocketHandler
                     return new RealtimeControlMessage("error", parsed.View, parsed.Id, "too-many-subscriptions");
                 }
 
+                _metrics.WsSubscriptionsChanged(connection.Subscriptions.Count - countBefore);
                 return new RealtimeControlMessage("subscribed", parsed.View, parsed.Id);
 
             case "unsubscribe":
                 connection.Subscriptions.Remove(view);
+                _metrics.WsSubscriptionsChanged(connection.Subscriptions.Count - countBefore);
                 return new RealtimeControlMessage("unsubscribed", parsed.View, parsed.Id);
 
             default:

@@ -12,10 +12,12 @@ using Forum.Modules.Files;
 using Forum.Modules.Identity;
 
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Structured logging: console in dev, Loki sink via configuration in cluster.
+// Structured logging: human-readable console in dev; compact JSON to stdout in Production
+// (appsettings.Production.json), shipped to Loki by Alloy — the app never buffers or pushes logs itself.
 builder.Host.UseSerilog(static (context, loggerConfiguration) =>
     loggerConfiguration.ReadFrom.Configuration(context.Configuration));
 
@@ -33,14 +35,19 @@ builder.Services.AddForumInfrastructure(builder.Configuration);   // clock, audi
 
 builder.Services.AddScoped<ICorrelationContext, CorrelationContext>();
 builder.Services.AddForumProblemDetails();                        // RFC 7807 for unhandled exceptions
+builder.Services.AddForumForwardedHeaders(builder.Configuration); // X-Forwarded-* trust (ingress in k8s only)
 builder.Services.AddForumCors(builder.Configuration);             // SPA origin allow-list
 builder.Services.AddForumRateLimiting(builder.Configuration);     // per-IP fixed window
-builder.Services.AddForumAuthentication(builder.Configuration);   // JWT bearer + authorization skeleton
+builder.Services.AddForumAuthentication(builder.Configuration, builder.Environment); // JWT bearer + authz; fails fast in Production without a real signing key
 builder.Services.AddForumRealtime(builder.Configuration);         // WebSocket hub: tickets + change-feed fan-out
 
 builder.AddForumObservability();          // OpenTelemetry traces + metrics (+ Prometheus endpoint)
 builder.Services.AddForumHealthChecks();  // /health/live, /health/ready
 builder.Services.AddForumOpenApi();       // OpenAPI document + JWT Bearer security scheme
+
+// Graceful shutdown (G17): drain in-flight work within 25 s — k8s gives 40 s (terminationGracePeriodSeconds)
+// minus a 5 s preStop sleep, so the host always finishes before the SIGKILL.
+builder.Services.Configure<HostOptions>(static options => options.ShutdownTimeout = TimeSpan.FromSeconds(25));
 
 var app = builder.Build();
 
@@ -52,9 +59,22 @@ if (args.Contains("migrate"))
     return;
 }
 
+// First, before anything reads RemoteIpAddress (rate limiter, request logs, correlation) — a no-op unless the
+// caller is a proxy inside ForwardedHeaders:KnownNetworks.
+app.UseForwardedHeaders();
+
 app.UseExceptionHandler();
 app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(static options =>
+    // kubelet probes (2 × every ~10 s per pod) and Prometheus scrapes (15 s) would dominate Loki's ingest for
+    // zero diagnostic value — Verbose keeps them out at the default minimum yet available when troubleshooting.
+    options.GetLevel = static (httpContext, _, exception) =>
+        exception is not null || httpContext.Response.StatusCode >= StatusCodes.Status500InternalServerError
+            ? LogEventLevel.Error
+            : httpContext.Request.Path.StartsWithSegments("/health")
+                || httpContext.Request.Path.StartsWithSegments("/metrics")
+                ? LogEventLevel.Verbose
+                : LogEventLevel.Information);
 app.UseForumSecurityHeaders();
 
 if (app.Environment.IsDevelopment())

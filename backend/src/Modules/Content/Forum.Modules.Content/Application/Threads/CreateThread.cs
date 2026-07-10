@@ -2,6 +2,7 @@ using FluentValidation;
 
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
@@ -45,6 +46,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
+    private readonly ForumMetrics _metrics;
 
     public CreateThreadCommandHandler(
         IValidator<CreateThreadCommand> validator,
@@ -54,7 +56,8 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
-        TimeProvider clock)
+        TimeProvider clock,
+        ForumMetrics metrics)
     {
         _validator = validator;
         _categories = categories;
@@ -64,6 +67,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
         _outbox = outbox;
         _unitOfWork = unitOfWork;
         _clock = clock;
+        _metrics = metrics;
     }
 
     public async Task<Result<CreateThreadResponse>> Handle(CreateThreadCommand command, CancellationToken cancellationToken)
@@ -125,6 +129,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        _metrics.ThreadCreated();
         return Result.Success(new CreateThreadResponse(thread.Id));
     }
 }

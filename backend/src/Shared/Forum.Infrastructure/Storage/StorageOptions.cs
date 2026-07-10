@@ -12,4 +12,13 @@ public sealed class StorageOptions
     public string SecretKey { get; init; } = string.Empty;
 
     public bool UseSsl { get; init; }
+
+    /// <summary>
+    /// The endpoint browsers reach MinIO on (e.g. the ingress host in k8s). Presigned URLs must be signed
+    /// against it — the signature binds the host — while server-side operations keep using <see cref="Endpoint"/>.
+    /// Null (the default) presigns against <see cref="Endpoint"/>, which is correct for dev/compose.
+    /// </summary>
+    public string? PublicEndpoint { get; init; }
+
+    public bool PublicUseSsl { get; init; }
 }

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 
+using Forum.Common.Telemetry;
 using Forum.Infrastructure.Messaging.Outbox;
 using Forum.Infrastructure.Persistence;
 
@@ -32,6 +33,8 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
     private readonly ModuleMessagingOptions<TContext> _module;
     private readonly MessagingOptions _options;
     private readonly TimeProvider _time;
+    private readonly ForumMetrics _metrics;
+    private readonly string _serviceName;
     private readonly ILogger<OutboxRelayService<TContext>> _logger;
     private IChannel? _channel;
 
@@ -41,6 +44,7 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
         ModuleMessagingOptions<TContext> module,
         IOptions<MessagingOptions> options,
         TimeProvider time,
+        ForumMetrics metrics,
         ILogger<OutboxRelayService<TContext>> logger)
     {
         _scopeFactory = scopeFactory;
@@ -48,11 +52,17 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
         _module = module;
         _options = options.Value;
         _time = time;
+        _metrics = metrics;
+        _serviceName = $"outbox-relay-{module.ModuleName}";
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Boot tick: the age gauge must exist from the start, or a loop that dies before its first successful
+        // pass (broker down from boot) would be invisible to the Phase 10c staleness alert.
+        _metrics.HostedServiceTick(_serviceName);
+
         var consecutiveFailures = 0;
         try
         {
@@ -63,10 +73,13 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
                 {
                     published = await PublishPendingAsync(stoppingToken);
                     consecutiveFailures = 0;
+                    _metrics.HostedServiceTick(_serviceName);
                 }
-                catch (Exception exception) when (exception is not OperationCanceledException)
+                catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
                 {
                     // Broker or database trouble: the rows stay unprocessed and are retried after a backoff.
+                    // Filtered on the token, not the exception type — an OperationCanceledException that did NOT
+                    // come from shutdown (e.g. a client-internal timeout) must land here, not end the loop.
                     consecutiveFailures++;
                     var backoff = BackoffDelay(consecutiveFailures);
                     _logger.LogWarning(
@@ -83,7 +96,7 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
                 }
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Host shutdown.
         }
@@ -136,15 +149,19 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
                     _module.ModuleName, ShortTypeName(message.Type), mandatory: false, properties,
                     Encoding.UTF8.GetBytes(message.Payload), cancellationToken);
 
-                message.ProcessedOnUtc = _time.GetUtcNow();
+                var now = _time.GetUtcNow();
+                message.ProcessedOnUtc = now;
                 message.Error = null;
                 published++;
+                _metrics.OutboxPublished(_module.ModuleName, now - message.OccurredOnUtc);
             }
-            catch (Exception exception) when (exception is not OperationCanceledException)
+            catch (Exception exception)
+                when (exception is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
             {
                 // Record the failure on the row and stop the pass — the rest of the batch would hit the same broker.
                 message.Error = Truncate(exception.Message, 2048);
                 publishFailure = exception;
+                _metrics.OutboxPublishFailed(_module.ModuleName);
                 break;
             }
         }

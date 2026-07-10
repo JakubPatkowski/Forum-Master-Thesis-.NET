@@ -9,6 +9,7 @@ using Forum.Api.Realtime;
 using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Messaging.RabbitMq;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
+using Forum.TestUtilities;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -104,7 +105,7 @@ public sealed class RealtimeFlowTests : IClassFixture<ForumApiFactory>
         var recorder = new RecordingSink();
         await using var connection = new TestRabbitMqConnection(_factory.RabbitMqConnectionString);
         var secondReplica = new RealtimeChangeFeedService(
-            connection, recorder, Options.Create(new MessagingOptions()),
+            connection, recorder, Options.Create(new MessagingOptions()), TestMetrics.Create(),
             NullLogger<RealtimeChangeFeedService>.Instance);
         await secondReplica.StartAsync(CancellationToken.None);
         try

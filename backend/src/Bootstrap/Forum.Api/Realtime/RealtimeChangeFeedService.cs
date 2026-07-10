@@ -1,3 +1,4 @@
+using Forum.Common.Telemetry;
 using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Messaging.RabbitMq;
 
@@ -23,22 +24,28 @@ internal sealed class RealtimeChangeFeedService : BackgroundService
     private readonly IRabbitMqConnection _connection;
     private readonly IRealtimeNotificationSink _sink;
     private readonly MessagingOptions _options;
+    private readonly ForumMetrics _metrics;
     private readonly ILogger<RealtimeChangeFeedService> _logger;
 
     public RealtimeChangeFeedService(
         IRabbitMqConnection connection,
         IRealtimeNotificationSink sink,
         IOptions<MessagingOptions> options,
+        ForumMetrics metrics,
         ILogger<RealtimeChangeFeedService> logger)
     {
         _connection = connection;
         _sink = sink;
         _options = options.Value;
+        _metrics = metrics;
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Boot tick: makes the age gauge exist even when the broker is unreachable from the start.
+        _metrics.HostedServiceTick("realtime-feed");
+
         try
         {
             while (!stoppingToken.IsCancellationRequested)
@@ -77,17 +84,20 @@ internal sealed class RealtimeChangeFeedService : BackgroundService
 
                     while (channel.IsOpen && !stoppingToken.IsCancellationRequested)
                     {
+                        _metrics.HostedServiceTick("realtime-feed");
                         await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                     }
                 }
-                catch (Exception exception) when (exception is not OperationCanceledException)
+                catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
                 {
+                    // Filtered on the token, not the exception type — a client-internal OperationCanceledException
+                    // must trigger a reconnect here rather than silently ending the feed for good.
                     _logger.LogWarning(exception, "Realtime hub lost the broker; reconnecting shortly.");
                     await Task.Delay(TimeSpan.FromMilliseconds(_options.PollIntervalMilliseconds), stoppingToken);
                 }
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Host shutdown.
         }

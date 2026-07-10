@@ -2,6 +2,9 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+  <ItemGroup Label="Test access (presign client selection)">
+    <InternalsVisibleTo Include="Forum.IntegrationTests" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Forum.SharedKernel\Forum.SharedKernel.csproj" />
     <ProjectReference Include="..\Forum.Common\Forum.Common.csproj" />

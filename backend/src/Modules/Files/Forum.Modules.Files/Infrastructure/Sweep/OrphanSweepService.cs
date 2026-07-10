@@ -1,3 +1,4 @@
+using Forum.Common.Telemetry;
 using Forum.Modules.Files.Application;
 using Forum.Modules.Files.Application.Sweep;
 
@@ -17,39 +18,51 @@ namespace Forum.Modules.Files.Infrastructure.Sweep;
 internal sealed class OrphanSweepService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ForumMetrics _metrics;
     private readonly ILogger<OrphanSweepService> _logger;
     private readonly FilesOptions _options;
 
     public OrphanSweepService(
-        IServiceScopeFactory scopeFactory, ILogger<OrphanSweepService> logger, IOptions<FilesOptions> options)
+        IServiceScopeFactory scopeFactory,
+        ForumMetrics metrics,
+        ILogger<OrphanSweepService> logger,
+        IOptions<FilesOptions> options)
     {
         _scopeFactory = scopeFactory;
+        _metrics = metrics;
         _logger = logger;
         _options = options.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Boot tick: the age gauge exists from the start; it then grows for a full sweep interval by design
+        // (first sweep fires one interval after boot), so the Phase 10c alert threshold is a multiple of it.
+        _metrics.HostedServiceTick("orphan-sweep");
+
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(_options.SweepIntervalMinutes));
 
         try
         {
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
+                _metrics.HostedServiceTick("orphan-sweep");
                 try
                 {
                     await using var scope = _scopeFactory.CreateAsyncScope();
                     var sweeper = scope.ServiceProvider.GetRequiredService<OrphanSweeper>();
                     await sweeper.SweepAsync(stoppingToken);
                 }
-                catch (Exception exception) when (exception is not OperationCanceledException)
+                catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
                 {
                     // A failed sweep is retried on the next tick; never crash the host over garbage collection.
+                    // Filtered on the token, not the exception type — a non-shutdown OperationCanceledException
+                    // (e.g. a database command timeout) must not silently end the sweep loop.
                     _logger.LogError(exception, "Orphan sweep run failed; retrying next interval.");
                 }
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Host shutdown.
         }

@@ -1,5 +1,6 @@
 using Forum.Common.Messaging;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Messaging.RabbitMq;
 using Forum.Infrastructure.Persistence;
@@ -20,6 +21,9 @@ public static class InfrastructureRegistration
     public static IServiceCollection AddForumInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton(TimeProvider.System);
+
+        // The domain Meter (Phase 9a). One singleton for the whole host; the host exports it via AddMeter(MeterName).
+        services.AddSingleton<ForumMetrics>();
 
         // Default "no authenticated user"; the Identity module replaces this with an HTTP-aware actor in Phase 1.
         services.TryAddScoped<ICurrentActor, UnauthenticatedActor>();

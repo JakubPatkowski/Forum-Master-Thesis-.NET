@@ -1,5 +1,6 @@
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Engagement.Application.Abstractions;
 using Forum.Modules.Engagement.Contracts.IntegrationEvents;
 using Forum.Modules.Engagement.Domain.Reactions;
@@ -24,6 +25,7 @@ internal sealed class RemoveReactionCommandHandler : ICommandHandler<RemoveReact
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
+    private readonly ForumMetrics _metrics;
 
     public RemoveReactionCommandHandler(
         IReactionTargetReader targets,
@@ -32,7 +34,8 @@ internal sealed class RemoveReactionCommandHandler : ICommandHandler<RemoveReact
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
-        TimeProvider clock)
+        TimeProvider clock,
+        ForumMetrics metrics)
     {
         _targets = targets;
         _reactions = reactions;
@@ -41,6 +44,7 @@ internal sealed class RemoveReactionCommandHandler : ICommandHandler<RemoveReact
         _outbox = outbox;
         _unitOfWork = unitOfWork;
         _clock = clock;
+        _metrics = metrics;
     }
 
     public async Task<Result<ReactionSummaryResponse>> Handle(
@@ -77,6 +81,7 @@ internal sealed class RemoveReactionCommandHandler : ICommandHandler<RemoveReact
                 Ulid.NewUlid(), userId, ReactionTargets.ToWire(command.TargetType), command.TargetId,
                 ReactionTypes.Like, target.CategoryId, target.ThreadId, _clock.GetUtcNow()));
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _metrics.ReactionToggled(ForumMetrics.ReactionRemove);
         }
 
         return Result.Success(
