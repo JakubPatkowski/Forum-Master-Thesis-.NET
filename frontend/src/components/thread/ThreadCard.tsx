@@ -12,7 +12,7 @@ import Link from "next/link";
 
 import { ReactionButton } from "@/components/engagement/ReactionButton";
 import { Badge } from "@/components/ui/Badge";
-import { Monogram } from "@/components/ui/Monogram";
+import { ThreadIcon } from "@/components/ui/ThreadIcon";
 import type { ReactionSummaryResponse, ThreadFeedItemResponse } from "@/lib/api/types";
 import { timeAgoLabel } from "@/lib/utils/time";
 
@@ -39,7 +39,13 @@ export function ThreadCard({
   return (
     <div className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}>
       <Link href={`/t/${thread.id}`} className={styles.main}>
-        <Monogram name={thread.categoryName} seed={thread.categorySlug} size={44} />
+        <ThreadIcon
+          threadId={thread.id}
+          categoryId={thread.categoryId}
+          categoryName={thread.categoryName}
+          categorySlug={thread.categorySlug}
+          size={44}
+        />
         <span className={styles.body}>
           <span className={styles.meta}>
             {thread.isPinned ? (

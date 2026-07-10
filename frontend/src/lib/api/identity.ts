@@ -26,4 +26,20 @@ export const identityApi = {
 
   /** Revokes every refresh token of the current user (bearer required). */
   logoutAll: () => apiFetch("/api/identity/logout-all", { method: "POST" }),
+
+  // --- self-service account settings (all act on the caller's own account) ---
+
+  changeUsername: (username: string) =>
+    apiFetch("/api/identity/me/username", { method: "PATCH", body: { username } }),
+
+  /** Requires the current password as confirmation (defense against hijacked sessions). */
+  changeEmail: (email: string, currentPassword: string) =>
+    apiFetch("/api/identity/me/email", { method: "PATCH", body: { email, currentPassword } }),
+
+  /** On success the server revokes EVERY refresh token and clears the cookie — re-login required. */
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiFetch("/api/identity/me/password", {
+      method: "POST",
+      body: { currentPassword, newPassword },
+    }),
 };

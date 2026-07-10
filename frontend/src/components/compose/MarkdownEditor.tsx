@@ -103,14 +103,10 @@ export function MarkdownEditor({
           () => insertAtCursor("~~", "~~", "strikethrough"),
           styles.strike,
         )}
-        {!compact
-          ? tool("H", "Heading", () => insertAtCursor("\n## ", "", "Heading"), styles.bold)
-          : null}
+        {tool("H", "Heading", () => insertAtCursor("\n## ", "", "Heading"), styles.bold)}
         <span className={styles.divider} />
-        {!compact ? tool("•", "Bullet list", () => insertAtCursor("\n- ", "", "List item")) : null}
-        {!compact
-          ? tool("1.", "Numbered list", () => insertAtCursor("\n1. ", "", "List item"))
-          : null}
+        {tool("•", "Bullet list", () => insertAtCursor("\n- ", "", "List item"))}
+        {tool("1.", "Numbered list", () => insertAtCursor("\n1. ", "", "List item"))}
         {tool('"', "Quote", () => insertAtCursor("\n> ", "", "Quote"))}
         {tool("</>", "Code", () =>
           compact ? insertAtCursor("`", "`", "code") : insertAtCursor("\n```\n", "\n```\n", "code"),

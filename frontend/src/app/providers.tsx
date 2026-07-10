@@ -9,6 +9,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
+import { CategoryModalProvider } from "@/components/category/category-context";
 import { ComposeProvider } from "@/components/compose/compose-context";
 import { ToastProvider } from "@/components/ui/toast";
 import { ApiError } from "@/lib/api/problem";
@@ -37,7 +38,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <ToastProvider>
         <AuthProvider>
           <RealtimeProvider>
-            <ComposeProvider>{children}</ComposeProvider>
+            <ComposeProvider>
+              <CategoryModalProvider>{children}</CategoryModalProvider>
+            </ComposeProvider>
           </RealtimeProvider>
         </AuthProvider>
       </ToastProvider>

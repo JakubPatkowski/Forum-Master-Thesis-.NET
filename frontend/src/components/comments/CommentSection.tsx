@@ -122,6 +122,9 @@ export function CommentSection({
   const onEdit = async (commentId: string, body: string) => {
     try {
       await updateComment.mutateAsync({ commentId, body });
+      // An edit can introduce new inline images — attach them so Files tracks the comment
+      // as their target (already-attached ones are idempotent no-ops server-side).
+      await attachInlineImages(body, commentId);
     } catch (error) {
       showError(error);
       throw error;
@@ -198,6 +201,7 @@ export function CommentSection({
               onReply={onReply}
               onEdit={onEdit}
               onDelete={onDelete}
+              onUploadImage={uploadInlineImage}
             />
           ))}
         </div>

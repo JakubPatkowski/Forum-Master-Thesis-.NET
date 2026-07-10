@@ -161,9 +161,31 @@ export interface CreateCommentResponse {
   commentId: string;
 }
 
+export interface TagSuggestionResponse {
+  slug: string;
+  name: string;
+  usageCount: number;
+}
+
+/** One row of a user's comment activity — the comment plus its live thread's title. */
+export interface CommentActivityItemResponse {
+  id: string;
+  threadId: string;
+  threadTitle: string;
+  /** Raw markdown — render through the sanitizing renderer or as plain text. */
+  body: string;
+  createdOnUtc: string;
+}
+
 // --- Files ---------------------------------------------------------------------
 
-export type FileTargetType = "thread" | "comment" | "avatar" | "category_icon" | "dm";
+export type FileTargetType =
+  | "thread"
+  | "comment"
+  | "avatar"
+  | "category_icon"
+  | "thread_icon"
+  | "dm";
 
 export const ALLOWED_UPLOAD_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MiB

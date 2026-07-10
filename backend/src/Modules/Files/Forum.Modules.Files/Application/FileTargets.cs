@@ -19,6 +19,9 @@ internal static class FileTargets
             case "category_icon":
                 target = FileTargetType.CategoryIcon;
                 return true;
+            case "thread_icon":
+                target = FileTargetType.ThreadIcon;
+                return true;
             case "avatar":
                 target = FileTargetType.Avatar;
                 return true;
@@ -36,6 +39,7 @@ internal static class FileTargets
         FileTargetType.Thread => "thread",
         FileTargetType.Comment => "comment",
         FileTargetType.CategoryIcon => "category_icon",
+        FileTargetType.ThreadIcon => "thread_icon",
         FileTargetType.Avatar => "avatar",
         FileTargetType.Dm => "dm",
         _ => throw new ArgumentOutOfRangeException(nameof(target), target, "Unknown target type."),
@@ -47,6 +51,7 @@ internal static class FileTargets
         FileTargetType.Thread => ContentAttachmentTarget.Thread,
         FileTargetType.Comment => ContentAttachmentTarget.Comment,
         FileTargetType.CategoryIcon => ContentAttachmentTarget.CategoryIcon,
+        FileTargetType.ThreadIcon => ContentAttachmentTarget.ThreadIcon,
         _ => null,
     };
 }

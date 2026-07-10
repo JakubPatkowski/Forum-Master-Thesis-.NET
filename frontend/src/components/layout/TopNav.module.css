@@ -190,19 +190,6 @@
   border-color: var(--color-border-subtle);
 }
 
-.userInitial {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  background: var(--color-accent-subtle);
-  border: 1px solid var(--color-accent-dark);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-accent-base);
-}
-
 .userName {
   font-size: 13px;
   font-weight: 600;
@@ -311,6 +298,19 @@
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
+}
+
+.activityRowLink {
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.activityRowLink:hover {
+  background: var(--color-neutral-800);
+}
+
+.activityRowLink:hover .activityText {
+  color: var(--color-text-primary);
 }
 
 .activitySquareCyan,

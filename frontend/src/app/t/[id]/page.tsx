@@ -23,9 +23,10 @@ import { PageShell } from "@/components/layout/PageShell";
 import { MarkdownView } from "@/components/markdown/MarkdownView";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
+import { ThreadIcon } from "@/components/ui/ThreadIcon";
 import { ApiErrorState } from "@/components/ui/ErrorState";
 import { LiveDot } from "@/components/ui/LiveDot";
-import { Monogram } from "@/components/ui/Monogram";
 import { Panel } from "@/components/ui/Panel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { TagChip } from "@/components/ui/TagChip";
@@ -34,7 +35,8 @@ import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
 import { ApiError } from "@/lib/api/problem";
 import { useAuth } from "@/lib/auth/auth-context";
-import { useDeleteThread, useSearchThreads, useThread } from "@/lib/hooks/use-content";
+import { useComments, useDeleteThread, useSearchThreads, useThread } from "@/lib/hooks/use-content";
+import { useReactionBatch } from "@/lib/hooks/use-reactions";
 import { useUserStats } from "@/lib/hooks/use-user-stats";
 import { extractHeadings } from "@/lib/markdown/headings";
 import { useRealtime, useRealtimeSubscription } from "@/lib/realtime/realtime-context";
@@ -101,6 +103,19 @@ export default function ThreadPage() {
   const firstTag = thread.data?.tags[0];
   const related = useSearchThreads(firstTag ?? "", 5);
   const relatedItems = (related.data?.pages[0]?.items ?? []).filter((t) => t.id !== threadId);
+
+  // Same query keys as CommentSection's tree + batch hydration — React Query dedupes,
+  // so this reads the cached data instead of issuing a second network call.
+  const comments = useComments(threadId);
+  const commentIds = useMemo(() => (comments.data ?? []).map((c) => c.id), [comments.data]);
+  const commentReactions = useReactionBatch("comment", commentIds);
+  const commentLikesTotal = useMemo(() => {
+    if (commentIds.length === 0) return 0;
+    if (!commentReactions.data) return null;
+    let total = 0;
+    for (const summary of commentReactions.data.values()) total += summary.count;
+    return total;
+  }, [commentReactions.data, commentIds.length]);
 
   if (thread.error instanceof ApiError) {
     return (
@@ -210,7 +225,13 @@ export default function ThreadPage() {
             <article className={styles.article}>
               <div className={styles.articleHead}>
                 <div className={styles.categoryRow}>
-                  <Monogram name={detail.categoryName} seed={detail.categorySlug} size={44} />
+                  <ThreadIcon
+                    threadId={detail.id}
+                    categoryId={detail.categoryId}
+                    categoryName={detail.categoryName}
+                    categorySlug={detail.categorySlug}
+                    size={44}
+                  />
                   <div>
                     <Link href={`/c/${detail.categorySlug}`} className={styles.categoryLink}>
                       {detail.categoryName.toUpperCase()}
@@ -325,7 +346,19 @@ export default function ThreadPage() {
                 </div>
                 <div className={panelStyles.kvRow}>
                   <span className={panelStyles.kvKey}>TAGS</span>
-                  <span className={panelStyles.kvValue}>{detail.tags.length || "none"}</span>
+                  {detail.tags.length > 0 ? (
+                    <span className={panelStyles.kvTags}>
+                      {detail.tags.map((tag) => (
+                        <TagChip key={tag} slug={tag} />
+                      ))}
+                    </span>
+                  ) : (
+                    <span className={panelStyles.kvValue}>none</span>
+                  )}
+                </div>
+                <div className={panelStyles.kvRow}>
+                  <span className={panelStyles.kvKey}>COMMENT LIKES</span>
+                  <span className={panelStyles.kvValue}>{commentLikesTotal ?? "–"}</span>
                 </div>
               </div>
             </Panel>
@@ -356,7 +389,12 @@ export default function ThreadPage() {
               <div className={styles.relatedList}>
                 {relatedItems.slice(0, 4).map((item) => (
                   <Link key={item.id} href={`/t/${item.id}`} className={styles.relatedRow}>
-                    <Monogram name={item.categoryName} seed={item.categorySlug} size={28} />
+                    <CategoryIcon
+                      categoryId={item.categoryId}
+                      name={item.categoryName}
+                      seed={item.categorySlug}
+                      size={28}
+                    />
                     <span className={styles.relatedText}>
                       <span className={styles.relatedTitle}>{item.title}</span>
                       <span className={styles.relatedMeta}>@{item.username}</span>

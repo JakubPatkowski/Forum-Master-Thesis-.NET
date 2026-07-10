@@ -107,26 +107,6 @@
 .replyBox,
 .editBox {
   margin-top: 12px;
-  background: var(--color-neutral-950);
-  border: 1px solid var(--color-border-default);
-}
-
-.replyArea,
-.editArea {
-  width: 100%;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 10px 12px;
-  font-size: 13px;
-  font-family: var(--font-sans);
-  resize: vertical;
-}
-
-.replyArea:focus,
-.editArea:focus {
-  outline: none;
-  background: transparent;
 }
 
 .replyActions,
@@ -134,11 +114,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border-top: 1px solid var(--color-border-default);
+  margin-top: 8px;
   justify-content: flex-end;
-}
-
-.spacer {
-  flex: 1;
 }

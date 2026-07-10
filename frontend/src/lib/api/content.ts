@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api/http";
 import type {
   CategoryResponse,
+  CommentActivityItemResponse,
   CommentResponse,
   CreateCategoryRequest,
   CreateCategoryResponse,
@@ -9,6 +10,7 @@ import type {
   CreateThreadRequest,
   CreateThreadResponse,
   CursorPage,
+  TagSuggestionResponse,
   ThreadDetailResponse,
   ThreadFeedItemResponse,
   UpdateCategoryRequest,
@@ -77,6 +79,24 @@ export const contentApi = {
   searchThreads: (q: string, cursor?: string | null, limit = 20) =>
     apiFetch<CursorPage<ThreadFeedItemResponse>>(
       `/api/content/search?q=${encodeURIComponent(q)}&${pageParams(cursor, limit)}`,
+    ),
+
+  // --- user activity (profile timeline) ---
+  getUserThreads: (userId: string, cursor?: string | null, limit = 20) =>
+    apiFetch<CursorPage<ThreadFeedItemResponse>>(
+      `/api/content/users/${userId}/threads?${pageParams(cursor, limit)}`,
+    ),
+
+  getUserComments: (userId: string, cursor?: string | null, limit = 20) =>
+    apiFetch<CursorPage<CommentActivityItemResponse>>(
+      `/api/content/users/${userId}/comments?${pageParams(cursor, limit)}`,
+    ),
+
+  // --- tags ---
+  /** Popularity-ranked when query is empty; substring match on slug otherwise. */
+  suggestTags: (query: string, limit = 20) =>
+    apiFetch<TagSuggestionResponse[]>(
+      `/api/content/tags?${query ? `query=${encodeURIComponent(query)}&` : ""}limit=${limit}`,
     ),
 
   // --- comments ---

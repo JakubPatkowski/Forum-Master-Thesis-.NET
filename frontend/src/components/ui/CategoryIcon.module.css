@@ -1,0 +1,6 @@
+.image {
+  display: block;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid var(--color-border-default);
+}

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
+import { useCategoryModal } from "@/components/category/category-context";
 import { useCompose } from "@/components/compose/compose-context";
 import { CategorySidebar } from "@/components/layout/CategorySidebar";
 import { PageShell } from "@/components/layout/PageShell";
@@ -18,12 +19,12 @@ import { LiveActivityPanel } from "@/components/panels/LiveActivityPanel";
 import { ThreadCard } from "@/components/thread/ThreadCard";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ApiErrorState } from "@/components/ui/ErrorState";
 import { LiveBanner } from "@/components/ui/LiveBanner";
 import { LiveDot } from "@/components/ui/LiveDot";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
-import { Monogram } from "@/components/ui/Monogram";
 import { Panel } from "@/components/ui/Panel";
 import { Skeleton, ThreadCardSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -42,6 +43,7 @@ export default function CategoryPage() {
   const slug = params.slug;
   const { isAuthenticated, currentUser, isModerator } = useAuth();
   const { openCreate } = useCompose();
+  const { openEditCategory } = useCategoryModal();
   const { showError } = useToast();
 
   const category = useCategory(slug);
@@ -93,7 +95,12 @@ export default function CategoryPage() {
             <Skeleton height={96} />
           ) : category.data ? (
             <header className={styles.header}>
-              <Monogram name={category.data.name} seed={category.data.slug} size={56} />
+              <CategoryIcon
+                categoryId={category.data.id}
+                name={category.data.name}
+                seed={category.data.slug}
+                size={56}
+              />
               <div className={styles.headerText}>
                 <div className={styles.headerTitleRow}>
                   <h1 className={styles.headerTitle}>{category.data.name}</h1>
@@ -108,9 +115,13 @@ export default function CategoryPage() {
               </div>
               <div className={styles.headerActions}>
                 {canEditCategory ? (
-                  <span title="Category editing UI is a later increment — the API (PUT /api/content/categories/{slug}) is ready.">
-                    <Badge>OWNER TOOLS SOON</Badge>
-                  </span>
+                  <Button
+                    variant="ghost"
+                    onClick={() => openEditCategory(category.data)}
+                    title="Edit name, description, visibility and icon. The backend 403s non-owner/moderators."
+                  >
+                    Edit category
+                  </Button>
                 ) : null}
                 <Button onClick={() => openCreate(category.data.id)}>+ New thread</Button>
               </div>

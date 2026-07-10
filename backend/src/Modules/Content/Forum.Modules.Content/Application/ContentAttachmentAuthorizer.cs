@@ -37,6 +37,8 @@ internal sealed class ContentAttachmentAuthorizer : IContentAuthorization
         target switch
         {
             ContentAttachmentTarget.Thread => AuthorizeThreadAsync(targetId, userId, cancellationToken),
+            // A thread's icon is gated exactly like any other attachment on the thread (owner-or-moderator).
+            ContentAttachmentTarget.ThreadIcon => AuthorizeThreadAsync(targetId, userId, cancellationToken),
             ContentAttachmentTarget.Comment => AuthorizeCommentAsync(targetId, userId, cancellationToken),
             ContentAttachmentTarget.CategoryIcon => AuthorizeCategoryAsync(targetId, userId, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(target), target, "Unknown attachment target."),

@@ -12,8 +12,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
+import { useCompose } from "@/components/compose/compose-context";
+import { Avatar } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
 import { LiveDot } from "@/components/ui/LiveDot";
 import { useAuth } from "@/lib/auth/auth-context";
+import { notificationHref } from "@/lib/realtime/notification-href";
 import { useRealtime } from "@/lib/realtime/realtime-context";
 import { timeAgoLabel } from "@/lib/utils/time";
 
@@ -91,23 +95,41 @@ function ActivityBell() {
           {activity.length === 0 ? (
             <div className={styles.dropdownEmpty}>Nothing yet — events show up as they happen.</div>
           ) : (
-            activity.slice(0, 8).map((entry, index) => (
-              <div className={styles.activityRow} key={`${entry.receivedAt}-${index}`}>
-                <span
-                  className={
-                    entry.notification.entity === "reaction"
-                      ? styles.activitySquareAccent
-                      : styles.activitySquareCyan
-                  }
-                />
-                <span className={styles.activityText}>
-                  {entry.notification.entity}.{entry.notification.type}
-                </span>
-                <span className={styles.activityTime}>
-                  {timeAgoLabel(new Date(entry.receivedAt).toISOString())}
-                </span>
-              </div>
-            ))
+            activity.slice(0, 8).map((entry, index) => {
+              const href = notificationHref(entry.notification);
+              const content = (
+                <>
+                  <span
+                    className={
+                      entry.notification.entity === "reaction"
+                        ? styles.activitySquareAccent
+                        : styles.activitySquareCyan
+                    }
+                  />
+                  <span className={styles.activityText}>
+                    {entry.notification.entity}.{entry.notification.type}
+                  </span>
+                  <span className={styles.activityTime}>
+                    {timeAgoLabel(new Date(entry.receivedAt).toISOString())}
+                  </span>
+                </>
+              );
+              const key = `${entry.receivedAt}-${index}`;
+              return href ? (
+                <Link
+                  href={href}
+                  className={`${styles.activityRow} ${styles.activityRowLink}`}
+                  key={key}
+                  onClick={() => setOpen(false)}
+                >
+                  {content}
+                </Link>
+              ) : (
+                <div className={styles.activityRow} key={key}>
+                  {content}
+                </div>
+              );
+            })
           )}
           <div className={styles.dropdownFooter}>WS NOTIFY → RE-FETCH · NO PAYLOADS</div>
         </div>
@@ -123,12 +145,11 @@ function UserMenu() {
   const ref = useClickOutside(() => setOpen(false));
 
   if (!currentUser) return null;
-  const initial = (currentUser.username[0] ?? "?").toUpperCase();
 
   return (
     <div className={styles.menuAnchor} ref={ref}>
       <button className={styles.userButton} onClick={() => setOpen((v) => !v)}>
-        <span className={styles.userInitial}>{initial}</span>
+        <Avatar userId={currentUser.id} displayName={currentUser.username} size={28} />
         <span className={styles.userName}>{currentUser.username}</span>
         <svg
           width="12"
@@ -155,6 +176,9 @@ function UserMenu() {
             onClick={() => setOpen(false)}
           >
             Your profile
+          </Link>
+          <Link className={styles.dropdownItem} href="/settings" onClick={() => setOpen(false)}>
+            Account settings
           </Link>
           <div className={styles.dropdownDivider} />
           <button
@@ -185,6 +209,7 @@ export function TopNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, currentUser } = useAuth();
+  const { openCreate } = useCompose();
   const [query, setQuery] = useState("");
 
   const onSearch = (event: FormEvent) => {
@@ -235,6 +260,9 @@ export function TopNav() {
           <WsStatusPill />
           {isAuthenticated && currentUser ? (
             <>
+              <Button size="sm" onClick={() => openCreate()}>
+                + New thread
+              </Button>
               <Link href="/social" className={styles.iconButton} title="Friends (preview)">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-8 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.7 0-8 1.34-8 4v2h9v-2c0-1.6.77-2.9 1.96-3.79A11.9 11.9 0 0 0 8 13zm8 0c-.35 0-.72.02-1.1.06C16.09 14.06 17 15.36 17 17v2h7v-2c0-2.66-5.3-4-8-4z" />

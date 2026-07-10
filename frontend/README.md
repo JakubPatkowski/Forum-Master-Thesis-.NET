@@ -91,10 +91,15 @@ design-reference/ the Claude Design mockups + token source (reference only, not 
 
 - **Social page** (`/social`) — UI-only preview with local state; the backend has no Social
   module. A persistent PREVIEW banner says so.
-- **Tag autocomplete** — suggestion list is a local mock (`lib/hooks/use-tag-suggestions.ts`);
-  swapping in a future `GET /api/content/tags?query=` is a one-line change there. Tag *creation*
-  via `tagSlugs` is real.
 - **Comment-count badges** — never rendered; the feed field is hard-coded 0 server-side.
-- **Profile activity feed** — needs a feed-by-owner API filter that doesn't exist yet (stats are
-  live).
 - **Admin panel** — out of scope for this pass; no nav entry is advertised.
+
+Formerly listed here, now real: tag autocomplete + POPULAR TAGS (`GET /api/content/tags`),
+the profile activity timeline (`GET /api/content/users/{id}/threads` + `/comments`, merged
+client-side in `lib/feed/activity-merge.ts`), category icons (Files `category_icon` target),
+category create/edit (`POST`/`PUT /api/content/categories` via the sidebar "+ New category"
+and the category header "Edit category" — name/description/visibility/icon in one modal),
+thread icons (Files `thread_icon` target — a backend target added alongside this UI; one
+image per thread, editable by owner/moderator, shown on the thread page and feed cards with
+a category-icon fallback), and account settings (`/settings` → the `/api/identity/me/*`
+endpoints).

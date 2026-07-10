@@ -9,6 +9,7 @@ internal enum FileTargetType
     Thread,
     Comment,
     CategoryIcon,
+    ThreadIcon,
     Avatar,
     Dm,
 }

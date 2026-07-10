@@ -7,8 +7,10 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 import { contentApi } from "@/lib/api/content";
 import { queryKeys } from "@/lib/api/keys";
 import type {
+  CreateCategoryRequest,
   CreateCommentRequest,
   CreateThreadRequest,
+  UpdateCategoryRequest,
   UpdateThreadRequest,
 } from "@/lib/api/types";
 
@@ -24,6 +26,29 @@ export function useCategory(slug: string) {
   return useQuery({
     queryKey: queryKeys.category(slug),
     queryFn: () => contentApi.getCategory(slug),
+  });
+}
+
+/** Requires the global `create` permission (the same bit as posting a thread); the creator becomes owner. */
+export function useCreateCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request: CreateCategoryRequest) => contentApi.createCategory(request),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+    },
+  });
+}
+
+/** Owner or moderator only (the backend enforces it; the UI gates the button as a hint). */
+export function useUpdateCategory(slug: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request: UpdateCategoryRequest) => contentApi.updateCategory(slug, request),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.category(slug) });
+    },
   });
 }
 
@@ -52,6 +77,26 @@ export function useSearchThreads(q: string, limit = 20) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
     enabled: q.trim().length > 0,
+  });
+}
+
+/** A user's live threads, newest first (profile activity). */
+export function useUserThreads(userId: string, limit = 20) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.userThreads(userId),
+    queryFn: ({ pageParam }) => contentApi.getUserThreads(userId, pageParam, limit),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
+  });
+}
+
+/** A user's live comments on live threads, newest first (profile activity). */
+export function useUserComments(userId: string, limit = 20) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.userComments(userId),
+    queryFn: ({ pageParam }) => contentApi.getUserComments(userId, pageParam, limit),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
   });
 }
 

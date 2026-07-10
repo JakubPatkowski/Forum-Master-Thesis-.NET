@@ -11,6 +11,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { MarkdownEditor } from "@/components/compose/MarkdownEditor";
 import { ReactionButton } from "@/components/engagement/ReactionButton";
 import { MarkdownView } from "@/components/markdown/MarkdownView";
 import { Avatar } from "@/components/ui/Avatar";
@@ -33,6 +34,8 @@ export interface CommentNodeProps {
   onReply: (parentId: string, body: string) => Promise<void>;
   onEdit: (commentId: string, body: string) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
+  /** Uploads a picked image via the Files flow and resolves its fileId (for inline media). */
+  onUploadImage?: (file: File) => Promise<string | null>;
 }
 
 export function CommentNode({
@@ -45,6 +48,7 @@ export function CommentNode({
   onReply,
   onEdit,
   onDelete,
+  onUploadImage,
 }: CommentNodeProps) {
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -80,7 +84,11 @@ export function CommentNode({
   };
 
   return (
-    <div style={{ marginLeft: indentPx(comment.depth) }} className={styles.slot}>
+    <div
+      id={`comment-${comment.id}`}
+      style={{ marginLeft: indentPx(comment.depth) }}
+      className={styles.slot}
+    >
       <div className={styles.row}>
         {comment.depth > 0 ? <span className={styles.elbow} aria-hidden /> : null}
         <div className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}>
@@ -106,17 +114,24 @@ export function CommentNode({
             <p className={styles.deleted}>[deleted]</p>
           ) : editing ? (
             <div className={styles.editBox}>
-              <textarea
-                className={styles.editArea}
+              <MarkdownEditor
                 value={editDraft}
-                onChange={(e) => setEditDraft(e.target.value)}
+                onChange={setEditDraft}
                 rows={3}
+                compact
+                placeholder="Edit your comment… Markdown & inline media supported."
+                onUploadImage={onUploadImage}
               />
               <div className={styles.editActions}>
                 <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
                   Cancel
                 </Button>
-                <Button size="sm" onClick={() => void submitEdit()} loading={busy}>
+                <Button
+                  size="sm"
+                  onClick={() => void submitEdit()}
+                  disabled={!editDraft.trim()}
+                  loading={busy}
+                >
                   Save
                 </Button>
               </div>
@@ -165,16 +180,15 @@ export function CommentNode({
 
           {replying ? (
             <div className={styles.replyBox}>
-              <textarea
-                className={styles.replyArea}
+              <MarkdownEditor
                 value={draft}
-                onChange={(e) => setDraft(e.target.value)}
+                onChange={setDraft}
+                rows={3}
+                compact
                 placeholder="Reply… Markdown & inline media supported."
-                rows={2}
-                autoFocus
+                onUploadImage={onUploadImage}
               />
               <div className={styles.replyActions}>
-                <span className={styles.spacer} />
                 <Button size="sm" variant="ghost" onClick={() => setReplying(false)}>
                   Cancel
                 </Button>

@@ -3,8 +3,8 @@
 /**
  * Tag chips + autocomplete dropdown (design: Compose.dc.html). Client-side validation
  * mirrors the backend regex exactly: lowercase-kebab-case, ≤32 chars, max 5 tags.
- * Suggestions are mocked until the backend grows a tag-search endpoint (see
- * use-tag-suggestions.ts); free-text entry always works and is the real get-or-create.
+ * Suggestions come from the real GET /api/content/tags (see use-tag-suggestions.ts);
+ * free-text entry always works and is the real get-or-create.
  */
 
 import { useState, type KeyboardEvent } from "react";

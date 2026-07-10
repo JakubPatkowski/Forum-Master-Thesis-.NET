@@ -4,12 +4,14 @@
  * Profile — own & others (design: Profile.dc.html). Stats come from the real
  * GET /api/engagement/users/{id}/stats (a zero-content user is a 200 with zeros; only a
  * nonexistent id 404s). Own profile adds CHANGE AVATAR (real Files flow with
- * targetType=avatar replace semantics) and LOG OUT ALL DEVICES. Recent activity is a
- * SOON mock — no feed-by-owner endpoint exists yet.
+ * targetType=avatar replace semantics) and LOG OUT ALL DEVICES. Recent activity merges
+ * the owner's thread + comment keyset feeds client-side (lib/feed/activity-merge.ts —
+ * the same "never splice older above newer" invariant as the home feed's k-way merge).
  */
 
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { PageShell } from "@/components/layout/PageShell";
@@ -17,19 +19,126 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ApiErrorState } from "@/components/ui/ErrorState";
+import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 import { Panel } from "@/components/ui/Panel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/toast";
 import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
 import { ApiError } from "@/lib/api/problem";
-import { ALLOWED_UPLOAD_TYPES } from "@/lib/api/types";
+import {
+  ALLOWED_UPLOAD_TYPES,
+  type CommentActivityItemResponse,
+  type ThreadFeedItemResponse,
+} from "@/lib/api/types";
 import { useAuth } from "@/lib/auth/auth-context";
+import { mergeActivity } from "@/lib/feed/activity-merge";
+import { useUserComments, useUserThreads } from "@/lib/hooks/use-content";
 import { useUserStats } from "@/lib/hooks/use-user-stats";
 import { useRealtimeSubscription } from "@/lib/realtime/realtime-context";
 import { uploadFile } from "@/lib/upload/upload";
+import { timeAgoLabel } from "@/lib/utils/time";
 
 import styles from "./profile.module.css";
+
+type ActivityRow =
+  | { kind: "thread"; id: string; createdOnUtc: string; thread: ThreadFeedItemResponse }
+  | { kind: "comment"; id: string; createdOnUtc: string; comment: CommentActivityItemResponse };
+
+function ActivityTimeline({ userId }: { userId: string }) {
+  const threads = useUserThreads(userId);
+  const comments = useUserComments(userId);
+
+  const merged = useMemo(() => {
+    const threadRows: ActivityRow[] = (threads.data?.pages.flatMap((p) => p.items) ?? []).map(
+      (t) => ({ kind: "thread", id: t.id, createdOnUtc: t.createdOnUtc, thread: t }),
+    );
+    const commentRows: ActivityRow[] = (comments.data?.pages.flatMap((p) => p.items) ?? []).map(
+      (c) => ({ kind: "comment", id: c.id, createdOnUtc: c.createdOnUtc, comment: c }),
+    );
+    return mergeActivity<ActivityRow>([
+      { items: threadRows, hasMore: threads.hasNextPage ?? false },
+      { items: commentRows, hasMore: comments.hasNextPage ?? false },
+    ]);
+  }, [threads.data, comments.data, threads.hasNextPage, comments.hasNextPage]);
+
+  if (threads.isLoading || comments.isLoading) {
+    return (
+      <div className={styles.activityList}>
+        <Skeleton height={56} />
+        <Skeleton height={56} />
+        <Skeleton height={56} />
+      </div>
+    );
+  }
+
+  if (threads.error instanceof ApiError || comments.error instanceof ApiError) {
+    return (
+      <EmptyState
+        title="Couldn't load activity"
+        description="One of the activity feeds failed — try again."
+      />
+    );
+  }
+
+  if (merged.visible.length === 0 && merged.heldBack === 0) {
+    return (
+      <EmptyState
+        title="Nothing here yet"
+        description="Threads and comments show up here as this user posts."
+      />
+    );
+  }
+
+  // Fetching the next page of every refillable source keeps the merge frontier moving —
+  // with two sources that's at most two requests per click.
+  const loadMore = () => {
+    if (threads.hasNextPage) void threads.fetchNextPage();
+    if (comments.hasNextPage) void comments.fetchNextPage();
+  };
+
+  return (
+    <>
+      <div className={styles.activityList}>
+        {merged.visible.map((row) =>
+          row.kind === "thread" ? (
+            <Link key={`t-${row.id}`} href={`/t/${row.id}`} className={styles.activityRow}>
+              <Badge tone="accent">THREAD</Badge>
+              <span className={styles.activityBody}>
+                <span className={styles.activityTitle}>{row.thread.title}</span>
+                <span className={styles.activityMeta}>
+                  in {row.thread.categoryName} · {timeAgoLabel(row.createdOnUtc)}
+                </span>
+              </span>
+            </Link>
+          ) : (
+            <Link
+              key={`c-${row.id}`}
+              href={`/t/${row.comment.threadId}#comment-${row.id}`}
+              className={styles.activityRow}
+            >
+              <Badge tone="cyan">COMMENT</Badge>
+              <span className={styles.activityBody}>
+                <span className={styles.activityTitle}>on {row.comment.threadTitle}</span>
+                <span className={styles.activityExcerpt}>
+                  {row.comment.body.length > 140
+                    ? `${row.comment.body.slice(0, 140)}…`
+                    : row.comment.body}
+                </span>
+                <span className={styles.activityMeta}>{timeAgoLabel(row.createdOnUtc)}</span>
+              </span>
+            </Link>
+          ),
+        )}
+      </div>
+      <LoadMoreButton
+        onClick={loadMore}
+        loading={threads.isFetchingNextPage || comments.isFetchingNextPage}
+        hasMore={(threads.hasNextPage ?? false) || (comments.hasNextPage ?? false)}
+      />
+    </>
+  );
+}
 
 export default function ProfilePage() {
   const params = useParams<{ userId: string }>();
@@ -137,21 +246,8 @@ export default function ProfilePage() {
         </aside>
 
         <main className={styles.main}>
-          <Panel
-            label="RECENT ACTIVITY"
-            headerExtra={
-              <Badge
-                tone="warning"
-                title="Requires a feed filter by ownerId — not in the API yet; nothing to show"
-              >
-                SOON
-              </Badge>
-            }
-          >
-            <EmptyState
-              title="Activity feed isn't wired yet"
-              description="Listing a user's threads and comments needs a feed-by-owner API filter that doesn't exist yet. The stat counters on the left are live."
-            />
+          <Panel label="RECENT ACTIVITY">
+            <ActivityTimeline userId={userId} />
           </Panel>
         </main>
       </div>

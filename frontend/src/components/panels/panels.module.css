@@ -16,6 +16,18 @@
   padding: 9px 14px;
 }
 
+.activityRowLink {
+  text-decoration: none;
+}
+
+.activityRowLink:hover {
+  background: var(--color-neutral-800);
+}
+
+.activityRowLink:hover .activityText {
+  color: var(--color-text-primary);
+}
+
 .squareCyan,
 .squareAccent,
 .squareNeutral {
@@ -101,6 +113,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.kvTags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
 }
 
 .kvLink {

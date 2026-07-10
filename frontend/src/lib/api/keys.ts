@@ -20,7 +20,11 @@ export const queryKeys = {
   reactionsBatch: (targetType: ReactionTargetType, targetIds: string[]) =>
     ["reactions", "batch", targetType, targetIds] as const,
 
+  tagSuggestions: (query: string) => ["tags", "suggest", query] as const,
+
   userStats: (userId: string) => ["users", userId, "stats"] as const,
+  userThreads: (userId: string) => ["users", userId, "threads"] as const,
+  userComments: (userId: string) => ["users", userId, "comments"] as const,
 
   file: (fileId: string) => ["files", fileId] as const,
   filesByTarget: (targetType: FileTargetType, targetId: string) =>

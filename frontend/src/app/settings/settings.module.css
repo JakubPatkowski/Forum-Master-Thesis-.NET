@@ -1,0 +1,41 @@
+.wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.header {
+  margin-top: 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+}
+
+.form {
+  padding: 16px 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-warning);
+}

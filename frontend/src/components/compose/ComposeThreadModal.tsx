@@ -15,23 +15,29 @@
  */
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { AttachmentWidget } from "@/components/compose/AttachmentWidget";
 import { MarkdownEditor } from "@/components/compose/MarkdownEditor";
 import { TagPicker } from "@/components/compose/TagPicker";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { Input } from "@/components/ui/Input";
 import { InlineErrorBanner } from "@/components/ui/ErrorState";
 import { Modal } from "@/components/ui/Modal";
+import { Monogram } from "@/components/ui/Monogram";
+import { ThreadIcon } from "@/components/ui/ThreadIcon";
 import { useToast } from "@/components/ui/toast";
 import { filesApi } from "@/lib/api/files";
+import { queryKeys } from "@/lib/api/keys";
 import { ApiError } from "@/lib/api/problem";
 import type { ThreadDetailResponse } from "@/lib/api/types";
 import { useCategories, useCreateThread, useUpdateThread } from "@/lib/hooks/use-content";
 import { useUploadManager } from "@/lib/upload/use-upload-manager";
-import { MAX_ATTACHMENTS_PER_TARGET } from "@/lib/api/types";
+import { uploadFile } from "@/lib/upload/upload";
+import { ALLOWED_UPLOAD_TYPES, MAX_ATTACHMENTS_PER_TARGET } from "@/lib/api/types";
 
 import styles from "./ComposeThreadModal.module.css";
 
@@ -63,13 +69,59 @@ export function ComposeThreadModal({
 
   const createThread = useCreateThread();
   const updateThread = useUpdateThread(thread?.id ?? "");
+  const queryClient = useQueryClient();
 
   const categoryOptions = useMemo(() => categories.data ?? [], [categories.data]);
   const effectiveCategoryId = categoryId || categoryOptions[0]?.id || "";
+  const selectedCategory = useMemo(
+    () => categoryOptions.find((category) => category.id === effectiveCategoryId),
+    [categoryOptions, effectiveCategoryId],
+  );
+
+  const iconInputRef = useRef<HTMLInputElement>(null);
+  const [iconFileId, setIconFileId] = useState<string | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const [iconBusy, setIconBusy] = useState(false);
+
+  // Revoke the object URL when it changes or the modal unmounts (no memory leak).
+  useEffect(() => {
+    if (!iconPreview) return;
+    return () => URL.revokeObjectURL(iconPreview);
+  }, [iconPreview]);
 
   const uploadInlineImage = async (file: File): Promise<string | null> => {
     const committed = await uploads.add(file);
     return committed?.fileId ?? null;
+  };
+
+  const onPickIcon = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setIconBusy(true);
+    try {
+      const committed = await uploadFile(file, () => {});
+      setIconFileId(committed.fileId);
+      setIconPreview(URL.createObjectURL(file));
+    } catch (error) {
+      showError(error);
+    } finally {
+      setIconBusy(false);
+    }
+  };
+
+  // Thread icon: replace semantics (targetType=thread_icon). Non-fatal on failure — the
+  // thread was already created/updated; only the icon didn't attach.
+  const attachThreadIcon = async (threadId: string) => {
+    if (!iconFileId) return;
+    try {
+      await filesApi.attach(iconFileId, { targetType: "thread_icon", targetId: threadId });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.filesByTarget("thread_icon", threadId),
+      });
+    } catch {
+      show("warning", "The icon didn't attach", "The thread was saved without it.");
+    }
   };
 
   const submit = async () => {
@@ -97,6 +149,7 @@ export function ComposeThreadModal({
             }),
           ),
         );
+        await attachThreadIcon(threadId);
         onClose();
         router.push(`/t/${threadId}`);
       } else if (thread) {
@@ -108,6 +161,7 @@ export function ComposeThreadModal({
             }),
           ),
         );
+        await attachThreadIcon(thread.id);
         onClose();
       }
     } catch (error) {
@@ -178,6 +232,51 @@ export function ComposeThreadModal({
         ) : null}
       </div>
 
+      <div className={styles.field}>
+        <label className={styles.label}>
+          Icon{" "}
+          <span className={styles.labelHint}>· optional · shown on the thread &amp; feed cards</span>
+        </label>
+        <div className={styles.iconRow}>
+          <div className={styles.iconTile}>
+            {iconPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className={styles.iconImage} src={iconPreview} alt="" width={56} height={56} />
+            ) : mode === "edit" && thread ? (
+              <ThreadIcon
+                threadId={thread.id}
+                categoryId={thread.categoryId}
+                categoryName={thread.categoryName}
+                categorySlug={thread.categorySlug}
+                size={56}
+              />
+            ) : selectedCategory ? (
+              <CategoryIcon
+                categoryId={selectedCategory.id}
+                name={selectedCategory.name}
+                seed={selectedCategory.slug}
+                size={56}
+              />
+            ) : (
+              <Monogram name={title || "?"} seed={title || "thread"} size={56} />
+            )}
+          </div>
+          <div className={styles.iconMeta}>
+            <span className={styles.iconHint}>
+              PNG/JPEG/GIF/WEBP · ≤5 MiB · falls back to the category icon
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => iconInputRef.current?.click()}
+              loading={iconBusy}
+            >
+              {iconFileId ? "Choose a different image" : "Upload icon"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {mode === "create" ? (
         <TagPicker tags={tags} onChange={setTags} />
       ) : (
@@ -216,6 +315,16 @@ export function ComposeThreadModal({
         entries={uploads.entries}
         onAdd={(f) => void uploads.add(f)}
         onRemove={uploads.remove}
+      />
+
+      <input
+        ref={iconInputRef}
+        type="file"
+        accept={ALLOWED_UPLOAD_TYPES.join(",")}
+        className={styles.hidden}
+        onChange={(e) => void onPickIcon(e)}
+        aria-hidden
+        tabIndex={-1}
       />
     </Modal>
   );
