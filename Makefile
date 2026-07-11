@@ -5,10 +5,10 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        mk-up mk-deploy mk-down mk-reset-db load pods logs urls
+        images scan mk-up mk-deploy mk-down mk-reset-db load pods logs urls
 
 help: ## Show this help
-	@awk 'BEGIN{FS":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
+	@awk 'BEGIN{FS=":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
 	     /^[a-zA-Z0-9_-]+:.*##/ {printf "  \033[36m%-12s\033[0m %s\n",$$1,$$2} \
 	     END{print ""}' $(MAKEFILE_LIST)
 
@@ -33,6 +33,12 @@ test:       ## dotnet test (needs Docker for Testcontainers)
 	@cd backend && dotnet test Forum.slnx
 format:     ## dotnet format
 	@cd backend && dotnet format Forum.slnx
+
+## --- Docker images -----------------------------------------------------------
+images:     ## Build API + web images, tag git-<sha>[-dirty] (make images ARGS=--no-cache)
+	@bash scripts/build-images.sh $(ARGS)
+scan:       ## Trivy-scan both images, HIGH/CRITICAL fixed-only (needs trivy)
+	@bash scripts/scan-image.sh $(ARGS)
 
 ## --- Cluster (minikube) ----------------------------------------------------
 mk-up:       ## Start the minikube cluster

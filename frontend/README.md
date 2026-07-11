@@ -33,6 +33,45 @@ for local dev.
 | `npm test` | Vitest unit/component suite |
 | `npm run format` / `format:check` | Prettier |
 
+## Docker image (Phase 10a)
+
+The production image is a **Next.js standalone server** on `node:22-alpine` (`output:
+"standalone"` in `next.config.ts`) — it serves the CSR shell and static assets; the browser
+still talks to the .NET API directly. Build from the **repo root** (same build-context
+convention as the backend image; `frontend/Dockerfile.dockerignore` filters the context):
+
+```bash
+# from the repo root — or `make images` to build backend + frontend together
+docker build -f frontend/Dockerfile -t forum-dotnet-web:dev \
+  --build-arg NEXT_PUBLIC_API_URL=http://localhost:8080 .
+```
+
+**Build ARGs — read this before setting anything:**
+
+- `NEXT_PUBLIC_API_URL` (default `http://forum.local`) — the API **origin only**:
+  `scheme://host[:port]`, **never with a `/api` path**. `NEXT_PUBLIC_*` is inlined into the
+  JS bundles at build time, and every call site already passes `/api/...`-prefixed paths
+  (`src/lib/api/http.ts` does `` `${apiUrl}${path}` ``). A value ending in `/api` turns every
+  request into `/api/api/...` and 404s the entire app — this is the #1 way to ship a broken
+  frontend image. The image is environment-specific by design; rebuild to retarget.
+- `NEXT_PUBLIC_WS_URL` — deliberately **not** a build ARG. When unset, `src/lib/config.ts`
+  derives `ws(s)://<api-origin>/api/realtime/ws` from the API URL. One knob, no drift.
+
+**Local smoke test** (backend running on `:8080`, e.g. `scripts/dev-api.sh`):
+
+```bash
+docker run --rm -p 3000:3000 forum-dotnet-web:dev
+```
+
+Open `http://localhost:3000` and check the browser **network tab**: API calls must hit
+`http://localhost:8080/api/...` — if you see `/api/api/...` (doubled prefix) or requests
+missing the `/api` segment, the build ARG was wrong; rebuild. The realtime pill should reach
+LIVE (WebSocket to `ws://localhost:8080/api/realtime/ws`).
+
+The image runs as the base image's non-root `node` user (uid 1000) and, unlike the chiseled
+backend image, has a shell — `docker exec -it <ctr> sh` works. See
+`../docs/runbooks/docker-images.md` for tagging and scanning.
+
 ## Where things live
 
 ```

@@ -12,6 +12,10 @@ mk status >/dev/null 2>&1 || die "minikube profile '$MINIKUBE_PROFILE' is not ru
 step "Building $IMAGE_NAME:$IMAGE_TAG into minikube's docker daemon"
 eval "$(mk docker-env)"
 docker build -t "$IMAGE_NAME:$IMAGE_TAG" "$REPO_ROOT"
+# The manifests still pin the stable tag ':local'; retag so they resolve the fresh build.
+# Phase 10b replaces this with explicit `kubectl set image` pinning to the SHA tag
+# (rollout/rollback support) — do not grow this into apply-order logic here.
+docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_NAME:local"
 ok "Image built (imagePullPolicy: Never — no registry push needed)."
 
 step "Namespace"

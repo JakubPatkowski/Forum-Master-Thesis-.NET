@@ -1,9 +1,17 @@
+# Context filter for the BACKEND image (repo-root context, root Dockerfile).
+# The frontend image uses frontend/Dockerfile.dockerignore instead (BuildKit prefers the
+# Dockerfile-adjacent ignore file), so entries here only shape the backend build context.
+.git
 **/bin
 **/obj
 **/.idea
 **/.vs
 frontend/node_modules
 frontend/dist
+frontend/.next
+frontend/design-reference
+frontend/coverage
 load/results
 docs
 **/*.md
+**/*.tsbuildinfo

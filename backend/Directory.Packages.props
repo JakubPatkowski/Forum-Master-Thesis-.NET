@@ -14,6 +14,9 @@
   <ItemGroup Label="ASP.NET Core / EF Core">
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
+    <!-- Transitive of Microsoft.AspNetCore.OpenApi (ships 2.3.0, CVE-2026-49451 / NU1903);
+         transitive pinning promotes this to the fixed version. Drop when the parent catches up. -->
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.7.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />

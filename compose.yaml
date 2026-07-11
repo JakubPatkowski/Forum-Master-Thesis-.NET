@@ -30,14 +30,26 @@ services:
     ports: ["9000:9000", "9001:9001"]
     volumes: ["miniodata:/data"]
 
-  # Backend is normally run from the IDE against the services above.
-  # Uncomment to run the containerized API end-to-end:
-  # api:
-  #   build: { context: ., dockerfile: Dockerfile }
-  #   depends_on: { postgres: { condition: service_healthy } }
-  #   ports: ["8080:8080"]
-  #   environment:
-  #     ConnectionStrings__Forum: "Host=postgres;Database=forum_net;Username=forum;Password=forum_dev_only"
+  # Backend is normally run from the IDE / scripts/dev-api.sh against the services above.
+  # Uncomment to run the containerized API end-to-end (parity check for the production image).
+  #   1. docker compose up -d --build api        (image builds from the root Dockerfile)
+  #   2. docker compose run --rm api migrate     (arg appends to ENTRYPOINT -> `dotnet Forum.Api.dll migrate`)
+  # The runtime image is chiseled (NO shell): a healthcheck here must be TCP-based or absent —
+  # never curl/CMD-SHELL. ASPNETCORE_ENVIRONMENT=Development is required: without it the
+  # container boots as Production and the Jwt:SigningKey fail-fast (Phase 9a) stops it.
+  api:
+    build: { context: ., dockerfile: Dockerfile }
+    depends_on: { postgres: { condition: service_healthy } }
+    ports: ["8080:8080"]
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Forum: "Host=postgres;Database=${POSTGRES_DB:-forum_net};Username=${POSTGRES_USER:-forum};Password=${POSTGRES_PASSWORD:-forum_dev_only}"
+      RabbitMq__Host: rabbitmq
+      Storage__Endpoint: "minio:9000"
+      # Presigned URLs must be usable from the HOST browser -> sign against the published port.
+      Storage__PublicEndpoint: "localhost:9000"
+      Storage__AccessKey: ${MINIO_ROOT_USER:-minio}
+      Storage__SecretKey: ${MINIO_ROOT_PASSWORD:-minio_dev_only}
 
 volumes:
   pgdata:
