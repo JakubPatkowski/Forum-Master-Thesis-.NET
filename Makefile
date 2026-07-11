@@ -4,7 +4,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help preflight infra-up infra-down api web migrate test format build \
+.PHONY: help preflight infra-up infra-down api web migrate seed test format build \
         mk-up mk-deploy mk-down mk-reset-db load pods logs urls
 
 help: ## Show this help
@@ -25,6 +25,8 @@ web:        ## Run the frontend dev server (npm install if needed) on :3000
 	@bash scripts/dev-web.sh
 migrate:    ## Apply migrations + views against local infra
 	@cd backend && dotnet run --project src/Bootstrap/Forum.Api -- migrate
+seed:       ## Seed deterministic data (make seed [ARGS="--benchmark"] [ARGS="--cluster"]) — Development → forum_net, Benchmark → forum_net_bench
+	@bash scripts/seed-test-data.sh $(ARGS)
 build:      ## dotnet build the solution
 	@cd backend && dotnet build Forum.slnx
 test:       ## dotnet test (needs Docker for Testcontainers)

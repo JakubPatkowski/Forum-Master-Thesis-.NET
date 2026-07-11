@@ -11,9 +11,19 @@ namespace Forum.Api.Extensions;
 /// </summary>
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddForumAuthentication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddForumAuthentication(
+        this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         var jwt = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+
+        // G19: the development fallback key is publicly visible in source — a Production boot without a real
+        // key must fail loudly at startup, never silently sign tokens anyone can forge.
+        if (environment.IsProduction() && string.IsNullOrWhiteSpace(jwt.SigningKey))
+        {
+            throw new InvalidOperationException(
+                "Jwt:SigningKey must be provided in Production (via the k8s Secret); "
+                + "the built-in development signing key must never sign production tokens.");
+        }
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

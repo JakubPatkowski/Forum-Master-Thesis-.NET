@@ -1,6 +1,7 @@
 using System.Text.Json;
 
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Content.Contracts;
 
 namespace Forum.Api.Realtime;
@@ -15,15 +16,18 @@ internal sealed class RealtimeNotificationDispatcher : IRealtimeNotificationSink
 {
     private readonly RealtimeConnectionRegistry _registry;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ForumMetrics _metrics;
     private readonly ILogger<RealtimeNotificationDispatcher> _logger;
 
     public RealtimeNotificationDispatcher(
         RealtimeConnectionRegistry registry,
         IServiceScopeFactory scopeFactory,
+        ForumMetrics metrics,
         ILogger<RealtimeNotificationDispatcher> logger)
     {
         _registry = registry;
         _scopeFactory = scopeFactory;
+        _metrics = metrics;
         _logger = logger;
     }
 
@@ -57,7 +61,10 @@ internal sealed class RealtimeNotificationDispatcher : IRealtimeNotificationSink
                 continue;
             }
 
-            await connection.TrySendAsync(payload, cancellationToken);
+            if (await connection.TrySendAsync(payload, cancellationToken))
+            {
+                _metrics.WsPushSent();
+            }
         }
 
         if (_logger.IsEnabled(LogLevel.Debug))

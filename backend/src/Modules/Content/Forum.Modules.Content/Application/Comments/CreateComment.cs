@@ -2,6 +2,7 @@ using FluentValidation;
 
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
@@ -34,6 +35,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
+    private readonly ForumMetrics _metrics;
 
     public CreateCommentCommandHandler(
         IValidator<CreateCommentCommand> validator,
@@ -42,7 +44,8 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
-        TimeProvider clock)
+        TimeProvider clock,
+        ForumMetrics metrics)
     {
         _validator = validator;
         _threads = threads;
@@ -51,6 +54,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
         _outbox = outbox;
         _unitOfWork = unitOfWork;
         _clock = clock;
+        _metrics = metrics;
     }
 
     public async Task<Result<CreateCommentResponse>> Handle(CreateCommentCommand command, CancellationToken cancellationToken)
@@ -115,6 +119,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        _metrics.CommentCreated();
         return Result.Success(new CreateCommentResponse(comment.Id));
     }
 }

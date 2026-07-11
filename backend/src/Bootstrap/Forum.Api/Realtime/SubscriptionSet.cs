@@ -42,6 +42,17 @@ internal sealed class SubscriptionSet
     private readonly HashSet<SubscriptionView> _views = [];
     private readonly Lock _lock = new();
 
+    public int Count
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _views.Count;
+            }
+        }
+    }
+
     /// <summary>False when the cap is hit (the view is not added); re-subscribing an existing view succeeds.</summary>
     public bool TryAdd(SubscriptionView view, int maxSubscriptions)
     {

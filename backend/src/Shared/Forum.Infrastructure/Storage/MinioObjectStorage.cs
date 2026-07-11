@@ -10,12 +10,28 @@ namespace Forum.Infrastructure.Storage;
 internal sealed class MinioObjectStorage : IObjectStorage
 {
     private readonly IMinioClient _client;
+
+    /// <summary>
+    /// The client presigned URLs are generated with. A presigned URL's signature binds the host, so when
+    /// <see cref="StorageOptions.PublicEndpoint"/> is set (the browser-facing ingress host in k8s, ADR 0008)
+    /// a second client configured with it signs the browser-bound URLs; every server-side operation
+    /// (stat/read/remove/bucket) stays on the in-cluster <see cref="_client"/>. Unset — dev/compose, where the
+    /// browser reaches the same endpoint the API does — both are the same client.
+    /// </summary>
+    private readonly IMinioClient _presignClient;
     private readonly StorageOptions _options;
 
     public MinioObjectStorage(IMinioClient client, IOptions<StorageOptions> options)
     {
         _client = client;
         _options = options.Value;
+        _presignClient = string.IsNullOrWhiteSpace(_options.PublicEndpoint)
+            ? client
+            : new MinioClient()
+                .WithEndpoint(_options.PublicEndpoint)
+                .WithCredentials(_options.AccessKey, _options.SecretKey)
+                .WithSSL(_options.PublicUseSsl)
+                .Build();
     }
 
     public Task<bool> BucketExistsAsync(CancellationToken cancellationToken = default) =>
@@ -31,13 +47,13 @@ internal sealed class MinioObjectStorage : IObjectStorage
     }
 
     public Task<string> PresignPutAsync(string objectKey, TimeSpan expiry, CancellationToken cancellationToken = default) =>
-        _client.PresignedPutObjectAsync(new PresignedPutObjectArgs()
+        _presignClient.PresignedPutObjectAsync(new PresignedPutObjectArgs()
             .WithBucket(_options.Bucket)
             .WithObject(objectKey)
             .WithExpiry((int)expiry.TotalSeconds));
 
     public Task<string> PresignGetAsync(string objectKey, TimeSpan expiry, CancellationToken cancellationToken = default) =>
-        _client.PresignedGetObjectAsync(new PresignedGetObjectArgs()
+        _presignClient.PresignedGetObjectAsync(new PresignedGetObjectArgs()
             .WithBucket(_options.Bucket)
             .WithObject(objectKey)
             .WithExpiry((int)expiry.TotalSeconds));

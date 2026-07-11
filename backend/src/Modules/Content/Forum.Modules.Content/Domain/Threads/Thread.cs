@@ -50,6 +50,21 @@ internal sealed class Thread : AggregateRoot<Ulid>, IOwned, ISoftDeletable
         return thread;
     }
 
+    /// <summary>Constructs a thread directly for the offline seeder: deterministic id + audit, no event raised.</summary>
+    internal static Thread Seed(
+        Ulid id, Ulid categoryId, Ulid ownerId, string title, string body, bool isPinned,
+        DateTimeOffset createdOnUtc, bool isDeleted)
+    {
+        var thread = new Thread(id, categoryId, ownerId, title.Trim(), body) { IsPinned = isPinned };
+        thread.SetCreated(createdOnUtc, ownerId);
+        if (isDeleted)
+        {
+            thread.MarkDeleted(createdOnUtc, ownerId);
+        }
+
+        return thread;
+    }
+
     public void Update(string title, string body)
     {
         Title = title.Trim();

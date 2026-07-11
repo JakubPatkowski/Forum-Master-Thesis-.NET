@@ -4,6 +4,7 @@ using Forum.Modules.Engagement.Application.Abstractions;
 using Forum.Modules.Engagement.Application.Reactions;
 using Forum.Modules.Engagement.Contracts.IntegrationEvents;
 using Forum.Modules.Engagement.Domain.Reactions;
+using Forum.TestUtilities;
 
 using NSubstitute;
 
@@ -27,7 +28,7 @@ public sealed class AddReactionHandlerTests
     private readonly Ulid _categoryId = Ulid.NewUlid();
 
     private AddReactionCommandHandler CreateHandler() => new(
-        _targets, _reactions, _queries, _currentUser, _outbox, _unitOfWork, TimeProvider.System);
+        _targets, _reactions, _queries, _currentUser, _outbox, _unitOfWork, TimeProvider.System, TestMetrics.Create());
 
     private void SetUpVisibleTarget(bool isPrivate = false, Ulid? categoryOwnerId = null)
     {

@@ -2,6 +2,7 @@ using FluentValidation;
 
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Identity.Application.Abstractions;
 using Forum.Modules.Identity.Application.Validation;
 using Forum.Modules.Identity.Domain.Tokens;
@@ -36,6 +37,7 @@ internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, AuthTo
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
     private readonly JwtOptions _jwtOptions;
+    private readonly ForumMetrics _metrics;
 
     public LoginCommandHandler(
         IValidator<LoginCommand> validator,
@@ -47,7 +49,8 @@ internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, AuthTo
         IRefreshTokenService refreshTokenService,
         IUnitOfWork unitOfWork,
         TimeProvider clock,
-        IOptions<JwtOptions> jwtOptions)
+        IOptions<JwtOptions> jwtOptions,
+        ForumMetrics metrics)
     {
         _validator = validator;
         _users = users;
@@ -59,6 +62,7 @@ internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, AuthTo
         _unitOfWork = unitOfWork;
         _clock = clock;
         _jwtOptions = jwtOptions.Value;
+        _metrics = metrics;
     }
 
     public async Task<Result<AuthTokensResponse>> Handle(LoginCommand command, CancellationToken cancellationToken)
@@ -74,11 +78,20 @@ internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, AuthTo
         if (user is null)
         {
             _passwordVerifier.VerifyDummy(command.Password);
+            _metrics.AuthAttempt(ForumMetrics.AuthOutcomeInvalidCredentials);
             return Result.Failure<AuthTokensResponse>(AuthErrors.InvalidCredentials);
         }
 
-        if (!_passwordVerifier.Verify(user.PasswordHash, command.Password) || !user.IsActive)
+        if (!_passwordVerifier.Verify(user.PasswordHash, command.Password))
         {
+            _metrics.AuthAttempt(ForumMetrics.AuthOutcomeInvalidCredentials);
+            return Result.Failure<AuthTokensResponse>(AuthErrors.InvalidCredentials);
+        }
+
+        // Same non-revealing error as a bad password, but a distinguishable metric outcome (never the identity).
+        if (!user.IsActive)
+        {
+            _metrics.AuthAttempt(ForumMetrics.AuthOutcomeBlocked);
             return Result.Failure<AuthTokensResponse>(AuthErrors.InvalidCredentials);
         }
 
@@ -94,6 +107,7 @@ internal sealed class LoginCommandHandler : ICommandHandler<LoginCommand, AuthTo
         _refreshTokens.Add(token);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        _metrics.AuthAttempt(ForumMetrics.AuthOutcomeSuccess);
         return Result.Success(new AuthTokensResponse(
             access.Value, access.ExpiresOnUtc, plainRefresh, refreshExpires));
     }

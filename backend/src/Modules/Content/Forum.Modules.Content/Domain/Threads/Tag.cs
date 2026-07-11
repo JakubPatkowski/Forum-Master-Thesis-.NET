@@ -23,4 +23,7 @@ internal sealed class Tag : Entity<Ulid>
     public string Name { get; private set; } = default!;
 
     public static Tag Create(string slug, string name) => new(Ulid.NewUlid(), slug, name);
+
+    /// <summary>Constructs a tag directly for the offline seeder with a deterministic id.</summary>
+    internal static Tag Seed(Ulid id, string slug, string name) => new(id, slug, name);
 }

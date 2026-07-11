@@ -1,0 +1,22 @@
+# Benchmark seed as a one-shot Job (Phase 9b): `dotnet Forum.Api.dll seed --benchmark --force` (re)populates the
+# deterministic A/B benchmark dataset and exits. --force TRUNCATEs first so a re-run is a clean reset; backoffLimit 0
+# so a failure is never silently retried. Applied by the benchmark runbook (Phase 9c) after db-migrate. Targets the
+# single in-cluster Postgres via the shared secret — the --benchmark arg (not a different database) selects the
+# larger dataset; local dev instead isolates it into forum_net_bench (see scripts/seed-test-data.sh).
+apiVersion: batch/v1
+kind: Job
+metadata: { name: db-seed-benchmark, namespace: forum-dotnet }
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: forum-dotnet-api:local
+          imagePullPolicy: Never
+          args: ["seed", "--benchmark", "--force"]
+          envFrom: [{ configMapRef: { name: backend-config } }]
+          env:
+            - name: ConnectionStrings__Forum
+              valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }

@@ -1,5 +1,6 @@
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
+using Forum.Common.Telemetry;
 using Forum.Modules.Engagement.Application.Abstractions;
 using Forum.Modules.Engagement.Contracts.IntegrationEvents;
 using Forum.Modules.Engagement.Domain.Reactions;
@@ -25,6 +26,7 @@ internal sealed class AddReactionCommandHandler : ICommandHandler<AddReactionCom
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
+    private readonly ForumMetrics _metrics;
 
     public AddReactionCommandHandler(
         IReactionTargetReader targets,
@@ -33,7 +35,8 @@ internal sealed class AddReactionCommandHandler : ICommandHandler<AddReactionCom
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
-        TimeProvider clock)
+        TimeProvider clock,
+        ForumMetrics metrics)
     {
         _targets = targets;
         _reactions = reactions;
@@ -42,6 +45,7 @@ internal sealed class AddReactionCommandHandler : ICommandHandler<AddReactionCom
         _outbox = outbox;
         _unitOfWork = unitOfWork;
         _clock = clock;
+        _metrics = metrics;
     }
 
     public async Task<Result<ReactionSummaryResponse>> Handle(
@@ -79,6 +83,7 @@ internal sealed class AddReactionCommandHandler : ICommandHandler<AddReactionCom
                 Ulid.NewUlid(), userId, ReactionTargets.ToWire(command.TargetType), command.TargetId,
                 ReactionTypes.Like, target.CategoryId, target.ThreadId, now));
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            _metrics.ReactionToggled(ForumMetrics.ReactionAdd);
         }
 
         return Result.Success(

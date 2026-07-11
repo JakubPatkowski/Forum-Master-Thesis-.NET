@@ -3,6 +3,7 @@ using System.Text.Json;
 
 using Forum.Common.Correlation;
 using Forum.Common.Messaging;
+using Forum.Common.Telemetry;
 using Forum.Infrastructure.Messaging.Inbox;
 using Forum.Infrastructure.Persistence;
 
@@ -40,6 +41,8 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
     private readonly ModuleMessagingOptions<TContext> _module;
     private readonly MessagingOptions _options;
     private readonly TimeProvider _time;
+    private readonly ForumMetrics _metrics;
+    private readonly string _serviceName;
     private readonly ILogger<IntegrationEventConsumerService<TContext>> _logger;
 
     /// <summary>Routing key → (event CLR type, closed generic IEventBus.PublishAsync), from the module's bindings.</summary>
@@ -51,6 +54,7 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
         ModuleMessagingOptions<TContext> module,
         IOptions<MessagingOptions> options,
         TimeProvider time,
+        ForumMetrics metrics,
         ILogger<IntegrationEventConsumerService<TContext>> logger)
     {
         _scopeFactory = scopeFactory;
@@ -58,6 +62,8 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
         _module = module;
         _options = options.Value;
         _time = time;
+        _metrics = metrics;
+        _serviceName = $"consumer-{module.ModuleName}";
         _logger = logger;
         _consumed = module.ConsumedEvents.ToDictionary(
             static consumed => MessagingTopology.RoutingKey(consumed.EventType),
@@ -66,6 +72,9 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Boot tick: makes the age gauge exist even when the broker is unreachable from the start.
+        _metrics.HostedServiceTick(_serviceName);
+
         var queue = MessagingTopology.EventsQueue(_module.ModuleName);
         try
         {
@@ -89,18 +98,21 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
 
                     while (channel.IsOpen && !stoppingToken.IsCancellationRequested)
                     {
+                        _metrics.HostedServiceTick(_serviceName);
                         await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
                     }
                 }
-                catch (Exception exception) when (exception is not OperationCanceledException)
+                catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
                 {
+                    // Filtered on the token, not the exception type — a client-internal OperationCanceledException
+                    // must trigger a reconnect here rather than silently ending the consumer for good.
                     _logger.LogWarning(
                         exception, "Consumer host for '{Queue}' lost the broker; reconnecting shortly.", queue);
                     await Task.Delay(TimeSpan.FromMilliseconds(_options.PollIntervalMilliseconds), stoppingToken);
                 }
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Host shutdown.
         }
@@ -192,6 +204,7 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
             {
                 await transaction.RollbackAsync(cancellationToken);
                 await channel.BasicAckAsync(delivery.DeliveryTag, multiple: false, cancellationToken);
+                _metrics.MessageConsumed(_module.ModuleName, ForumMetrics.ConsumeOutcomeDuplicate);
                 if (_logger.IsEnabled(LogLevel.Debug))
                 {
                     _logger.LogDebug(
@@ -208,6 +221,7 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
 
             await transaction.CommitAsync(cancellationToken);
             await channel.BasicAckAsync(delivery.DeliveryTag, multiple: false, cancellationToken);
+            _metrics.MessageConsumed(_module.ModuleName, ForumMetrics.ConsumeOutcomeOk);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -241,6 +255,7 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
                 "Delivery '{RoutingKey}' failed on attempt {Attempt}/{Max}; sending to the retry queue.",
                 delivery.RoutingKey, attempts, _options.MaxDeliveryAttempts);
             await channel.BasicNackAsync(delivery.DeliveryTag, multiple: false, requeue: false, cancellationToken);
+            _metrics.MessageConsumed(_module.ModuleName, ForumMetrics.ConsumeOutcomeRetry);
         }
         catch (Exception brokerException) when (brokerException is not OperationCanceledException)
         {
@@ -270,6 +285,7 @@ internal sealed class IntegrationEventConsumerService<TContext> : BackgroundServ
             string.Empty, MessagingTopology.PoisonQueue(_module.ModuleName), mandatory: false, properties,
             delivery.Body, cancellationToken);
         await channel.BasicAckAsync(delivery.DeliveryTag, multiple: false, cancellationToken);
+        _metrics.MessageConsumed(_module.ModuleName, ForumMetrics.ConsumeOutcomePoison);
         _logger.LogWarning(
             "Parked poison message '{RoutingKey}' ({MessageId}): {Reason}.",
             delivery.RoutingKey, delivery.BasicProperties.MessageId, reason);
