@@ -53,6 +53,16 @@ internal sealed class Category : AggregateRoot<Ulid>, IOwned, ISoftDeletable
         return category;
     }
 
+    /// <summary>Constructs a category directly for the offline seeder: deterministic id + audit, no event raised.</summary>
+    internal static Category Seed(
+        Ulid id, string slug, string name, string description, Visibility visibility, Ulid ownerId,
+        DateTimeOffset createdOnUtc)
+    {
+        var category = new Category(id, slug.Trim(), name.Trim(), description.Trim(), visibility, ownerId);
+        category.SetCreated(createdOnUtc, ownerId);
+        return category;
+    }
+
     public void UpdateDetails(string name, string description)
     {
         Name = name.Trim();

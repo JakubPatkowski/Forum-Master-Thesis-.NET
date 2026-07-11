@@ -46,7 +46,15 @@ public sealed class AuditInterceptor : SaveChangesInterceptor
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.SetCreated(now, actor);
+                    // Tolerate pre-stamped audit fields: the offline seeder (Phase 9b) inserts aggregates with
+                    // deterministic created_on_utc/created_by set by hand — there is no ICurrentActor at seed time,
+                    // and the fixed timestamps drive reproducible ULIDs and keyset ordering. A freshly-constructed
+                    // aggregate always has CreatedOnUtc == default, so normal request-path inserts are unaffected.
+                    if (entry.Entity.CreatedOnUtc == default)
+                    {
+                        entry.Entity.SetCreated(now, actor);
+                    }
+
                     break;
                 case EntityState.Modified:
                     entry.Entity.SetModified(now, actor);

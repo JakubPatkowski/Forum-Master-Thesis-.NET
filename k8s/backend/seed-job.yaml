@@ -1,0 +1,22 @@
+# Development seed as a one-shot Job (Phase 9b): `dotnet Forum.Api.dll seed` populates the tiny Development
+# dataset for manual cluster exploration and exits. No --force → it fail-fasts on an already-seeded database
+# (backoffLimit 0 so a guard abort is not retried). Run AFTER db-migrate. For the Benchmark dataset use
+# seed-job-benchmark.yaml instead. Both target the single in-cluster Postgres via the shared secret; the profile
+# arg controls dataset volume (local dev isolates Benchmark into forum_net_bench — see scripts/seed-test-data.sh).
+apiVersion: batch/v1
+kind: Job
+metadata: { name: db-seed, namespace: forum-dotnet }
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: seed
+          image: forum-dotnet-api:local
+          imagePullPolicy: Never
+          args: ["seed"]
+          envFrom: [{ configMapRef: { name: backend-config } }]
+          env:
+            - name: ConnectionStrings__Forum
+              valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }

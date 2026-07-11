@@ -61,6 +61,24 @@ internal sealed class User : AggregateRoot<Ulid>
         return user;
     }
 
+    /// <summary>
+    /// Constructs an account directly for the offline seeder (Phase 9b): explicit deterministic id, pre-set audit
+    /// timestamp, no domain event raised. <c>created_by</c> is null, mirroring a real (anonymous) self-registration.
+    /// </summary>
+    internal static User Seed(
+        Ulid id, string username, string email, string displayName, string passwordHash,
+        UserStatus status, DateTimeOffset createdOnUtc)
+    {
+        var normalizedUsername = username.Trim();
+        var user = new User(
+            id, normalizedUsername, normalizedUsername.ToLowerInvariant(), email.Trim(), displayName.Trim(), passwordHash)
+        {
+            Status = status,
+        };
+        user.SetCreated(createdOnUtc, by: null);
+        return user;
+    }
+
     /// <summary>Blocks the account and raises <see cref="UserBlockedDomainEvent"/>. No-op failure if already blocked.</summary>
     public Result Block(Ulid by)
     {

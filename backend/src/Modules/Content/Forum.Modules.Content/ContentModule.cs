@@ -5,12 +5,14 @@ using Forum.Common.Messaging;
 using Forum.Common.Modules;
 using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
+using Forum.Infrastructure.Seeding;
 using Forum.Modules.Content.Application;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Consumers;
 using Forum.Modules.Content.Contracts;
 using Forum.Modules.Content.Infrastructure.Messaging;
 using Forum.Modules.Content.Infrastructure.Persistence;
+using Forum.Modules.Content.Infrastructure.Seeding;
 using Forum.Modules.Identity.Contracts.IntegrationEvents;
 
 using Microsoft.AspNetCore.Routing;
@@ -48,6 +50,9 @@ public sealed class ContentModule : IModule
         // and lets the WebSocket hub re-check category visibility before every push (Phase 7).
         services.AddScoped<IContentAuthorization, ContentAttachmentAuthorizer>();
         services.AddScoped<IContentVisibility, CategoryAccessReader>();
+
+        // Offline deterministic seeder (Phase 9b) — resolved only by the `seed` CLI entrypoint, never on boot.
+        services.AddScoped<IModuleSeeder, ContentSeeder>();
 
         // Validators + CQRS handlers (handlers are internal, hence the non-public scans).
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);

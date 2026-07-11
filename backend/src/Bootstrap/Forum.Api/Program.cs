@@ -5,6 +5,7 @@ using Forum.Api.Middleware;
 using Forum.Common.Correlation;
 using Forum.Common.Modules;
 using Forum.Infrastructure;
+using Forum.Infrastructure.Seeding;
 using Forum.Infrastructure.Startup;
 using Forum.Modules.Content;
 using Forum.Modules.Engagement;
@@ -56,6 +57,16 @@ var app = builder.Build();
 if (args.Contains("migrate"))
 {
     await app.RunMigrationsAsync();
+    return;
+}
+
+// Deterministic dataset seeding runs the same way (ADR 0005 pattern): `dotnet Forum.Api.dll seed [--benchmark]
+// [--force]` populates a migrated database and exits. Never runs on a normal boot. --benchmark selects the larger
+// A/B dataset (default: the tiny Development profile); --force TRUNCATEs first so a populated DB can be reset.
+if (args.Contains("seed"))
+{
+    var profile = args.Contains("--benchmark") ? SeedProfile.Benchmark : SeedProfile.Development;
+    await app.RunSeedAsync(new SeedConfig(profile, AllowTruncate: args.Contains("--force"), Verbose: args.Contains("--verbose")));
     return;
 }
 

@@ -119,16 +119,18 @@ atomically. Propose concrete numbers based on your k6 stress-run profile peaks.
 **Observation:** Running Development seed into the same `forum_net` database as Benchmark creates coupling:
 - Load tests write new comments/reactions → dev data becomes stale/polluted.
 - Resetting to Benchmark seed requires manual intervention.
-- Testen (already isolated via Testcontainers) don't interfere, but local dev and local benchmark do.
+- Tests (already isolated via Testcontainers) don't interfere, but local dev and local benchmark do.
 
-**Suggestion:** Use environment variable `POSTGRES_DB` (default `forum_net_dev`) to route connections:
+**Suggestion:** `compose.yaml` already defaults `POSTGRES_DB` to `forum_net` — keep that as-is for
+Development (zero disruption to the existing dev loop/docs) and introduce a second name, `forum_net_bench`,
+for the Benchmark profile only:
 
 ```yaml
 # compose.yaml
 services:
   postgres:
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-forum_net_dev}  # override in Makefile
+      POSTGRES_DB: ${POSTGRES_DB:-forum_net}  # override in Makefile
 ```
 
 ```bash
@@ -145,7 +147,7 @@ bench-local:  ## Benchmark locally (Benchmark seed, isolated DB)
 	POSTGRES_DB=forum_net_bench k6 run load/k6/main.js -e PROFILE=stress
 ```
 
-**Result:** `make api` uses `forum_net_dev`, `make bench-local` uses `forum_net_bench`. PostgreSQL on the
+**Result:** `make api` uses `forum_net`, `make bench-local` uses `forum_net_bench`. PostgreSQL on the
 host handles multiple databases transparently; no schema conflicts. Tidy separation.
 
 **Kubernetes implication:** The k8s Job `seed-job.yaml` runs with `args: ["seed"]` (Development, for
@@ -278,6 +280,9 @@ drops to ~200–400 MB, freeing headroom for Loki/Tempo logging surge under k6 a
 FTS, and trigger logic are **not** a function of dataset size — they're validated in Phase 2–4 tests; this
 reduction prioritizes **fair benchmark conditions on the target hardware** (WSL2 Minikube 10 GiB) over
 "production scale" which belongs in a separate capacity study.
+> **MEASURED (2026-07-11, Phase 9b implemented):** the LOCKED Benchmark seed (800 users / 1600 threads /
+> 9000 comments / 15000 reactions) is **24 MB** on disk — an order of magnitude under this ~200–400 MB estimate,
+> leaving even more headroom than budgeted. Postgres request/limit (512Mi/1Gi) stays as-is.
 
 **Verdict: fits comfortably.** ≈8.5–9.0 GiB worst case on a 10 GiB node with reduced-scale Benchmark seed.
 Headroom exists *because scope was cut deliberately*:
@@ -500,6 +505,53 @@ for rationale and database isolation strategy.)
 
 **Depends on.** 9a not required (independent), but do it after 9a so the seeded image is the final one.
 
+> **IMPLEMENTED — Phase 9b code-complete + verified (2026-07-11).** Locked numbers and corrections below
+> supersede the earlier ranges/sketches in this block (kept for context). Everything was verified against a
+> real Postgres, not assumed.
+>
+> - **Wiring (corrects the Makefile/compose sketches, which guessed a containerized `api`):** seeding mirrors
+>   the `migrate` pattern exactly — `Program.cs` gains a `seed` arg branch → `SeedRunner.RunSeedAsync(SeedConfig)`
+>   (new extension in `Forum.Infrastructure/Startup`, parallel to `MigrationRunner`, early `return`, never on a
+>   normal boot). Per-module `IModuleSeeder`s (`IdentitySeeder`→`ContentSeeder`→`EngagementSeeder`, `int Order`)
+>   are registered by each module installer and resolved by `SeedRunner` — **not** as `IStartupTask`s (those would
+>   fire every boot). Shared determinism lives in `Forum.Infrastructure/Seeding/` (`SeedProfile`, `SeedConfig`,
+>   `SeedPlan`, `SeedStreams`, `SeedTime`, `SeedUlids`, `SeedDistribution`, `IModuleSeeder`).
+> - **Determinism mechanic (corrects the plan's `Ulid.NewUlid(baseTime + i*offset)`):** that overload draws its
+>   random bits from a crypto RNG and is NOT reproducible. Ids come from `Ulid.NewUlid(SeedTime.At(stream,i),
+>   SHA256(seed:stream:i)[..10])` — a pure function of (stream, index), so any module seeder reconstructs a
+>   cross-module reference (owner, target) from stream+index alone, no shared RNG state, no project reference.
+>   The embedded timestamp equals `created_on_utc`, so ids sort by creation. Verified: identical ULIDs across
+>   two fresh runs, per profile (unit test + integration `SeedFlowTests` + manual md5 of both profiles' id sets).
+> - **Audit at seed time:** `AuditInterceptor` now skips stamping when `CreatedOnUtc` is already set (a
+>   freshly-constructed aggregate is always `default`, so request-path inserts are unaffected). Seeders set
+>   deterministic `created_on_utc`; `created_by` is null on users (matches anonymous self-registration) and the
+>   owner on content. New internal `Seed(…)` factories on `User/Category/Thread/Comment/Tag` build aggregates
+>   with an explicit id + audit and **raise no events**; seeders call plain `SaveChangesAsync` (not the
+>   dispatch variant) → **zero outbox rows** (verified). `search_tsv` and `reaction_counts` are filled by their
+>   row triggers on every insert — verified consistent (FTS corpus hits; zero counter drift).
+> - **Private-category "membership" = a `moderate` ACL at category scope** (bit 6 = 64): the code's private
+>   gate is *owner-or-moderate*, so that is the only grant that opens a private category. IdentitySeeder writes
+>   these into `forum_authz` (its own schema) using deterministically-reconstructed category ids — no Content
+>   reference. Role grants + ACLs are one bulk `unnest` INSERT each, then one bulk `recompute_user_perms`.
+> - **Files seeding deliberately omitted** (plan listed 5–10 Dev PNGs): a `files` row with `status='committed'`
+>   pointing at a MinIO object that was never uploaded would break the presigned GET/download path, and the seed
+>   CLI intentionally needs only Postgres (not MinIO). Avatars/icons stay null; the SPA already renders null
+>   avatars. Benchmark seeds 0 files by design anyway (uploads are a k6 scenario in 9c).
+> - **DB isolation:** `compose.yaml` already defaults `${POSTGRES_DB:-forum_net}` (unchanged). Locally,
+>   `scripts/seed-test-data.sh` (rewritten from the TODO stub) + `make seed` target `forum_net`; `--benchmark`
+>   `CREATE DATABASE forum_net_bench` idempotently on the *same* server (via `lib.sh ensure_database`) and seed
+>   there with `--force` — both datasets coexist, no volume wipe. In-cluster the two Jobs share one DB (the
+>   secret's connection string); the profile arg controls volume (plan §A2).
+> - **LOCKED Benchmark numbers + MEASURED size:** users **800** (2 admin / 10 moderator / 20 blocked),
+>   categories **12** (4 private × 25 member ACLs), tags **60**, threads **1600** (1% pinned, 1% soft-deleted),
+>   comments **9000** (depth 0–4, ≤1% deleted, longest path 134 ≤ 161 chars), reactions **15000** (Zipf, 75%
+>   thread / 25% comment). **Real `pg_database_size` = 24 MB** (threads 5.0 MB / comments 4.6 MB / reactions
+>   3.9 MB incl. indexes+tsvector) — the plan's 200–400 MB estimate was ~15× high; 24 MB sits far under the 1 GiB
+>   Postgres container limit (§1), so the numbers are kept as-is (safe, not reduced). Seed time ≈ 13 s.
+> - **How a developer runs it:** `make seed` (Development → `forum_net`, aborts if already seeded) ·
+>   `make seed ARGS=--benchmark` (Benchmark → `forum_net_bench`, `--force` reset) · add `ARGS=--cluster` for the
+>   k8s Job (`k8s/backend/seed-job.yaml` / `seed-job-benchmark.yaml`). Tests stay Testcontainers-isolated (A3).
+
 ### Data volume profiles (user-suggested scalings from 2026-07-10; coordinate final Benchmark numbers with Fable 5)
 
 **Development Profile** — fast dev loop (`make api`):
@@ -533,6 +585,8 @@ users populate the "crowd" (created threads/comments as context). 750–1000 bal
 Zipf distribution) and memory constraints (Minikube 10 GiB, §1).
 
 **Seed time: 30–60 seconds** (Argon2 hashing at seeder start, batch INSERTs). **DB size: 200–400 MB**.
+> *Measured 2026-07-11 with the LOCKED numbers (800/12/60/1600/9000/15000): actual **`pg_database_size` = 24 MB**,
+> seed ≈ **13 s**. The 200–400 MB estimate above was ~15× high; the numbers are kept (far under the 1 GiB budget).*
 
 **Both profiles deterministic:** Fixed RNG seed (`Random(20260707)`) + fixed timestamp base + ULID
 generation (`Ulid.NewUlid(baseTime + i*offset)`) → identical IDs and keyset order across runs on fresh DBs.
@@ -594,18 +648,18 @@ generation (`Ulid.NewUlid(baseTime + i*offset)`) → identical IDs and keyset or
    services:
      postgres:
        environment:
-         POSTGRES_DB: ${POSTGRES_DB:-forum_net_dev}  # default = dev, override in Makefile
+         POSTGRES_DB: ${POSTGRES_DB:-forum_net}  # default = dev, override in Makefile
    ```
    
    `scripts/lib.sh` gains helpers:
    ```bash
-   compose_dev() {   POSTGRES_DB=forum_net_dev docker compose "$@"; }
+   compose_dev() {   POSTGRES_DB=forum_net docker compose "$@"; }
    compose_bench() { POSTGRES_DB=forum_net_bench docker compose "$@"; }
    ```
 
    Makefile targets (new/updated):
    ```makefile
-   api:            ## Start dev API (Development seed, forum_net_dev)
+   api:            ## Start dev API (Development seed, forum_net)
        $(COMPOSE_DEV) down -v && \
        $(COMPOSE_DEV) up -d && \
        $(DOCKER_EXEC_DEV) api dotnet run -- seed && \
@@ -618,7 +672,7 @@ generation (`Ulid.NewUlid(baseTime + i*offset)`) → identical IDs and keyset or
        $(DOCKER_EXEC_BENCH) api k6 run load/k6/main.js -e PROFILE=stress
    ```
 
-   **Result:** `forum_net_dev` and `forum_net_bench` are separate PostgreSQL databases on the same host.
+   **Result:** `forum_net` and `forum_net_bench` are separate PostgreSQL databases on the same host.
    Development seed runs in one, Benchmark in the other. No cross-pollution.
 
 5. **Idempotency guard.** Seeder aborts with a clear message if `users` count > profile-specific sentinel
@@ -694,22 +748,24 @@ generation (`Ulid.NewUlid(baseTime + i*offset)`) → identical IDs and keyset or
    
    Tests seed themselves (micro-seeds, 2–10 rows per test) and never read from Development or Benchmark DBs.
    Running `make test` while `make api` is live doesn't interfere.
-9. **Tests.** `Modules.*.Tests` unit tests for the deterministic generators (same seed → same first/last ULID);
-   one `IntegrationTests` case running the smoke profile against Testcontainers and asserting counts + the two
-   §6 consistency checks + a second run aborts (idempotency guard).
+
+10. **Tests.** `Modules.*.Tests` unit tests for the deterministic generators (same seed → same first/last ULID,
+    for BOTH profiles); one `IntegrationTests` case running the **Development** profile against Testcontainers
+    (fast — this is what CI would run) and asserting counts + the two §6 consistency checks + a second run
+    aborts (idempotency guard). The Benchmark profile is exercised manually via `make bench-local` /
+    `make bench` (9c), not in the automated suite — it's too slow/heavy for `dotnet test` on every run.
 
 **Watch out.**
-- **No outbox writes during seed** — this is the difference between a 30 s seed and a broker meltdown.
-- Argon2id: ONE hash computed, reused — 2 000 real hashes ≈ several minutes of CPU by design (Argon2 is slow).
+- **No outbox writes during seed** — this is the difference between a fast seed and a broker meltdown.
+- Argon2id: ONE hash computed, reused per profile — hashing 750–1000 real passwords individually would add
+  real minutes of CPU (Argon2 is deliberately slow); reuse is not a shortcut, it's the point.
 - Comment `path` must satisfy the ≤161-char/depth-5 constraints — build paths exactly like `Comment.CreateReply`.
-- Keep per-batch `SaveChanges` + `ChangeTracker.Clear()` or EF tracking makes batch 60 O(n²).
+- Keep per-batch `SaveChanges` + `ChangeTracker.Clear()` or EF tracking makes the Benchmark-profile batches
+  (thousands of comments) degrade toward O(n²).
 - The seeder must produce the SAME dataset as B's seeder *in shape and volume* — the exact text corpus need
   not match B, but counts, depth distribution, and hot/cold skew MUST (fairness). Record the final agreed
-  numbers in this file when locked with B.
-
-**Definition of Done.** `make seed` on a fresh compose DB completes < 2 min, twice-run aborts safely;
-`scripts/seed-test-data.sh --cluster` completes as a Job; row counts match the table above; FTS +
-`reaction_counts` verified; determinism test green (same ids across two runs on fresh DBs).
+  Benchmark numbers in this file when locked with B (the Development profile is A-internal only, no parity
+  requirement).
 
 **Definition of Done.** `make api` on a fresh compose DB completes <5 min (Development seed), is browsable;
 `make bench-local` completes <2 min (Benchmark seed, parallel setup), ready for k6; both abort safely when run
@@ -724,7 +780,7 @@ identical ULIDs).
   (order Identity→Content→Engagement), batched, **zero events/outbox rows**, ONE precomputed Argon2id hash
   per profile, fixed RNG seed + fixed timestamp base for reproducible ULIDs/keysets. Triggers give you
   `search_tsv` + `reaction_counts` for free — verify, don't recompute. **Database isolation:** compose uses
-  `${POSTGRES_DB:-forum_net_dev}`, `make api` sets Development, `make bench-local` sets Benchmark. Job
+  `${POSTGRES_DB:-forum_net}`, `make api` sets Development, `make bench-local` sets Benchmark. Job
   variants: `seed-job.yaml` (Development, no-force) and `seed-job-benchmark.yaml` (Benchmark, --force).
   **Tests remain fully isolated** via Testcontainers; they never consume Development/Benchmark seeds.
   Guard against seeding a non-empty DB (abort unless `--force`). If Fable finds better numbers/approach,

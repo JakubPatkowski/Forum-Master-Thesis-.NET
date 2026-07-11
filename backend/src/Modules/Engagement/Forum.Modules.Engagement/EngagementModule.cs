@@ -5,11 +5,13 @@ using Forum.Common.Messaging;
 using Forum.Common.Modules;
 using Forum.Infrastructure.Messaging;
 using Forum.Infrastructure.Persistence;
+using Forum.Infrastructure.Seeding;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Engagement.Application.Abstractions;
 using Forum.Modules.Engagement.Application.Consumers;
 using Forum.Modules.Engagement.Infrastructure.Messaging;
 using Forum.Modules.Engagement.Infrastructure.Persistence;
+using Forum.Modules.Engagement.Infrastructure.Seeding;
 
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,9 @@ public sealed class EngagementModule : IModule
         // Cross-module consumers (dispatched in-process now, via the RabbitMQ relay from Phase 6).
         services.AddScoped<IIntegrationEventHandler<ThreadDeletedIntegrationEvent>, ThreadDeletedEventHandler>();
         services.AddScoped<IIntegrationEventHandler<CommentDeletedIntegrationEvent>, CommentDeletedEventHandler>();
+
+        // Offline deterministic seeder (Phase 9b) — resolved only by the `seed` CLI entrypoint, never on boot.
+        services.AddScoped<IModuleSeeder, EngagementSeeder>();
 
         // Validators + CQRS handlers (handlers are internal, hence the non-public scans).
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);

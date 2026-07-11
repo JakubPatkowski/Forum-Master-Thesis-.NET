@@ -41,6 +41,9 @@ load_env() {
     set -a; source "$REPO_ROOT/.env"; set +a
   fi
   : "${POSTGRES_DB:=forum_net}"
+  # The Benchmark seed profile lives in its own database on the SAME Postgres server, so Development and
+  # Benchmark datasets coexist without a container/volume wipe (Phase 9b, AMENDMENT A2).
+  : "${POSTGRES_DB_BENCH:=forum_net_bench}"
   : "${POSTGRES_USER:=forum}"
   : "${POSTGRES_PASSWORD:=forum_dev_only}"
   : "${MINIO_ROOT_USER:=minio}"
@@ -68,3 +71,15 @@ kc() { kubectl -n "$K8S_NAMESPACE" "$@"; }
 mk() { minikube -p "$MINIKUBE_PROFILE" "$@"; }
 
 compose() { docker compose -f "$REPO_ROOT/compose.yaml" "$@"; }
+
+# Ensure a database exists on the compose Postgres (idempotent). POSTGRES_USER is the instance superuser, so it
+# may CREATE DATABASE; we connect to the always-present maintenance DB 'postgres' to do it. Used to spin up
+# forum_net_bench beside forum_net without wiping the data volume (Phase 9b).
+ensure_database() {
+  local db="$1"
+  compose exec -T postgres psql -U "$POSTGRES_USER" -d postgres -tAc \
+    "SELECT 1 FROM pg_database WHERE datname = '$db'" | grep -q 1 && return 0
+  step "Creating database '$db'"
+  compose exec -T postgres psql -U "$POSTGRES_USER" -d postgres -c "CREATE DATABASE \"$db\"" >/dev/null \
+    && ok "Database '$db' created" || die "Could not create database '$db'."
+}

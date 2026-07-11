@@ -77,6 +77,25 @@ internal sealed class Comment : AggregateRoot<Ulid>, IOwned, ISoftDeletable
         return Result.Success(comment);
     }
 
+    /// <summary>
+    /// Constructs a comment directly for the offline seeder: deterministic id, caller-built materialized path
+    /// (must obey the same <c>parent.Path + "." + id</c> / depth-cap rules as <see cref="CreateReply"/>), pre-set
+    /// audit, no event raised. A deleted comment gets the <see cref="DeletedBody"/> placeholder, like the real path.
+    /// </summary>
+    internal static Comment Seed(
+        Ulid id, Ulid threadId, Ulid? parentId, Ulid ownerId, string body, string path, int depth,
+        DateTimeOffset createdOnUtc, bool isDeleted)
+    {
+        var comment = new Comment(id, threadId, parentId, ownerId, isDeleted ? DeletedBody : body, path, depth);
+        comment.SetCreated(createdOnUtc, ownerId);
+        if (isDeleted)
+        {
+            comment.MarkDeleted(createdOnUtc, ownerId);
+        }
+
+        return comment;
+    }
+
     public void Update(string body) => Body = body;
 
     /// <summary>Soft-deletes: flags the row, blanks the body, keeps children attached to the tree.</summary>
