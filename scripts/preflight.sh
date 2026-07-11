@@ -26,6 +26,7 @@ check dotnet   "install the .NET 10 SDK"
 check node     "install Node.js 20+ (see frontend/.nvmrc) — needed for the frontend"
 check npm      "ships with Node.js — needed for the frontend"
 check k6       "optional — only used by scripts/run-load-test.sh"
+check trivy    "optional — only used by scripts/scan-image.sh (https://trivy.dev)"
 
 if command -v node >/dev/null 2>&1; then
   node_major="$(node -v | sed -E 's/^v([0-9]+).*/\1/')"

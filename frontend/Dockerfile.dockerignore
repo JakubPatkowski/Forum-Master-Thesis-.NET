@@ -1,0 +1,21 @@
+# BuildKit Dockerfile-specific ignore for frontend/Dockerfile (takes precedence over the
+# repo-root .dockerignore; patterns are relative to the build CONTEXT root = repo root).
+# The frontend image is built with a repo-root context (`docker build -f frontend/Dockerfile .`)
+# to keep one build-context convention for both images — so first drop everything, then
+# re-include only the frontend sources the build actually needs.
+*
+!frontend
+
+# Non-build inputs inside frontend/
+frontend/node_modules
+frontend/.next
+frontend/design-reference
+frontend/coverage
+frontend/Dockerfile
+frontend/Dockerfile.dockerignore
+# Never let a local env file leak values into the image — NEXT_PUBLIC_* comes from the
+# build ARG only (see frontend/Dockerfile).
+frontend/.env*
+!frontend/.env.example
+**/*.md
+**/*.tsbuildinfo

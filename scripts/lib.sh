@@ -55,13 +55,26 @@ load_env() {
   : "${MINIKUBE_DRIVER:=docker}"
   : "${K8S_NAMESPACE:=forum-dotnet}"
   : "${IMAGE_NAME:=forum-dotnet-api}"
-  : "${IMAGE_TAG:=local}"
+  : "${IMAGE_NAME_WEB:=forum-dotnet-web}"
+  # IMAGE_TAG defaults to git-<short-sha> of HEAD, plus "-dirty" when the working tree has
+  # uncommitted changes — every image (and thus every benchmark number) maps to an exact,
+  # inspectable build (Phase 10a). An explicit IMAGE_TAG (env or .env) always wins, so
+  # `IMAGE_TAG=local` keeps the historical fixed-tag behavior for plain local iteration.
+  if [[ -z "${IMAGE_TAG:-}" ]]; then
+    local _sha
+    if _sha="$(git -C "$REPO_ROOT" rev-parse --short HEAD 2>/dev/null)"; then
+      IMAGE_TAG="git-${_sha}"
+      [[ -n "$(git -C "$REPO_ROOT" status --porcelain 2>/dev/null)" ]] && IMAGE_TAG="${IMAGE_TAG}-dirty"
+    else
+      IMAGE_TAG="local"   # not a git checkout (e.g. source tarball) — historical fallback
+    fi
+  fi
   : "${INGRESS_HOST:=forum.local}"
   : "${APPLY_NETWORK_POLICIES:=false}"
   export POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD \
          MINIO_ROOT_USER MINIO_ROOT_PASSWORD MINIO_BUCKET \
          MINIKUBE_PROFILE MINIKUBE_CPUS MINIKUBE_MEMORY MINIKUBE_DRIVER \
-         K8S_NAMESPACE IMAGE_NAME IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES
+         K8S_NAMESPACE IMAGE_NAME IMAGE_NAME_WEB IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES
 }
 
 # kubectl bound to our namespace

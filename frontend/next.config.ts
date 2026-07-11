@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   // Presigned MinIO URLs are short-lived and host-relative to the deployment; the classic
   // <img> pipeline (no next/image optimization server) keeps the client fully static.
   images: { unoptimized: true },
+  // Docker (Phase 10a): emit .next/standalone (server.js + pruned node_modules) so the
+  // runtime image copies a self-contained server instead of the full node_modules tree.
+  // Static export is NOT an option: /t/[id], /c/[slug], /u/[userId] are runtime ULIDs.
+  output: "standalone",
 };
 
 export default nextConfig;
