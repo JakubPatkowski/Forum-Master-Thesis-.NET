@@ -1,0 +1,24 @@
+# Dedicated Ingress for the presigned-URL host (Phase 10b, G5/G20). Split from k8s/ingress/
+# ingress.yaml because nginx annotations are per-Ingress and ONLY this host needs the raised
+# body-size (browser presigned PUTs; app cap is 5 MiB, 10m leaves margin). TLS reuses the same
+# forum-tls secret — the mkcert cert carries minio.forum.local as a SAN (scripts/mkcert-tls.sh).
+# SigV4 note: presigned signatures bind the Host header, not the scheme — TLS termination at the
+# ingress with plain http to minio:9000 behind it keeps signatures valid.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio
+  namespace: forum-dotnet
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [minio.forum.local]
+      secretName: forum-tls
+  rules:
+    - host: minio.forum.local
+      http:
+        paths:
+          - { path: /, pathType: Prefix, backend: { service: { name: minio, port: { number: 9000 } } } }

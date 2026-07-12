@@ -1,19 +1,35 @@
-# Migrations run as a one-shot Job (NOT at app startup) to avoid HPA replica races.
+# Migrations run as a one-shot Job (NOT at app startup) to avoid HPA replica races (ADR 0005).
 # The Host image applies EF migrations + (re)creates SQL views/functions when invoked with "migrate".
+# Phase 10b notes: template carries `app: backend` so 20-postgres-allow.yaml admits it to :5432;
+# backend-secrets is REQUIRED even though migrate never mints tokens — the host builds its full DI
+# container before branching on the arg, and the Phase 9a Production fail-fast throws at
+# registration when Jwt__SigningKey is missing. Image tag substituted by deploy.sh at apply time.
 apiVersion: batch/v1
 kind: Job
-metadata: { name: db-migrate, namespace: forum-dotnet }
+metadata: { name: db-migrate, namespace: forum-dotnet, labels: { app: backend } }
 spec:
   backoffLimit: 3
+  activeDeadlineSeconds: 600
   template:
+    metadata: { labels: { app: backend } }
     spec:
+      serviceAccountName: backend
       restartPolicy: Never
+      securityContext: { runAsNonRoot: true, seccompProfile: { type: RuntimeDefault } }   # PSS restricted; chiseled uid 1654 applies
       containers:
         - name: migrate
           image: forum-dotnet-api:local
           imagePullPolicy: Never
           args: ["migrate"]
-          envFrom: [{ configMapRef: { name: backend-config } }]
+          envFrom:
+            - { configMapRef: { name: backend-config } }
+            - { secretRef: { name: backend-secrets } }
           env:
             - name: ConnectionStrings__Forum
               valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }
+          resources:
+            requests: { cpu: "250m", memory: "256Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts: [{ name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: {} }]

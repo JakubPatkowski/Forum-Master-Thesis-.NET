@@ -49,9 +49,19 @@ load_env() {
   : "${MINIO_ROOT_USER:=minio}"
   : "${MINIO_ROOT_PASSWORD:=minio_dev_only}"
   : "${MINIO_BUCKET:=forum}"
+  # Cluster-only credentials (Phase 10b). Empty defaults mean deploy.sh GENERATES a random value
+  # when it first creates the k8s secret (generate-if-missing — an existing in-cluster secret is
+  # never overwritten). Set them in .env only if you want fixed values.
+  : "${RABBITMQ_USER:=forum}"
+  : "${RABBITMQ_PASSWORD:=}"
+  : "${JWT_SIGNING_KEY:=}"
   : "${MINIKUBE_PROFILE:=forum}"
-  : "${MINIKUBE_CPUS:=4}"
-  : "${MINIKUBE_MEMORY:=8192}"
+  # Phase 10b resource contract (§1 of PHASE-9-10-ENTERPRISE-PLAN.md): 6 vCPU / 10 GiB for the
+  # minikube VM — requires `.wslconfig` memory=12GB (the VM shares WSL with k6, IDE, docker).
+  # If WSL sees less RAM than this (preflight.sh checks), lower MINIKUBE_MEMORY in .env: the app
+  # stack alone (no monitoring) runs fine in 8192.
+  : "${MINIKUBE_CPUS:=6}"
+  : "${MINIKUBE_MEMORY:=10240}"
   : "${MINIKUBE_DRIVER:=docker}"
   : "${K8S_NAMESPACE:=forum-dotnet}"
   : "${IMAGE_NAME:=forum-dotnet-api}"
@@ -70,9 +80,12 @@ load_env() {
     fi
   fi
   : "${INGRESS_HOST:=forum.local}"
-  : "${APPLY_NETWORK_POLICIES:=false}"
+  # Default flipped to true in Phase 10b: the 10-50 allow-rules now exist and setup-minikube.sh
+  # provisions calico, so the policies are real and enforced. `false` remains an escape hatch.
+  : "${APPLY_NETWORK_POLICIES:=true}"
   export POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD \
          MINIO_ROOT_USER MINIO_ROOT_PASSWORD MINIO_BUCKET \
+         RABBITMQ_USER RABBITMQ_PASSWORD JWT_SIGNING_KEY \
          MINIKUBE_PROFILE MINIKUBE_CPUS MINIKUBE_MEMORY MINIKUBE_DRIVER \
          K8S_NAMESPACE IMAGE_NAME IMAGE_NAME_WEB IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES
 }

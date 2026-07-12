@@ -1,7 +1,10 @@
+# Headless service — stable DNS `postgres` for the single StatefulSet replica.
+# labels + named port follow the Phase 10c ServiceMonitor convention (`app` label, named port),
+# though Postgres itself is scraped via postgres-exporter (monitoring ns) rather than directly.
 apiVersion: v1
 kind: Service
-metadata: { name: postgres, namespace: forum-dotnet }
+metadata: { name: postgres, namespace: forum-dotnet, labels: { app: postgres } }
 spec:
   selector: { app: postgres }
-  ports: [{ port: 5432, targetPort: 5432 }]
+  ports: [{ name: postgres, port: 5432, targetPort: 5432 }]
   clusterIP: None

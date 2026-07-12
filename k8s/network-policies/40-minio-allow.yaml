@@ -1,0 +1,17 @@
+# S3 API (9000): from backend (server-side ops), from ingress-nginx (browser presigned PUT/GET via
+# minio.forum.local — the deliberate improvement over the reference repo's 0.0.0.0/0 hole), from
+# the one-shot create-bucket Job (`app: minio-setup`), and from monitoring (metrics scrape, 10c).
+# The console (9001) is NOT allowed from anywhere — admin access via `make tunnels` port-forward.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: minio-allow, namespace: forum-dotnet }
+spec:
+  podSelector: { matchLabels: { app: minio } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: backend } }
+        - podSelector: { matchLabels: { app: minio-setup } }
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: ingress-nginx } }
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: monitoring } }
+      ports: [{ protocol: TCP, port: 9000 }]

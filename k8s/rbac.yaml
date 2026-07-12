@@ -1,0 +1,31 @@
+# ServiceAccounts (Phase 10b, G12). One per workload, every one with automountServiceAccountToken:
+# false — deliberately NO Roles/RoleBindings at all: none of these workloads talks to the Kubernetes
+# API, so least privilege here means *no token mounted and zero grants*, which is strictly stronger
+# than inventing empty Roles. (Anything that genuinely needs API access — Prometheus Operator,
+# kube-state-metrics — ships its own RBAC via Helm in Phase 10c, in the `monitoring` namespace.)
+# The default SA of this namespace is never used by our pod specs; each manifest sets
+# serviceAccountName explicitly so a future grant can be scoped to exactly one workload.
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: backend, namespace: forum-dotnet, labels: { app: backend } }
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: frontend, namespace: forum-dotnet, labels: { app: frontend } }
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: postgres, namespace: forum-dotnet, labels: { app: postgres } }
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: rabbitmq, namespace: forum-dotnet, labels: { app: rabbitmq } }
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: minio, namespace: forum-dotnet, labels: { app: minio } }
+automountServiceAccountToken: false

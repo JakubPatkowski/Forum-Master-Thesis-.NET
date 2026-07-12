@@ -1,0 +1,9 @@
+# Service name/port (`frontend`:80) match what k8s/ingress/ingress.yaml has routed to since
+# Phase 10a-era manifests. Label + named port per the 10c ServiceMonitor convention (the SPA shell
+# exposes no /metrics — nothing will select it, but the convention stays uniform).
+apiVersion: v1
+kind: Service
+metadata: { name: frontend, namespace: forum-dotnet, labels: { app: frontend } }
+spec:
+  selector: { app: frontend }
+  ports: [{ name: http, port: 80, targetPort: 3000 }]

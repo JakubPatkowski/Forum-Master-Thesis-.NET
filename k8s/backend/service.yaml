@@ -1,6 +1,9 @@
+# G16 (labels + named port land in THIS phase): the Phase 10c ServiceMonitor selects on
+# `app: backend` and scrapes the named port `http` (path /metrics on the app port — /metrics is
+# NOT under /api, so ingress never exposes it; in-cluster scrape only).
 apiVersion: v1
 kind: Service
-metadata: { name: backend, namespace: forum-dotnet }
+metadata: { name: backend, namespace: forum-dotnet, labels: { app: backend } }
 spec:
   selector: { app: backend }
-  ports: [{ port: 80, targetPort: 8080 }]
+  ports: [{ name: http, port: 80, targetPort: 8080 }]

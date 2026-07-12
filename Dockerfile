@@ -24,10 +24,14 @@ WORKDIR /app
 COPY --from=build /app .
 # The image ships a built-in non-root user and already runs as it by default (verified on
 # this tag: Config.User=1654, /etc/passwd -> app:x:1654:1654, shell /bin/false). There is
-# no useradd here — chiseled has no shell to run it. `USER app` is redundant-but-explicit
-# self-documentation. k8s note (Phase 10b): keep runAsNonRoot: true and do NOT pin
-# runAsUser — the image's own default user applies.
-USER app
+# no useradd here — chiseled has no shell to run it.
+# USER must be NUMERIC (Phase 10b lesson, found live): the earlier `USER app` replaced the base
+# image's numeric Config.User=1654 with the *string* "app", and kubelet cannot verify
+# `runAsNonRoot: true` against a non-numeric user -> every pod dies with
+# CreateContainerConfigError ("cannot verify user is non-root"). 1654 IS the `app` user.
+# k8s note: keep runAsNonRoot: true and do NOT pin runAsUser in manifests — the image's own
+# (numeric) default user applies.
+USER 1654
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080 \
     DOTNET_EnableDiagnostics=0

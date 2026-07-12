@@ -1,0 +1,17 @@
+# Backend accepts: ingress-nginx (API + WebSocket) and the monitoring namespace (Prometheus
+# scrapes /metrics on 8080 directly — Phase 10c; that namespace doesn't exist yet, which is fine:
+# a selector that matches nothing is inert until 10c creates it, not an error).
+# ADMIN PATH NOTE (applies to every policy in this folder): `kubectl port-forward`/`exec`/`logs`
+# tunnel through the API server -> kubelet, NOT through the CNI dataplane — NetworkPolicies,
+# Calico and PSS do not affect them. That is the intended admin path (scripts/dev-tunnels.sh).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: backend-allow, namespace: forum-dotnet }
+spec:
+  podSelector: { matchLabels: { app: backend } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: ingress-nginx } }
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: monitoring } }
+      ports: [{ protocol: TCP, port: 8080 }]

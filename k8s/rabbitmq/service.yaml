@@ -1,0 +1,13 @@
+# Stable DNS `rabbitmq` for the broker. Port/label contract (Phase 10c ServiceMonitor selects on
+# `app: rabbitmq` + port name `prometheus`): amqp 5672, management 15672, prometheus 15692.
+# The management UI is NEVER exposed via ingress — admin access is `make tunnels`
+# (kubectl port-forward → localhost:25672), which bypasses NetworkPolicies by design (API-server path).
+apiVersion: v1
+kind: Service
+metadata: { name: rabbitmq, namespace: forum-dotnet, labels: { app: rabbitmq } }
+spec:
+  selector: { app: rabbitmq }
+  ports:
+    - { name: amqp, port: 5672, targetPort: 5672 }
+    - { name: management, port: 15672, targetPort: 15672 }
+    - { name: prometheus, port: 15692, targetPort: 15692 }

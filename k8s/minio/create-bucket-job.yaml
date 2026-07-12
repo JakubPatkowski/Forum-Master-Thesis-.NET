@@ -1,0 +1,32 @@
+# One-shot bucket bootstrap (Phase 10b). The app's EnsureBucketAsync exists but is NOT called at
+# startup; an explicit Job keeps the backend free of bucket-admin concerns (least privilege) and
+# makes the deploy order visible. `mc mb -p` is idempotent — safe to re-run on every deploy.
+# The mc image ships root by default, so the restricted securityContext is pinned explicitly;
+# MC_CONFIG_DIR points at the /tmp emptyDir because ro-rootfs leaves $HOME unwritable.
+apiVersion: batch/v1
+kind: Job
+metadata: { name: minio-create-bucket, namespace: forum-dotnet, labels: { app: minio-setup } }
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    metadata: { labels: { app: minio-setup } }   # admitted to minio:9000 by 40-minio-allow.yaml
+    spec:
+      serviceAccountName: minio
+      restartPolicy: Never
+      securityContext: { runAsNonRoot: true, runAsUser: 1000, runAsGroup: 1000, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: mc
+          # Same-era release as the pinned server image; `latest` forbidden for reproducibility.
+          image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+          command: ["/bin/sh", "-c"]
+          # Bucket name `forum` = the app's Storage__Bucket (appsettings.json default).
+          args: ["mc alias set local http://minio:9000 \"$MINIO_ROOT_USER\" \"$MINIO_ROOT_PASSWORD\" && mc mb -p local/forum"]
+          env: [{ name: MC_CONFIG_DIR, value: /tmp/.mc }]
+          envFrom: [{ secretRef: { name: minio-credentials } }]
+          resources:
+            requests: { cpu: "50m", memory: "64Mi" }
+            limits:   { cpu: "200m", memory: "128Mi" }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts: [{ name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: {} }]

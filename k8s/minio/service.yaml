@@ -1,0 +1,11 @@
+# Stable DNS `minio`. Port/label contract for Phase 10c ServiceMonitors: `app: minio`, named ports
+# s3 (9000 — API + /minio/v2/metrics) and console (9001 — admin UI, port-forward only via
+# `make tunnels` → localhost:19001; NEVER exposed through ingress).
+apiVersion: v1
+kind: Service
+metadata: { name: minio, namespace: forum-dotnet, labels: { app: minio } }
+spec:
+  selector: { app: minio }
+  ports:
+    - { name: s3, port: 9000, targetPort: 9000 }
+    - { name: console, port: 9001, targetPort: 9001 }

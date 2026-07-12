@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Start (or reuse) a minikube cluster sized for local forum-dotnet runs.
 # Config via .env: MINIKUBE_PROFILE, MINIKUBE_CPUS, MINIKUBE_MEMORY, MINIKUBE_DRIVER.
+# Phase 10b: --cni=calico is REQUIRED — the default CNI (kindnet) ignores NetworkPolicy objects
+# entirely, turning k8s/network-policies/ into decoration (G1). CNI cannot be swapped on a live
+# profile: an existing non-calico cluster must be recreated (`make mk-down ARGS=--delete`).
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 load_env
 require_cmd minikube "https://minikube.sigs.k8s.io/docs/start/"
@@ -9,24 +12,47 @@ warn_if_windows_mount
 
 if mk status >/dev/null 2>&1; then
   ok "minikube profile '$MINIKUBE_PROFILE' already running."
+  # Guard against a stale pre-10b cluster: NetworkPolicies silently no-op without calico.
+  if ! kubectl get daemonset -n kube-system calico-node >/dev/null 2>&1; then
+    warn "This cluster has NO calico — NetworkPolicies are NOT enforced (G1)."
+    warn "Recreate it:  make mk-down ARGS=--delete && make mk-up   (CNI can't be swapped live)."
+  fi
 else
-  step "Starting minikube (profile=$MINIKUBE_PROFILE cpus=$MINIKUBE_CPUS mem=${MINIKUBE_MEMORY}MB driver=$MINIKUBE_DRIVER)"
+  step "Starting minikube (profile=$MINIKUBE_PROFILE cpus=$MINIKUBE_CPUS mem=${MINIKUBE_MEMORY}MB driver=$MINIKUBE_DRIVER cni=calico)"
   mk start \
     --cpus="$MINIKUBE_CPUS" \
     --memory="$MINIKUBE_MEMORY" \
     --driver="$MINIKUBE_DRIVER" \
+    --cni=calico \
     --addons=ingress,metrics-server
 fi
 
 kubectl config use-context "$MINIKUBE_PROFILE" >/dev/null 2>&1 || true
+
+# The ingress admission webhook rejects Ingress objects until the controller is up — wait here so
+# deploy.sh never races it.
+step "Waiting for ingress-nginx controller"
+kubectl -n ingress-nginx rollout status deployment/ingress-nginx-controller --timeout=180s >/dev/null
+ok "ingress-nginx ready"
+
 IP="$(mk ip)"
 ok "Cluster ready at $IP"
 
 cat <<EOF
 
-One-time: map the ingress host so http://$INGRESS_HOST works from WSL:
-  echo "$IP  $INGRESS_HOST" | sudo tee -a /etc/hosts
+Access model (full walkthrough: docs/runbooks/wsl-minikube-setup.md):
 
-Then deploy the app:
-  scripts/deploy.sh
+  FROM WSL (quick curl iteration) — map the ingress host to the cluster IP once:
+    echo "$IP  $INGRESS_HOST minio.$INGRESS_HOST" | sudo tee -a /etc/hosts
+    curl -k https://$INGRESS_HOST/health/live        # (via port-forward for /health — not routed)
+
+  FROM WINDOWS (browser / DataGrip) — the cluster IP is NOT reachable from Windows; use
+  'make tunnels' (kubectl port-forward -> WSL localhost -> Windows localhost via WSL2's built-in
+  localhost forwarding) and point C:\\Windows\\System32\\drivers\\etc\\hosts at 127.0.0.1 instead:
+    127.0.0.1  $INGRESS_HOST minio.$INGRESS_HOST grafana.$INGRESS_HOST
+
+Next steps:
+  scripts/mkcert-tls.sh     # once: generate the forum-tls cert (mkcert)
+  scripts/deploy.sh --seed  # build images + deploy everything + seed dev data
+  scripts/dev-tunnels.sh    # admin/browser tunnels (or: make tunnels)
 EOF

@@ -35,8 +35,12 @@ if [[ "$TARGET" == "cluster" ]]; then
     job=db-seed;           manifest="$REPO_ROOT/k8s/backend/seed-job.yaml"
   fi
   step "Applying $job ($PROFILE profile)"
+  # Pin the Job to the image the live backend runs — deploy.sh substitutes the git-SHA tag at
+  # apply time (Phase 10b), so the manifest's ':local' placeholder may not exist in minikube.
+  DEPLOYED_IMAGE="$(kc get deployment backend -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || true)"
+  [[ -n "$DEPLOYED_IMAGE" ]] || die "No backend deployment found — deploy first (scripts/deploy.sh)."
   kc delete job "$job" --ignore-not-found >/dev/null 2>&1 || true   # Jobs are immutable; replace on re-run
-  kc apply -f "$manifest"
+  sed "s|image: $IMAGE_NAME:local|image: $DEPLOYED_IMAGE|" "$manifest" | kc apply -f -
   kc wait --for=condition=complete "job/$job" --timeout=600s || die "Seed Job did not complete (kubectl logs job/$job)."
   ok "Seed Job complete"
   kc logs "job/$job" --tail=20 || true

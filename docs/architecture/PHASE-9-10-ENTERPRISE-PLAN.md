@@ -1042,6 +1042,47 @@ YAML with heavy comments; no Helm for app/infra components (Helm is reserved for
 **Depends on.** 10a images; 9a code (presign endpoint, forwarded headers) — the manifests below reference
 their config keys.
 
+> **IMPLEMENTED — Phase 10b code-complete + verified live (2026-07-11).** Deviations/decisions that
+> supersede the sketches below (everything else landed as written):
+>
+> - **Image pinning: apply-time sed substitution, NOT `kubectl set image`.** `deploy.sh apply_with_tag()`
+>   rewrites the manifests' `:local` placeholder to `$IMAGE_TAG` (git-SHA) in the apply pipe. One rollout
+>   per deploy instead of two (apply would revert to :local, set-image would roll again), Jobs ride the
+>   same exact tag, rollout history still shows SHAs (undo verified). `reset-db.sh`/`seed-test-data.sh
+>   --cluster` pin Jobs to the LIVE backend's image instead.
+> - **kubelet's non-numeric-user trap hit BOTH images (found live).** kubelet cannot verify
+>   `runAsNonRoot: true` against a non-numeric image USER → CreateContainerConfigError. Backend: 10a's
+>   `USER app` line had *replaced* the base image's numeric Config.User=1654 with the string "app" —
+>   fixed at the source (`USER 1654` in the root Dockerfile; 10a's "don't pin runAsUser in manifests"
+>   guidance now actually works). Frontend: the node image ships USER "node", so its deployment pins
+>   `runAsUser: 1000` (we don't own that Dockerfile). ro-rootfs stays true with an emptyDir at
+>   `/app/.next/cache` (the plan's preferred option).
+> - **Migration/seed Jobs also carry `backend-secrets`**: the host builds full DI before branching on the
+>   CLI arg, so the 9a Production Jwt fail-fast fires even for `migrate` — a Job without the signing key
+>   crashes at registration.
+> - **MinIO pinned** to `RELEASE.2025-09-07T16-13-09Z` (the exact build compose runs locally); mc Job
+>   pinned to `RELEASE.2025-08-13T08-35-41Z`; mc runs under an explicit restricted securityContext
+>   (image defaults to root) with `MC_CONFIG_DIR=/tmp/.mc`; the Job pod's `app: minio-setup` label has
+>   its own entry in 40-minio-allow (netpol would otherwise block the bucket bootstrap).
+> - **Windows access architecture (new first-class deliverable, runbook §4):** verified empirically —
+>   `minikube ip` is NOT reachable from Windows (docker bridge inside the WSL VM; TCP+ICMP fail), WSL2
+>   localhost forwarding IS (curl.exe against a 127.0.0.1-bound WSL listener works; `.wslconfig` here
+>   explicitly sets localhostForwarding=true). Everything Windows-facing therefore rides
+>   `scripts/dev-tunnels.sh` (`make tunnels`): table-driven port-forwards, local ports = remote+10000
+>   (never compose's published ports; Postgres tunnel = 15432, DataGrip trap documented), ingress on real
+>   443/80 via a one-time `ip_unprivileged_port_start=80` sysctl (8443 fallback + printed fix otherwise),
+>   Windows hosts file → 127.0.0.1 (NOT minikube ip), mkcert CA imported into the WINDOWS store
+>   (certutil flow printed by mkcert-tls.sh). Grafana/Prometheus are one array line each in 10c.
+> - **Swagger UI is Development-only** (Program.cs gates MapOpenApi/UseSwaggerUI) — the cluster runs
+>   Production, so the backend tunnel serves /api + /health + /metrics but 404s /swagger. By design;
+>   documented in dev-tunnels output + runbook.
+> - **`.wslconfig` prerequisite flagged:** this machine currently grants WSL 10GB → the §1 target
+>   MINIKUBE_MEMORY=10240 cannot fit; verified with 8192 (app stack sized ~1.5Gi requests). Bump
+>   .wslconfig to 12GB + .env to 10240 before 10c/monitoring + measured runs. preflight.sh checks both
+>   RAM headroom and localhostForwarding now.
+> - **HPA `spec.replicas` dropped from the deployment manifest** (HPA owns scale; a literal would snap
+>   the fleet back on every apply).
+
 ### Steps
 
 **1. Namespace + Pod Security Standards (G12/G21).** `k8s/namespace.yaml` gains PSS labels:

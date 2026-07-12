@@ -1,10 +1,23 @@
+# Main app ingress (Phase 10b, G13): TLS via the mkcert-issued forum-tls secret
+# (scripts/mkcert-tls.sh — SANs: forum.local, minio.forum.local, grafana.forum.local) and
+# WebSocket-safe proxy timeouts: /api/realtime/ws is long-lived and mostly idle; nginx's default
+# 60s proxy-read-timeout would kill every quiet socket and force reconnect/resync churn.
+# The minio presign host lives in its own Ingress (k8s/minio/ingress.yaml) because the raised
+# proxy-body-size annotation must scope to that host only. grafana.forum.local ships with 10c.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: forum
   namespace: forum-dotnet
-  annotations: { nginx.ingress.kubernetes.io/ssl-redirect: "true" }
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
 spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [forum.local]
+      secretName: forum-tls
   rules:
     - host: forum.local
       http:

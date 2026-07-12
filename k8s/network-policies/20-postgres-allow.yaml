@@ -1,0 +1,16 @@
+# DB reachable ONLY from backend pods — the deployment AND the migration/seed Jobs all carry
+# `app: backend` on their pod templates (that label is load-bearing; a Job without it hangs on
+# connect) — plus the monitoring namespace for postgres-exporter (10c; selector inert until then).
+# DataGrip/psql access is NOT a hole here: it rides `kubectl port-forward` (API-server path,
+# unaffected by this policy — see 10-backend-allow.yaml header).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: { name: postgres-allow, namespace: forum-dotnet }
+spec:
+  podSelector: { matchLabels: { app: postgres } }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: backend } }
+        - namespaceSelector: { matchLabels: { kubernetes.io/metadata.name: monitoring } }
+      ports: [{ protocol: TCP, port: 5432 }]

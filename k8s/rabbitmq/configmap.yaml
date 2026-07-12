@@ -1,0 +1,13 @@
+# RabbitMQ config (Phase 10b, G3/G14). enabled_plugins turns on the management UI (admin via
+# port-forward only — never via ingress) and the prometheus endpoint (:15692, scraped by a
+# Phase 10c ServiceMonitor). return_per_object_metrics = per-queue depth series — the 10c
+# dashboards need per-queue outbox/consumer lag, and at this cluster's queue count (~6) the
+# cardinality is trivial.
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: rabbitmq-config, namespace: forum-dotnet, labels: { app: rabbitmq } }
+data:
+  enabled_plugins: "[rabbitmq_management,rabbitmq_prometheus]."
+  rabbitmq.conf: |
+    prometheus.return_per_object_metrics = true
+    vm_memory_high_watermark.relative = 0.6
