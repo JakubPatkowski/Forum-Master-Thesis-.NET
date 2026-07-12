@@ -4,3 +4,15 @@ metadata:
   name: forum-dotnet
   labels:
     app.kubernetes.io/part-of: forum-dotnet
+    # Pod Security Standards (Phase 10b, G12): every pod admitted into this namespace must satisfy
+    # the `restricted` profile — runAsNonRoot, seccompProfile RuntimeDefault, allowPrivilegeEscalation
+    # false, capabilities drop ALL. `enforce` rejects non-compliant pods at admission (incl. Jobs and
+    # ephemeral debug containers — `kubectl debug` needs a compliant securityContext too, see the
+    # wsl-minikube-setup runbook). The `monitoring` namespace (created by Helm in Phase 10c) is the
+    # documented exception: `baseline` only, because node-exporter needs hostNetwork/hostPath and
+    # Alloy reads kubelet logs — both violate `restricted`.
+    # NOTE for admins: PSS constrains what a POD may do; it does not touch the kubectl/API-server
+    # path — `kubectl port-forward`/`logs`/`describe` are unaffected (see docs/runbooks).
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+    pod-security.kubernetes.io/audit: restricted

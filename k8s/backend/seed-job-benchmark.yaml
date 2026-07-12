@@ -3,20 +3,34 @@
 # so a failure is never silently retried. Applied by the benchmark runbook (Phase 9c) after db-migrate. Targets the
 # single in-cluster Postgres via the shared secret — the --benchmark arg (not a different database) selects the
 # larger dataset; local dev instead isolates it into forum_net_bench (see scripts/seed-test-data.sh).
+# Phase 10b: `app: backend` template label (postgres NetworkPolicy), PSS-restricted securityContext,
+# backend-secrets for the 9a Production Jwt fail-fast. Image tag substituted by deploy.sh at apply time.
 apiVersion: batch/v1
 kind: Job
-metadata: { name: db-seed-benchmark, namespace: forum-dotnet }
+metadata: { name: db-seed-benchmark, namespace: forum-dotnet, labels: { app: backend } }
 spec:
   backoffLimit: 0
+  activeDeadlineSeconds: 600
   template:
+    metadata: { labels: { app: backend } }
     spec:
+      serviceAccountName: backend
       restartPolicy: Never
+      securityContext: { runAsNonRoot: true, seccompProfile: { type: RuntimeDefault } }
       containers:
         - name: seed
           image: forum-dotnet-api:local
           imagePullPolicy: Never
           args: ["seed", "--benchmark", "--force"]
-          envFrom: [{ configMapRef: { name: backend-config } }]
+          envFrom:
+            - { configMapRef: { name: backend-config } }
+            - { secretRef: { name: backend-secrets } }
           env:
             - name: ConnectionStrings__Forum
               valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }
+          resources:
+            requests: { cpu: "250m", memory: "256Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts: [{ name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: {} }]

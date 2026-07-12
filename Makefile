@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-reset-db load pods logs urls
+        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load pods logs urls
 
 help: ## Show this help
 	@awk 'BEGIN{FS=":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
@@ -41,14 +41,18 @@ scan:       ## Trivy-scan both images, HIGH/CRITICAL fixed-only (needs trivy)
 	@bash scripts/scan-image.sh $(ARGS)
 
 ## --- Cluster (minikube) ----------------------------------------------------
-mk-up:       ## Start the minikube cluster
+mk-up:       ## Start the minikube cluster (calico CNI, ingress, metrics-server)
 	@bash scripts/setup-minikube.sh
-mk-deploy:   ## Build image + apply all manifests
-	@bash scripts/deploy.sh
+mk-deploy:   ## Build images + deploy everything (make mk-deploy ARGS=--seed|--seed-benchmark)
+	@bash scripts/deploy.sh $(ARGS)
 mk-down:     ## Tear down (make mk-down ARGS=--stop|--delete)
 	@bash scripts/teardown.sh $(ARGS)
 mk-reset-db: ## Wipe the in-cluster DB and re-migrate
 	@bash scripts/reset-db.sh
+mk-tls:      ## One-time: mint the mkcert TLS cert + forum-tls secret
+	@bash scripts/mkcert-tls.sh $(ARGS)
+tunnels:     ## Port-forward all admin/dev services to localhost (Windows-reachable); Ctrl+C stops
+	@bash scripts/dev-tunnels.sh
 
 ## --- Ops -------------------------------------------------------------------
 load: ## Run a k6 load profile (make load ARGS=smoke|demo|stress)
@@ -58,4 +62,5 @@ pods: ## Show cluster resources
 logs: ## Tail backend logs
 	@kubectl -n forum-dotnet logs -l app=backend -f
 urls: ## Print access URLs
-	@echo "Ingress:  http://forum.local/api   (minikube ip: $$(minikube -p forum ip 2>/dev/null || echo '<cluster down>'))"
+	@echo "From WSL:      https://forum.local  (minikube ip: $$(minikube -p forum ip 2>/dev/null || echo '<cluster down>') in /etc/hosts)"
+	@echo "From Windows:  make tunnels  +  hosts-file 127.0.0.1 entries  (docs/runbooks/wsl-minikube-setup.md)"

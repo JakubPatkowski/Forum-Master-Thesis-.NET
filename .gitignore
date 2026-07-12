@@ -26,6 +26,8 @@ appsettings.*.Local.json
 secrets.json
 k8s/**/secret*.yaml
 !k8s/**/secret*.example.yaml
+# mkcert-issued ingress cert/key (scripts/mkcert-tls.sh)
+k8s/ingress/tls/
 
 ## OS
 .DS_Store

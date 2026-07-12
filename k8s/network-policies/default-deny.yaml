@@ -1,3 +1,10 @@
+# Baseline: deny ALL pod ingress in the namespace; the numbered 10-50 files carve out the only
+# allowed flows. Enforcement REQUIRES calico (scripts/setup-minikube.sh starts minikube with
+# --cni=calico — the default CNI silently ignores NetworkPolicy objects, G1).
+# Egress is deliberately NOT default-denied (recorded decision): on a one-node, one-tenant minikube
+# an egress lockdown adds DNS/apiserver carve-out complexity while proving nothing the ingress
+# deny doesn't already demonstrate; production would add default-deny egress with explicit
+# DNS/postgres/rabbitmq/minio/tempo rules per pod.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata: { name: default-deny-ingress, namespace: forum-dotnet }

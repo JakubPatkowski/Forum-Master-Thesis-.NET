@@ -1,0 +1,45 @@
+# RabbitMQ 4 (management) hardened for PSS `restricted` (Phase 10b, G3/G14).
+# G14: RABBITMQ_DEFAULT_USER/PASS from the rabbitmq-credentials secret creates the `forum` user at
+# first boot — sidestepping the loopback-only `guest` restriction that would refuse every in-cluster
+# backend connection. The backend's RabbitMq__Username/Password come from the SAME secret, so the
+# two can never drift. Verified locally: the official image runs cleanly as uid 999 (`rabbitmq`).
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: rabbitmq, namespace: forum-dotnet, labels: { app: rabbitmq } }
+spec:
+  serviceName: rabbitmq
+  replicas: 1
+  selector: { matchLabels: { app: rabbitmq } }
+  template:
+    metadata: { labels: { app: rabbitmq } }
+    spec:
+      serviceAccountName: rabbitmq          # tokenless SA (k8s/rbac.yaml)
+      securityContext: { runAsNonRoot: true, runAsUser: 999, runAsGroup: 999, fsGroup: 999, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:4-management
+          envFrom: [{ secretRef: { name: rabbitmq-credentials } }]
+          ports:
+            - { name: amqp, containerPort: 5672 }
+            - { name: management, containerPort: 15672 }
+            - { name: prometheus, containerPort: 15692 }
+          # check_port_connectivity = all listeners accept TCP (broker actually usable); status is the
+          # cheaper liveness signal. Both are slow-ish CLI calls — generous timeouts, long periods.
+          readinessProbe: { exec: { command: ["rabbitmq-diagnostics", "check_port_connectivity"] }, initialDelaySeconds: 20, periodSeconds: 15, timeoutSeconds: 10 }
+          livenessProbe:  { exec: { command: ["rabbitmq-diagnostics", "status"] }, initialDelaySeconds: 60, periodSeconds: 30, timeoutSeconds: 15 }
+          resources:
+            requests: { cpu: "100m", memory: "256Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          # ro-rootfs deliberately OFF: rabbit writes /var/lib/rabbitmq (PVC) AND scattered runtime
+          # state under /etc/rabbitmq and $HOME; chasing every write path is not worth it for a
+          # broker — documented exception, still non-root + no capabilities + seccomp.
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: false, capabilities: { drop: ["ALL"] } }
+          volumeMounts:
+            - { name: data, mountPath: /var/lib/rabbitmq }
+            - { name: config, mountPath: /etc/rabbitmq/conf.d/10-forum.conf, subPath: rabbitmq.conf }
+            - { name: config, mountPath: /etc/rabbitmq/enabled_plugins, subPath: enabled_plugins }
+      volumes:
+        - { name: config, configMap: { name: rabbitmq-config } }
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec: { accessModes: ["ReadWriteOnce"], resources: { requests: { storage: 1Gi } } }

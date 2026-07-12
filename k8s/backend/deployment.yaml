@@ -1,27 +1,55 @@
+# Forum.Api deployment (Phase 10b hardening: G8/G11/G17 + PSS restricted).
+# Image tag: deploy.sh substitutes :local -> :git-<sha> at apply time (single rollout, SHA in
+# rollout history so `kubectl rollout undo` maps to an exact build).
+# POOL MATH (G8, the load-bearing inequality): Npgsql pools per unique connection string per
+# process; all five module DbContexts share ONE string -> one pool per pod. CONNECTION_STRING
+# (postgres-credentials secret) carries `Maximum Pool Size=30`, so 3 replicas (HPA max) x 30 = 90
+# + postgres-exporter (~5) + one transient Job (<=30, never concurrent with peak) + psql/DataGrip
+# (<=3) <= max_connections=100 (Postgres default, deliberately not raised). If stress runs saturate
+# 30/pod, the knob order is: HPA max 3->2, then pool 30->45, and only then max_connections.
 apiVersion: apps/v1
 kind: Deployment
-metadata: { name: backend, namespace: forum-dotnet }
+metadata: { name: backend, namespace: forum-dotnet, labels: { app: backend } }
 spec:
-  replicas: 2
+  # `replicas` intentionally absent: the HPA (hpa.yaml, 1..3) owns scale — a hardcoded value here
+  # would snap the fleet back on every `kubectl apply`.
   selector: { matchLabels: { app: backend } }
+  # G17: never dip below current capacity during rollouts (k6 runs must not see artificial errors).
+  strategy: { type: RollingUpdate, rollingUpdate: { maxSurge: 1, maxUnavailable: 0 } }
   template:
     metadata:
       labels: { app: backend }
+      # kube-prometheus-stack ignores these annotations (it discovers via ServiceMonitor, 10c) —
+      # kept as documentation of where metrics live.
       annotations: { prometheus.io/scrape: "true", prometheus.io/path: "/metrics", prometheus.io/port: "8080" }
     spec:
-      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      serviceAccountName: backend           # tokenless SA (k8s/rbac.yaml) — no API access needed
+      # runAsUser deliberately NOT pinned: the chiseled image's own numeric user (app, uid 1654)
+      # applies — see the root Dockerfile's k8s note. seccompProfile is required by PSS restricted.
+      securityContext: { runAsNonRoot: true, seccompProfile: { type: RuntimeDefault } }
+      # 40s > preStop 5s + HostOptions.ShutdownTimeout 25s (Phase 9a) — drain always wins the race.
+      terminationGracePeriodSeconds: 40
       containers:
         - name: backend
           image: forum-dotnet-api:local
           imagePullPolicy: Never
-          ports: [{ containerPort: 8080 }]
-          envFrom: [{ configMapRef: { name: backend-config } }]
+          ports: [{ name: http, containerPort: 8080 }]
+          # preStop sleep (native k8s >=1.30 field — the chiseled image has no shell for `exec sleep`):
+          # keeps the pod serving while endpoint removal propagates to ingress-nginx, THEN SIGTERM.
+          lifecycle: { preStop: { sleep: { seconds: 5 } } }
+          envFrom:
+            - { configMapRef: { name: backend-config } }
+            - { secretRef: { name: backend-secrets } }        # Jwt__SigningKey (9a fail-fast needs it)
+            - { secretRef: { name: rabbitmq-credentials } }   # RabbitMq__Username/Password (G14)
+            - { secretRef: { name: minio-credentials } }      # Storage__AccessKey/SecretKey
           env:
             - name: ConnectionStrings__Forum
               valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }
           resources:
-            requests: { cpu: "100m", memory: "192Mi" }
-            limits:   { cpu: "1000m", memory: "512Mi" }
-          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 5 }
-          livenessProbe:  { httpGet: { path: /health/live,  port: 8080 }, initialDelaySeconds: 10 }
+            requests: { cpu: "150m", memory: "256Mi" }
+            limits:   { cpu: "750m", memory: "512Mi" }
+          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe:  { httpGet: { path: /health/live,  port: 8080 }, initialDelaySeconds: 10, periodSeconds: 20 }
           securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts: [{ name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: {} }]

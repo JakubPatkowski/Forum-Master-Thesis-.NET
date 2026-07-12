@@ -1,8 +1,22 @@
 apiVersion: v1
 kind: ConfigMap
-metadata: { name: backend-config, namespace: forum-dotnet }
+metadata: { name: backend-config, namespace: forum-dotnet, labels: { app: backend } }
 data:
   ASPNETCORE_ENVIRONMENT: "Production"
-  Otlp__Endpoint: "http://otel-collector:4317"
+  # G11: traces export straight to Tempo's OTLP ingest (no otel-collector indirection). The Service
+  # appears with the Phase 10c monitoring stack; until then exports fail quietly and cheaply.
+  Otlp__Endpoint: "http://tempo.monitoring.svc.cluster.local:4317"
   RabbitMq__Host: "rabbitmq"
+  # Internal S3 endpoint for server-side ops; PublicEndpoint is what presigned URLs are signed for
+  # (G5 — the browser hits https://minio.forum.local via ingress, and SigV4 binds the Host header).
   Storage__Endpoint: "minio:9000"
+  Storage__PublicEndpoint: "minio.forum.local"
+  Storage__PublicUseSsl: "true"
+  # The SPA origin (G13/G20) — without this the deployed frontend would be CORS-blocked
+  # (appsettings.json only allows localhost dev origins). http kept for the ssl-redirect edge.
+  Cors__AllowedOrigins__0: "https://forum.local"
+  Cors__AllowedOrigins__1: "http://forum.local"
+  # G6: trust X-Forwarded-For/-Proto ONLY from the pod network (ingress-nginx lives there).
+  # 10.244.0.0/16 verified live on this cluster: kube-controller-manager --cluster-cidr under
+  # minikube --cni=calico. Correct here if the CNI/CIDR ever changes.
+  ForwardedHeaders__KnownNetworks__0: "10.244.0.0/16"

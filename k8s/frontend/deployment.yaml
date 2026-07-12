@@ -1,0 +1,37 @@
+# Next.js standalone frontend (CSR shell only — the Next server never talks to the .NET API; the
+# browser does). Image: forum-dotnet-web, tag substituted by deploy.sh at apply time.
+# runAsUser 1000 is PINNED here, unlike the backend: the node image's USER is the *string* "node"
+# (non-numeric), and kubelet refuses to verify runAsNonRoot against a non-numeric image user —
+# without the pin the pod fails with CreateContainerConfigError. (The chiseled backend image has a
+# numeric USER 1654, hence no pin there — see the root Dockerfile's k8s note.)
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: frontend, namespace: forum-dotnet, labels: { app: frontend } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: frontend } }
+  template:
+    metadata:
+      labels: { app: frontend }
+    spec:
+      serviceAccountName: frontend          # tokenless SA (k8s/rbac.yaml)
+      securityContext: { runAsNonRoot: true, runAsUser: 1000, runAsGroup: 1000, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: frontend
+          image: forum-dotnet-web:local
+          imagePullPolicy: Never
+          ports: [{ name: http, containerPort: 3000 }]
+          readinessProbe: { httpGet: { path: /, port: 3000 }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe:  { httpGet: { path: /, port: 3000 }, initialDelaySeconds: 15, periodSeconds: 20 }
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits:   { cpu: "300m", memory: "256Mi" }
+          # ro-rootfs stays ON: the only runtime write paths of `next start` (standalone) are the
+          # image cache/ISR dir and tmp — both get emptyDirs. (Chosen over ro-rootfs:false per plan.)
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts:
+            - { name: next-cache, mountPath: /app/.next/cache }
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: next-cache, emptyDir: {} }
+        - { name: tmp, emptyDir: {} }

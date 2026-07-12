@@ -19,8 +19,11 @@ make scan                       # Trivy HIGH/CRITICAL, --ignore-unfixed (needs t
 tree has uncommitted changes (`scripts/lib.sh`). Every benchmark number therefore maps to an
 exact, inspectable build — record `docker image inspect --format '{{.Id}}' <image:tag>`
 alongside results. `IMAGE_TAG=local` (env or `.env`) restores the historical fixed tag.
-The k8s manifests still pin `:local`; `deploy.sh` retags the fresh build onto it — Phase 10b
-replaces that with explicit `kubectl set image` pinning for rollout/rollback support.
+The k8s manifests pin the placeholder `:local`; since Phase 10b `deploy.sh` substitutes the
+real `$IMAGE_TAG` into them at apply time (`apply_with_tag`, a sed pipe) — chosen over the
+originally-sketched `kubectl set image` two-step because it yields ONE rollout per deploy
+instead of two, pins the Jobs to the same exact tag, and still lands the SHA in rollout
+history so `kubectl rollout undo` maps to an exact build.
 
 ## Backend: chiseled runtime — what changes for you
 
@@ -34,8 +37,11 @@ Consequences:
 - **`docker exec -it <ctr> sh` does not work.** Neither does `kubectl exec`.
 - Compose healthchecks for the `api:` service must be **TCP-based or absent** — never
   `curl`/`CMD-SHELL` (there is nothing to shell out to).
-- The image runs as its built-in non-root user `app` (uid 1654) by default. In k8s
-  (Phase 10b): keep `runAsNonRoot: true`, drop any `runAsUser` pin.
+- The image runs as its built-in non-root user `app` (uid 1654). The Dockerfile pins it
+  **numerically** (`USER 1654`, not `USER app`) — kubelet cannot verify `runAsNonRoot: true`
+  against a non-numeric image user and rejects the pod with CreateContainerConfigError
+  (found live in Phase 10b). In k8s: keep `runAsNonRoot: true`, drop any `runAsUser` pin —
+  the image's own numeric user applies.
 
 ### Debugging a shell-less container
 

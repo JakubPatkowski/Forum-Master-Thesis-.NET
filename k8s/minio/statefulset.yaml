@@ -1,0 +1,44 @@
+# MinIO hardened for PSS `restricted` (Phase 10b, G3/G5/G20).
+# Image pinned to the RELEASE tag of the exact build compose has been running locally
+# (reproducibility — `latest` is forbidden for benchmark provenance).
+# Presigned-URL exposure (G5 decision): via the ingress host `minio.forum.local`
+# (k8s/minio/ingress.yaml), NOT a NodePort and NOT a 0.0.0.0/0 NetworkPolicy hole. The backend
+# signs browser-facing URLs against Storage__PublicEndpoint=minio.forum.local (Phase 9a's second
+# presign client), so the SigV4 host binding matches what the browser actually hits.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: { name: minio, namespace: forum-dotnet, labels: { app: minio } }
+spec:
+  serviceName: minio
+  replicas: 1
+  selector: { matchLabels: { app: minio } }
+  template:
+    metadata: { labels: { app: minio } }
+    spec:
+      serviceAccountName: minio             # tokenless SA (k8s/rbac.yaml)
+      securityContext: { runAsNonRoot: true, runAsUser: 1000, runAsGroup: 1000, fsGroup: 1000, seccompProfile: { type: RuntimeDefault } }
+      containers:
+        - name: minio
+          image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+          args: ["server", "/data", "--console-address", ":9001"]
+          envFrom: [{ secretRef: { name: minio-credentials } }]
+          env:
+            # 10c scrapes /minio/v2/metrics without minting a bearer token.
+            - { name: MINIO_PROMETHEUS_AUTH_TYPE, value: "public" }
+            # G20: the browser's presigned PUT is cross-origin (forum.local -> minio.forum.local),
+            # so the S3 API must answer the CORS preflight for the SPA origin.
+            - { name: MINIO_API_CORS_ALLOW_ORIGIN, value: "https://forum.local,http://forum.local" }
+          ports:
+            - { name: s3, containerPort: 9000 }
+            - { name: console, containerPort: 9001 }
+          readinessProbe: { httpGet: { path: /minio/health/ready, port: 9000 }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe:  { httpGet: { path: /minio/health/live,  port: 9000 }, initialDelaySeconds: 15, periodSeconds: 20 }
+          resources:
+            requests: { cpu: "100m", memory: "256Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          volumeMounts: [{ name: data, mountPath: /data }, { name: tmp, mountPath: /tmp }]
+      volumes: [{ name: tmp, emptyDir: {} }]
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec: { accessModes: ["ReadWriteOnce"], resources: { requests: { storage: 2Gi } } }

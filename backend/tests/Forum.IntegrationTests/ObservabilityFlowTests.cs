@@ -49,14 +49,18 @@ public sealed class ObservabilityFlowTests : IClassFixture<ForumApiFactory>
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
 
         // The relay and consumers run on their own cadence — poll until their series materialize.
+        // Also poll for auth attempts to account for Prometheus export lag.
+        // GH Actions runs slower, so use 60s timeout instead of the default 30s.
         await TestWait.UntilAsync(
             async () =>
             {
                 var scraped = await client.GetStringAsync("/metrics");
-                return scraped.Contains("forum_outbox_published_total")
+                return scraped.Contains("forum_auth_attempts_total")
+                    && scraped.Contains("forum_outbox_published_total")
                     && scraped.Contains("forum_messaging_consumed_total");
             },
-            "outbox relay + consumer metrics appear on /metrics");
+            "metrics appear on /metrics endpoint (auth attempts, outbox relay, consumer results)",
+            timeoutSeconds: 60);
 
         var metrics = await client.GetStringAsync("/metrics");
 

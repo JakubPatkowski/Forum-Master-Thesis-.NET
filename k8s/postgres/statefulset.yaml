@@ -1,8 +1,13 @@
+# PostgreSQL 17 hardened for PSS `restricted` (Phase 10b, G2).
+# max_connections stays at the Postgres default 100 — deliberately NOT raised. The pool math
+# (enforced via `Maximum Pool Size=30` in the CONNECTION_STRING secret, see deploy.sh and the
+# backend deployment comment): 3 backend replicas (HPA max) x 30 = 90, + postgres-exporter (~5,
+# Phase 10c) + one transient migration/seed Job (<=30, never concurrent with peak by procedure)
+# + interactive psql/DataGrip sessions (<=3) ~= 98 <= 100. Raising max_connections would cost RAM
+# per connection and hide pool bugs; the thesis point is the inequality replicas x pool <= max.
 apiVersion: apps/v1
 kind: StatefulSet
-metadata:
-  name: postgres
-  namespace: forum-dotnet
+metadata: { name: postgres, namespace: forum-dotnet, labels: { app: postgres } }
 spec:
   serviceName: postgres
   replicas: 1
@@ -10,18 +15,47 @@ spec:
   template:
     metadata: { labels: { app: postgres } }
     spec:
-      securityContext: { fsGroup: 999 }
+      serviceAccountName: postgres          # tokenless SA (k8s/rbac.yaml) — no API access needed
+      securityContext:
+        # 999 = the `postgres` user baked into the official image; fsGroup 999 makes the PVC writable.
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        seccompProfile: { type: RuntimeDefault }
       containers:
         - name: postgres
           image: postgres:17
+          # Benchmark-stable tuning; conservative defaults otherwise. See the pool-math header note
+          # for why max_connections is pinned to the default rather than raised.
+          args: ["-c", "shared_buffers=256MB", "-c", "effective_cache_size=512MB", "-c", "max_connections=100"]
           envFrom: [{ secretRef: { name: postgres-credentials } }]
-          ports: [{ containerPort: 5432 }]
-          readinessProbe:
-            exec: { command: ["pg_isready", "-U", "forum"] }
-            initialDelaySeconds: 5
-          volumeMounts: [{ name: data, mountPath: /var/lib/postgresql/data }]
+          # PGDATA subdirectory: with fsGroup ownership the PVC root gets a lost+found dir that
+          # initdb refuses to initialize into; a subdir sidesteps that classic quirk.
+          env: [{ name: PGDATA, value: /var/lib/postgresql/data/pgdata }]
+          ports: [{ name: postgres, containerPort: 5432 }]
+          readinessProbe: { exec: { command: ["pg_isready", "-U", "forum"] }, initialDelaySeconds: 5, periodSeconds: 10 }
+          livenessProbe:  { exec: { command: ["pg_isready", "-U", "forum"] }, initialDelaySeconds: 30, periodSeconds: 20 }
+          resources:
+            requests: { cpu: "250m", memory: "512Mi" }
+            limits:   { cpu: "1000m", memory: "1Gi" }
+          # ro-rootfs works for the official image ONLY with the two emptyDirs below (unix-socket dir
+          # + /tmp). If a future image update trips on another write path (e.g. extensions), the
+          # sanctioned fallback is readOnlyRootFilesystem: false on THIS container only, commented.
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: data, mountPath: /var/lib/postgresql/data }
+            - { name: run,  mountPath: /var/run/postgresql }   # unix socket dir — required for ro-rootfs
+            - { name: tmp,  mountPath: /tmp }
+      volumes:
+        - { name: run, emptyDir: {} }
+        - { name: tmp, emptyDir: {} }
   volumeClaimTemplates:
+    # 4Gi (was 2Gi): seeded benchmark DB (24 MB measured) is tiny, but WAL under k6 stress plus
+    # headroom is cheap on minikube's hostpath provisioner. volumeClaimTemplates are immutable —
+    # a size change requires deleting the StatefulSet+PVC (scripts/reset-db.sh does exactly that).
     - metadata: { name: data }
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources: { requests: { storage: 2Gi } }
+      spec: { accessModes: ["ReadWriteOnce"], resources: { requests: { storage: 4Gi } } }

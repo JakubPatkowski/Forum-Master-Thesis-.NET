@@ -1,6 +1,11 @@
+# CPU-driven HPA. Max 3 is a hard cap from BOTH budgets: RAM (3 x 512Mi limit, §1 of the plan) and
+# the pool math (3 x 30 connections — see deployment.yaml). Custom-metrics HPA (prometheus-adapter)
+# was considered and REJECTED (G18 recorded decision): CPU tracks load nearly linearly here
+# (Argon2id logins + JSON serialization are CPU-bound), while the adapter costs ~100-200Mi plus a
+# config file that is its own project, and a p95-driven HPA oscillates without careful tuning.
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
-metadata: { name: backend, namespace: forum-dotnet }
+metadata: { name: backend, namespace: forum-dotnet, labels: { app: backend } }
 spec:
   scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: backend }
   minReplicas: 1
@@ -8,3 +13,9 @@ spec:
   metrics:
     - type: Resource
       resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }
+  # Explicit behavior so the demo profile's scaling staircase is deterministic and explainable:
+  # up = at most 1 pod per 30s after a 30s window; down = at most 1 pod per 60s after 180s calm
+  # (default 300s scale-down would outlast short k6 stages; unbounded scale-up would jump 1->3).
+  behavior:
+    scaleUp:   { stabilizationWindowSeconds: 30,  policies: [{ type: Pods, value: 1, periodSeconds: 30 }] }
+    scaleDown: { stabilizationWindowSeconds: 180, policies: [{ type: Pods, value: 1, periodSeconds: 60 }] }
