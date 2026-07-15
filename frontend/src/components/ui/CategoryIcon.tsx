@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Monogram } from "@/components/ui/Monogram";
 import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 import type { MonogramTone } from "@/lib/utils/monogram";
 
 import styles from "./CategoryIcon.module.css";
@@ -33,7 +34,7 @@ export function CategoryIcon({
   const files = useQuery({
     queryKey: queryKeys.filesByTarget("category_icon", categoryId),
     queryFn: () => filesApi.listByTarget("category_icon", categoryId),
-    staleTime: 60_000,
+    staleTime: staleTimes.presignedFiles,
   });
 
   const iconUrl = files.data?.[0]?.url ?? null;

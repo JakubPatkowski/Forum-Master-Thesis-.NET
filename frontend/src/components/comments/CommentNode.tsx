@@ -146,6 +146,7 @@ export function CommentNode({
                 targetType="comment"
                 targetId={comment.id}
                 initial={reaction}
+                covered
                 size="sm"
               />
             ) : null}

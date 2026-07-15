@@ -74,7 +74,7 @@ export function ThreadCard({
             {pinAction.pinned ? "UNPIN" : "PIN"}
           </button>
         ) : null}
-        <ReactionButton targetType="thread" targetId={thread.id} initial={reaction} size="sm" />
+        <ReactionButton targetType="thread" targetId={thread.id} initial={reaction} covered size="sm" />
       </span>
     </div>
   );

@@ -1,6 +1,8 @@
 using Forum.Api.Realtime;
 using Forum.Common.Security;
 
+using Microsoft.AspNetCore.RateLimiting;
+
 namespace Forum.Api.Extensions;
 
 /// <summary>
@@ -39,6 +41,12 @@ public static class RealtimeExtensions
                 return Results.Ok(new { ticket, expiresInSeconds });
             })
             .RequireAuthorization()
+            // Out of the per-IP fixed window: a socket that drops reconnects with exponential backoff,
+            // minting a ticket + a /ws handshake each attempt. If those two authenticated calls counted
+            // against the same 100/min browser partition as page traffic, a reconnect could 429 the very
+            // handshake meant to recover it — a self-reinforcing RECONNECTING loop. The ticket is single-use
+            // and bearer-gated, so it carries its own abuse ceiling without the shared limiter.
+            .DisableRateLimiting()
             .WithName("CreateRealtimeTicket")
             .WithTags("Realtime")
             .WithSummary("Mints a short-lived, single-use ticket that authenticates the WebSocket handshake.");
@@ -61,6 +69,7 @@ public static class RealtimeExtensions
                 await handler.HandleAsync(socket, userId, context.RequestAborted);
                 return Results.Empty;
             })
+            .DisableRateLimiting() // see the ticket endpoint: the reconnect handshake must never be throttled.
             .WithName("RealtimeSocket")
             .WithTags("Realtime")
             .WithSummary("WebSocket handshake (requires a fresh ticket). Speaks the subscribe/unsubscribe protocol "

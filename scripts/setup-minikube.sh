@@ -35,6 +35,18 @@ step "Waiting for ingress-nginx controller"
 kubectl -n ingress-nginx rollout status deployment/ingress-nginx-controller --timeout=180s >/dev/null
 ok "ingress-nginx ready"
 
+# 10d #2 — response compression at INGRESS, not Kestrel: JSON feed pages compress ~5-10x and the
+# CPU stays off the measured backend pods (B parity: B's SSR server also compresses). Controller-
+# scoped, so it lives here with the addon, not in deploy.sh; merge-patch keeps any manually-set
+# keys (e.g. hsts) intact, and the controller hot-reloads nginx on ConfigMap change — no restart.
+step "Enabling gzip on ingress-nginx (10d)"
+kubectl -n ingress-nginx patch configmap ingress-nginx-controller --type merge -p '{"data":{
+  "use-gzip": "true",
+  "gzip-types": "application/json application/problem+json application/javascript text/css text/plain text/html image/svg+xml",
+  "gzip-min-length": "1024"
+}}' >/dev/null
+ok "ingress gzip on (application/json et al., min 1 KiB)"
+
 IP="$(mk ip)"
 ok "Cluster ready at $IP"
 

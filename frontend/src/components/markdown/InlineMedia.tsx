@@ -10,6 +10,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 import { filesApi } from "@/lib/api/files";
 import { isFileRef } from "@/lib/markdown/media-convention";
 
@@ -27,7 +28,7 @@ export function InlineMedia({ kind, mediaRef, caption }: InlineMediaProps) {
     queryKey: queryKeys.file(mediaRef),
     queryFn: () => filesApi.getFile(mediaRef),
     enabled: fileBacked,
-    staleTime: 60_000,
+    staleTime: staleTimes.presignedFiles,
     retry: false,
   });
 

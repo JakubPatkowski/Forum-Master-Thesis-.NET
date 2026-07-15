@@ -42,12 +42,23 @@ public static class ObservabilityExtensions
                         options.Endpoint = new Uri(otlpEndpoint);
                     }
                 }))
-            .WithMetrics(metrics => metrics
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation()
-                .AddMeter(ForumMetrics.MeterName)   // without this the domain Meter exists but exports nothing
-                .AddPrometheusExporter());
+            .WithMetrics(metrics =>
+            {
+                metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddMeter(ForumMetrics.MeterName);  // without this the domain Meter exists but exports nothing
+
+                // Metric→trace exemplars (Phase 10c correlation): histogram samples recorded inside a
+                // sampled Activity carry its trace id, so Grafana's latency panels link straight to the
+                // Tempo trace behind a spike. NOT the SDK default — since exemplars went stable the
+                // default filter is AlwaysOff, and without this line Prometheus stores zero exemplars
+                // (found live; needs the Prometheus exporter ≥ 1.16.0-beta.1 too — see the CPM comment).
+                metrics.SetExemplarFilter(ExemplarFilterType.TraceBased);
+
+                metrics.AddPrometheusExporter();
+            });
 
         return builder;
     }

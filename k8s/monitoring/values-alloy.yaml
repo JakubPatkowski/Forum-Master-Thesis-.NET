@@ -1,0 +1,48 @@
+# Grafana Alloy values (Phase 10c). Tested against chart grafana/alloy 1.10.1 (Alloy v1.17.x).
+# Log shipper — replaces EOL'd Promtail. Runs as a 1-pod DaemonSet and tails ALL pod logs via the
+# KUBELET API (loki.source.kubernetes), so no hostPath mounts are needed; the chart's default
+# ClusterRole already grants pods/log. Lines are shipped WHOLE (no ingest-time JSON parsing):
+# the backend's compact-JSON stays intact and non-JSON pods (postgres, nginx) are harmless —
+# Grafana's `| json` parses at query time (OBSERVABILITY-CONTRACT.md §1).
+alloy:
+  # loki.source.kubernetes is "public preview" stability — the default level rejects it at startup.
+  stabilityLevel: public-preview
+  configMap:
+    content: |
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+      discovery.relabel "pods" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+      }
+      loki.source.kubernetes "pods" {
+        targets    = discovery.relabel.pods.output
+        forward_to = [loki.write.default.receiver]
+      }
+      loki.write "default" {
+        endpoint {
+          url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { cpu: 200m, memory: 256Mi }
+
+controller:
+  type: daemonset   # chart default, pinned: one shipper per node is the semantic contract

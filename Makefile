@@ -5,7 +5,8 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load pods logs urls
+        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load pods logs urls \
+        mon-up mon-down mon-check
 
 help: ## Show this help
 	@awk 'BEGIN{FS=":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
@@ -54,6 +55,14 @@ mk-tls:      ## One-time: mint the mkcert TLS cert + forum-tls secret
 tunnels:     ## Port-forward all admin/dev services to localhost (Windows-reachable); Ctrl+C stops
 	@bash scripts/dev-tunnels.sh
 
+## --- Monitoring (Phase 10c: Helm — kube-prometheus-stack/Loki/Alloy/Tempo/pg-exporter) ------
+mon-up:      ## Install/upgrade the monitoring stack (pinned Helm charts + dashboards + rules)
+	@bash scripts/monitoring-up.sh
+mon-down:    ## Uninstall the monitoring stack + delete the monitoring namespace (reclaims RAM)
+	@bash scripts/monitoring-down.sh
+mon-check:   ## Assert all Prometheus targets UP + Loki ingesting + Tempo ready
+	@bash scripts/monitoring-check.sh
+
 ## --- Ops -------------------------------------------------------------------
 load: ## Run a k6 load profile (make load ARGS=smoke|demo|stress)
 	@bash scripts/run-load-test.sh $(ARGS)
@@ -63,4 +72,5 @@ logs: ## Tail backend logs
 	@kubectl -n forum-dotnet logs -l app=backend -f
 urls: ## Print access URLs
 	@echo "From WSL:      https://forum.local  (minikube ip: $$(minikube -p forum ip 2>/dev/null || echo '<cluster down>') in /etc/hosts)"
+	@echo "Grafana:       https://grafana.forum.local  (admin/admin; needs make mon-up)"
 	@echo "From Windows:  make tunnels  +  hosts-file 127.0.0.1 entries  (docs/runbooks/wsl-minikube-setup.md)"

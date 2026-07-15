@@ -54,7 +54,12 @@ ensure_secret() { # ensure_secret <name> <dir> <create-fn>
 create_postgres_secret() {
   # Maximum Pool Size=30 is LOAD-BEARING (G8): 3 replicas x 30 + exporter + transient Job + psql
   # sessions <= max_connections=100. Full math: k8s/postgres/statefulset.yaml header.
-  local conn="Host=postgres;Database=$POSTGRES_DB;Username=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Maximum Pool Size=30"
+  # Minimum Pool Size=2 keeps two connections warm so a burst after idle doesn't open a storm of new
+  # connectors at once; Keepalive=30 sends TCP keepalives so idle connectors (and their resolved
+  # postgres DNS) stay valid instead of being torn down and re-resolved under a CoreDNS conntrack race.
+  # Max Auto Prepare=20 (10d #1): the hot keyset/view reads become server-side prepared statements
+  # after 2 uses — bounded at 20 per connector, so no prepared-statement bloat at pool size 30.
+  local conn="Host=postgres;Database=$POSTGRES_DB;Username=$POSTGRES_USER;Password=$POSTGRES_PASSWORD;Maximum Pool Size=30;Minimum Pool Size=2;Keepalive=30;Max Auto Prepare=20;Auto Prepare Min Usages=2"
   kc create secret generic postgres-credentials \
     --from-literal=POSTGRES_DB="$POSTGRES_DB" \
     --from-literal=POSTGRES_USER="$POSTGRES_USER" \

@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 
 import styles from "./ThreadIcon.module.css";
 
@@ -32,7 +33,7 @@ export function ThreadIcon({
   const files = useQuery({
     queryKey: queryKeys.filesByTarget("thread_icon", threadId),
     queryFn: () => filesApi.listByTarget("thread_icon", threadId),
-    staleTime: 60_000,
+    staleTime: staleTimes.presignedFiles,
   });
 
   const iconUrl = files.data?.[0]?.url ?? null;

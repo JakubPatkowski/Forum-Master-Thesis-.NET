@@ -24,7 +24,10 @@ export function Providers({ children }: { children: ReactNode }) {
           queries: {
             staleTime: 10_000,
             // 4xx problems are deterministic — retrying them only hammers the rate limiter.
+            // EXCEPT 429: that one IS transient (a momentary per-IP burst), so a few backoff retries
+            // recover silently instead of throwing a critical page query into the SIGNAL LOST boundary.
             retry: (failureCount, error) => {
+              if (error instanceof ApiError && error.status === 429) return failureCount < 3;
               if (error instanceof ApiError && error.status > 0 && error.status < 500) return false;
               return failureCount < 2;
             },

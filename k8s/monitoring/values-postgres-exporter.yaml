@@ -1,0 +1,29 @@
+# prometheus-postgres-exporter values (Phase 10c). Tested against chart 8.1.1 (exporter v0.20.1).
+# The database dashboard (connections-vs-cap, TPS, cache hit ratio, locks) is impossible without it.
+# Credentials: scripts/monitoring-up.sh copies the in-cluster `postgres-credentials` secret from
+# forum-dotnet into the monitoring namespace (secrets are namespace-scoped) — user and password are
+# read from that copy, never written into this file. NOTE: the exporter holds ONE Postgres
+# connection, already counted in the 10b pool math (3×30 + overhead ≤ 100).
+# Without this the Service (= Prometheus `job` label) would be the unwieldy
+# `postgres-exporter-prometheus-postgres-exporter`; dashboards and mon-check use `postgres-exporter`.
+fullnameOverride: postgres-exporter
+
+serviceMonitor:
+  enabled: true
+  labels: { release: monitoring }   # the operator's rule/monitor selector (belt and suspenders)
+
+config:
+  datasource:
+    host: postgres.forum-dotnet.svc.cluster.local
+    userSecret: { name: postgres-credentials, key: POSTGRES_USER }
+    passwordSecret: { name: postgres-credentials, key: POSTGRES_PASSWORD }
+    port: "5432"
+    # Connect via the always-present dev DB; pg_stat_database/pg_stat_activity are cluster-wide,
+    # so forum_net_bench (benchmark runs) is visible through the same connection — dashboard
+    # queries filter datname=~"forum_net.*" to show both.
+    database: forum_net
+    sslmode: disable
+
+resources:
+  requests: { cpu: 20m, memory: 32Mi }
+  limits: { cpu: 100m, memory: 64Mi }

@@ -102,6 +102,9 @@ make tunnels                      # admin tunnels (leave running; Ctrl+C stops a
 
 make mk-reset-db                  # wipe DB + re-migrate
 make mk-down                      # delete namespace (ARGS=--stop or --delete for more)
+
+make mon-up && make mon-check     # Phase 10c: monitoring stack (pinned Helm charts) + target check
+make mon-down                     # reclaim the monitoring RAM when not benchmarking
 ```
 
 `mk-deploy` builds both images straight into minikube's docker daemon
@@ -163,10 +166,12 @@ exactly the endpoint you asked for:
 | MinIO console | `http://localhost:19001` | console port (9001); the S3 API (9000) is ingress-routed for presigned URLs and needs no tunnel |
 | DataGrip / psql | `localhost:15432` | **15432, not 5432** — 5432 is the compose Postgres; the wrong port silently browses the wrong database |
 | Ingress (full app) | `https://forum.local` (443/80) | see 4b; falls back to 8443 + a printed fix if the sysctl from §0 is missing |
+| Grafana | `http://localhost:13001` (admin/admin) | Phase 10c; only opened when the `monitoring` namespace exists; the full-TLS path is `https://grafana.forum.local` via the ingress tunnel (4b) |
+| Prometheus | `http://localhost:19090` | Phase 10c; `/targets`, `/rules`, `/alerts` — deliberately not ingress-exposed |
 
-Phase 10c appends Grafana/Prometheus entries to the `TUNNELS` array in
-`scripts/dev-tunnels.sh` — the array format is documented in the script header; no
-other changes needed.
+The Grafana/Prometheus entries target the REAL Service names of the Helm release
+(`monitoring-grafana`, `monitoring-kube-prometheus-prometheus`) — verified against the
+installed chart, since release name prefixes the chart's Service names.
 
 ### 4b. The real app under its real hostname — TLS/cookies/CORS/WS need the ingress path
 

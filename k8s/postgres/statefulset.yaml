@@ -34,8 +34,14 @@ spec:
           # initdb refuses to initialize into; a subdir sidesteps that classic quirk.
           env: [{ name: PGDATA, value: /var/lib/postgresql/data/pgdata }]
           ports: [{ name: postgres, containerPort: 5432 }]
-          readinessProbe: { exec: { command: ["pg_isready", "-U", "forum"] }, initialDelaySeconds: 5, periodSeconds: 10 }
-          livenessProbe:  { exec: { command: ["pg_isready", "-U", "forum"] }, initialDelaySeconds: 30, periodSeconds: 20 }
+          # -d postgres targets the always-present built-in DB: pg_isready with -U alone connects to a
+          # DB named after the user ("forum"), which does NOT exist -> server logs a FATAL on EVERY probe
+          # (readiness 10s + liveness 20s = a constant log flood), even though pg_isready itself returns 0.
+          # timeoutSeconds:5 + failureThreshold:6 stop a transient node-CPU blip from tripping the default
+          # 1s exec deadline 3x and yanking postgres out of the (headless) Service endpoints -> that gap is
+          # what surfaced as the "DB unreachable" lag (Npgsql TaskCanceledException on connect) in the SPA.
+          readinessProbe: { exec: { command: ["pg_isready", "-U", "forum", "-d", "postgres"] }, initialDelaySeconds: 5, periodSeconds: 10, timeoutSeconds: 5, failureThreshold: 6 }
+          livenessProbe:  { exec: { command: ["pg_isready", "-U", "forum", "-d", "postgres"] }, initialDelaySeconds: 30, periodSeconds: 20, timeoutSeconds: 5, failureThreshold: 6 }
           resources:
             requests: { cpu: "250m", memory: "512Mi" }
             limits:   { cpu: "1000m", memory: "1Gi" }
