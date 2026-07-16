@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load pods logs urls \
+        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load bench pods logs urls \
         mon-up mon-down mon-check
 
 help: ## Show this help
@@ -66,6 +66,8 @@ mon-check:   ## Assert all Prometheus targets UP + Loki ingesting + Tempo ready
 ## --- Ops -------------------------------------------------------------------
 load: ## Run a k6 load profile (make load ARGS=smoke|demo|stress)
 	@bash scripts/run-load-test.sh $(ARGS)
+bench: ## Full measured benchmark → thesis/results/A/ (make bench ARGS=demo|stress ["--repeats N"])
+	@bash scripts/bench-run.sh $(ARGS)
 pods: ## Show cluster resources
 	@kubectl -n forum-dotnet get pods,svc,ingress,hpa
 logs: ## Tail backend logs
