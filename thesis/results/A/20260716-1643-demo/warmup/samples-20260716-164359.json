@@ -1,0 +1,128 @@
+[
+ {
+  "ts": "2026-07-16T14:44:00Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": 4,
+  "pods_running": 1,
+  "backend_cpu_millicores": 7,
+  "backend_mem_mib": 136
+ },
+ {
+  "ts": "2026-07-16T14:44:05Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0
+ },
+ {
+  "ts": "2026-07-16T14:44:10Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0
+ },
+ {
+  "ts": "2026-07-16T14:44:16Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0
+ },
+ {
+  "ts": "2026-07-16T14:44:21Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0
+ },
+ {
+  "ts": "2026-07-16T14:44:26Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0
+ },
+ {
+  "ts": "2026-07-16T14:44:32Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:44:37Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:44:42Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:44:47Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:44:53Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:44:58Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:45:03Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ },
+ {
+  "ts": "2026-07-16T14:45:09Z",
+  "hpa_current": 1,
+  "hpa_desired": 1,
+  "hpa_cpu_pct": null,
+  "pods_running": 1,
+  "backend_cpu_millicores": 213,
+  "backend_mem_mib": 228
+ }
+]

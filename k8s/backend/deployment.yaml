@@ -48,8 +48,11 @@ spec:
           resources:
             requests: { cpu: "150m", memory: "256Mi" }
             limits:   { cpu: "750m", memory: "512Mi" }
-          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 5, periodSeconds: 10 }
-          livenessProbe:  { httpGet: { path: /health/live,  port: 8080 }, initialDelaySeconds: 10, periodSeconds: 20 }
+          # timeoutSeconds 5 (default 1!) — found live in Phase 9c: at the k6 demo plateau a saturated
+          # pod misses the 1 s deadline, flaps unready, and the HPA DISCARDS unready pods' CPU samples —
+          # the sole replica then never scales out (and ingress 503s while its endpoint is withdrawn).
+          readinessProbe: { httpGet: { path: /health/ready, port: 8080 }, initialDelaySeconds: 5, periodSeconds: 10, timeoutSeconds: 5 }
+          livenessProbe:  { httpGet: { path: /health/live,  port: 8080 }, initialDelaySeconds: 10, periodSeconds: 20, timeoutSeconds: 5 }
           securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
           volumeMounts: [{ name: tmp, mountPath: /tmp }]
       volumes: [{ name: tmp, emptyDir: {} }]

@@ -1,0 +1,39 @@
+{
+  "architecture": "A (React SPA + .NET 10 modular monolith)",
+  "profile": "demo",
+  "repeats": 3,
+  "started_utc": "2026-07-16T14:43:46Z",
+  "base_url": "https://forum.local",
+  "git_sha": "9d708ae490120b445b15305cdea8dfa61a2bc96f",
+  "git_dirty": true,
+  "deployed_image": "forum-dotnet-api:git-9d708ae-dirty",
+  "image_digest": "docker://sha256:7753414b8dfe73f73009d41184f601ca637766a2bb3316facd28532f19288ec2",
+  "k6_version": "k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)",
+  "seed": {
+    "database": "forum_net",
+    "users": 800,
+    "threads": 1600,
+    "comments": 9000,
+    "reactions": 15000
+  },
+  "rate_limiter": {
+    "raised_for_run": {
+      "RateLimiting__Global__PermitLimit": "1000000",
+      "RateLimiting__Auth__PermitLimit": "1000000"
+    },
+    "restored_to": {
+      "global_env_override": null,
+      "auth_env_override": null,
+      "configmap_global": "1000",
+      "configmap_auth": "50"
+    }
+  },
+  "node": {
+    "kubectl_nodes": "forum   Ready   control-plane   44h   v1.35.1   192.168.49.2   <none>   Debian GNU/Linux 12 (bookworm)   5.15.146.1-microsoft-standard-WSL2   docker://29.2.1",
+    "kubectl_top_node": "forum   422m   5%    4152Mi   34%",
+    "minikube_vm": "8000000000 nanocpus / 10737418240 bytes",
+    "wsl_kernel": "5.15.146.1-microsoft-standard-WSL2",
+    "wsl_mem_mb": "11966"
+  },
+  "k6_host": "WSL host, outside the cluster, through ingress-nginx (plan \u00a79c design decision)"
+}

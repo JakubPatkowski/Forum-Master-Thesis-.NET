@@ -1,0 +1,75 @@
+LAST SEEN   TYPE      REASON                         OBJECT                            MESSAGE
+40m         Normal    SandboxChanged                 pod/rabbitmq-0                    Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/backend-5467f4779-rdc9d       Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/postgres-0                    Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/minio-0                       Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/backend-5467f4779-lw77s       Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/frontend-556b8b4c94-spv5b     Pod sandbox changed, it will be killed and re-created.
+40m         Normal    SandboxChanged                 pod/backend-5467f4779-2v9d9       Pod sandbox changed, it will be killed and re-created.
+40m         Normal    Started                        pod/rabbitmq-0                    Container started
+40m         Normal    Created                        pod/rabbitmq-0                    Container created
+40m         Normal    Pulled                         pod/rabbitmq-0                    Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+40m         Normal    Pulled                         pod/frontend-556b8b4c94-spv5b     Container image "forum-dotnet-web:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+40m         Normal    Pulled                         pod/backend-5467f4779-rdc9d       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+40m         Normal    Started                        pod/backend-5467f4779-rdc9d       Container started
+40m         Normal    Started                        pod/backend-5467f4779-2v9d9       Container started
+40m         Normal    Pulled                         pod/backend-5467f4779-lw77s       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+40m         Normal    Created                        pod/postgres-0                    Container created
+40m         Normal    Created                        pod/frontend-556b8b4c94-spv5b     Container created
+40m         Normal    Created                        pod/backend-5467f4779-rdc9d       Container created
+40m         Normal    Started                        pod/frontend-556b8b4c94-spv5b     Container started
+40m         Normal    Created                        pod/backend-5467f4779-lw77s       Container created
+40m         Normal    Created                        pod/backend-5467f4779-2v9d9       Container created
+40m         Normal    Pulled                         pod/postgres-0                    Container image "postgres:17" already present on machine and can be accessed by the pod
+40m         Normal    Started                        pod/minio-0                       Container started
+40m         Normal    Created                        pod/minio-0                       Container created
+40m         Normal    Pulled                         pod/minio-0                       Container image "minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+40m         Normal    Pulled                         pod/backend-5467f4779-2v9d9       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+40m         Normal    Started                        pod/postgres-0                    Container started
+40m         Normal    Started                        pod/backend-5467f4779-lw77s       Container started
+40m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+40m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+39m         Warning   Unhealthy                      pod/frontend-556b8b4c94-spv5b     Readiness probe failed: Get "http://10.244.133.144:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+39m         Warning   Unhealthy                      pod/postgres-0                    Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+39m         Warning   Unhealthy                      pod/backend-5467f4779-lw77s       Readiness probe failed: Get "http://10.244.133.151:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+39m         Warning   Unhealthy                      pod/backend-5467f4779-2v9d9       Readiness probe failed: Get "http://10.244.133.152:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+39m         Warning   Unhealthy                      pod/backend-5467f4779-rdc9d       Readiness probe failed: Get "http://10.244.133.132:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+39m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: Error: this command requires the 'rabbit' app to be running on the target node. Start it with 'rabbitmqctl start_app'....
+39m         Warning   Unhealthy                      pod/backend-5467f4779-lw77s       Readiness probe failed: HTTP probe failed with statuscode: 503
+39m         Warning   Unhealthy                      pod/backend-5467f4779-rdc9d       Readiness probe failed: HTTP probe failed with statuscode: 503
+39m         Warning   Unhealthy                      pod/backend-5467f4779-2v9d9       Readiness probe failed: HTTP probe failed with statuscode: 503
+39m         Normal    Sync                           ingress/forum                     Scheduled for sync
+39m         Normal    Sync                           ingress/minio                     Scheduled for sync
+37m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-j5k6t
+37m         Normal    Scheduled                      pod/db-seed-benchmark-j5k6t       Successfully assigned forum-dotnet/db-seed-benchmark-j5k6t to forum
+37m         Normal    Created                        pod/db-seed-benchmark-j5k6t       Container created
+37m         Normal    Pulled                         pod/db-seed-benchmark-j5k6t       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+37m         Normal    Started                        pod/db-seed-benchmark-j5k6t       Container started
+37m         Normal    Completed                      job/db-seed-benchmark             Job completed
+27m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5467f4779 from 3 to 1
+27m         Normal    Killing                        pod/backend-5467f4779-rdc9d       Stopping container backend
+27m         Normal    SuccessfulDelete               replicaset/backend-5467f4779      Deleted pod: backend-5467f4779-lw77s
+27m         Normal    Killing                        pod/backend-5467f4779-lw77s       Stopping container backend
+27m         Normal    SuccessfulDelete               replicaset/backend-5467f4779      Deleted pod: backend-5467f4779-rdc9d
+27m         Warning   Unhealthy                      pod/backend-5467f4779-lw77s       Readiness probe failed: Get "http://10.244.133.151:8080/health/ready": dial tcp 10.244.133.151:8080: connect: invalid argument
+24m         Normal    Scheduled                      pod/backend-d6457cd68-fc59x       Successfully assigned forum-dotnet/backend-d6457cd68-fc59x to forum
+24m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-d6457cd68 from 0 to 1
+24m         Normal    SuccessfulCreate               replicaset/backend-d6457cd68      Created pod: backend-d6457cd68-fc59x
+24m         Normal    Started                        pod/backend-d6457cd68-fc59x       Container started
+24m         Normal    Pulled                         pod/backend-d6457cd68-fc59x       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+24m         Normal    Created                        pod/backend-d6457cd68-fc59x       Container created
+24m         Normal    Killing                        pod/backend-5467f4779-2v9d9       Stopping container backend
+24m         Normal    SuccessfulDelete               replicaset/backend-5467f4779      Deleted pod: backend-5467f4779-2v9d9
+24m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5467f4779 from 1 to 0
+24m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+24m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+23m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+23m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+12m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-d6457cd68 from 1 to 2
+12m         Normal    SuccessfulRescale              horizontalpodautoscaler/backend   New size: 2; reason: cpu resource utilization (percentage of request) above target
+12m         Normal    SuccessfulCreate               replicaset/backend-d6457cd68      Created pod: backend-d6457cd68-9zmct
+12m         Normal    Scheduled                      pod/backend-d6457cd68-9zmct       Successfully assigned forum-dotnet/backend-d6457cd68-9zmct to forum
+12m         Normal    Pulled                         pod/backend-d6457cd68-9zmct       Container image "forum-dotnet-api:git-9d708ae-dirty" already present on machine and can be accessed by the pod
+12m         Normal    Started                        pod/backend-d6457cd68-9zmct       Container started
+12m         Normal    Created                        pod/backend-d6457cd68-9zmct       Container created
+11m         Warning   Unhealthy                      pod/minio-0                       Readiness probe failed: Get "http://10.244.133.145:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)

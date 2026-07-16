@@ -10,6 +10,11 @@ metadata: { name: db-migrate, namespace: forum-dotnet, labels: { app: backend } 
 spec:
   backoffLimit: 3
   activeDeadlineSeconds: 600
+  # Job pods carry `app: backend` (postgres NetworkPolicy) which also matches the backend Deployment/HPA
+  # selector — a lingering Completed pod has no metrics, so the HPA reports "did not receive metrics for
+  # targeted pods" and refuses to scale up (found live in 9c: it stalled the demo staircase). Self-delete
+  # the finished pod fast so it cannot pollute an HPA metric window during a benchmark.
+  ttlSecondsAfterFinished: 120
   template:
     metadata: { labels: { app: backend } }
     spec:

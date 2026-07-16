@@ -790,6 +790,91 @@ identical ULIDs).
 
 ## Phase 9c — k6 load profiles + benchmark runbook
 
+> **IMPLEMENTED — Phase 9c code-complete + verified live (2026-07-16).** Deviations/discoveries that matter:
+> - **Files as planned:** `load/k6/main.js` + `lib/api.js` + `lib/assets.js`; `smoke.js` deleted. k6 **v2.1.0**
+>   portable binary → `~/.local/bin` (no sudo). Profile stages exactly as the table below — the VU peaks fit this
+>   box: at stress peak (150 HTTP + 40 WS VUs) k6 measured ~600 MiB RSS with ~3.3 GiB WSL still available; no
+>   swap growth, no VU reduction needed.
+> - **Traffic-mix surface corrections** (endpoints verified against HEAD, not the plan's sketch):
+>   `GET /api/identity/users/{id}` does not exist → the 2% profile mix calls
+>   `GET /api/engagement/users/{id}/stats` + `GET /api/content/users/{userId}/threads` (the SPA's real
+>   `/u/[userId]` pattern; thread-feed `ownerId`s double as the user pool — no extra discovery call). The
+>   thread-open reaction batch targets the tree's comment ids when non-empty (else the thread id) — one batch
+>   call, the SPA's G22 pattern. Load-created comments are top-level only (a reply to a random seeded comment
+>   could hit the depth-5 422 by design, polluting failure rates).
+> - **Host pinning without sudo:** this box's `/etc/hosts` resolves `forum.local` to 127.0.0.1 first (the
+>   Windows-tunnel entry), so `run-load-test.sh` passes `INGRESS_IP=$(minikube ip)` and main.js pins
+>   `forum.local`+`minio.forum.local` via k6's `hosts` option. mkcert's CA is in the system store → k6 (Go)
+>   verifies TLS with zero flags.
+> - **Thresholds bind to `{scenario:http}` sub-metrics**, not the bare metric — setup()'s 200 Argon2id logins
+>   (~175 ms avg each) would otherwise pollute p95. Per-endpoint `{endpoint:<name>}` informational thresholds
+>   (`max>=0`) materialize the per-endpoint trends the thesis tables need. A `forum_rate_limited` Counter with
+>   `count<1` on EVERY profile makes any 429 fail the run loudly.
+> - **The Auth limiter is raised too, and recorded** — the plan's "stagger instead of raising Auth" arithmetic
+>   did not survive contact: 200 setup logins cannot fit ANY stagger inside the cluster's 50/min per-IP fixed
+>   window. bench-run.sh raises Global AND Auth to 1000000, restores both after (EXIT trap; pre-existing
+>   overrides restored verbatim), and records the raise in meta.json. The 250 ms stagger is retained so the
+>   Argon2id CPU burst stays off the early samples. Setup happens before measurement, so this cannot flatter A.
+> - **setup() discovers seeded data through the public API** (categories → public only → 2 keyset pages per
+>   category → thread ids) instead of reconstructing SeedUlids in JS. Login pool = `bench_user_0034..0233`
+>   (ordinary band: skips 2 admins/10 mods/20 blocked). Dev-seed fallback (alice/bob/charlie) keeps `smoke`
+>   usable against a Development-seeded cluster.
+> - **WS scenario holds in 120 s cycles** (fresh single-use ticket each reconnect) rather than one infinite
+>   hold — every cycle crosses the 60 s idle boundary (the G13 sentinel) AND re-exercises
+>   mint→handshake→subscribe under load. Verified: demo 80 subscribe-acks / 25.5k notifications / 0 errors;
+>   stress 160 / 67.3k / 0.
+> - **Two live findings fixed (both were silent staircase-killers):**
+>   1. The backend probes had no `timeoutSeconds` (k8s default **1 s**) — at the 80 VU plateau the saturated
+>      pod missed the deadline, flapped unready, and the HPA **discards unready pods' CPU samples** → it never
+>      scaled, ingress briefly withdrew the sole endpoint. `k8s/backend/deployment.yaml` now sets
+>      `timeoutSeconds: 5` on both probes.
+>   2. kube-controller-manager's `--horizontal-pod-autoscaler-cpu-initialization-period` (default ~5 min)
+>      ignores the CPU of pods younger than 5 min — and the limiter-raise rollout resets that clock for every
+>      backend pod. bench-run.sh therefore waits out the remainder (`HPA_CPU_INIT_GRACE`, default 300 s,
+>      mostly consumed by the warm-up) before run 1.
+>   With both fixes the demo staircase **1→2→3 was verified live** (3/3 during the 80 VU plateau).
+> - **run-load-test.sh** rewritten: 5 s sampler → `samples-<stamp>.json` (HPA current/desired/cpu% + summed
+>   backend pod CPU/mem via `kubectl top`), summary extracted from the `===K6_SUMMARY_JSON_BEGIN===` block →
+>   `summary-<stamp>.json`; k6 exit 99 (thresholds breached) propagates for smoke/demo but maps to 0 for
+>   stress — stress thresholds are informational by design. Warns loudly when demo/stress run against an
+>   unraised limiter.
+> - **bench-run.sh** as sketched, plus: Prometheus snapshots ride a port-forward on **:19091** (dev-tunnels
+>   owns :19090) and use the QUERIES.md expressions with literal `[1m]` windows; archive layout
+>   `thesis/results/A/<stamp>-<profile>/{meta.json, warmup/, run-N/{summary,samples,events.txt},
+>   prometheus-snapshots.json, stats.json}`. meta.json records git SHA+dirty, deployed image tag AND the
+>   node's imageID digest, k6 version, seed row counts, limiter values, VM/WSL sizing.
+> - **Dry-run numbers (this box, image git-9d708ae-dirty, Benchmark seed 800/1600/9000/15000):**
+>   smoke 992 reqs · 15 rps · p95 18 ms · 0% fail; demo 52.3k reqs · 97.5 rps · p95 103 ms · 0% fail;
+>   stress 72.9k reqs · 144 rps · p95 850 ms · p99 3.4 s · 0% fail — the knee shows in write-path p99s
+>   (comment_create p99 ≈ 6 s at 150 VU) with zero aborts. The presigned-upload golden path
+>   (initiate → PUT `minio.forum.local` → commit/ImageProbe) ran green inside EVERY profile.
+> - **Official measured archive** (`make bench ARGS=demo`, `thesis/results/A/20260716-1643-demo/`, image
+>   `git-9d708ae-dirty`, clean 800/1600/9000/15000 baseline, 3 repeats): **113.5 ± 2.2 req/s · p95 34.5 ± 15.1
+>   ms · p99 184.6 ± 187.6 ms · 0.00% failed.** Bundle complete: meta.json (git SHA+digest+seed+limiter values),
+>   warmup/, run-1..3 (summary+samples+events.txt), prometheus-snapshots.json (13/14 queries; the poison-queue
+>   query's escaped-dot was fragile through heredoc→URL — now `.*poison`), stats.json; limiter auto-restored
+>   via the EXIT trap (verified clean after). The full runbook survived a mid-run host reboot: cluster
+>   `minikube start` → StatefulSets self-healed → reseed → re-run, no data loss (code + archives live on the
+>   Linux FS, not `/tmp`).
+> - **HPA staircase — ROOT CAUSE found live (a real manifest bug, now fixed):** the archived 3-repeat run
+>   scaled only **1→2** and a follow-up warm-pod demo sat pinned at **1 replica at 300%+ CPU** while the HPA
+>   logged `FailedGetResourceMetric: did not receive metrics for targeted pods (pods might be unready)`. The
+>   backend Deployment/HPA selector is `{app: backend}`, and the **migrate/seed Jobs' pods carry the SAME
+>   `app: backend` label** (they need it for the `postgres-allow` NetworkPolicy). A *Completed* Job pod matches
+>   that selector but has no metrics → the HPA can't read the full pod set → it conservatively refuses to scale
+>   up and flat-lines. A benchmark reseed leaves exactly such a pod (`db-seed-benchmark`, Completed) sitting in
+>   the pool. **Proof:** deleting the two Completed Job pods mid-run made the HPA step **1→2→3 within ~40 s**
+>   (17:40:56 desired=2 → 17:41:28 desired=3 → 17:41:43 current=3). The earlier CPU-init-lag hypothesis was a
+>   red herring — the pods were warm and Ready; the metric pool was polluted. **Fix (applied):**
+>   `ttlSecondsAfterFinished: 120` on migration-job/seed-job/seed-job-benchmark so Completed pods self-delete
+>   before they can pollute an HPA window, PLUS a bench-run.sh preflight sweep of any terminated `app=backend`
+>   pod (never touches Running Deployment pods). With the pool clean, the demo scales **1→2→3** tracking the
+>   ramp, no intervention. (A deeper fix — a Deployment selector the Jobs don't share — is a 10b follow-up; the
+>   Deployment selector is immutable, so it needs a recreate.)
+> - **Fairness footnote:** the write mix grows the dataset (~1.6k threads + ~3.4k comments per demo run) —
+>   symmetric for A and B (same profile, same repeat count); meta.json pins the exact pre-run row counts;
+>   reseed between benchmark days (`make seed ARGS='--benchmark --cluster'`), not between repeats.
+
 **Goal.** Implement the missing `demo` and `stress` profiles as *realistic golden-path traffic* (not
 health-check pings), plus the repeatable measurement procedure that produces the thesis numbers. (Note:
 operates against the reduced Benchmark dataset from 9b — see AMENDMENTS A1 for scaling rationale.)
