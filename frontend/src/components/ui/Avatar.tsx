@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CornerBrackets } from "@/components/ui/CornerBrackets";
 import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 
 import styles from "./Avatar.module.css";
 
@@ -28,7 +29,7 @@ export function Avatar({
   const files = useQuery({
     queryKey: queryKeys.filesByTarget("avatar", userId),
     queryFn: () => filesApi.listByTarget("avatar", userId),
-    staleTime: 60_000,
+    staleTime: staleTimes.presignedFiles,
   });
 
   const avatarUrl = files.data?.[0]?.url ?? null;

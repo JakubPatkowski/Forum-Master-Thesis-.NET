@@ -291,16 +291,21 @@ export function TopNav() {
         </div>
       </div>
 
+      {/* prefetch={false}: these persistent tabs re-render on every realtime status/activity tick;
+          with default prefetch each re-render can re-arm the viewport prefetch and flood the network
+          with /<route>?_rsc=… round-trips. The routes are client-rendered (React Query) anyway, so the
+          RSC shell prefetch buys almost nothing here. */}
       <nav className={styles.tabs}>
         <div className={styles.tabsInner}>
-          <Link href="/" className={isForum ? styles.tabActive : styles.tab}>
+          <Link href="/" prefetch={false} className={isForum ? styles.tabActive : styles.tab}>
             <span className={isForum ? styles.tabNumActive : styles.tabNum}>01</span> FORUM
           </Link>
-          <Link href="/search" className={isSearch ? styles.tabActive : styles.tab}>
+          <Link href="/search" prefetch={false} className={isSearch ? styles.tabActive : styles.tab}>
             <span className={isSearch ? styles.tabNumActive : styles.tabNum}>02</span> SEARCH
           </Link>
           <Link
             href={currentUser ? `/u/${currentUser.id}` : "/auth"}
+            prefetch={false}
             className={isProfile ? styles.tabActive : styles.tab}
           >
             <span className={isProfile ? styles.tabNumActive : styles.tabNum}>03</span> PROFILE

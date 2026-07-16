@@ -83,11 +83,22 @@ load_env() {
   # Default flipped to true in Phase 10b: the 10-50 allow-rules now exist and setup-minikube.sh
   # provisions calico, so the policies are real and enforced. `false` remains an escape hatch.
   : "${APPLY_NETWORK_POLICIES:=true}"
+  # Phase 10c monitoring stack — Helm chart versions, pinned on first install (2026-07-12,
+  # `helm search repo <chart>`). NEVER install unpinned: reproducibility is a thesis requirement.
+  # Tempo comes from grafana-community (the grafana/tempo chart is deprecated — repo migration;
+  # updates land only in grafana-community/helm-charts after 2026-01-30).
+  : "${MONITORING_NAMESPACE:=monitoring}"
+  : "${KPS_VERSION:=87.15.1}"    # prometheus-community/kube-prometheus-stack (app v0.92.1)
+  : "${LOKI_VERSION:=7.0.0}"     # grafana/loki (Loki 3.6.x, SingleBinary)
+  : "${ALLOY_VERSION:=1.10.1}"   # grafana/alloy (Alloy v1.17.x)
+  : "${TEMPO_VERSION:=2.2.3}"    # grafana-community/tempo (Tempo 2.10.x)
+  : "${PGEXP_VERSION:=8.1.1}"    # prometheus-community/prometheus-postgres-exporter (v0.20.x)
   export POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD \
          MINIO_ROOT_USER MINIO_ROOT_PASSWORD MINIO_BUCKET \
          RABBITMQ_USER RABBITMQ_PASSWORD JWT_SIGNING_KEY \
          MINIKUBE_PROFILE MINIKUBE_CPUS MINIKUBE_MEMORY MINIKUBE_DRIVER \
-         K8S_NAMESPACE IMAGE_NAME IMAGE_NAME_WEB IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES
+         K8S_NAMESPACE IMAGE_NAME IMAGE_NAME_WEB IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES \
+         MONITORING_NAMESPACE KPS_VERSION LOKI_VERSION ALLOY_VERSION TEMPO_VERSION PGEXP_VERSION
 }
 
 # kubectl bound to our namespace

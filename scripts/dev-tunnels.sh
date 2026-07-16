@@ -21,10 +21,6 @@
 # 8443 (fine for curl --resolve smoke tests, NOT for the full browser flow — the SPA's baked API
 # origin https://forum.local has no port in it).
 #
-# Phase 10c: append entries here — e.g.
-#   "grafana:monitoring:svc/kube-prometheus-stack-grafana:13001:80"   (13000 taken by frontend)
-#   "prometheus:monitoring:svc/kube-prometheus-stack-prometheus:19090:9090"
-# — no other script changes needed.
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 load_env
 require_cmd kubectl
@@ -37,6 +33,20 @@ TUNNELS=(
   "rabbitmq-mgmt:$K8S_NAMESPACE:svc/rabbitmq:25672:15672"
   "minio-console:$K8S_NAMESPACE:svc/minio:19001:9001"
 )
+
+# Monitoring tunnels (Phase 10c) — only when the namespace exists, so a cluster without `make
+# mon-up` doesn't spawn eternally-reconnecting dead tunnels. Service names VERIFIED against the
+# installed charts (release `monitoring`): the Grafana Service is `monitoring-grafana` and
+# Prometheus is `monitoring-kube-prometheus-prometheus` — NOT the `kube-prometheus-stack-*` names
+# an unreleased chart default would produce. Grafana rides 13001 (13000 is the frontend).
+if kubectl get namespace "$MONITORING_NAMESPACE" >/dev/null 2>&1; then
+  TUNNELS+=(
+    "grafana:$MONITORING_NAMESPACE:svc/monitoring-grafana:13001:80"
+    "prometheus:$MONITORING_NAMESPACE:svc/monitoring-kube-prometheus-prometheus:19090:9090"
+  )
+else
+  MONITORING_ABSENT=true
+fi
 
 # Ingress: real 443/80 when the kernel allows unprivileged low ports, else 8443 fallback.
 UNPRIV_START="$(sysctl -n net.ipv4.ip_unprivileged_port_start 2>/dev/null || echo 1024)"
@@ -100,6 +110,15 @@ ${_C_BOLD}Windows-side access (same URLs work inside WSL):${_C_RESET}
   DataGrip           host=localhost port=15432 db=${pg_db:-forum_net} user=${pg_user:-forum} pass=${pg_pass:-<no secret>}
                      (15432, NOT 5432 — 5432 is the docker-compose Postgres; wrong port = wrong DB!)
 EOF
+if [[ "${MONITORING_ABSENT:-false}" == "true" ]]; then
+  info "Monitoring tunnels skipped — namespace '$MONITORING_NAMESPACE' not found (make mon-up)."
+else
+  cat <<EOF
+  Grafana            http://localhost:13001/    user: admin  pass: admin
+                     (or https://grafana.$INGRESS_HOST via the ingress tunnel + hosts entry)
+  Prometheus         http://localhost:19090/    (/targets, /rules, /alerts)
+EOF
+fi
 if [[ "$INGRESS_FALLBACK" == "true" ]]; then
   cat <<EOF
 

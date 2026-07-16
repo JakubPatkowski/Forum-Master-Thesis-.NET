@@ -1,0 +1,140 @@
+# kube-prometheus-stack values (Phase 10c). Tested against chart 87.15.1 (app v0.92.1, Prometheus 3.x).
+# Release name is `monitoring` (scripts/monitoring-up.sh) — resulting Service names:
+#   monitoring-grafana, monitoring-kube-prometheus-prometheus (referenced by dev-tunnels.sh + ingress).
+# Resource numbers come from the §1 budget table in docs/architecture/PHASE-9-10-ENTERPRISE-PLAN.md —
+# they are the ceiling, not a starting point. Grafana's 800m CPU limit is deliberate (CFS throttling
+# at 300m caused liveness-probe restarts under k6 load in the reference repo).
+
+kubelet:
+  enabled: true
+  # cAdvisor over kubelet HTTPS with a self-signed cert — without cAdvisor+https+insecureSkipVerify
+  # the container_* metrics are absent on minikube and the cluster-overview dashboard shows "No data".
+  # CHART CORRECTION vs the plan prose: in chart 87.x all three are already the DEFAULTS and the
+  # bearerTokenFile values key no longer exists (the operator injects the ServiceAccount token
+  # itself). Kept explicit so a future chart bump that flips a default fails loudly here.
+  serviceMonitor:
+    cAdvisor: true
+    https: true
+    insecureSkipVerify: true
+
+prometheus:
+  prometheusSpec:
+    # Without these four, the operator only picks up ServiceMonitors/Rules carrying the Helm
+    # release label — our hand-rolled servicemonitors.yaml/prometheus-rules.yaml carry
+    # `release: monitoring` anyway (belt and suspenders; the #1 silent failure mode of this stack).
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    externalLabels: { cluster: forum-dotnet }   # stock dashboards filter by $cluster
+    retention: 6h                               # benchmark day, not long-term storage (§1);
+    retentionSize: 2GB                          # snapshots for the thesis go to thesis/, not the TSDB
+    enableFeatures: [exemplar-storage]          # metric→trace exemplar links (correlation story)
+    resources:
+      requests: { cpu: 100m, memory: 400Mi }
+      limits: { cpu: 800m, memory: 768Mi }
+
+grafana:
+  adminUser: admin
+  adminPassword: admin      # dev-only; grafana.forum.local resolves to 127.0.0.1 on this machine only
+  defaultDashboardsEnabled: true                # stock k8s dashboards complement our 8 custom ones
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { cpu: 800m, memory: 512Mi }
+  grafana.ini:
+    server:
+      root_url: https://grafana.forum.local     # ingress hostname — keeps redirects/links correct
+    database: { wal: true }                     # SQLITE_BUSY under dashboard-import bursts
+    dataproxy: { timeout: 20, dialTimeout: 10 } # a dead datasource must not hang every panel
+    analytics:
+      reporting_enabled: false
+      check_for_updates: false
+      check_for_plugin_updates: false
+    plugins: { preinstall_disabled: true }      # no network fetches at boot
+  # Generous probes: Grafana on a shared 6-vCPU node can take >60s to warm up under k6 load.
+  livenessProbe:
+    { initialDelaySeconds: 90, timeoutSeconds: 30, failureThreshold: 15, periodSeconds: 15 }
+  readinessProbe:
+    { initialDelaySeconds: 30, timeoutSeconds: 15, failureThreshold: 10, periodSeconds: 15 }
+  sidecar:
+    dashboards:
+      enabled: true            # chart defaults already use label grafana_dashboard=1, searchNamespace ALL;
+      folderAnnotation: grafana_folder   # our ConfigMaps set it to "Forum" so custom boards group together
+      provider: { foldersFromFilesStructure: true }
+    datasources:
+      # Exemplar link on the auto-provisioned Prometheus datasource: histogram exemplars carry
+      # trace_id → clicking a dot opens the trace in Tempo (dashboard app-red latency panels).
+      exemplarTraceIdDestinations:
+        datasourceUid: tempo
+        traceIdLabelName: trace_id
+      alertmanager: { enabled: false }   # no Alertmanager (below) — don't provision a dead datasource
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      access: proxy
+      url: http://loki.monitoring.svc.cluster.local:3100
+      jsonData:
+        timeout: 20
+        maxLines: 500
+        derivedFields:
+          # Log line → Tempo trace. VERIFIED KEY (OBSERVABILITY-CONTRACT.md §1): Serilog's
+          # RenderedCompactJsonFormatter emits the trace id as "@tr" — the plan's '"TraceId":"…"'
+          # regex never matches anything.
+          - name: TraceID
+            matcherRegex: '"@tr":"(\w+)"'
+            url: "$${__value.raw}"
+            datasourceUid: tempo
+    - name: Tempo
+      type: tempo
+      uid: tempo
+      access: proxy
+      # PLAN CORRECTION: the tempo chart's HTTP API listens on 3200, not the plan's 3100
+      # (3100 is Loki's port) — verified against the rendered Service of chart 1.24.4.
+      url: http://tempo.monitoring.svc.cluster.local:3200
+      jsonData:
+        tracesToLogsV2:        # trace → the same pod's Loki stream, ±5 s around the span
+          datasourceUid: loki
+          spanStartTimeShift: "-5s"
+          spanEndTimeShift: "5s"
+          filterByTraceID: true
+          tags: [{ key: "service.name", value: "app" }]   # span resource attr → Loki label (app=backend)
+
+# Recorded decision (§1): rules still evaluate and display in Prometheus/Grafana; there is no pager
+# on a thesis laptop and the pod costs ~128Mi. Do NOT enable "just in case".
+alertmanager: { enabled: false }
+
+nodeExporter: { enabled: true }
+prometheus-node-exporter:
+  resources:
+    requests: { cpu: 20m, memory: 32Mi }
+    limits: { cpu: 100m, memory: 64Mi }
+
+kube-state-metrics:
+  resources:
+    requests: { cpu: 20m, memory: 64Mi }
+    limits: { cpu: 100m, memory: 128Mi }
+
+# minikube's control plane doesn't expose etcd/scheduler/controller-manager/kube-proxy endpoints —
+# leaving these on yields permanent "target down" noise. Their default alert rules go with them.
+kubeEtcd: { enabled: false }
+kubeControllerManager: { enabled: false }
+kubeScheduler: { enabled: false }
+kubeProxy: { enabled: false }
+defaultRules:
+  rules:
+    etcd: false
+    kubeControllerManager: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+    kubeProxy: false
+    alertmanager: false        # Alertmanager is disabled — its meta-alerts would fire forever
+  disabled:
+    # Lives in the `prometheus` group (not `alertmanager`), so it survives the flag above and
+    # fires permanently against the recorded no-Alertmanager decision (observed live).
+    PrometheusNotConnectedToAlertmanagers: true
+
+prometheusOperator:
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { cpu: 200m, memory: 256Mi }

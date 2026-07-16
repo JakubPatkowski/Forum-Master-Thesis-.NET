@@ -1,0 +1,24 @@
+# Grafana ingress (Phase 10c): https://grafana.forum.local — the cert already covers this host
+# (mkcert-tls.sh minted the SAN in 10b, "free now"); the forum-tls secret is COPIED into the
+# monitoring namespace by scripts/monitoring-up.sh (secrets are namespace-scoped — the ingress
+# controller resolves secretName within the Ingress's own namespace).
+# Service name `monitoring-grafana` = Helm release `monitoring` + grafana subchart.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [grafana.forum.local]
+      secretName: forum-tls
+  rules:
+    - host: grafana.forum.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend: { service: { name: monitoring-grafana, port: { number: 80 } } }

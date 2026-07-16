@@ -33,6 +33,7 @@ import { TagChip } from "@/components/ui/TagChip";
 import { useToast } from "@/components/ui/toast";
 import { filesApi } from "@/lib/api/files";
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 import { ApiError } from "@/lib/api/problem";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useComments, useDeleteThread, useSearchThreads, useThread } from "@/lib/hooks/use-content";
@@ -80,7 +81,7 @@ export default function ThreadPage() {
     queryKey: queryKeys.filesByTarget("thread", threadId),
     queryFn: () => filesApi.listByTarget("thread", threadId),
     enabled: thread.data !== undefined,
-    staleTime: 60_000,
+    staleTime: staleTimes.presignedFiles,
   });
 
   // Files referenced inline via the media convention render inside the body — the

@@ -1,0 +1,69 @@
+# ServiceMonitors for the forum-dotnet workloads (Phase 10c). All three live in the `monitoring`
+# namespace and cross-select into `forum-dotnet` via namespaceSelector; the label/port contract
+# they rely on was pinned in the 10b Services (backend: app=backend + port `http`; rabbitmq:
+# app=rabbitmq + port `prometheus`; minio: app=minio + port `s3` — the plan's A.6 said `api`,
+# 10b named it `s3`). The `release: monitoring` label is belt-and-suspenders with
+# serviceMonitorSelectorNilUsesHelmValues=false in the kps values — the #1 silent failure of this
+# stack is a monitor the operator never picks up.
+# Postgres is NOT scraped directly — postgres-exporter's chart ships its own ServiceMonitor.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: forum-backend
+  namespace: monitoring
+  labels: { release: monitoring }
+spec:
+  namespaceSelector: { matchNames: [forum-dotnet] }
+  selector: { matchLabels: { app: backend } }
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+      # REQUIRED (found live): the operator attaches the Service name as a `service` TARGET label,
+      # which collides with the Forum Meter's own `service` tag on
+      # forum_hosted_service_tick_age_seconds{service="outbox-relay-…"} — without honorLabels the
+      # loop names get renamed to `exported_service`, silently breaking the dead-loop panel AND
+      # false-firing BackgroundLoopStale on the sweeper's normal 15-min tick age. Our app's label
+      # names are deliberate (OBSERVABILITY-CONTRACT.md) — they win over target labels.
+      honorLabels: true
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: forum-rabbitmq
+  namespace: monitoring
+  labels: { release: monitoring }
+spec:
+  namespaceSelector: { matchNames: [forum-dotnet] }
+  selector: { matchLabels: { app: rabbitmq } }
+  endpoints:
+    - port: prometheus
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: forum-minio
+  namespace: monitoring
+  labels: { release: monitoring }
+spec:
+  namespaceSelector: { matchNames: [forum-dotnet] }
+  selector: { matchLabels: { app: minio } }
+  # MINIO_PROMETHEUS_AUTH_TYPE=public (10b statefulset) makes both endpoints tokenless.
+  # PLAN CORRECTION (verified against the pinned RELEASE.2025-09-07): bucket usage/object counts
+  # are NOT on the cluster endpoint — they live on /minio/v2/metrics/bucket, so the dashboard's
+  # bucket panels need this second scrape. Usage is refreshed by MinIO's scanner (lazy), 60s is
+  # plenty. TTFB on the cluster endpoint is `minio_s3_requests_ttfb_seconds_distribution`
+  # (le-labeled cumulative series WITHOUT a _bucket suffix — histogram_quantile handles it as-is).
+  endpoints:
+    - port: s3
+      path: /minio/v2/metrics/cluster
+      interval: 30s
+      scrapeTimeout: 10s
+    - port: s3
+      path: /minio/v2/metrics/bucket
+      interval: 60s
+      scrapeTimeout: 10s

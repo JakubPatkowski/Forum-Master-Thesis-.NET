@@ -17,16 +17,22 @@ export function ReactionButton({
   targetType,
   targetId,
   initial,
+  covered = false,
   size = "md",
 }: {
   targetType: ReactionTargetType;
   targetId: string;
   /** Pre-hydrated summary (e.g. from a batch request) to avoid an extra round-trip. */
   initial?: ReactionSummaryResponse;
+  /**
+   * True when a page-level useReactionBatch covers this target: the button then renders
+   * from the batch's write-through cache and never issues its own single GET.
+   */
+  covered?: boolean;
   size?: "sm" | "md";
 }) {
   const router = useRouter();
-  const summary = useReactionSummary(targetType, targetId, initial);
+  const summary = useReactionSummary(targetType, targetId, initial, covered);
   const { toggle, isAuthenticated } = useToggleReaction(targetType, targetId);
 
   const count = summary.data?.count ?? 0;

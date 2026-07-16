@@ -6,6 +6,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 
 import { contentApi } from "@/lib/api/content";
 import { queryKeys } from "@/lib/api/keys";
+import { staleTimes } from "@/lib/api/stale-times";
 import type {
   CreateCategoryRequest,
   CreateCommentRequest,
@@ -18,7 +19,7 @@ export function useCategories() {
   return useQuery({
     queryKey: queryKeys.categories,
     queryFn: () => contentApi.listCategories(),
-    staleTime: 60_000,
+    staleTime: staleTimes.reference,
   });
 }
 
@@ -26,6 +27,7 @@ export function useCategory(slug: string) {
   return useQuery({
     queryKey: queryKeys.category(slug),
     queryFn: () => contentApi.getCategory(slug),
+    staleTime: staleTimes.reference,
   });
 }
 
@@ -60,6 +62,7 @@ export function useThreadFeed(categoryId: string | undefined, limit = 20) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
     enabled: categoryId !== undefined,
+    staleTime: staleTimes.realtimeCovered,
   });
 }
 
@@ -67,6 +70,7 @@ export function useThread(threadId: string) {
   return useQuery({
     queryKey: queryKeys.thread(threadId),
     queryFn: () => contentApi.getThread(threadId),
+    staleTime: staleTimes.realtimeCovered,
   });
 }
 
@@ -77,6 +81,7 @@ export function useSearchThreads(q: string, limit = 20) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
     enabled: q.trim().length > 0,
+    staleTime: staleTimes.search,
   });
 }
 
@@ -104,6 +109,7 @@ export function useComments(threadId: string) {
   return useQuery({
     queryKey: queryKeys.comments(threadId),
     queryFn: () => contentApi.getCommentTree(threadId),
+    staleTime: staleTimes.realtimeCovered,
   });
 }
 

@@ -19,9 +19,9 @@ spec:
   template:
     metadata:
       labels: { app: backend }
-      # kube-prometheus-stack ignores these annotations (it discovers via ServiceMonitor, 10c) —
-      # kept as documentation of where metrics live.
-      annotations: { prometheus.io/scrape: "true", prometheus.io/path: "/metrics", prometheus.io/port: "8080" }
+      # prometheus.io/* annotations deliberately REMOVED in 10c: kube-prometheus-stack discovers
+      # via the forum-backend ServiceMonitor (k8s/monitoring/servicemonitors.yaml) — annotations
+      # would be dead config lying about how scraping works.
     spec:
       serviceAccountName: backend           # tokenless SA (k8s/rbac.yaml) — no API access needed
       # runAsUser deliberately NOT pinned: the chiseled image's own numeric user (app, uid 1654)

@@ -20,3 +20,17 @@ data:
   # 10.244.0.0/16 verified live on this cluster: kube-controller-manager --cluster-cidr under
   # minikube --cni=calico. Correct here if the CNI/CIDR ever changes.
   ForwardedHeaders__KnownNetworks__0: "10.244.0.0/16"
+  # Rate limiter is per-IP fixed-window (RateLimitingExtensions). Behind ingress, X-Forwarded-For
+  # collapses a whole browser session onto ONE partition, and the SPA fans a single feed render out
+  # to dozens of parallel calls (per-category merge + /reactions + /files + /tags + realtime resync).
+  # The code default of 100/min is a production posture that a single interactive browser trips on
+  # refresh -> 429 -> the "SIGNAL LOST" error boundary. 1000/min comfortably absorbs those bursts on
+  # this single-tenant cluster while still bounding a runaway loop; Auth stays tight (credential-stuffing).
+  RateLimiting__Global__PermitLimit: "1000"
+  RateLimiting__Auth__PermitLimit: "50"
+  # 10d #3 — Argon2id burst headroom: each login/register burns ~400ms of pure CPU on a worker
+  # thread (measured via Tempo: POST /api/identity/login ≈ 409ms, of which <5ms is SQL). With a
+  # 750m CPU limit the runtime sees 1 processor, so the default min-thread floor is ~1 and a login
+  # burst starves the pool — hill-climbing adds threads at ~1-2/s, which shows up as p99 spikes on
+  # the first benchmark ramp step. Pre-warming the floor to 64 removes that warm-up cliff.
+  DOTNET_ThreadPool_MinThreads: "64"

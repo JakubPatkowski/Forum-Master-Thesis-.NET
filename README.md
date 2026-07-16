@@ -1,106 +1,322 @@
-# forum-dotnet — Architecture A (React SPA + .NET 10)
+# forum-dotnet - Architecture A (React SPA + .NET 10)
 
-Reference implementation of a forum for the master's thesis comparing a **decoupled React + .NET 10**
-stack (this repo, *Architecture A*) against a **Go SSR monolith** (*Architecture B*). Both implement the
-same functional specification (`../../docs/specs/`) so the comparison across the five research categories
-(Resource Management · Rendering & Network Efficiency · Developer Velocity · Maintainability · Scalability)
-is fair.
+> Professional, module-first forum platform built for a master's thesis benchmark: **Architecture A (this repo)** vs **Architecture B (Go SSR monolith)** under one shared functional contract.
 
-This repository is **self-contained**: backend, frontend, database, Kubernetes manifests, infrastructure,
-scripts and CI all live here. Init `git` at this folder.
+<!-- TODO: Badges -->
+[![Build](#)](#)
+[![Tests](#)](#)
+[![Coverage](#)](#)
+[![License](#)](#)
+[![Kubernetes](#)](#)
 
-## Architecture
+---
 
-**Module-first modular monolith** on .NET 10 (hexagonal inside each module). The solution is organized by
-**business module**, not by technical layer — the top level "screams" the domain. Each module is one project
-containing its own `Domain / Application / Infrastructure / Presentation / Contracts` folders. Everything in a
-module is `internal` except its `Contracts/` surface; modules talk to each other only through those contracts
-(and integration events), never by reaching into internals. `Forum.ArchitectureTests` (NetArchTest) fails the
-build if a module boundary or the in-module layer rule is violated. See `docs/architecture/adr/`.
+## Table of contents
 
-```
+- [What this repository is](#what-this-repository-is)
+- [Architecture at a glance](#architecture-at-a-glance)
+- [Key technical decisions](#key-technical-decisions)
+- [Repository structure](#repository-structure)
+- [Backend highlights](#backend-highlights)
+- [Kubernetes & operations highlights](#kubernetes--operations-highlights)
+- [Observability](#observability)
+- [Security model](#security-model)
+- [Current implementation status](#current-implementation-status)
+- [Quick start (local)](#quick-start-local)
+- [Quick start (minikube)](#quick-start-minikube)
+- [Monitoring stack](#monitoring-stack)
+- [Testing & quality gates](#testing--quality-gates)
+- [Benchmarking](#benchmarking)
+- [Documentation map](#documentation-map)
+- [Placeholders for visuals](#placeholders-for-visuals)
+
+---
+
+## What this repository is
+
+`forum-dotnet` is the complete implementation of **Architecture A**:
+
+- **Frontend:** decoupled React SPA (Next.js app shell, pure CSR data flow)
+- **Backend:** .NET 10 modular monolith
+- **Infra:** PostgreSQL, RabbitMQ, MinIO, Kubernetes manifests, scripts, CI
+- **Thesis goal:** compare A vs B fairly on performance, scalability, maintainability, and developer velocity
+
+The shared comparison scope is intentionally fixed and documented so both architectures implement equivalent forum functionality.
+
+---
+
+## Architecture at a glance
+
+### Core style
+
+- **Module-first modular monolith**
+- **Hexagonal inside each module** (`Domain / Application / Infrastructure / Presentation / Contracts`)
+- **Single executable host:** `Forum.Api`
+- **Hard boundaries:** modules communicate only via `*.Contracts` and integration events
+
+### Data and integration style
+
+- **Schema-per-module** in PostgreSQL
+- **No cross-schema foreign keys**
+- **Reads:** SQL views + keyset pagination + FTS
+- **Writes:** aggregates + unit of work + Result pattern
+- **Cross-module async:** RabbitMQ + transactional outbox + inbox dedupe
+
+### Realtime style
+
+- **Fetch-then-patch model**: SPA loads view, then applies WS change notifications
+- **No polling**
+- **Replica-safe fan-out** through RabbitMQ-backed feed service
+
+---
+
+## Key technical decisions
+
+- **ULID everywhere** (all IDs, URLs, contracts)
+- **Argon2id** password hashing
+- **JWT access + rotating refresh tokens** with reuse detection
+- **RBAC + SQL bitmask ACL** resolved in PostgreSQL (`int_or_agg`, `effective_mask`, cache)
+- **Direct-to-MinIO uploads** via presigned URLs (backend is control plane, not byte proxy)
+- **Migrations as Kubernetes Job** (never at app startup)
+- **Structured observability**: Serilog JSON -> Loki, OTel traces -> Tempo, metrics -> Prometheus/Grafana
+
+ADRs: `docs/architecture/adr/0001`-`0010`.
+
+---
+
+## Repository structure
+
+```text
 backend/
-  Forum.slnx
-  Directory.Build.props · Directory.Packages.props · global.json   (repo-wide)
   src/
-    Bootstrap/
-      Forum.Api                  the single executable: Program.cs, auth, middleware, OTel, health, OpenAPI;
-                                 discovers IModule implementations and wires them in
+    Bootstrap/Forum.Api
     Shared/
-      Forum.SharedKernel         Entity, AggregateRoot, ValueObject, Result, Error, domain primitives
-      Forum.Common               CQRS abstractions, IModule/IEndpoint, in-process event bus, paging, correlation
-      Forum.Infrastructure       shared adapter base: EF Core base, outbox, RabbitMQ, MinIO, startup tasks
+      Forum.SharedKernel
+      Forum.Common
+      Forum.Infrastructure
     Modules/
-      Directory.Build.props      one baseline (frameworks + EF + validation + shared refs) for every module
-      Identity/Forum.Modules.Identity      Domain/ Application/ Infrastructure/ Presentation/ Contracts/ + IdentityModule.cs
+      Identity/Forum.Modules.Identity
       Content/Forum.Modules.Content
       Files/Forum.Modules.Files
       Engagement/Forum.Modules.Engagement
   tests/
-    Forum.ArchitectureTests      module boundaries + in-module layer rules (NetArchTest)
-    Forum.Modules.Identity.Tests
-    Forum.Modules.Content.Tests
-    Forum.IntegrationTests       real Postgres via Testcontainers
-    Forum.TestUtilities          shared fixtures
+    Forum.ArchitectureTests
+    Forum.Modules.*.Tests
+    Forum.IntegrationTests
+    Forum.Api.Tests
+
+frontend/                  # Next.js app shell, CSR-only data access
+k8s/                       # app manifests (hand-rolled YAML)
+infrastructure/monitoring/ # monitoring architecture notes
+scripts/                   # deploy, setup, tunnels, monitoring, benchmark helpers
+docs/                      # authoritative architecture + runbooks
 ```
 
-Inside a module (e.g. `Forum.Modules.Identity`): `Domain/` (aggregates, VOs, events — internal),
-`Application/` (use-case handlers, ports, validators — internal), `Infrastructure/` (EF config, repositories,
-ACL SQL — internal), `Presentation/` (Minimal API `IEndpoint`s — internal), `Contracts/` (the **only** public
-surface: integration events + DTOs other modules may use), and `IdentityModule.cs` (`IModule`: registers DI +
-maps endpoints + owns its migrations & schema).
+---
 
-Why module-first over layer-first: in a modular monolith the boundary that matters most is *between modules*,
-and module-as-project makes a cross-module internal reference a **compile error**. In-module layer purity is the
-lesser concern and is enforced by `ArchitectureTests`. Result: ~13 cohesive projects grouped into three folders
-instead of a flat pile, and a module can later be extracted to a service as a unit. (ADR 0002.)
+## Backend highlights
 
-## Tech stack
+- **CQRS without MediatR** (Scrutor-based registration, explicit handlers)
+- **Result/Error model** with deterministic API mapping (`404 -> 403 -> 422` precedence)
+- **Audit + ownership + soft-delete** as shared primitives
+- **Deterministic seeds** (Development and Benchmark profiles)
+- **Integration pipeline**:
+  1. write aggregate + outbox in one transaction
+  2. relay publishes with confirms
+  3. consumer idempotency via inbox PK
+- **Realtime ticket flow**: short-lived single-use WS ticket, secure browser handshake
 
-| Concern | Choice |
-|---|---|
-| Runtime | .NET 10, C# latest, Minimal APIs |
-| Persistence | EF Core 10 + Npgsql (PostgreSQL 17), schema-per-module, snake_case, NoTracking reads, pooled DbContext |
-| Read model | SQL **views** + view repositories (avoid N+1); **keyset** pagination; **FTS** (tsvector) |
-| AuthN | JWT access (15 min) + refresh (14 d) with **rotation + reuse-detection**; refresh in httpOnly cookie |
-| AuthZ | RBAC + **bitmask ACL resolved in SQL** (`docs/db/permissions-acl-design.md`); Argon2id hashing |
-| Messaging | RabbitMQ + **transactional outbox**; in-process event bus between modules; WebSocket for realtime |
-| Storage | MinIO (S3) via presigned/proxied upload |
-| Observability | Serilog → Loki; **OpenTelemetry** traces → Tempo; metrics → Prometheus (`/metrics`); Grafana |
-| Validation | FluentValidation; errors as `Result`/`Error` → consistent HTTP envelope |
-| Packaging | Central Package Management (`Directory.Packages.props`) for CVE auditing |
-| Deploy | Docker (multi-stage, non-root) → Kubernetes (minikube): HPA, PDB, NetworkPolicy, migration **Job** |
-| CI | GitHub Actions: restore, `dotnet format` check, build, test; weekly vulnerable-package scan |
+---
 
-## Quick start
+## Kubernetes & operations highlights
 
-Runs on **WSL2 (Ubuntu) or Linux** with the repo on the Linux filesystem (not a
-`/mnt` mount). `make help` lists everything; `make preflight` checks the toolchain.
+- **minikube profile with Calico CNI** (NetworkPolicy enforcement is real, not cosmetic)
+- **PSS-restricted app namespace** (`forum-dotnet`)
+- **Tokenless ServiceAccounts** (no unnecessary API credentials mounted into pods)
+- **Hardened workloads** (non-root, seccomp, dropped capabilities, read-only rootfs where valid)
+- **Ingress + TLS** (`forum.local`, `minio.forum.local`, `grafana.forum.local`)
+- **NetworkPolicies** for backend/postgres/rabbitmq/minio/frontend segmentation
+- **Deterministic deploy order** in `scripts/deploy.sh`:
+  secrets -> infra -> jobs (bucket/migrate/seed) -> backend/frontend -> ingress -> netpol
+- **Connection-pool math locked** (`replicas x pool <= max_connections`)
+
+---
+
+## Observability
+
+- `/metrics`, `/health/live`, `/health/ready`
+- Test-verified log shape and correlation keys (`@tr`, `CorrelationId`)
+- Domain metrics include:
+  - auth outcomes
+  - content/reaction counters
+  - outbox publish lag/failures
+  - messaging outcomes
+  - websocket connections/subscriptions/pushes
+  - API rejection/error classification
+  - background-loop liveness gauge
+- Monitoring stack (Helm, pinned versions): kube-prometheus-stack + Loki + Alloy + Tempo + postgres-exporter
+- Grafana dashboards shipped as code + query index (`k8s/monitoring/QUERIES.md`)
+
+---
+
+## Security model
+
+- JWT + refresh rotation + family reuse detection
+- Argon2id password hashing
+- SQL-native ACL checks (RBAC + bitmask)
+- CORS allow-list (no wildcard + credentials)
+- Rate limiting + forwarded-header trust boundaries
+- Presigned object access with private buckets
+- Secrets only via user-secrets / Kubernetes Secret (never in tracked appsettings)
+
+---
+
+## Current implementation status
+
+Implemented and verified:
+
+- [x] Phase 0: foundation & shared abstractions
+- [x] Phase 1: Identity + Authz
+- [x] Phase 2: Content
+- [x] Phase 3: Files
+- [x] Phase 4: Engagement
+- [x] Phase 6: messaging backbone (outbox + RabbitMQ + inbox)
+- [x] Phase 7: realtime WebSocket
+- [x] Phase 8: frontend SPA
+- [x] Phase 9a: backend observability finalization
+- [x] Phase 9b: deterministic seed profiles
+- [x] Phase 10b: Kubernetes core hardening
+- [x] Phase 10c: monitoring stack
+- [x] Phase 10d: performance/caching decisions and optimizations (**code complete, benchmark re-run pending**)
+
+Planned next:
+
+- [ ] Phase 9c: k6 measured benchmark runs + archived results
+- [ ] Optional Phase 10e: Social module (go/no-go based on parity/time)
+
+---
+
+## Quick start (local)
 
 ```bash
 cp .env.example .env
-make preflight            # docker / kubectl / minikube / dotnet / node / k6
-
-# Local inner loop (containers for infra, dotnet for the API, Next.js for the SPA):
-make infra-up             # Postgres + RabbitMQ + MinIO
-make api ARGS=--migrate   # migrate + run Forum.Api on :8080
-make web                  # npm install (if needed) + frontend dev server on :3000
-
-# Cluster (minikube):
-make mk-up                # start the cluster
-make mk-deploy            # build image into minikube + apply manifests
-make urls
+make preflight
+make infra-up
+make api ARGS=--migrate
+make web
 ```
 
-`make web` runs against `make api` (`:8080`); see `frontend/README.md` for the alternative
-plain-`dotnet run` + `npm run dev` workflow, which lands on `:5099` instead.
+Useful:
 
-Without `make`, call the scripts directly (`bash scripts/<name>.sh`).
-Full walkthrough incl. the WSL move: **`docs/runbooks/wsl-minikube-setup.md`**.
+```bash
+make test
+make format
+make infra-down
+```
 
-## Status
+---
 
-Scaffold: structure, project graph (13 projects), shared kernel, module installers (`IModule`), host wiring,
-infra, CI, ACL design and ADRs are in place. Module implementation order: **Identity → Content → Files →
-Engagement**. `// TODO` markers indicate wiring points. Run `dotnet restore && dotnet build` and verify
-centrally-pinned package versions on first restore.
+## Quick start (minikube)
+
+```bash
+make mk-up
+make mk-tls              # one-time cert generation
+make mk-deploy ARGS=--seed
+make pods
+make tunnels
+```
+
+Cluster reset / reseed:
+
+```bash
+make mk-reset-db
+make seed ARGS=--benchmark
+```
+
+Detailed Windows/WSL access model: `docs/runbooks/wsl-minikube-setup.md`.
+
+---
+
+## Monitoring stack
+
+```bash
+make mon-up
+make mon-check
+make mon-down
+```
+
+Grafana and Prometheus tunnels are integrated into `make tunnels` when monitoring namespace exists.
+
+---
+
+## Testing & quality gates
+
+Backend:
+
+- `dotnet build`
+- `dotnet format --verify-no-changes`
+- `dotnet test` (unit + architecture + integration + API tests)
+
+Frontend:
+
+- `npm run typecheck`
+- `npm run lint`
+- `npm test`
+- `npm run build`
+
+Architecture boundaries are enforced in `Forum.ArchitectureTests`.
+
+---
+
+## Benchmarking
+
+- k6 profiles and benchmark workflow are defined for thesis-grade reproducibility
+- deterministic seed profile for benchmark DB: `forum_net_bench`
+- observability queries are reusable from dashboard source (`k8s/monitoring/QUERIES.md`)
+- current open benchmark task: post-optimization before/after archival run (Phase 9c + 10d closeout)
+
+---
+
+## Documentation map
+
+Start here:
+
+- `docs/architecture/REQUIREMENTS-AND-ASSUMPTIONS.md` (master assumptions)
+- `docs/architecture/DOMAIN-MODEL-AND-DATABASE.md` (schema rules)
+- `docs/architecture/FOUNDATION-AND-SHARED-ABSTRACTIONS.md` (shared base)
+- `docs/architecture/IMPLEMENTATION-PLAN.md` (phase flow)
+- `docs/architecture/PHASE-9-10-ENTERPRISE-PLAN.md` (enterprise/ops phases)
+- `docs/architecture/OBSERVABILITY-CONTRACT.md` (metric/log/tracing contract)
+- `docs/db/permissions-acl-design.md` (ACL SQL design)
+- `docs/runbooks/wsl-minikube-setup.md` (WSL2 + minikube operational runbook)
+
+---
+
+## Placeholders for visuals
+
+<!-- TODO: Architecture diagram -->
+### Architecture diagram
+
+`[PLACEHOLDER: module-first architecture diagram here]`
+
+<!-- TODO: Deployment topology -->
+### Kubernetes topology
+
+`[PLACEHOLDER: k8s topology diagram here]`
+
+<!-- TODO: Monitoring screenshots -->
+### Monitoring screenshots
+
+`[PLACEHOLDER: Grafana dashboard screenshots here]`
+
+<!-- TODO: App screenshots -->
+### Product screenshots
+
+`[PLACEHOLDER: SPA screens (feed/thread/realtime/upload) here]`
+
+---
+
+## Notes
+
+- I could not access the external file path `c:/Users/jakub/Downloads/README (7).md` from this environment, so this README was built from the repository's current docs and implementation state.
+- This update intentionally modifies **only** `README.md`.

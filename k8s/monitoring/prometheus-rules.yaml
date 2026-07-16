@@ -1,0 +1,149 @@
+# Alert rules (Phase 10c). Alertmanager is DISABLED by recorded decision (§1 of the enterprise
+# plan) — these rules still evaluate and display in Prometheus UI + Grafana Alerting; nothing
+# dispatches. That is the point: during a benchmark run a firing alert means "investigate before
+# trusting the numbers", not "page somebody".
+#
+# The plan's 13 alerts plus two from OBSERVABILITY-CONTRACT.md §2:
+#   - BackgroundLoopStale: forum_hosted_service_tick_age_seconds is the ONLY signal that the
+#     outbox relay / consumer / sweeper / realtime-feed loops are alive — /health/ready cannot
+#     see a silently-dead loop (it only proves Postgres/RabbitMQ are reachable).
+#   - UnhandledErrorsPresent: forum_errors_unhandled_total excludes client disconnects, so ANY
+#     sustained rate is a real defect.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: forum-rules
+  namespace: monitoring
+  labels: { release: monitoring }
+spec:
+  groups:
+    - name: forum.availability
+      rules:
+        - alert: BackendDown
+          expr: (max(up{job="backend"}) or vector(0)) == 0
+          for: 2m
+          labels: { severity: critical }
+          annotations:
+            summary: "No healthy backend scrape targets for 2m"
+        - alert: ReadinessFlapping
+          # The `and on(...)` join is REQUIRED (found live): condition="false" is also true for
+          # SUCCEEDED pods, so the plan's bare expr false-fires on every completed migrate/seed Job.
+          expr: |
+            kube_pod_status_ready{condition="false", namespace="forum-dotnet"} == 1
+              and on (namespace, pod) kube_pod_status_phase{phase="Running"} == 1
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Pod {{ $labels.pod }} not ready for 5m"
+        - alert: PodRestartLoop
+          expr: increase(kube_pod_container_status_restarts_total{namespace=~"forum-dotnet|monitoring"}[15m]) > 3
+          labels: { severity: critical }
+          annotations:
+            summary: "{{ $labels.pod }} restarted >3x in 15m (crashloop?)"
+
+    - name: forum.latency-errors
+      rules:
+        - alert: BackendHighErrorRate
+          expr: |
+            100 * sum(rate(http_server_request_duration_seconds_count{job="backend", http_response_status_code=~"5.."}[5m]))
+              / clamp_min(sum(rate(http_server_request_duration_seconds_count{job="backend"}[5m])), 1) > 5
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Backend 5xx rate above 5% for 5m"
+        - alert: BackendP95LatencyHigh
+          expr: histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{job="backend"}[5m]))) > 0.5
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "Backend p95 above 500ms for 10m"
+        - alert: BackendP99LatencyHigh
+          expr: histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{job="backend"}[5m]))) > 2
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "Backend p99 above 2s for 10m"
+        - alert: UnhandledErrorsPresent
+          # OBSERVABILITY-CONTRACT.md §2 — closed category set database|timeout|other; client
+          # disconnects are excluded at the source, so any sustained non-zero rate is a defect.
+          expr: sum by (category) (rate(forum_errors_unhandled_total[5m])) > 0
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Unhandled exceptions ({{ $labels.category }}) — check the Errors & Problems dashboard"
+
+    - name: forum.background-loops
+      rules:
+        - alert: BackgroundLoopStale
+          # Contract §2: relay/consumer/realtime loops tick ≈ every poll interval (≤ seconds);
+          # the orphan sweeper ticks every 15 min — alert at 3×. A stale gauge = the loop died
+          # silently (the exact failure mode Phase 9a's token-based catch filters fixed).
+          expr: |
+            max by (service) (forum_hosted_service_tick_age_seconds{service!="orphan-sweep"}) > 120
+              or max by (service) (forum_hosted_service_tick_age_seconds{service="orphan-sweep"}) > 2700
+          for: 2m
+          labels: { severity: critical }
+          annotations:
+            summary: "Background loop {{ $labels.service }} stopped ticking — outbox/consumers/sweeper may be silently dead"
+
+    - name: forum.resources
+      rules:
+        - alert: PodMemoryNearLimit
+          # Pod-level, not per-container (deviation from the plan's sketch): minikube's cAdvisor
+          # (docker driver) only exports the pod cgroup slice — series carry NO `container` label,
+          # so a container!="" filter matches nothing (verified live). container="" selects the
+          # pod slice on full cAdvisor setups too, so this works on both.
+          expr: |
+            max by (namespace, pod) (container_memory_working_set_bytes{container=""})
+              / clamp_min(sum by (namespace, pod) (kube_pod_container_resource_limits{resource="memory"}), 1) > 0.9
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "{{ $labels.pod }} above 90% of its summed container memory limits"
+        - alert: PVCAlmostFull
+          # Evaluates to empty on THIS cluster: minikube's hostpath PVs report no kubelet volume
+          # stats (verified live — the metric family does not exist). Kept deliberately: it costs
+          # nothing, and fires correctly on any real CSI-backed cluster.
+          expr: kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes > 0.85
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "PVC {{ $labels.persistentvolumeclaim }} above 85%"
+        - alert: HPAMaxedOut
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler="backend"}
+              >= kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler="backend"}
+          for: 10m
+          labels: { severity: info }
+          annotations:
+            summary: "Backend at max replicas (expected during the stress profile)"
+
+    - name: forum.messaging
+      rules:
+        - alert: PoisonQueueNonEmpty
+          expr: sum(rabbitmq_queue_messages_ready{queue=~".*\\.poison"}) > 0
+          for: 5m
+          labels: { severity: critical }
+          annotations:
+            summary: "Messages parked in a poison queue — investigate before trusting benchmark data"
+        - alert: RabbitQueueBacklogGrowing
+          expr: sum by (queue) (rabbitmq_queue_messages_ready{queue=~".*\\.events"}) > 100
+          for: 10m
+          labels: { severity: warning }
+          annotations:
+            summary: "Queue {{ $labels.queue }} backlog >100 for 10m (consumer starving?)"
+        - alert: OutboxPublishFailures
+          expr: rate(forum_outbox_publish_failures_total[5m]) > 0
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Outbox relay failing to publish (module {{ $labels.module }})"
+
+    - name: forum.database
+      rules:
+        - alert: PostgresConnectionsNearMax
+          expr: sum(pg_stat_activity_count) / max(pg_settings_max_connections) > 0.85
+          for: 5m
+          labels: { severity: warning }
+          annotations:
+            summary: "Postgres above 85% of max_connections — check the pool math (3x30+overhead <= 100)"

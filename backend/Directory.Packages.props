@@ -52,12 +52,16 @@
 
   <ItemGroup Label="Observability (OpenTelemetry + Serilog)">
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.10.0-beta.1" />
+    <!-- OTel family bumped 1.10 -> 1.16 in Phase 10c: OpenMetrics EXEMPLAR exposition only exists in
+         Prometheus exporter 1.16.0-beta.1+ (changelog PR 7222) - with 1.10.0-beta.1 the metric->trace
+         hop in Grafana was impossible no matter the SDK config. The exporter pins core >= 1.16, so the
+         whole family moves together; the bump also clears the NU1902 advisories on the 1.10 packages. -->
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.16.0-beta.1" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.2" />
   </ItemGroup>
 

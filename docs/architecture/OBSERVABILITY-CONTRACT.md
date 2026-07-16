@@ -1,8 +1,9 @@
 # Observability contract (Phase 9a → Phase 10c)
 
-**Status:** authoritative as of Phase 9a (2026-07-10). The names and keys below are **verified by tests**
-(`SerilogJsonShapeTests`, `ExceptionPipelineTests`, `ObservabilityFlowTests`) — Phase 10c dashboards, Alloy
-config and alert rules must use exactly these, not what older plan prose assumes.
+**Status:** authoritative as of Phase 9a (2026-07-10), extended by Phase 10c (2026-07-12, §4). The names
+and keys below are **verified by tests** (`SerilogJsonShapeTests`, `ExceptionPipelineTests`,
+`ObservabilityFlowTests`) — Phase 10c dashboards, Alloy config and alert rules must use exactly these,
+not what older plan prose assumes.
 
 ## 1. Structured log shape (stdout, Production)
 
@@ -97,3 +98,26 @@ max(forum_hosted_service_tick_age_seconds{service="orphan-sweep"}) > 2700       
   the same `NpgsqlCommand`) while covering less.
 - OTLP endpoint: `Otlp:Endpoint` config key (falls back to the SDK's `OTEL_EXPORTER_OTLP_*` env vars).
 - Resource attributes: `service.name` = `Forum.Api`, `deployment.environment` = ASP.NET environment name.
+
+## 4. Phase 10c addenda (verified live, 2026-07-12)
+
+- **Exemplars (metric → trace) require BOTH:** `.SetExemplarFilter(ExemplarFilterType.TraceBased)` on the
+  meter pipeline (the SDK default is **AlwaysOff** — older prose claiming TraceBased-by-default is wrong)
+  AND `OpenTelemetry.Exporter.Prometheus.AspNetCore` **>= 1.16.0-beta.1** (OpenMetrics exemplar exposition
+  simply does not exist in earlier exporter versions — PR 7222). Both landed in 10c; the whole OTel family
+  is pinned 1.16.x since (also clears the 1.10 NU1902 advisories). Exemplars appear only in the
+  OpenMetrics-negotiated scrape and only on samples recorded inside a sampled Activity.
+- **.NET runtime metric names on `/metrics` are `dotnet_*`** (built-in `System.Runtime` meter forwarded by
+  Runtime instrumentation 1.10+): `dotnet_gc_collections_total{gc_heap_generation}`,
+  `dotnet_gc_pause_time_seconds_total`, `dotnet_gc_last_collection_memory_committed_size_bytes`,
+  `dotnet_exceptions_total`, `dotnet_thread_pool_work_item_count_total`,
+  `dotnet_monitor_lock_contentions_total`, `dotnet_process_memory_working_set_bytes` — NOT the legacy
+  `process_runtime_dotnet_*` family older plan prose lists. ASP.NET Core also exports
+  `kestrel_active_connections` / `kestrel_upgraded_connections` (the latter = live WebSockets).
+- **minikube caveats for cluster-level queries** (docker driver, verified): cAdvisor exports POD-SLICE
+  series only — no `container` label exists, so filter with `container=""` (works on full cAdvisor too);
+  `kubelet_volume_stats_*` does not exist for hostpath PVs (PVC usage panels/alerts stay empty there).
+- **MinIO** (RELEASE.2025-09-07): bucket usage (`minio_bucket_usage_total_bytes/…_object_total`) is only on
+  `/minio/v2/metrics/bucket` (second ServiceMonitor endpoint); TTFB is
+  `minio_s3_requests_ttfb_seconds_distribution` — le-labeled but WITHOUT a `_bucket` suffix
+  (histogram_quantile accepts it as-is).

@@ -47,12 +47,23 @@ const RealtimeContext = createContext<RealtimeContextValue | null>(null);
 
 const ACTIVITY_LIMIT = 20;
 
+// A reconnect flap that re-establishes a few times in a row coalesces into ONE resync within this window.
+const RESYNC_DEBOUNCE_MS = 400;
+
+// The resync's job is to restore exactly one invariant: "every push-invalidation that would have
+// arrived while we were disconnected has been applied". Only the key families that
+// applyNotificationInvalidation targets can violate it — categories/tags/files/user-stats get no
+// pushes even while connected, so a reconnect says nothing about them and refetching them here
+// (the previous "invalidate everything active") just burned rate-limiter budget on every flap.
+const PUSH_COVERED_KEY_ROOTS = new Set<unknown>(["threads", "comments", "reactions"]);
+
 export function RealtimeProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<RealtimeStatus>("offline");
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
   const listenersRef = useRef(new Set<(n: ChangeNotification) => void>());
+  const resyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const manager = useMemo(
     () =>
@@ -76,15 +87,24 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       for (const listener of listenersRef.current) listener(notification);
     });
     // Pushes carry no payloads: anything that changed while we were disconnected is
-    // invisible until re-fetched, so every successful (re)connect resyncs the data
-    // behind whatever is currently on screen.
+    // invisible until re-fetched, so every successful (re)connect resyncs the on-screen
+    // push-covered queries (see PUSH_COVERED_KEY_ROOTS). Debounced so a reconnect flap
+    // fires ONE refetch burst, not one per attempt (that burst is exactly what trips the
+    // API rate limiter on a shared-IP session — the SIGNAL LOST feedback loop).
     const offConnect = manager.onConnect(() => {
-      void queryClient.invalidateQueries({ refetchType: "active" });
+      if (resyncTimer.current) clearTimeout(resyncTimer.current);
+      resyncTimer.current = setTimeout(() => {
+        void queryClient.invalidateQueries({
+          refetchType: "active",
+          predicate: (query) => PUSH_COVERED_KEY_ROOTS.has(query.queryKey[0]),
+        });
+      }, RESYNC_DEBOUNCE_MS);
     });
     return () => {
       offStatus();
       offNotification();
       offConnect();
+      if (resyncTimer.current) clearTimeout(resyncTimer.current);
     };
   }, [manager, queryClient]);
 

@@ -43,11 +43,18 @@ function SearchView() {
     const handle = setTimeout(() => {
       const trimmed = input.trim();
       setQuery(trimmed);
-      const url = trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search";
-      router.replace(url, { scroll: false });
+      // Only rewrite the URL when the shareable query actually changed. router.replace to the
+      // IDENTICAL url still issues an RSC round-trip (/search?_rsc=…) and re-renders — and with the
+      // router in this effect's deps that re-render re-arms the effect: a steady self-refetch loop
+      // that floods the network tab and leaves the page stuck in a pending transition (~15s stall).
+      const current = searchParams.get("q") ?? "";
+      if (trimmed !== current) {
+        const url = trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search";
+        router.replace(url, { scroll: false });
+      }
     }, DEBOUNCE_MS);
     return () => clearTimeout(handle);
-  }, [input, router]);
+  }, [input, router, searchParams]);
 
   const search = useSearchThreads(query);
   const results = useMemo(

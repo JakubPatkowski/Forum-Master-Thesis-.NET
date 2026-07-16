@@ -1,0 +1,21 @@
+# Tempo values (Phase 10c). Tested against chart grafana-community/tempo 2.2.3 (Tempo 2.10.x,
+# single binary). REPO CORRECTION vs the plan: the grafana/tempo chart is marked deprecated —
+# it migrated to grafana-community/helm-charts (updates only there after 2026-01-30), so
+# monitoring-up.sh installs grafana-community/tempo. Same chart lineage, same values layout.
+#
+# The backend exports OTLP gRPC straight to tempo:4317 (Otlp__Endpoint in the 10b configmap) —
+# deliberately NO otel-collector in between: one less pod, and a collector only adds value with
+# multi-target pipelines we don't have. Traces are disposable (24h, no PVC), same as Loki.
+#
+# The chart's default receivers also open jaeger ports (6831/6832/14250/14268). Left as-is on
+# purpose: the Service/ports template hardcodes their config paths (nulling them breaks
+# rendering), nothing in the cluster speaks jaeger, and pod-internal idle listeners cost nothing.
+# The Grafana datasource talks to the HTTP API on port 3200 (NOT the plan's 3100 — that's Loki's).
+tempo:
+  reportingEnabled: false
+  retention: 24h
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { cpu: 500m, memory: 512Mi }
+
+persistence: { enabled: false }
