@@ -64,15 +64,32 @@ comparison measures architecture, not feature count.
 - **Real-time:** WebSocket push of new/changed threads & comments to open clients.
 - **Ops surface:** `/health/live`, `/health/ready`, `/metrics`, OpenAPI.
 
-### OPTIONAL (in scope only if both sides implement it; measured separately)
+### SOCIAL (CONFIRMED 2026-07-16 — B-parity, since gomx shipped groups; built in A as Phase 11, 2026-07-17)
 
-- Friends list (request/accept/remove).
-- Basic 1:1 **text** direct messages.
+> Originally OPTIONAL friends+DMs only. Hubert's side added groups, so B-parity now REQUIRES them; the scope
+> below is what A ships. Benchmark seed counts and k6 mix for Social remain BLOCKED on the shared A/B numbers
+> (POST-9C-ROADMAP Decision 3) — nothing Social is measured until those are locked.
+
+- Friends: request/accept/decline/cancel/remove; peer **blocks** (distinct from admin bans; block+privacy
+  denials are wire-indistinguishable).
+- Direct messages AND group chat via ONE unified conversation/message pipeline (text markdown, edit +
+  "[deleted]"-tombstone delete, keyset history), message image attachments (participant-gated reads).
+- Groups: create/update/soft-delete, public (open join) / private (invite-only), invites, kick, leave,
+  ownership transfer, roles via ACL `moderate`@group scope (no role column), group icons via Files.
+- Durable notifications (bell + unread count) with realtime "re-fetch" pings over the existing WS hub;
+  friendship/invite/membership/message changes all push live (ADR 0010/0011).
+- Per-user privacy settings (who can friend-request / message / invite; hide online status).
+
+### A-ONLY additions (never measured, not part of the comparison)
+
+- **Presence (online/away/offline):** REST heartbeat + batch status read behind `IPresenceStore`
+  (Postgres now, the scoped Redis session swaps the store). Deliberate portfolio-driven scope expansion —
+  kept out of every seed count and k6 traffic mix.
 
 ### OUT (explicitly excluded from the comparison)
 
-- Voice notes, presence/online, read-receipts, friend-add policies, themes, full i18n, desktop/mobile shells.
-  (B may keep these; A does not implement them; neither is measured.)
+- Voice notes, read-receipts (the sender-visible kind — own-badge `last_read` IS built), themes, full i18n,
+  desktop/mobile shells. (B may keep these; A does not implement them; neither is measured.)
 
 ---
 
@@ -90,7 +107,7 @@ reference into another module's internals, and **never a cross-schema database F
 | **Content** | `forum_content` | Category, Thread, Comment, Tag | `ThreadCreated/Updated/Deleted`, `CommentCreated/Deleted`, `CategoryCreated` | `UserBlocked` (hide content), `FileCommitted` (attach) |
 | **Files** | `forum_files` | File, FileAttachment | `FileCommitted`, `FileOrphaned` | `ThreadDeleted`/`CommentDeleted` (detach/sweep), `UserRegistered` |
 | **Engagement** | `forum_engagement` | Reaction; UserStats (view) | `ReactionAdded/Removed` | `ThreadDeleted`/`CommentDeleted` (cascade reactions) |
-| **Social** *(optional)* | `forum_social` | Friendship, DirectMessage | `FriendRequestSent/Accepted`, `DirectMessageSent` | `UserBlocked` |
+| **Social** | `forum_social` | Friendship, SocialBlock, Group, GroupMembership, GroupInvite, Conversation, ConversationParticipant, Message, Notification, PrivacySettings, Presence | `FriendRequestSent/Accepted/Declined`, `FriendRemoved`, `GroupCreated/Updated/Deleted`, `GroupInviteSent/Responded`, `GroupMemberJoined/Left`, `MessageSent/Edited/Deleted`, `NotificationCreated` | `UserBlocked` (drop pending requests/invites) |
 | **Notifications/Audit** *(later)* | `forum_audit` | audit log | — | (all, for audit trail) |
 
 > **Why no cross-schema FK:** a hard FK would couple two modules' schemas and break independent migration +

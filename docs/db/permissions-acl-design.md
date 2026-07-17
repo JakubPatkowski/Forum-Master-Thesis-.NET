@@ -22,8 +22,8 @@ Result: O(1) permission checks, set-algebra in the engine, auditable in SQL.
 |---|---|
 | **Action** | An atomic capability, one bit: `read, create, update, delete, comment, like, moderate` |
 | **Permission mask** | Integer where each bit = one action (`PermissionMask` value object) |
-| **Scope** | Where a grant applies: `global` · `category` · `thread` |
-| **Principal** | Who holds it: `user` · `role` (group optional later) |
+| **Scope** | Where a grant applies: `global` · `category` · `thread` · `group` (live since Phase 11 — see below) |
+| **Principal** | Who holds it: `user` · `role` |
 | **Role** | Named bundle (`user < moderator < admin`) → permission template |
 | **ACL entry** | `(scope, scope_id, principal) → allow_bits / deny_bits` (per-object override) |
 | **Object policy** | Per object-type rules (e.g. private category requires membership) |
@@ -153,3 +153,29 @@ CREATE INDEX ix_effperm_brin ON forum_authz.effective_perm_cache USING brin (com
 Dropped (SaaS-only): workspaces, teams, plugins, multi-tenant scopes, role templates table, verbose maps.
 Kept (the professional core): bitmask masks, `int_or_agg`, SQL resolver, effective cache, partial + BRIN indexes,
 ULID domain, allow/deny separation. This is "professionally over-engineered" without SaaS baggage the thesis doesn't need.
+
+## The `group` scope (live since Phase 11 — Social)
+
+The `acl_entries.scope` column was always free text with no CHECK constraint, and `effective_mask()`/
+`has_permission()`/`recompute_user_perms()` take `(scope, scope_id)` generically — so activating groups took
+**zero schema changes**: `PermissionScopes.Group = "group"` in `Forum.Common` plus callers.
+
+**Bit budget: 0 new bits allocated (still 8 of 32 used).** Group-admin is expressed with the EXISTING
+`moderate` bit (bit 6, value 64) at `scope='group'`, exactly like category moderators. What a member may DO
+splits deliberately:
+
+- **Membership** (may read/post in the group chat at all) is the Social module's OWN fact
+  (`forum_social.group_memberships` + the conversation seat) — never an ACL bit. The ACL answers "what may a
+  member do beyond posting", not "who is in the group".
+- **Group admin** (rename, invite, kick, set roles, delete messages in the group chat) = owner **or**
+  `moderate`@`group:<id>`. Promotion/demotion goes through the shared **`IAclGrantService`**
+  (`Forum.Common/Security`, implemented by Identity's `AclGrantService`): update-else-insert of the user's
+  allow row at the scope, bit looked up from the `actions` catalog, then a **synchronous**
+  `recompute_user_perms` — the same no-async-revocation-window stance as the Phase 1 admin endpoints. Revoke
+  clears the bit and deletes empty rows.
+- **Consequence of role templates applying at every scope:** global moderators/admins hold `moderate`
+  everywhere, so platform staff can MANAGE any group (act on reports). They do **not** implicitly read group
+  chats or DMs — those are participant-gated in Social, outside the ACL entirely.
+- The `group_member_v` view resolves `is_admin` live from `acl_entries` (owner OR the moderate bit at group
+  scope), with the bit position subqueried from `forum_authz.actions` so the view can never drift from the
+  mask layout.

@@ -2,15 +2,17 @@ using System.Globalization;
 
 namespace Forum.Api.Realtime;
 
-/// <summary>The view kinds a client can subscribe to — mirrors the plan's per-view scoping (category/thread/user).</summary>
+/// <summary>The view kinds a client can subscribe to: Content's category/thread/user plus Social's group/conversation.</summary>
 internal enum ViewKind
 {
     Category,
     Thread,
     User,
+    Group,
+    Conversation,
 }
 
-/// <summary>One subscribed view: a kind plus the id of the category/thread/user it watches.</summary>
+/// <summary>One subscribed view: a kind plus the id of the category/thread/user/group/conversation it watches.</summary>
 internal readonly record struct SubscriptionView(ViewKind Kind, Ulid Id)
 {
     public static bool TryParse(string? view, string? id, out SubscriptionView parsed)
@@ -21,6 +23,8 @@ internal readonly record struct SubscriptionView(ViewKind Kind, Ulid Id)
             "category" => ViewKind.Category,
             "thread" => ViewKind.Thread,
             "user" => ViewKind.User,
+            "group" => ViewKind.Group,
+            "conversation" => ViewKind.Conversation,
             _ => null,
         };
         if (kind is null || !Ulid.TryParse(id, CultureInfo.InvariantCulture, out var ulid))
@@ -35,7 +39,8 @@ internal readonly record struct SubscriptionView(ViewKind Kind, Ulid Id)
 
 /// <summary>
 /// One connection's subscriptions. Thread-safe: the socket's read loop mutates it while the hub's dispatch
-/// matches against it. Matching is pure set membership — visibility is the dispatcher's job, on every push.
+/// matches against it. Matching is pure set intersection with the notification's routes — the set knows nothing
+/// about what any view kind MEANS; visibility is the dispatcher's job, on every push.
 /// </summary>
 internal sealed class SubscriptionSet
 {
@@ -70,24 +75,20 @@ internal sealed class SubscriptionSet
         }
     }
 
-    /// <summary>True when any subscribed view covers the notification's category, thread or acting user.</summary>
-    public bool Matches(RealtimeNotification notification)
+    /// <summary>True when any of the notification's routes is a subscribed view.</summary>
+    public bool MatchesAny(IReadOnlyList<SubscriptionView> routes)
     {
         lock (_lock)
         {
-            if (_views.Contains(new SubscriptionView(ViewKind.Category, notification.CategoryId)))
+            for (var i = 0; i < routes.Count; i++)
             {
-                return true;
+                if (_views.Contains(routes[i]))
+                {
+                    return true;
+                }
             }
 
-            if (notification.ThreadId is { } threadId
-                && _views.Contains(new SubscriptionView(ViewKind.Thread, threadId)))
-            {
-                return true;
-            }
-
-            return notification.ActorUserId is { } userId
-                && _views.Contains(new SubscriptionView(ViewKind.User, userId));
+            return false;
         }
     }
 }

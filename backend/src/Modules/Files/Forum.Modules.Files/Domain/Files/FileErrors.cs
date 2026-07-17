@@ -40,9 +40,6 @@ internal static class FileErrors
     public static readonly Error TargetRequired = Error.Validation(
         "file.target_required", "This target type requires a target id.");
 
-    public static readonly Error DmAttachmentsNotSupported = Error.Validation(
-        "file.dm_not_supported", "Direct-message attachments arrive with the Social module (Phase 5).");
-
     public static readonly Error AvatarTargetMismatch = Error.Forbidden(
         "file.avatar_target_mismatch", "An avatar can only be attached to the requesting user.");
 

@@ -5,6 +5,7 @@
     <ProjectReference Include="..\..\src\Modules\Content\Forum.Modules.Content\Forum.Modules.Content.csproj" />
     <ProjectReference Include="..\..\src\Modules\Files\Forum.Modules.Files\Forum.Modules.Files.csproj" />
     <ProjectReference Include="..\..\src\Modules\Engagement\Forum.Modules.Engagement\Forum.Modules.Engagement.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Social\Forum.Modules.Social\Forum.Modules.Social.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

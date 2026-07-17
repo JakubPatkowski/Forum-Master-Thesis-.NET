@@ -1,13 +1,38 @@
 namespace Forum.Api.Realtime;
 
+/// <summary>How the dispatcher authorizes a notification before pushing (re-checked on EVERY push, ADR 0010).</summary>
+internal enum RealtimeVisibilityKind
+{
+    /// <summary>Content's category rule: public passes, private needs owner-or-moderate at the category scope.</summary>
+    Category,
+
+    /// <summary>Social's participant rule: every subscriber must hold an active seat in the conversation
+    /// (a group chat's conversation id IS the group id, so this covers group-scoped events too).</summary>
+    Conversation,
+
+    /// <summary>No per-push check: the routes are user views only, and those are subscribe-time self-gated.</summary>
+    TargetUsers,
+}
+
+/// <summary>The visibility scope instance a notification is checked against.</summary>
+internal readonly record struct RealtimeVisibility(RealtimeVisibilityKind Kind, Ulid Id)
+{
+    public static RealtimeVisibility Category(Ulid categoryId) => new(RealtimeVisibilityKind.Category, categoryId);
+
+    public static RealtimeVisibility Conversation(Ulid conversationId) =>
+        new(RealtimeVisibilityKind.Conversation, conversationId);
+
+    public static RealtimeVisibility TargetUsers { get; } = new(RealtimeVisibilityKind.TargetUsers, default);
+}
+
 /// <summary>
-/// A mapped integration event on its way to sockets: the wire payload plus the routing facts the hub matches
-/// subscriptions and re-checks visibility against. Every relayed event resolves to a category — the visibility
-/// gate is always evaluated at category scope, exactly like Content's and Engagement's own write gates.
+/// A mapped integration event on its way to sockets: the wire payload, the visibility scope the dispatcher
+/// re-checks per push, and the subscription views it routes to (matching is pure set intersection). The original
+/// Phase 7 shape was Content-specific (CategoryId/ThreadId/ActorUserId); with a second module feeding the hub the
+/// routing facts became data (<see cref="Routes"/>) built by <see cref="RealtimeEventMap"/> — SubscriptionSet no
+/// longer knows what a "category" or "conversation" is (ADR 0011).
 /// </summary>
-/// <param name="Payload">The compact envelope actually sent to sockets.</param>
-/// <param name="CategoryId">The owning category — the scope of the per-push visibility re-check.</param>
-/// <param name="ThreadId">The thread whose view cares about this change (the thread itself for thread events).</param>
-/// <param name="ActorUserId">The acting user for reaction events — lets that user's other devices sync toggle state.</param>
 internal sealed record RealtimeNotification(
-    ChangeNotification Payload, Ulid CategoryId, Ulid? ThreadId, Ulid? ActorUserId);
+    ChangeNotification Payload,
+    RealtimeVisibility Visibility,
+    IReadOnlyList<SubscriptionView> Routes);

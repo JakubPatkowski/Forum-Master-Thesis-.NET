@@ -43,6 +43,7 @@ public sealed class IdentityModule : IModule
         // Authorization (SQL ACL): resolution is shared; administration/cache is module-internal.
         services.AddScoped<IPermissionService, PermissionService>();
         services.AddScoped<IAuthorizationStore, AuthorizationStore>();
+        services.AddScoped<IAclGrantService, AclGrantService>();
 
         // Offline deterministic seeder (Phase 9b) — resolved only by the `seed` CLI entrypoint, never on boot.
         services.AddScoped<IModuleSeeder, IdentitySeeder>();

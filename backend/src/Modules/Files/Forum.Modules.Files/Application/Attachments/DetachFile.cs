@@ -3,6 +3,7 @@ using Forum.Common.Security;
 using Forum.Modules.Content.Contracts;
 using Forum.Modules.Files.Application.Abstractions;
 using Forum.Modules.Files.Domain.Files;
+using Forum.Modules.Social.Contracts;
 using Forum.SharedKernel.Results;
 
 namespace Forum.Modules.Files.Application.Attachments;
@@ -18,17 +19,20 @@ internal sealed class DetachFileCommandHandler : ICommandHandler<DetachFileComma
 {
     private readonly IStoredFileRepository _files;
     private readonly IContentAuthorization _contentAuthorization;
+    private readonly ISocialAuthorization _socialAuthorization;
     private readonly ICurrentUser _currentUser;
     private readonly IUnitOfWork _unitOfWork;
 
     public DetachFileCommandHandler(
         IStoredFileRepository files,
         IContentAuthorization contentAuthorization,
+        ISocialAuthorization socialAuthorization,
         ICurrentUser currentUser,
         IUnitOfWork unitOfWork)
     {
         _files = files;
         _contentAuthorization = contentAuthorization;
+        _socialAuthorization = socialAuthorization;
         _currentUser = currentUser;
         _unitOfWork = unitOfWork;
     }
@@ -60,13 +64,22 @@ internal sealed class DetachFileCommandHandler : ICommandHandler<DetachFileComma
         if (file.OwnerId != userId)
         {
             // Not the uploader — the target's owning module decides (moderator powers live there).
-            if (FileTargets.ToContentTarget(targetType) is not { } contentTarget)
+            Result authorized;
+            if (FileTargets.ToContentTarget(targetType) is { } contentTarget)
+            {
+                authorized = await _contentAuthorization.AuthorizeAttachmentAsync(
+                    contentTarget, targetId, userId, cancellationToken);
+            }
+            else if (FileTargets.ToSocialTarget(targetType) is { } socialTarget)
+            {
+                authorized = await _socialAuthorization.AuthorizeAttachmentAsync(
+                    socialTarget, targetId, userId, cancellationToken);
+            }
+            else
             {
                 return Result.Failure(FileErrors.NotOwner);
             }
 
-            var authorized = await _contentAuthorization.AuthorizeAttachmentAsync(
-                contentTarget, targetId, userId, cancellationToken);
             if (authorized.IsFailure)
             {
                 return authorized;

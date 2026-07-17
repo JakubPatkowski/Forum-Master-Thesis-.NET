@@ -14,4 +14,8 @@ public static class PermissionScopes
 
     /// <summary>A single thread; <c>scope_id</c> is the thread ULID.</summary>
     public const string Thread = "thread";
+
+    /// <summary>A single social group; <c>scope_id</c> is the group ULID. Anticipated by the ACL design doc — the
+    /// <c>acl_entries.scope</c> column is free text, so no schema change was needed to activate it.</summary>
+    public const string Group = "group";
 }

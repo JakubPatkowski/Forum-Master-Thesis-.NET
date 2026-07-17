@@ -1,5 +1,4 @@
 using FluentValidation;
-
 using Forum.Common.Cqrs;
 using Forum.Common.Messaging;
 using Forum.Common.Modules;
@@ -13,7 +12,7 @@ using Forum.Modules.Files.Application.Sweep;
 using Forum.Modules.Files.Infrastructure.Messaging;
 using Forum.Modules.Files.Infrastructure.Persistence;
 using Forum.Modules.Files.Infrastructure.Sweep;
-
+using Forum.Modules.Social.Contracts.IntegrationEvents;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +33,9 @@ public sealed class FilesModule : IModule
         // Messaging backbone: relay this module's outbox to its 'files' exchange; consume what it handles.
         services.AddModuleMessaging<FilesDbContext>("files", messaging => messaging
             .Consume<ThreadDeletedIntegrationEvent>()
-            .Consume<CommentDeletedIntegrationEvent>());
+            .Consume<CommentDeletedIntegrationEvent>()
+            .Consume<MessageDeletedIntegrationEvent>()
+            .Consume<GroupDeletedIntegrationEvent>());
 
         // Persistence ports.
         services.AddScoped<IStoredFileRepository, StoredFileRepository>();
@@ -50,6 +51,8 @@ public sealed class FilesModule : IModule
         // Cross-module consumers (dispatched in-process now, via the RabbitMQ relay from Phase 6).
         services.AddScoped<IIntegrationEventHandler<ThreadDeletedIntegrationEvent>, ThreadDeletedEventHandler>();
         services.AddScoped<IIntegrationEventHandler<CommentDeletedIntegrationEvent>, CommentDeletedEventHandler>();
+        services.AddScoped<IIntegrationEventHandler<MessageDeletedIntegrationEvent>, MessageDeletedEventHandler>();
+        services.AddScoped<IIntegrationEventHandler<GroupDeletedIntegrationEvent>, GroupDeletedEventHandler>();
 
         // Validators + CQRS handlers (handlers are internal, hence the non-public scans).
         services.AddValidatorsFromAssembly(AssemblyReference.Assembly, includeInternalTypes: true);

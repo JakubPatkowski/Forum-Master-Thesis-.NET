@@ -11,6 +11,7 @@ using Forum.Modules.Content;
 using Forum.Modules.Engagement;
 using Forum.Modules.Files;
 using Forum.Modules.Identity;
+using Forum.Modules.Social;
 
 using Serilog;
 using Serilog.Events;
@@ -29,6 +30,7 @@ IReadOnlyList<IModule> modules =
     new ContentModule(),
     new FilesModule(),
     new EngagementModule(),
+    new SocialModule(),
 ];
 
 builder.Services.AddModules(builder.Configuration, modules);

@@ -22,6 +22,15 @@ internal sealed record ChangeNotification(string Type, string Entity, string Id,
     public const string ThreadEntity = "thread";
     public const string CommentEntity = "comment";
     public const string ReactionEntity = "reaction";
+
+    // Social entities (Phase 11). CategoryId stays null for these; ParentId is the container:
+    // the conversation for messages, the group for invites/members, absent for friendships/notifications.
+    public const string FriendshipEntity = "friendship";
+    public const string GroupEntity = "group";
+    public const string GroupMemberEntity = "group_member";
+    public const string GroupInviteEntity = "group_invite";
+    public const string MessageEntity = "message";
+    public const string NotificationEntity = "notification";
 }
 
 /// <summary>The single wire format of the hub: camelCase, nulls omitted — both directions use it.</summary>

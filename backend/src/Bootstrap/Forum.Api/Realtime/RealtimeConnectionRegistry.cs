@@ -14,13 +14,13 @@ internal sealed class RealtimeConnectionRegistry
 
     public void Remove(RealtimeConnection connection) => _connections.TryRemove(connection.Id, out _);
 
-    /// <summary>A snapshot of the connections subscribed to something the notification touches.</summary>
+    /// <summary>A snapshot of the connections subscribed to any of the notification's routes.</summary>
     public IReadOnlyList<RealtimeConnection> Match(RealtimeNotification notification)
     {
         List<RealtimeConnection>? matched = null;
         foreach (var connection in _connections.Values)
         {
-            if (connection.Subscriptions.Matches(notification))
+            if (connection.Subscriptions.MatchesAny(notification.Routes))
             {
                 (matched ??= []).Add(connection);
             }

@@ -31,6 +31,14 @@ internal sealed class FilesQueries : IFilesQueries
         return files.Select(ToReadModel).ToArray();
     }
 
+    public async Task<IReadOnlyList<AttachmentRef>> GetAttachmentRefsAsync(
+        Ulid fileId, CancellationToken cancellationToken) =>
+        await _db.Files
+            .Where(file => file.Id == fileId)
+            .SelectMany(file => file.Attachments)
+            .Select(attachment => new AttachmentRef(attachment.TargetType, attachment.TargetId))
+            .ToListAsync(cancellationToken);
+
     private static FileReadModel ToReadModel(StoredFile file) =>
         new(file.Id, file.ObjectKey, file.ContentType, file.SizeBytes, file.Width, file.Height);
 }
