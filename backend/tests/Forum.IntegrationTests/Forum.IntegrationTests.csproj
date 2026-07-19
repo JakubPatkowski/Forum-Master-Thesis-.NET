@@ -15,4 +15,10 @@
     <PackageReference Include="RabbitMQ.Client" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Each test class boots its own Postgres+MinIO+RabbitMQ containers (ForumApiFactory); xUnit's default
+         collection parallelism would run up to 10 of those concurrently, starving CPU/Docker on constrained
+         runners (GH Actions, WSL) and causing timing-sensitive async-pipeline assertions to flake. -->
+    <None Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

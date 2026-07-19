@@ -57,7 +57,11 @@ public static class ObservabilityExtensions
                 // (found live; needs the Prometheus exporter ≥ 1.16.0-beta.1 too — see the CPM comment).
                 metrics.SetExemplarFilter(ExemplarFilterType.TraceBased);
 
-                metrics.AddPrometheusExporter();
+                // Default cache is 10s (protects prod from over-scraping); integration tests poll /metrics
+                // faster than that to observe async pipelines settling, so a stale cached response would flake
+                // regardless of how long the test waits. Tests override this to 0 via configuration.
+                metrics.AddPrometheusExporter(options => options.ScrapeResponseCacheDurationMilliseconds =
+                    builder.Configuration.GetValue("Observability:PrometheusScrapeCacheMs", 10000));
             });
 
         return builder;

@@ -3,6 +3,7 @@ using Forum.Common.Security;
 using Forum.Modules.Content.Contracts;
 using Forum.Modules.Files.Application.Abstractions;
 using Forum.Modules.Files.Domain.Files;
+using Forum.Modules.Social.Contracts;
 using Forum.SharedKernel.Results;
 
 using Microsoft.Extensions.Options;
@@ -13,9 +14,10 @@ namespace Forum.Modules.Files.Application.Attachments;
 /// Links a committed file to a target. This is the authorization-sensitive step of the upload flow:
 /// only the uploader may attach their file, and the module that owns the target decides whether the user
 /// may modify it — thread/comment/category targets are gated by Content's <see cref="IContentAuthorization"/>
-/// contract (owner-or-moderator, 404 → 403 preserved), an avatar is self-authorized (target = the requesting
-/// user), and DM targets are rejected until the Social module lands (Phase 5). Avatars, category icons and thread
-/// icons use replace semantics (one live attachment per target); threads/comments are additive up to the cap.
+/// contract, message/group-icon targets by Social's <see cref="ISocialAuthorization"/> mirror (owner-or-privileged,
+/// 404 → 403 preserved either way), and an avatar is self-authorized (target = the requesting user). Avatars,
+/// category/thread/group icons use replace semantics (one live attachment per target); threads/comments/messages
+/// are additive up to the cap.
 /// </summary>
 internal sealed record AttachFileCommand(Ulid FileId, string TargetType, Ulid? TargetId) : ICommand;
 
@@ -23,6 +25,7 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
 {
     private readonly IStoredFileRepository _files;
     private readonly IContentAuthorization _contentAuthorization;
+    private readonly ISocialAuthorization _socialAuthorization;
     private readonly ICurrentUser _currentUser;
     private readonly IUnitOfWork _unitOfWork;
     private readonly TimeProvider _clock;
@@ -31,6 +34,7 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
     public AttachFileCommandHandler(
         IStoredFileRepository files,
         IContentAuthorization contentAuthorization,
+        ISocialAuthorization socialAuthorization,
         ICurrentUser currentUser,
         IUnitOfWork unitOfWork,
         TimeProvider clock,
@@ -38,6 +42,7 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
     {
         _files = files;
         _contentAuthorization = contentAuthorization;
+        _socialAuthorization = socialAuthorization;
         _currentUser = currentUser;
         _unitOfWork = unitOfWork;
         _clock = clock;
@@ -72,11 +77,6 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
             return Result.Failure(FileErrors.InvalidTargetType);
         }
 
-        if (targetType == FileTargetType.Dm)
-        {
-            return Result.Failure(FileErrors.DmAttachmentsNotSupported);
-        }
-
         Ulid targetId;
         if (targetType == FileTargetType.Avatar)
         {
@@ -88,16 +88,19 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
         }
         else
         {
-            if (command.TargetId is not { } contentTargetId)
+            if (command.TargetId is not { } externalTargetId)
             {
                 return Result.Failure(FileErrors.TargetRequired);
             }
 
-            targetId = contentTargetId;
+            targetId = externalTargetId;
 
-            // Content owns the target's rules; we only consume the verdict (404 → 403 order preserved).
-            var authorized = await _contentAuthorization.AuthorizeAttachmentAsync(
-                FileTargets.ToContentTarget(targetType)!.Value, targetId, userId, cancellationToken);
+            // The target's owning module holds the rules; we only consume the verdict (404 → 403 preserved).
+            var authorized = FileTargets.ToContentTarget(targetType) is { } contentTarget
+                ? await _contentAuthorization.AuthorizeAttachmentAsync(
+                    contentTarget, targetId, userId, cancellationToken)
+                : await _socialAuthorization.AuthorizeAttachmentAsync(
+                    FileTargets.ToSocialTarget(targetType)!.Value, targetId, userId, cancellationToken);
             if (authorized.IsFailure)
             {
                 return authorized;
@@ -109,7 +112,8 @@ internal sealed class AttachFileCommandHandler : ICommandHandler<AttachFileComma
             return Result.Success(); // Idempotent: the link already exists.
         }
 
-        if (targetType is FileTargetType.Avatar or FileTargetType.CategoryIcon or FileTargetType.ThreadIcon)
+        if (targetType is FileTargetType.Avatar or FileTargetType.CategoryIcon or FileTargetType.ThreadIcon
+            or FileTargetType.GroupIcon)
         {
             // Single-slot targets: attaching a new avatar/icon replaces the previous one, which the
             // orphan sweep removes once its grace window passes (if nothing else references it).

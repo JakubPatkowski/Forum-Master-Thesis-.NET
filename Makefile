@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-reset-db mk-tls tunnels load bench pods logs urls \
+        images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-tls tunnels load bench pods logs urls \
         mon-up mon-down mon-check
 
 help: ## Show this help
@@ -46,9 +46,13 @@ mk-up:       ## Start the minikube cluster (calico CNI, ingress, metrics-server)
 	@bash scripts/setup-minikube.sh
 mk-deploy:   ## Build images + deploy everything (make mk-deploy ARGS=--seed|--seed-benchmark)
 	@bash scripts/deploy.sh $(ARGS)
-mk-down:     ## Tear down (make mk-down ARGS=--stop|--delete)
+mk-down:     ## Delete the app namespace + WIPE its data (clean slate; cluster stays up)
 	@bash scripts/teardown.sh $(ARGS)
-mk-reset-db: ## Wipe the in-cluster DB and re-migrate
+mk-stop:     ## Pause the cluster VM (state + data preserved; fast restart with mk-up)
+	@bash scripts/teardown.sh --stop
+mk-delete:   ## Delete the whole minikube profile (nuke the cluster AND all data)
+	@bash scripts/teardown.sh --delete
+mk-reset-db: ## Wipe the in-cluster DB and re-migrate (empty DB, roles/permissions intact, no seed)
 	@bash scripts/reset-db.sh
 mk-tls:      ## One-time: mint the mkcert TLS cert + forum-tls secret
 	@bash scripts/mkcert-tls.sh $(ARGS)

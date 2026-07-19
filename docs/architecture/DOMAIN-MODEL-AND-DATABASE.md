@@ -228,28 +228,134 @@ avoid full-table scans on the feed. (Decision recorded with the perf work.)
 
 ---
 
-## 6. Social module (`forum_social`, optional)
+## 6. Social module (`forum_social`) — SHIPPED (Phase 11, 2026-07-17)
+
+> The original two-table sketch (friendships + direct_messages) was superseded by the real build: groups became
+> mandatory for B-parity, DMs and group chat share ONE unified messaging pipeline, and blocks/notifications/
+> privacy/presence joined the scope. All enums are stored as text (Content precedent), never PG enums. Group
+> roles are NOT a column — group-admin is the ACL's `moderate` bit at `scope='group'` (`permissions-acl-design.md`);
+> the membership row itself is the only "is in the group" fact. Migrations: `InitialSocial` (EF) +
+> `AddSocialViews` (raw SQL views).
 
 ```sql
-CREATE TYPE forum_social.friend_status AS ENUM ('pending','accepted');
+-- One row per pair; decline/cancel/unfriend DELETE it (no declined tombstones).
 CREATE TABLE forum_social.friendships (
-  requester_id forum.ulid26 NOT NULL,
-  addressee_id forum.ulid26 NOT NULL,
-  status       forum_social.friend_status NOT NULL DEFAULT 'pending',
-  created_on_utc timestamptz NOT NULL DEFAULT now(),
-  PRIMARY KEY (requester_id, addressee_id),
-  CHECK (requester_id <> addressee_id)
+  id             varchar(26) PRIMARY KEY,
+  requester_id   varchar(26) NOT NULL,
+  addressee_id   varchar(26) NOT NULL,
+  status         varchar(16) NOT NULL,            -- 'pending' | 'accepted'
+  accepted_on_utc timestamptz,
+  -- + full audit (created/last_modified by/on)
+  CONSTRAINT ux_friendships_pair_directed UNIQUE (requester_id, addressee_id)
 );
-CREATE TABLE forum_social.direct_messages (
-  id           forum.ulid26 PRIMARY KEY,
-  sender_id    forum.ulid26 NOT NULL,
-  recipient_id forum.ulid26 NOT NULL,
-  body         text NOT NULL,                    -- text only (voice is OUT of scope)
-  created_on_utc timestamptz NOT NULL DEFAULT now(),
-  is_deleted   boolean NOT NULL DEFAULT false
+-- Raw-SQL in InitialSocial: closes the A→B / B→A race.
+CREATE UNIQUE INDEX ux_friendships_pair ON forum_social.friendships
+  (LEAST(requester_id, addressee_id), GREATEST(requester_id, addressee_id));
+
+-- Peer block (NOT Identity's admin ban): suppresses requests/DMs/invites both directions.
+CREATE TABLE forum_social.social_blocks (
+  blocker_id varchar(26) NOT NULL,
+  blocked_id varchar(26) NOT NULL,
+  created_on_utc timestamptz NOT NULL,
+  PRIMARY KEY (blocker_id, blocked_id)
 );
-CREATE INDEX ix_dm_pair ON forum_social.direct_messages (LEAST(sender_id,recipient_id), GREATEST(sender_id,recipient_id), created_on_utc);
+
+CREATE TABLE forum_social.groups (
+  id varchar(26) PRIMARY KEY,
+  name varchar(100) NOT NULL,
+  description varchar(2000) NOT NULL,
+  visibility varchar(16) NOT NULL,                -- 'public' (join freely) | 'private' (invite-only)
+  owner_id varchar(26) NOT NULL,                  -- IOwned; owner can never leave/be kicked
+  -- + soft-delete + full audit
+  is_deleted boolean NOT NULL DEFAULT false
+);
+
+CREATE TABLE forum_social.group_memberships (     -- THE membership fact (owner has a row too)
+  group_id varchar(26) NOT NULL REFERENCES forum_social.groups(id) ON DELETE CASCADE,
+  user_id varchar(26) NOT NULL,
+  joined_on_utc timestamptz NOT NULL,
+  invited_by varchar(26),
+  PRIMARY KEY (group_id, user_id)
+);
+
+CREATE TABLE forum_social.group_invites (         -- pending only; accept/decline/cancel DELETE the row
+  id varchar(26) PRIMARY KEY,
+  group_id varchar(26) NOT NULL REFERENCES forum_social.groups(id) ON DELETE CASCADE,
+  invited_user_id varchar(26) NOT NULL,
+  invited_by varchar(26) NOT NULL,
+  -- + full audit
+  CONSTRAINT ux_group_invites_pending UNIQUE (group_id, invited_user_id)
+);
+
+-- ONE messaging pipeline for DMs and group chat. A group chat's conversation id == the group's id.
+-- Direct conversations are get-or-created lazily; direct_key = 'loUlid:hiUlid' makes that race-safe.
+CREATE TABLE forum_social.conversations (
+  id varchar(26) PRIMARY KEY,
+  type varchar(16) NOT NULL,                      -- 'direct' | 'group'
+  direct_key varchar(53)                          -- NULL for group chats
+  -- + audit
+);
+CREATE UNIQUE INDEX ux_conversations_direct_key
+  ON forum_social.conversations (direct_key) WHERE direct_key IS NOT NULL;
+
+-- THE single message-authorization fact (group membership writes through here in the same tx).
+-- last_read_on_utc = the OWNER's unread badge only; read receipts to the sender are out of scope.
+CREATE TABLE forum_social.conversation_participants (
+  conversation_id varchar(26) NOT NULL REFERENCES forum_social.conversations(id) ON DELETE CASCADE,
+  user_id varchar(26) NOT NULL,
+  joined_on_utc timestamptz NOT NULL,
+  left_on_utc timestamptz,                        -- set on leave/kick; row kept for attribution
+  last_read_on_utc timestamptz,
+  is_muted boolean NOT NULL DEFAULT false,
+  PRIMARY KEY (conversation_id, user_id)
+);
+
+CREATE TABLE forum_social.messages (              -- delete = tombstone: body -> '[deleted]', row kept
+  id varchar(26) PRIMARY KEY,
+  conversation_id varchar(26) NOT NULL REFERENCES forum_social.conversations(id) ON DELETE CASCADE,
+  owner_id varchar(26) NOT NULL,                  -- the sender (IOwned)
+  body varchar(4000) NOT NULL,
+  edited_on_utc timestamptz,
+  -- + soft-delete + full audit
+  is_deleted boolean NOT NULL DEFAULT false
+);
+CREATE INDEX ix_messages_history ON forum_social.messages (conversation_id, id DESC);  -- keyset
+
+-- Durable bell truth (ADR 0010: the WS ping is identity+routing; clients re-fetch these rows).
+-- Kinds: friend.request | friend.accepted | group.invite | group.invite.accepted | group.kicked.
+-- Message arrivals do NOT create rows (badge derives from last_read_on_utc).
+CREATE TABLE forum_social.notifications (
+  id varchar(26) PRIMARY KEY,
+  user_id varchar(26) NOT NULL,
+  kind varchar(32) NOT NULL,
+  actor_id varchar(26),
+  target_id varchar(26),
+  is_read boolean NOT NULL DEFAULT false,
+  created_on_utc timestamptz NOT NULL
+);
+CREATE INDEX ix_notifications_feed ON forum_social.notifications (user_id, id DESC);
+CREATE INDEX ix_notifications_unread ON forum_social.notifications (user_id) WHERE is_read = false;
+
+CREATE TABLE forum_social.user_privacy_settings ( -- absent row = defaults (everyone/everyone/everyone/true)
+  user_id varchar(26) PRIMARY KEY,
+  friend_requests varchar(16) NOT NULL,           -- 'everyone' | 'no_one' ('friends' normalizes to no_one)
+  messages varchar(16) NOT NULL,                  -- 'everyone' | 'friends' | 'no_one'
+  group_invites varchar(16) NOT NULL,
+  show_online_status boolean NOT NULL
+);
+
+CREATE TABLE forum_social.user_presence (         -- ephemeral; status computed from age at read time
+  user_id varchar(26) PRIMARY KEY,                -- behind IPresenceStore (the Redis-swap seam)
+  last_heartbeat_on_utc timestamptz NOT NULL
+);
 ```
+
+Read views (`AddSocialViews`, view-level read joins into `forum_identity.users` + `forum_authz.acl_entries`):
+`friend_list_v` (accepted pairs expanded per direction), `friend_request_v`, `blocked_list_v`, `group_list_v`
+(+member_count), `group_member_v` (is_admin resolved live from the ACL's `moderate` bit at group scope —
+bit looked up from the actions catalog, never hardcoded), `group_invite_v`, `conversation_list_v` (display
+name, last-message lateral, per-seat unread count), `message_history_v` (tombstones kept, body masked),
+`notification_list_v`.
 
 ---
 

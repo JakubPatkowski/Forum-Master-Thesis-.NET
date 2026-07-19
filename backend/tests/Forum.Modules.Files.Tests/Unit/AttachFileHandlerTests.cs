@@ -4,6 +4,7 @@ using Forum.Modules.Files.Application;
 using Forum.Modules.Files.Application.Abstractions;
 using Forum.Modules.Files.Application.Attachments;
 using Forum.Modules.Files.Domain.Files;
+using Forum.Modules.Social.Contracts;
 using Forum.SharedKernel.Results;
 
 using Microsoft.Extensions.Options;
@@ -22,6 +23,7 @@ public sealed class AttachFileHandlerTests
 
     private readonly IStoredFileRepository _files = Substitute.For<IStoredFileRepository>();
     private readonly IContentAuthorization _contentAuthorization = Substitute.For<IContentAuthorization>();
+    private readonly ISocialAuthorization _socialAuthorization = Substitute.For<ISocialAuthorization>();
     private readonly ICurrentUser _currentUser = Substitute.For<ICurrentUser>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
 
@@ -34,7 +36,7 @@ public sealed class AttachFileHandlerTests
     }
 
     private AttachFileCommandHandler CreateHandler() => new(
-        _files, _contentAuthorization, _currentUser, _unitOfWork, TimeProvider.System,
+        _files, _contentAuthorization, _socialAuthorization, _currentUser, _unitOfWork, TimeProvider.System,
         Options.Create(new FilesOptions()));
 
     private StoredFile SetUpCommittedFile(Ulid? owner = null)
@@ -157,15 +159,60 @@ public sealed class AttachFileHandlerTests
     }
 
     [Fact]
-    public async Task Dm_targets_are_rejected_until_the_social_module_exists()
+    public async Task Message_targets_require_socials_authorization_verdict()
     {
         var file = SetUpCommittedFile();
+        var messageId = Ulid.NewUlid();
+        _socialAuthorization.AuthorizeAttachmentAsync(
+                SocialAttachmentTarget.Message, messageId, _userId, Arg.Any<CancellationToken>())
+            .Returns(Result.Failure(TargetForbidden));
 
         var result = await CreateHandler().Handle(
-            new AttachFileCommand(file.Id, "dm", Ulid.NewUlid()), CancellationToken.None);
+            new AttachFileCommand(file.Id, "message", messageId), CancellationToken.None);
 
         result.IsFailure.ShouldBeTrue();
-        result.Error.ShouldBe(FileErrors.DmAttachmentsNotSupported);
+        result.Error.ShouldBe(TargetForbidden);
+        file.IsAttached.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task An_authorized_message_attach_links_the_file_additively()
+    {
+        var file = SetUpCommittedFile();
+        var messageId = Ulid.NewUlid();
+        _socialAuthorization.AuthorizeAttachmentAsync(
+                SocialAttachmentTarget.Message, messageId, _userId, Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
+        _files.CountAttachmentsForTargetAsync(FileTargetType.Message, messageId, Arg.Any<CancellationToken>())
+            .Returns(0);
+
+        var result = await CreateHandler().Handle(
+            new AttachFileCommand(file.Id, "message", messageId), CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        file.IsAttachedTo(FileTargetType.Message, messageId).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task Attaching_a_new_group_icon_replaces_the_previous_one()
+    {
+        var file = SetUpCommittedFile();
+        var groupId = Ulid.NewUlid();
+        _socialAuthorization.AuthorizeAttachmentAsync(
+                SocialAttachmentTarget.GroupIcon, groupId, _userId, Arg.Any<CancellationToken>())
+            .Returns(Result.Success());
+        var oldIcon = StoredFile.Create("forum", "image/png", 50, _userId);
+        oldIcon.Commit(50, "image/png", 5, 5, DateTimeOffset.UtcNow);
+        oldIcon.Attach(FileTargetType.GroupIcon, groupId, DateTimeOffset.UtcNow);
+        _files.GetAttachedToTargetAsync(FileTargetType.GroupIcon, groupId, Arg.Any<CancellationToken>())
+            .Returns([oldIcon]);
+
+        var result = await CreateHandler().Handle(
+            new AttachFileCommand(file.Id, "group_icon", groupId), CancellationToken.None);
+
+        result.IsSuccess.ShouldBeTrue();
+        file.IsAttachedTo(FileTargetType.GroupIcon, groupId).ShouldBeTrue();
+        oldIcon.IsAttachedTo(FileTargetType.GroupIcon, groupId).ShouldBeFalse(); // sweep collects it later
     }
 
     [Fact]

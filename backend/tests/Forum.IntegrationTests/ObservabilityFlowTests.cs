@@ -48,30 +48,26 @@ public sealed class ObservabilityFlowTests : IClassFixture<ForumApiFactory>
         (await Send(client, user, HttpMethod.Delete, $"/api/content/threads/{threadId}"))
             .StatusCode.ShouldBe(HttpStatusCode.NoContent);
 
-        // The relay and consumers run on their own cadence — poll until their series materialize.
-        // Also poll for auth attempts to account for Prometheus export lag.
-        // GH Actions runs slower, so use 120s timeout; Prometheus exporter can stall under heavy load.
-        await TestWait.UntilAsync(
-            async () =>
-            {
-                var scraped = await client.GetStringAsync("/metrics");
-                return scraped.Contains("forum_auth_attempts_total")
-                    && scraped.Contains("forum_outbox_published_total")
-                    && scraped.Contains("forum_messaging_consumed_total");
-            },
-            "metrics appear on /metrics endpoint (auth attempts, outbox relay, consumer results)",
-            timeoutSeconds: 120);
-
-        // GH Actions: second /metrics read can stall; retry if we get a partial response
+        // The relay and consumers run on their own cadence — poll until every series this test asserts on has
+        // actually materialized (not just the metric name, but the specific outcome tag), since the Prometheus
+        // exporter's scrape-response cache is disabled for tests (see ForumApiFactory) but the async pipelines
+        // themselves still need time to settle. GH Actions runs slower, so use a generous timeout.
         var metrics = string.Empty;
         await TestWait.UntilAsync(
             async () =>
             {
                 metrics = await client.GetStringAsync("/metrics");
-                return metrics.Contains("forum_auth_attempts_total");
+                return metrics.Contains("outcome=\"success\"")
+                    && metrics.Contains("outcome=\"invalid_credentials\"")
+                    && metrics.Contains("forum_threads_created_total")
+                    && metrics.Contains("forum_comments_created_total")
+                    && metrics.Contains("action=\"add\"")
+                    && metrics.Contains("forum_outbox_lag_seconds")
+                    && metrics.Contains("forum_hosted_service_tick_age_seconds")
+                    && metrics.Contains("outcome=\"ok\"");
             },
-            "full metrics response (not partial target_info)",
-            timeoutSeconds: 30);
+            "all expected metric series + outcome tags appear on /metrics",
+            timeoutSeconds: 120);
 
         metrics.ShouldContain("forum_auth_attempts_total");
         metrics.ShouldContain("outcome=\"success\"");

@@ -12,6 +12,7 @@
     <Project Path="src/Modules/Content/Forum.Modules.Content/Forum.Modules.Content.csproj" />
     <Project Path="src/Modules/Files/Forum.Modules.Files/Forum.Modules.Files.csproj" />
     <Project Path="src/Modules/Engagement/Forum.Modules.Engagement/Forum.Modules.Engagement.csproj" />
+    <Project Path="src/Modules/Social/Forum.Modules.Social/Forum.Modules.Social.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Forum.TestUtilities/Forum.TestUtilities.csproj" />
@@ -21,6 +22,7 @@
     <Project Path="tests/Forum.Modules.Content.Tests/Forum.Modules.Content.Tests.csproj" />
     <Project Path="tests/Forum.Modules.Files.Tests/Forum.Modules.Files.Tests.csproj" />
     <Project Path="tests/Forum.Modules.Engagement.Tests/Forum.Modules.Engagement.Tests.csproj" />
+    <Project Path="tests/Forum.Modules.Social.Tests/Forum.Modules.Social.Tests.csproj" />
     <Project Path="tests/Forum.IntegrationTests/Forum.IntegrationTests.csproj" />
   </Folder>
 </Solution>

@@ -13,4 +13,12 @@ public static class SeedStreams
     public const string Thread = "thread";
     public const string Comment = "comment";
     public const string Reaction = "reaction";
+
+    // Phase 11 — Social. Group conversations deliberately have NO stream: a group chat reuses its group's id.
+    public const string Friendship = "friendship";
+    public const string Group = "group";
+    public const string GroupInvite = "group-invite";
+    public const string Conversation = "conversation";
+    public const string Message = "message";
+    public const string SocialNotification = "social-notification";
 }

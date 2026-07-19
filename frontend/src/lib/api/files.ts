@@ -27,7 +27,11 @@ export const filesApi = {
   listByTarget: (targetType: FileTargetType, targetId: string) =>
     apiFetch<FileDownloadResponse[]>(`/api/files?targetType=${targetType}&targetId=${targetId}`),
 
-  /** thread/comment: additive, cap 10. avatar/category_icon: replace. dm: 422 (unbuilt). */
+  /**
+   * thread/comment/message: additive, cap 10. avatar/category_icon/thread_icon/group_icon:
+   * replace. message attachments are sender-only; reading a message-attached file is gated
+   * to conversation participants server-side (outsiders get 403, not a broken image).
+   */
   attach: (fileId: string, request: AttachFileRequest) =>
     apiFetch(`/api/files/${fileId}/attachments`, { method: "POST", body: request }),
 

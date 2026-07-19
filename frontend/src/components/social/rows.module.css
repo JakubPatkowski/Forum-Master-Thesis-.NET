@@ -1,0 +1,302 @@
+/*
+ * Shared geometry for the social row/card family (FriendRow, FriendRequestCard,
+ * GroupCard, GroupMemberRow, GroupInviteCard, BlockedUserRow, NotificationRow,
+ * ConversationRow, SocialRowSkeleton). One source of truth keeps every list visually
+ * coherent with the design reference (Social.dc.html) and the mock page it replaces.
+ */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+}
+
+.row:hover {
+  background: var(--color-neutral-800);
+  border-color: var(--color-border-default);
+}
+
+.rowMuted {
+  opacity: 0.7;
+}
+
+.rowMuted:hover {
+  opacity: 1;
+}
+
+.rowActive {
+  background: var(--color-neutral-800);
+  border-color: var(--color-accent-dark);
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-grid;
+}
+
+.statusDot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--color-neutral-900);
+}
+
+.dotGreen {
+  background: var(--color-success);
+}
+
+.dotAmber {
+  background: var(--color-warning);
+}
+
+.dotRed {
+  background: var(--color-neutral-500);
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.name:hover {
+  color: var(--color-accent-base);
+}
+
+.sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subOnline {
+  color: var(--color-success);
+}
+
+.subAway {
+  color: var(--color-warning);
+}
+
+.iconButton {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.iconButton:hover {
+  color: var(--color-accent-base);
+  border-color: var(--color-accent-base);
+}
+
+.menuAnchor {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  min-width: 170px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+.menuItem {
+  padding: 8px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  text-align: left;
+  border-radius: 2px;
+}
+
+.menuItem:hover {
+  background: var(--color-neutral-800);
+  color: var(--color-text-primary);
+}
+
+.menuDanger:hover {
+  color: var(--color-error-light);
+}
+
+/* --- card form (requests / invites) --------------------------------------- */
+
+.card {
+  background: var(--color-neutral-950);
+  border: 1px solid var(--color-border-default);
+  padding: 10px 11px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.accept {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-inverse);
+  background: var(--color-accent-base);
+  border: none;
+  padding: 7px;
+  border-radius: 2px;
+}
+
+.accept:hover {
+  background: var(--color-accent-dark);
+}
+
+.accept:disabled,
+.decline:disabled {
+  opacity: 0.5;
+}
+
+.decline {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  padding: 7px;
+  border-radius: 2px;
+}
+
+.decline:hover {
+  color: var(--color-error-light);
+  border-color: var(--color-error);
+}
+
+/* Non-stretching variant for actions sitting inside a .row. */
+.inlineAction {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+}
+
+/* --- badges ----------------------------------------------------------------- */
+
+.unreadBadge {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--color-accent-base);
+  color: var(--color-neutral-950);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.badges {
+  display: inline-flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* --- notification rows ------------------------------------------------------ */
+
+.notifSquare {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.notifCyan {
+  background: var(--color-cyan-base);
+}
+
+.notifAccent {
+  background: var(--color-accent-base);
+}
+
+.notifUnread {
+  background: rgba(0, 217, 255, 0.04);
+  border-color: var(--color-border-default);
+}
+
+.notifText {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+}
+
+.notifActor {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* --- skeleton --------------------------------------------------------------- */
+
+.skeletonRow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px;
+}
+
+.skeletonLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

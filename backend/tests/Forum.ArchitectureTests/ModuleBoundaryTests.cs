@@ -14,6 +14,7 @@ public class ModuleBoundaryTests
     private static readonly System.Reflection.Assembly Content = Forum.Modules.Content.AssemblyReference.Assembly;
     private static readonly System.Reflection.Assembly Files = Forum.Modules.Files.AssemblyReference.Assembly;
     private static readonly System.Reflection.Assembly Engagement = Forum.Modules.Engagement.AssemblyReference.Assembly;
+    private static readonly System.Reflection.Assembly Social = Forum.Modules.Social.AssemblyReference.Assembly;
 
     [Fact]
     public void Modules_communicate_only_through_contracts()
@@ -62,19 +63,47 @@ public class ModuleBoundaryTests
             .GetResult().IsSuccessful.ShouldBeTrue(
                 "Engagement may use Identity/Content only via their Contracts and must not touch Files at all.");
 
+        // Social sits beside Content in the graph: it consumes Identity via Contracts only and knows nothing of
+        // Content/Files/Engagement. Files is its ONLY downstream consumer (attachment authorization + deletion
+        // events), and only via Forum.Modules.Social.Contracts.
+        Types.InAssembly(Social)
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Identity.Domain",
+                "Forum.Modules.Identity.Application",
+                "Forum.Modules.Identity.Infrastructure",
+                "Forum.Modules.Identity.Presentation",
+                "Forum.Modules.Content",
+                "Forum.Modules.Files",
+                "Forum.Modules.Engagement")
+            .GetResult().IsSuccessful.ShouldBeTrue(
+                "Social may use Identity only via Contracts and must not touch Content/Files/Engagement at all.");
+
+        Types.InAssembly(Files)
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Social.Domain",
+                "Forum.Modules.Social.Application",
+                "Forum.Modules.Social.Infrastructure",
+                "Forum.Modules.Social.Presentation")
+            .GetResult().IsSuccessful.ShouldBeTrue("Files may use Social only via Forum.Modules.Social.Contracts.");
+
         // The dependency direction is one-way: upstream modules never reach into Files or Engagement (not even
         // their Contracts — reacting to them happens via integration events, keeping the module graph acyclic:
-        // Identity ← Content ← Files/Engagement).
+        // Identity ← Content ← Files/Engagement; Identity ← Social ← Files).
         foreach (var upstream in new[] { Identity, Content })
         {
             Types.InAssembly(upstream)
-                .ShouldNot().HaveDependencyOnAny("Forum.Modules.Files", "Forum.Modules.Engagement")
-                .GetResult().IsSuccessful.ShouldBeTrue("Upstream modules must not depend on Files/Engagement.");
+                .ShouldNot().HaveDependencyOnAny(
+                    "Forum.Modules.Files", "Forum.Modules.Engagement", "Forum.Modules.Social")
+                .GetResult().IsSuccessful.ShouldBeTrue("Upstream modules must not depend on Files/Engagement/Social.");
         }
 
         Types.InAssembly(Files)
             .ShouldNot().HaveDependencyOnAny("Forum.Modules.Engagement")
             .GetResult().IsSuccessful.ShouldBeTrue("Files must not depend on Engagement.");
+
+        Types.InAssembly(Engagement)
+            .ShouldNot().HaveDependencyOnAny("Forum.Modules.Social")
+            .GetResult().IsSuccessful.ShouldBeTrue("Engagement must not depend on Social.");
     }
 
     [Fact]
@@ -112,6 +141,15 @@ public class ModuleBoundaryTests
             .ShouldNot().HaveDependencyOnAny(
                 "Forum.Modules.Engagement.Infrastructure",
                 "Forum.Modules.Engagement.Presentation",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.AspNetCore")
+            .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");
+
+        Types.InAssembly(Social)
+            .That().ResideInNamespace("Forum.Modules.Social.Domain")
+            .ShouldNot().HaveDependencyOnAny(
+                "Forum.Modules.Social.Infrastructure",
+                "Forum.Modules.Social.Presentation",
                 "Microsoft.EntityFrameworkCore",
                 "Microsoft.AspNetCore")
             .GetResult().IsSuccessful.ShouldBeTrue("Module Domain must stay free of adapters and frameworks.");

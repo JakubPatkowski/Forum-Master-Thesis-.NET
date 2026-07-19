@@ -24,6 +24,12 @@ public static class SeedTime
         SeedStreams.Thread => TimeSpan.FromDays(1),
         SeedStreams.Comment => TimeSpan.FromDays(2),
         SeedStreams.Reaction => TimeSpan.FromDays(3),
+        SeedStreams.Friendship => TimeSpan.FromDays(4),
+        SeedStreams.Group => TimeSpan.FromDays(4) + TimeSpan.FromHours(6),
+        SeedStreams.GroupInvite => TimeSpan.FromDays(4) + TimeSpan.FromHours(12),
+        SeedStreams.Conversation => TimeSpan.FromDays(5),
+        SeedStreams.Message => TimeSpan.FromDays(5) + TimeSpan.FromHours(6),
+        SeedStreams.SocialNotification => TimeSpan.FromDays(5) + TimeSpan.FromHours(12),
         _ => TimeSpan.Zero,
     };
 
@@ -36,6 +42,12 @@ public static class SeedTime
         SeedStreams.Thread => 1800,     // 30 m → 2000 threads ≈ 42 days
         SeedStreams.Comment => 120,     // 2 m  → 12000 comments ≈ 17 days
         SeedStreams.Reaction => 30,
+        SeedStreams.Friendship => 600,
+        SeedStreams.Group => 3600,
+        SeedStreams.GroupInvite => 600,
+        SeedStreams.Conversation => 600,
+        SeedStreams.Message => 60,
+        SeedStreams.SocialNotification => 300,
         _ => 300,
     };
 }

@@ -43,11 +43,12 @@ Three parallel research passes (a full read of `PHASE-9-10-ENTERPRISE-PLAN.md`, 
 - Session cache: define what "session" means precisely here (the app currently uses stateless JWT access + httpOnly refresh cookie rotation, not server-side session state) before implementation starts, so the Fable 5 session has an unambiguous target.
 - k8s: single `redis:7-alpine` Deployment (no HA needed), restricted securityContext, Service `redis:6379`, NetworkPolicy `backend → redis:6379`, `StackExchange.Redis` via Central Package Management — this mirrors the "if reversed" recipe already written into the original §10d analysis, so most of the operational shape is already decided.
 
-### Phase 2 — Social module (biggest remaining chunk of new work, two Fable 5 sessions)
-- **Backend session:** new `Forum.Modules.Social` project (Domain/Application/Infrastructure/Presentation/Contracts), schema `forum_social` — `friendships`, `direct_messages`, and **groups** (membership + roles + invites). Use cases in the existing house style (Result pattern, CQRS without MediatR, patterns borrowed from Content/Engagement). Integration events + wiring into the WebSocket hub (mirroring the Phase 7 pattern) for every action that needs to be live: friend requests/invitations, messages, group membership changes.
-- **Frontend session:** wire the existing `/social` page (currently a zero-fetch UI-only mock with a PREVIEW banner) to the real endpoints, plus whatever realtime subscriptions the backend session exposes.
-- Seed/benchmark numbers (friendships, DMs, groups) and k6 traffic-mix additions are blocked on Hubert's final counts (Decision 3) — don't hardcode numbers yet.
-- DoD: module boundary tests extended, E2E coverage for friends/DM/groups incl. the realtime push paths, "B parity confirmed in writing" formalized once the shared spec docs exist.
+### Phase 2 — Social module (two Fable 5 sessions)
+- **Prompts:** `docs/architecture/SOCIAL-MODULE-FABLE5-PROMPTS.md`.
+- **Backend session: DONE, committed 2026-07-17** (commit `3755e57`, branch `27-feat-phase-11---social`). `Forum.Modules.Social` — friends, peer blocks, groups+roles (via existing ACL, zero new bits), unified DM/group-chat messaging, durable notifications, privacy settings, presence (poll-only, not on the bus), realtime-hub generalization (ADR 0011), Files `message`/`group_icon` targets incl. the read-auth gate. 238 tests green. Only gap: dedicated `SocialFlowTests` E2E (spec in `docs/architecture/PHASE-11-SOCIAL-PROGRESS.md`). Full summary: `CLAUDE.md`'s "Phase 11 (plan Phase 5)" entry.
+- **Frontend session: prompt corrected 2026-07-17 against the real shipped API** (exact 36 endpoints/DTOs/realtime entity map/file target names — the original draft's guesses, e.g. `"dm"` and WS-pushed presence, were wrong and are now fixed). Not yet run.
+- Seed/benchmark numbers (friendships, DMs, groups) and k6 traffic-mix additions stay blocked on Hubert's final counts (Decision 3) — Development-profile seeding is in, Benchmark is a deliberate no-op.
+- Remaining DoD: the `SocialFlowTests` E2E suite, then the frontend session, then "B parity confirmed in writing" once the shared spec docs exist.
 
 ### Phase 3 — Architecture-B comparison prep (blocked, resume once Hubert lands his changes)
 - Lock dataset shape/volume with B (A already has: 800 users/12 categories/60 tags/1600 threads/9000 comments/15000 reactions — B needs to match shape, not literal text; new Social counts still TBD per Decision 3).

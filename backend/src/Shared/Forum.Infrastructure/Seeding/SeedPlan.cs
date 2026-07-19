@@ -61,6 +61,30 @@ public sealed class SeedPlan
     /// <summary>The single plaintext password hashed once (Argon2id) and reused for every seeded account.</summary>
     public string Password { get; }
 
+    // ---- Phase 11 — Social. Benchmark counts stay 0: the A/B parity numbers are BLOCKED on Hubert
+    // (POST-9C-ROADMAP Decision 3) — do NOT guess them here; Development seeds a small demo cast only.
+    // Presence is never seeded (A-only, unmeasured, ephemeral by design).
+
+    /// <summary>Accepted friendships among the Development cast.</summary>
+    public int FriendshipCount { get; init; }
+
+    /// <summary>Pending friend requests on top of the accepted ones.</summary>
+    public int PendingFriendshipCount { get; init; }
+
+    public int GroupCount { get; init; }
+
+    /// <summary>The last <see cref="PrivateGroupCount"/> group indices are private (invite-only).</summary>
+    public int PrivateGroupCount { get; init; }
+
+    /// <summary>Pending group invites.</summary>
+    public int GroupInviteCount { get; init; }
+
+    /// <summary>Direct (two-person) conversations; group chats ride along with their groups.</summary>
+    public int DirectConversationCount { get; init; }
+
+    /// <summary>Chat messages spread over the direct + group conversations.</summary>
+    public int MessageCount { get; init; }
+
     /// <summary>Global staff (admins + moderators). Category ownership round-robins over exactly this pool.</summary>
     public int StaffCount => AdminCount + ModeratorCount;
 
@@ -72,7 +96,16 @@ public sealed class SeedPlan
             userCount: 5, adminCount: 1, moderatorCount: 1, blockedCount: 0,
             categoryCount: 2, privateCategoryCount: 1, membersPerPrivateCategory: 1,
             tagCount: 4, threadCount: 10, commentCount: 10, reactionCount: 5,
-            password: "Dev#Password1"),
+            password: "Dev#Password1")
+        {
+            FriendshipCount = 4,
+            PendingFriendshipCount = 1,
+            GroupCount = 2,
+            PrivateGroupCount = 1,
+            GroupInviteCount = 1,
+            DirectConversationCount = 1,
+            MessageCount = 12,
+        },
 
         // Sized for the WSL2 / minikube 10 GiB budget (§1): big enough for Zipf hot-thread traffic, FTS corpus
         // hits and counter-trigger churn under k6, small enough to stay ~30 MB on disk.

@@ -55,10 +55,24 @@ const RESYNC_DEBOUNCE_MS = 400;
 // applyNotificationInvalidation targets can violate it — categories/tags/files/user-stats get no
 // pushes even while connected, so a reconnect says nothing about them and refetching them here
 // (the previous "invalidate everything active") just burned rate-limiter budget on every flap.
-const PUSH_COVERED_KEY_ROOTS = new Set<unknown>(["threads", "comments", "reactions"]);
+// Presence/privacy/blocks stay out for the same reason: presence is actively polled, the other
+// two only change through this client's own mutations.
+const PUSH_COVERED_KEY_ROOTS = new Set<unknown>([
+  "threads",
+  "comments",
+  "reactions",
+  "friends",
+  "friendRequests",
+  "groups",
+  "groupMembers",
+  "groupInvites",
+  "conversations",
+  "messages",
+  "notifications",
+]);
 
 export function RealtimeProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<RealtimeStatus>("offline");
   const [activity, setActivity] = useState<ActivityEntry[]>([]);
@@ -116,6 +130,16 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     manager.stop();
     return undefined;
   }, [isAuthenticated, manager]);
+
+  // The whole app listens on its own user view for as long as a session exists:
+  // friendship / group-invite / bell-notification events and the DM unread-badge path
+  // route ONLY there (and reaction events echo there for multi-device like sync).
+  const selfId = currentUser?.id ?? null;
+  useEffect(() => {
+    if (!selfId) return undefined;
+    manager.subscribe("user", selfId);
+    return () => manager.unsubscribe("user", selfId);
+  }, [selfId, manager]);
 
   const subscribe = useCallback(
     (view: RealtimeViewKind, id: string) => {

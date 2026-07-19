@@ -185,7 +185,8 @@ export type FileTargetType =
   | "avatar"
   | "category_icon"
   | "thread_icon"
-  | "dm";
+  | "message"
+  | "group_icon";
 
 export const ALLOWED_UPLOAD_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MiB
@@ -247,6 +248,199 @@ export interface UserStatsResponse {
   karma: number;
 }
 
+// --- Social ------------------------------------------------------------------------
+// Verified against the shipped backend source (Forum.Modules.Social, 2026-07-18):
+// ISocialQueries.cs read DTOs + the Presentation request records. All /api/social/*
+// endpoints require authentication; keyset cursors are the plain ULID of the last row
+// (pass back verbatim). The conversation list is the ONE no-cursor list (unstable
+// last-activity order, hard-capped at 200 server-side).
+
+export type GroupVisibility = "public" | "private";
+export type ConversationType = "direct" | "group";
+export type PrivacyAudience = "everyone" | "friends" | "no_one";
+export type PresenceStatus = "online" | "away" | "offline";
+/** Which groups a directory listing covers (GET /api/social/groups?filter=). */
+export type GroupListFilter = "all" | "mine" | "public";
+
+export interface FriendResponse {
+  friendshipId: string;
+  userId: string;
+  username: string;
+  friendsSinceUtc: string;
+}
+
+export interface FriendRequestResponse {
+  friendshipId: string;
+  requesterId: string;
+  requesterUsername: string;
+  addresseeId: string;
+  addresseeUsername: string;
+  sentOnUtc: string;
+}
+
+export interface FriendRequestsResponse {
+  incoming: FriendRequestResponse[];
+  outgoing: FriendRequestResponse[];
+}
+
+export interface SendFriendRequestResponse {
+  friendshipId: string;
+}
+
+export interface BlockedUserResponse {
+  userId: string;
+  username: string;
+  blockedOnUtc: string;
+}
+
+/**
+ * Group visibility affects DISCOVERY/JOIN only — members/chat of a private group are
+ * exactly as member-only as a public group's. Don't gate any UI on it beyond the
+ * groups list and the join button.
+ */
+export interface GroupSummaryResponse {
+  groupId: string;
+  name: string;
+  description: string;
+  visibility: GroupVisibility;
+  ownerId: string;
+  ownerUsername: string;
+  memberCount: number;
+  isMember: boolean;
+  createdOnUtc: string;
+}
+
+/** `isAdmin` already resolves owner-OR-promoted-admin — use it directly, never re-derive. */
+export interface GroupDetailResponse extends GroupSummaryResponse {
+  isAdmin: boolean;
+}
+
+export interface GroupMemberResponse {
+  userId: string;
+  username: string;
+  joinedOnUtc: string;
+  isOwner: boolean;
+  isAdmin: boolean;
+}
+
+export interface GroupInviteResponse {
+  inviteId: string;
+  groupId: string;
+  groupName: string;
+  invitedUserId: string;
+  invitedUserUsername: string;
+  invitedBy: string;
+  invitedByUsername: string;
+  sentOnUtc: string;
+}
+
+export interface CreateGroupRequest {
+  name: string;
+  description?: string;
+  visibility?: GroupVisibility;
+}
+
+export interface CreateGroupResponse {
+  groupId: string;
+}
+
+export interface UpdateGroupRequest {
+  name: string;
+  description?: string;
+  visibility?: GroupVisibility;
+}
+
+export interface InviteToGroupResponse {
+  inviteId: string;
+}
+
+/** A group chat's conversation id IS the group id (backend invariant). */
+export interface ConversationResponse {
+  conversationId: string;
+  type: ConversationType;
+  displayName: string;
+  otherUserId: string | null;
+  groupId: string | null;
+  lastMessageId: string | null;
+  lastMessagePreview: string | null;
+  lastMessageSenderId: string | null;
+  lastMessageOnUtc: string | null;
+  /** MY unread count for this seat — never a receipt visible to the sender. */
+  unreadCount: number;
+  isMuted: boolean;
+}
+
+export interface OpenDirectConversationResponse {
+  conversationId: string;
+}
+
+/** A deleted message arrives with body already tombstoned to the literal "[deleted]". */
+export interface MessageResponse {
+  messageId: string;
+  conversationId: string;
+  senderId: string;
+  senderUsername: string;
+  body: string;
+  sentOnUtc: string;
+  editedOnUtc: string | null;
+  isDeleted: boolean;
+}
+
+export interface SendMessageResponse {
+  messageId: string;
+  sentOnUtc: string;
+}
+
+export const MAX_MESSAGE_LENGTH = 4000;
+
+/**
+ * Closed kind set — message arrivals NEVER create a notification row; the messages
+ * badge is a separate number (sum of ConversationResponse.unreadCount).
+ * targetId per kind: friend.request/friend.accepted = friendshipId,
+ * group.invite = inviteId, group.invite.accepted/group.kicked = groupId.
+ */
+export type NotificationKind =
+  | "friend.request"
+  | "friend.accepted"
+  | "group.invite"
+  | "group.invite.accepted"
+  | "group.kicked";
+
+export interface NotificationResponse {
+  notificationId: string;
+  kind: NotificationKind;
+  actorId: string | null;
+  actorUsername: string | null;
+  targetId: string | null;
+  isRead: boolean;
+  createdOnUtc: string;
+}
+
+export interface UnreadNotificationCountResponse {
+  unread: number;
+}
+
+export interface MarkNotificationsReadResponse {
+  marked: number;
+}
+
+/**
+ * `friendRequests: "friends"` is meaningless (friends need no request) — the backend
+ * normalizes it to "no_one" on write, so the UI never offers it for that field.
+ */
+export interface PrivacySettingsResponse {
+  friendRequests: PrivacyAudience;
+  messages: PrivacyAudience;
+  groupInvites: PrivacyAudience;
+  showOnlineStatus: boolean;
+}
+
+/** Poll-only — presence is deliberately NOT on the realtime bus (backend design). */
+export interface PresenceEntry {
+  userId: string;
+  status: PresenceStatus;
+}
+
 // --- Realtime ----------------------------------------------------------------------
 
 export interface RealtimeTicketResponse {
@@ -254,7 +448,7 @@ export interface RealtimeTicketResponse {
   expiresInSeconds: number;
 }
 
-export type RealtimeViewKind = "category" | "thread" | "user";
+export type RealtimeViewKind = "category" | "thread" | "user" | "group" | "conversation";
 
 export interface RealtimeClientMessage {
   action: "subscribe" | "unsubscribe";
@@ -281,10 +475,24 @@ export interface RealtimeControlMessage {
  * entity=thread: id=thread, parentId=null. entity=comment: id=comment, parentId=thread.
  * entity=reaction: id=the reacted-to thread/comment, parentId=containing thread
  * (null when the target is itself a thread).
+ *
+ * Social entities (verified against RealtimeEventMap.cs) always carry categoryId=null;
+ * parentId is the container: the conversation for message, the group for group /
+ * group_member / group_invite, absent for friendship / notification. For group_member
+ * the id is the member's USER id (not a membership row id).
  */
 export interface ChangeNotification {
   type: "created" | "updated" | "deleted";
-  entity: "thread" | "comment" | "reaction";
+  entity:
+    | "thread"
+    | "comment"
+    | "reaction"
+    | "friendship"
+    | "group"
+    | "group_member"
+    | "group_invite"
+    | "message"
+    | "notification";
   id: string;
   parentId?: string | null;
   categoryId?: string | null;

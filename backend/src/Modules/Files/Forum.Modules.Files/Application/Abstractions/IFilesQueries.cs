@@ -6,6 +6,9 @@ namespace Forum.Modules.Files.Application.Abstractions;
 internal sealed record FileReadModel(
     Ulid Id, string ObjectKey, string ContentType, long SizeBytes, int? Width, int? Height);
 
+/// <summary>One file ↔ target link, as the read-side gate sees it.</summary>
+internal sealed record AttachmentRef(FileTargetType TargetType, Ulid TargetId);
+
 /// <summary>
 /// The Files read side. Single-module, bounded lookups (a target carries at most the attachment cap), so
 /// plain no-tracking EF suffices — no view or keyset cursor needed (same precedent as Content's category list).
@@ -16,4 +19,7 @@ internal interface IFilesQueries
 
     Task<IReadOnlyList<FileReadModel>> ListCommittedForTargetAsync(
         FileTargetType targetType, Ulid targetId, CancellationToken cancellationToken);
+
+    /// <summary>The file's current links — the download gate checks whether any is a private (message) target.</summary>
+    Task<IReadOnlyList<AttachmentRef>> GetAttachmentRefsAsync(Ulid fileId, CancellationToken cancellationToken);
 }

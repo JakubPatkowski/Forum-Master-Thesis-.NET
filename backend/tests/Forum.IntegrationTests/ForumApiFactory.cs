@@ -80,6 +80,11 @@ public class ForumApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // Every test request shares one "IP" — raise the per-IP limits so suites don't trip 429s.
         builder.UseSetting("RateLimiting:Global:PermitLimit", "10000");
         builder.UseSetting("RateLimiting:Auth:PermitLimit", "1000");
+
+        // The Prometheus exporter's default 10s scrape-response cache would make polling assertions flake
+        // (a stale cached body keeps getting served no matter how long a test waits) — force a fresh collect
+        // on every /metrics call in tests.
+        builder.UseSetting("Observability:PrometheusScrapeCacheMs", "0");
     }
 
     public async Task InitializeAsync()
