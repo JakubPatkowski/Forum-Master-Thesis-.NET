@@ -85,12 +85,16 @@ src/
     comments/     CommentSection / CommentNode
     thread/       ThreadCard
     engagement/   ReactionButton
+    social/       FriendRow/GroupCard/… row family, GroupDetailPanel, GroupModal,
+                  the floating chat dock (ChatDock/ChatWindow/MessageBubble + context),
+                  PresenceHeartbeat, ProfileSocialActions
     panels/       side-rail panels (live activity, popular tags, about-…)
   lib/
     api/          typed endpoint modules + the ONE http client + RFC7807 mapping + query keys
     auth/         in-memory token store (single-flight refresh), JWT decode, AuthProvider
     realtime/     WebSocket manager (ticket → connect → resubscribe), invalidation mapping
     feed/         k-way merge for the home "All threads" view
+    social/       conversation sort/unread math, presence derivation, notification metadata
     markdown/     media convention + remark plugin + heading extraction
     upload/       initiate → presigned PUT → commit flow + upload state manager
   styles/         design tokens (copied from the design system) + base + animations
@@ -119,7 +123,22 @@ design-reference/ the Claude Design mockups + token source (reference only, not 
   subscriptions replayed after every reconnect, and a full active-query resync on every
   (re)connect (pushes carry no payloads). Notifications map to React Query invalidations in
   `lib/realtime/invalidation.ts` — except `thread created`, which feeds the LIVE banner instead
-  of silently reordering feeds.
+  of silently reordering feeds. The app subscribes the session's own `user:<id>` view for its
+  whole lifetime (RealtimeProvider): friendship / group-invite / bell events and the DM
+  unread-badge path route only there. Group and conversation views are subscribed by the
+  components that show them (GroupDetailPanel, ChatWindow/ChatPill).
+- **Social** (`/social` + the floating chat dock): friends/requests/blocks, group
+  discovery/detail/roles/invites, unified DM+group chat and the durable notification bell, all
+  against `/api/social/*`. Chats live in a global dock (pills + up to 3 floating windows,
+  `components/social/chat-dock-context.tsx`) that survives route changes; message bodies are
+  markdown with the same `image:<fileId>` inline convention (uploads attach with
+  `targetType=message`, participant-gated reads server-side; group icons use `group_icon` with
+  replace semantics). The TopNav badges are two independent numbers: bell = unread durable
+  notifications, messages = summed per-conversation unread counts. **Presence is poll-only by
+  backend design** — a visibility-aware 30 s heartbeat (`PresenceHeartbeat` at the app root)
+  plus ONE batched `GET /presence` per view on a 25 s `refetchInterval`; never per-row requests.
+  One UI-relevant backend rule: `friendRequests: "friends"` normalizes to `"no_one"` server-side
+  (friends need no request), so the privacy form doesn't offer it.
 - **Permissions are a UX heuristic only** — edit/delete/pin affordances key off ownership and the
   JWT's global-role claim, but every action handles the server's 403 gracefully.
 - **Errors** all pass through `lib/api/problem.ts` (RFC7807 `title`/`code`/`errorType`), with the
@@ -128,10 +147,11 @@ design-reference/ the Claude Design mockups + token source (reference only, not 
 
 ## Deliberately mocked / deferred (backend gaps, marked in the UI)
 
-- **Social page** (`/social`) — UI-only preview with local state; the backend has no Social
-  module. A persistent PREVIEW banner says so.
 - **Comment-count badges** — never rendered; the feed field is hard-coded 0 server-side.
 - **Admin panel** — out of scope for this pass; no nav entry is advertised.
+- **Sent group invites** — the API only lists invites addressed to *me* (`GET /api/social/invites`),
+  so the inviter has no cancel UI (the invitee's decline or the backend's block-severing cleans
+  them up).
 
 Formerly listed here, now real: tag autocomplete + POPULAR TAGS (`GET /api/content/tags`),
 the profile activity timeline (`GET /api/content/users/{id}/threads` + `/comments`, merged
@@ -140,5 +160,6 @@ category create/edit (`POST`/`PUT /api/content/categories` via the sidebar "+ Ne
 and the category header "Edit category" — name/description/visibility/icon in one modal),
 thread icons (Files `thread_icon` target — a backend target added alongside this UI; one
 image per thread, editable by owner/moderator, shown on the thread page and feed cards with
-a category-icon fallback), and account settings (`/settings` → the `/api/identity/me/*`
-endpoints).
+a category-icon fallback), account settings (`/settings` → the `/api/identity/me/*`
+endpoints), and the **Social feature** (`/social`, the chat dock, presence, privacy,
+notifications — formerly a zero-fetch UI mock, now fully wired to `Forum.Modules.Social`).

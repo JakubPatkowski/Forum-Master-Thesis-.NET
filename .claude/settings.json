@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(LD_LIBRARY_PATH=./libs/extracted/usr/lib/x86_64-linux-gnu:./libs/extracted/usr/lib/x86_64-linux-gnu/nss PLAYWRIGHT_BROWSERS_PATH=./browsers node browser-golden-path.mjs)",
+      "Bash(LD_LIBRARY_PATH=./libs/extracted/usr/lib/x86_64-linux-gnu ldd browsers/chromium_headless_shell-1228/chrome-headless-shell-linux64/chrome-headless-shell)",
+      "Bash(awk '{print $1}')",
+      "Bash(LD_LIBRARY_PATH=./libs/extracted/usr/lib/x86_64-linux-gnu:./libs/extracted/usr/lib/x86_64-linux-gnu/nss ldd browsers/chromium_headless_shell-1228/chrome-headless-shell-linux64/chrome-headless-shell)",
+      "Bash(python3 -c \"import sys,json;[print\\(m['senderUsername'],'|',m['body'][:60]\\) for m in json.load\\(sys.stdin\\)['items']]\")",
+      "Bash(git -C /home/ubuntuwsl/projects/gomx log --oneline -15)",
+      "Bash(git -C /home/ubuntuwsl/projects/gomx log -1 --format=%ci)",
+      "Bash(echo \"exit=$?\")"
+    ]
+  }
+}

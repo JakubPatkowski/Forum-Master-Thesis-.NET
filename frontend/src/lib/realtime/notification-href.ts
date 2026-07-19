@@ -17,5 +17,20 @@ export function notificationHref(notification: ChangeNotification): string | und
         : undefined;
     case "reaction":
       return notification.parentId ? `/t/${notification.parentId}` : `/t/${notification.id}`;
+
+    // Social: parentId = the group for group/group_member/group_invite, the
+    // conversation for message; /social?… deep-links resolve on the social page.
+    case "friendship":
+      return notification.type === "created" ? "/social?tab=requests" : "/social";
+    case "group":
+      return notification.type === "deleted" ? "/social?tab=groups" : `/social?group=${notification.id}`;
+    case "group_member":
+      return notification.parentId ? `/social?group=${notification.parentId}` : "/social?tab=groups";
+    case "group_invite":
+      return "/social?tab=groups";
+    case "message":
+      return notification.parentId ? `/social?conversation=${notification.parentId}` : "/social";
+    case "notification":
+      return "/social";
   }
 }

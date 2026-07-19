@@ -15,6 +15,7 @@ import { useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { PageShell } from "@/components/layout/PageShell";
+import { ProfileSocialActions } from "@/components/social/ProfileSocialActions";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -35,7 +36,6 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { mergeActivity } from "@/lib/feed/activity-merge";
 import { useUserComments, useUserThreads } from "@/lib/hooks/use-content";
 import { useUserStats } from "@/lib/hooks/use-user-stats";
-import { useRealtimeSubscription } from "@/lib/realtime/realtime-context";
 import { uploadFile } from "@/lib/upload/upload";
 import { timeAgoLabel } from "@/lib/utils/time";
 
@@ -145,7 +145,7 @@ export default function ProfilePage() {
   const userId = params.userId;
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { currentUser, logoutAll, isAuthenticated } = useAuth();
+  const { currentUser, logoutAll } = useAuth();
   const { showError, show } = useToast();
   const stats = useUserStats(userId);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -153,9 +153,8 @@ export default function ProfilePage() {
 
   const isOwn = currentUser?.id === userId;
 
-  // Own profile subscribes to the self user view — multi-device like-state sync pushes
-  // land here (reaction events are mirrored to the actor's own view).
-  useRealtimeSubscription("user", isAuthenticated && isOwn ? userId : null);
+  // The self user view is subscribed app-wide by RealtimeProvider (social + own-device
+  // like-sync pushes) — no per-page subscription needed anymore.
 
   const onPickAvatar = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -230,6 +229,10 @@ export default function ProfilePage() {
                 <div className={styles.statLabel}>KARMA</div>
               </div>
             </div>
+
+            {!isOwn && stats.data ? (
+              <ProfileSocialActions userId={userId} username={stats.data.username} />
+            ) : null}
 
             {isOwn ? (
               <div className={styles.dangerZone}>

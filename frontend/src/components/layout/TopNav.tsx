@@ -2,10 +2,11 @@
 
 /**
  * Primary navigation (design: TopNav.dc.html): FORUM://SIGNAL logo, global search,
- * the WS status pill (LIVE / RECONNECTING / OFFLINE), friends+messages entry points to
- * the mocked Social preview, a notification bell backed by the real realtime activity
- * log, and the user menu. The bracketed tab row (01 FORUM · 02 SEARCH · 03 PROFILE)
- * sits underneath. No Admin tab — the admin UI is a later increment (scope decision).
+ * the WS status pill (LIVE / RECONNECTING / OFFLINE), the friends+messages entry
+ * points with their real unread badges (see SocialNavLinks), a notification bell
+ * backed by the realtime activity log, and the user menu. The bracketed tab row
+ * (01 FORUM · 02 SEARCH · 03 PROFILE) sits underneath. No Admin tab — the admin UI
+ * is a later increment (scope decision).
  */
 
 import Link from "next/link";
@@ -17,8 +18,10 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { LiveDot } from "@/components/ui/LiveDot";
 import { useAuth } from "@/lib/auth/auth-context";
+import { useConversations, useUnreadNotificationCount } from "@/lib/hooks/use-social";
 import { notificationHref } from "@/lib/realtime/notification-href";
 import { useRealtime } from "@/lib/realtime/realtime-context";
+import { totalUnreadMessages } from "@/lib/social/conversations";
 import { timeAgoLabel } from "@/lib/utils/time";
 
 import styles from "./TopNav.module.css";
@@ -135,6 +138,42 @@ function ActivityBell() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+/**
+ * The two social entry points carry two INDEPENDENT badges: the friends/bell badge is
+ * the durable-notification unread count (friend/group activity — message arrivals
+ * never create notification rows), the messages badge is the client-side sum of
+ * per-conversation unread counts. Both are push-invalidated via the own-user view.
+ */
+function SocialNavLinks() {
+  const unreadNotifications = useUnreadNotificationCount();
+  const conversations = useConversations();
+  const notificationCount = unreadNotifications.data?.unread ?? 0;
+  const messageCount = totalUnreadMessages(conversations.data ?? []);
+
+  return (
+    <>
+      <Link href="/social" className={styles.iconButton} title="Friends & notifications">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-8 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.7 0-8 1.34-8 4v2h9v-2c0-1.6.77-2.9 1.96-3.79A11.9 11.9 0 0 0 8 13zm8 0c-.35 0-.72.02-1.1.06C16.09 14.06 17 15.36 17 17v2h7v-2c0-2.66-5.3-4-8-4z" />
+        </svg>
+        {notificationCount > 0 ? (
+          <span className={styles.badgeCyan}>
+            {notificationCount > 99 ? "99+" : notificationCount}
+          </span>
+        ) : null}
+      </Link>
+      <Link href="/social" className={styles.iconButton} title="Messages">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1z" />
+        </svg>
+        {messageCount > 0 ? (
+          <span className={styles.badgeAccent}>{messageCount > 99 ? "99+" : messageCount}</span>
+        ) : null}
+      </Link>
+    </>
   );
 }
 
@@ -263,18 +302,7 @@ export function TopNav() {
               <Button size="sm" onClick={() => openCreate()}>
                 + New thread
               </Button>
-              <Link href="/social" className={styles.iconButton} title="Friends (preview)">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-8 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.7 0-8 1.34-8 4v2h9v-2c0-1.6.77-2.9 1.96-3.79A11.9 11.9 0 0 0 8 13zm8 0c-.35 0-.72.02-1.1.06C16.09 14.06 17 15.36 17 17v2h7v-2c0-2.66-5.3-4-8-4z" />
-                </svg>
-                <span className={styles.badgeCyan}>2</span>
-              </Link>
-              <Link href="/social" className={styles.iconButton} title="Messages (preview)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H8l-5 4V5a1 1 0 0 1 1-1z" />
-                </svg>
-                <span className={styles.badgeAccent}>3</span>
-              </Link>
+              <SocialNavLinks />
               <ActivityBell />
               <UserMenu />
             </>

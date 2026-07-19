@@ -10,6 +10,14 @@ A scope flag worth being aware of: `docs/architecture/REQUIREMENTS-AND-ASSUMPTIO
 
 ## Part A — Backend session prompt
 
+**STATUS: DONE, committed 2026-07-17 (commit `3755e57`, branch `27-feat-phase-11---social`).** Everything
+below was built essentially as proposed, with a few improvements the backend session made and justified —
+see `CLAUDE.md`'s "Phase 11 (plan Phase 5)" entry for the authoritative as-built summary, and
+`docs/architecture/PHASE-11-SOCIAL-PROGRESS.md` for the full locked-design log (238 tests green; only the
+dedicated `SocialFlowTests` E2E suite is still outstanding). Kept here for historical/design context — Part
+B below has been corrected against the REAL shipped API surface, not this proposal, so treat Part B as
+ground truth and this Part A prompt as "what was asked for," not "what necessarily still matches reality."
+
 ```
 CONTEXT
 
@@ -285,114 +293,305 @@ sequencing rationale, just don't skip a step.
 
 ## Part B — Frontend session prompt
 
+**Corrected 2026-07-17 against the REAL shipped backend** (commit `3755e57`) — the original draft guessed
+at several things the actual implementation resolved differently (presence is poll-only, not WS-pushed;
+the file target type is `"message"` not `"dm"`; entity names include `group_member`/`group_invite`
+distinctly). Every fact below was verified by reading the actual backend source and the actual frontend
+component library — not re-guessed.
+
 ```
 CONTEXT
 
 You're wiring a real Social feature into a Next.js 15 (App Router, pure client-side-rendered, no Next
 server ever talks to the API) React SPA — the frontend for a .NET forum backend (repo: forum-dotnet).
-Read `frontend/README.md` first — it lists known gaps including the exact one you're closing. This is a
-SEPARATE, CONTEXT-ISOLATED SESSION from a companion backend session that built (or is building) a new
-`Forum.Modules.Social` API surface — you won't see its reasoning, only its shipped endpoints/DTOs
-(check the live OpenAPI doc / ask the user for the backend session's summary if the API isn't self-
-evident). Presence is in scope at the user's explicit request even though
+Read `frontend/README.md` first. The backend is DONE and committed (`Forum.Modules.Social`, 36 endpoints
+under `/api/social/*`, full realtime wiring) — this is not speculative integration work, the API below is
+exact, verified against the shipped source on 2026-07-17. This is a SEPARATE, CONTEXT-ISOLATED SESSION
+from the backend one; you won't see its reasoning, only what's documented here and in `CLAUDE.md`'s
+"Phase 11 (plan Phase 5)" entry / `docs/architecture/PHASE-11-SOCIAL-PROGRESS.md`.
+
+Presence is in scope at the user's explicit request even though
 `docs/architecture/REQUIREMENTS-AND-ASSUMPTIONS.md` §1 lists presence as out of the A/B comparison scope
-— it's a real feature here, just not something the comparison measures.
+— it's a real feature here, just not something the comparison measures, and not something to fold into
+any B-parity number.
 
-WHAT EXISTS TODAY (confirmed by direct code reading — build on this, don't rebuild it)
+═══════════════════════════════════════════════════════════════════════════
+COMPONENT ARCHITECTURE & PERFORMANCE — READ THIS SECTION FIRST
+═══════════════════════════════════════════════════════════════════════════
 
-- `frontend/src/app/social/page.tsx` (+ `social.module.css`) is a PURE MOCK — zero fetches, zero
-  `useQuery`/`useMutation`, zero `useRealtimeSubscription`, everything is local `useState` over hardcoded
-  arrays (`FRIENDS`, `INITIAL_REQUESTS`, `GROUPS`, `INITIAL_CHAT`). Its own header comment says so
-  explicitly. Reusable AS MARKUP/CSS: the 4-tab left rail (Friends/Requests/Groups/Ignored), the
-  avatar-with-status-dot pattern, the chat panel's message-bubble styling (already has "me" vs "them"
-  alignment). NOT reusable: every interactive affordance (accept/decline, send, open chat) is a
-  local-state-only stub with no group-detail view, no create/invite UI, no notification list, no real
-  presence. Delete the persistent PREVIEW banner (lines ~104-113) once wired for real.
-- `frontend/src/components/layout/TopNav.tsx` has TWO hardcoded unread-count badges ("2" for friends,
-  "3" for messages, ~lines 266-277) pointing at `/social` — wire these to real counts.
-- Realtime — `frontend/src/lib/api/types.ts`: `RealtimeViewKind = "category" | "thread" | "user"` and
-  `ChangeNotification.entity: "thread" | "comment" | "reaction"` are the exact extension points. Add
-  `"group" | "conversation"` to the view-kind union and whatever new entity values the backend session's
-  event types need (e.g. `"friendRequest" | "groupInvite" | "message" | "presence"` — match whatever the
-  backend actually calls them). `RealtimeSocketManager` itself
-  (`frontend/src/lib/realtime/socket-manager.ts`) is fully generic over `(view, id)` — no changes needed
-  there. Subscribing from a page is one line:
-  `useRealtimeSubscription("group", groupId)` / `useRealtimeSubscription("conversation", conversationId)`
-  (`frontend/src/lib/realtime/realtime-context.tsx`'s `useRealtimeSubscription` hook — copy the exact
-  pattern used by `frontend/src/app/t/[id]/page.tsx` line ~62).
-- `frontend/src/lib/realtime/invalidation.ts` — a `switch (notification.entity)` mapping each kind to a
-  targeted `queryClient.invalidateQueries(...)`, following the existing `"reaction"` case's predicate-
-  based batch-invalidation shape (lines ~37-58) as your template. Add cases for every new entity.
-- **`PUSH_COVERED_KEY_ROOTS`** in `realtime-context.tsx` (~line 58) — a hardcoded
-  `Set(["threads","comments","reactions"])` controlling what gets refetched on reconnect. YOU MUST add
-  your new social query-key roots here or reconnects will silently fail to resync social data that
-  changed while disconnected.
-- Notification bell / activity log — `frontend/src/components/panels/LiveActivityPanel.tsx` and
-  `TopNav.tsx`'s `ActivityBell()` are both generic over `entity`/`type` (fed straight from
-  `useRealtime().activity`, capped at 20 entries) — new entity values flow into the SAME rolling log
-  automatically, but their RENDERING (icon/label/color, currently only special-cased for `"reaction"`)
-  and `frontend/src/lib/realtime/notification-href.ts` (currently returns `undefined` — no link — for
-  anything besides thread/comment/reaction) both need new cases or your new notification kinds will
-  render as generic unclickable rows.
-- Presence has NO existing pattern anywhere in the realtime layer — it's genuinely new. Decide whether
-  it's its own `ChangeNotification.entity: "presence"` case or a separate WS message type living outside
-  the `ChangeNotification` union (if the latter, `isChangeNotification()` in `types.ts` ~line 295 must
-  keep correctly excluding it).
-- API layer convention — copy `frontend/src/lib/api/engagement.ts` (flat object of one-line `apiFetch<T>`
-  calls) + `frontend/src/lib/api/keys.ts` (query-key factory, `[root, ...args] as const` shape) +
-  `frontend/src/lib/hooks/use-reactions.ts` (React Query hooks with optimistic update + rollback, e.g.
-  `useToggleReaction`'s `onMutate`/`onError`/`onSuccess` shape) EXACTLY, for a new `socialApi` /
-  `queryKeys.friends()` etc. / `use-social.ts` trio. `apiFetch`/`problem.ts` (RFC7807 handling, single-
-  flight 401 refresh) are already generic — you get them for free.
-- Markdown composer — `frontend/src/components/compose/MarkdownEditor.tsx` is FULLY GENERIC (props:
-  `{value, onChange, rows?, placeholder?, onUploadImage?, compact?}`, no thread/comment-specific state) —
-  reuse it as-is for the message composer, just pass your own `onUploadImage` implementation (see
-  `ComposeThreadModal.tsx` ~line 92-95 for the exact glue-code shape:
-  `uploads.add(file)` → returns a committed `fileId` → passed straight into the editor). The upload
-  pipeline (`frontend/src/lib/upload/upload.ts`, `use-upload-manager.ts`, `frontend/src/lib/api/files.ts`)
-  is also fully reusable. IMPORTANT: `FileTargetType` in `types.ts` (~line 182-188) ALREADY includes
-  `"dm"` in its union, and the comment on `filesApi.attach` already says `dm: 422 (unbuilt)` — this
-  literally becomes real once the backend session ships DM/group-message attachment support. Don't
-  build your own upload plumbing; just point the existing one at the new target type(s) the backend
-  session defines (confirm the exact wire strings with its Files-module changes — it may add
-  `group_icon` alongside or instead of `dm`).
-- Auth — `useAuth().currentUser?.id`/`.username` (from `frontend/src/lib/auth/auth-context.tsx`) is
-  synchronously available anywhere in the tree the moment a token exists — no extra round trip needed
-  for "who am I" in presence/notification UI.
-- `frontend/README.md` line ~131-132 has the exact gap-note wording to remove once this is wired for
-  real: *"Social page (`/social`) — UI-only preview with local state; the backend has no Social module.
-  A persistent PREVIEW banner says so."*
+The user's explicit bar for this work: written in the SAME STYLE as the rest of the app, built from
+ATOMIC, REUSABLE, EASY-TO-EDIT components — not a bespoke one-off page — and EFFICIENT about data and
+icon/avatar fetching. Concretely:
 
+1. **The current `/social` mock page is NOT the architecture to copy.** It hand-rolls every row as a
+   plain `<div>` with page-local CSS classes, never uses the shared `Avatar` component (it fakes an
+   avatar with `friend.initial` in a styled `<span>`), and has no reusable row/card components at all.
+   Treat it as disposable scaffolding for its CSS only — the actual component architecture must follow
+   the pattern used elsewhere in this app for real, non-trivial lists:
+   - `frontend/src/components/thread/ThreadCard.tsx` — a proper reusable card component
+     (`thread`/`reaction`/`showCategory`/`pinAction`/`isNew` props), used identically across feed/search/
+     category/profile pages.
+   - `frontend/src/components/comments/CommentNode.tsx` — a reusable recursive row component.
+   Build a new `frontend/src/components/social/` folder (mirroring the `components/thread/` and
+   `components/comments/` convention) containing real, props-driven, reusable components: e.g.
+   `FriendRow`, `FriendRequestCard`, `GroupCard`, `GroupMemberRow`, `ConversationPill` (a minimized chat
+   pill), `ChatWindow`, `MessageBubble`, `NotificationRow`. Each should take data + callbacks as props and
+   contain NO page-specific logic, exactly like `ThreadCard` does — easy to reuse across the friends list,
+   a group's member list, search-style discovery, etc., and easy to edit later because each is a small,
+   single-purpose file.
+
+2. **Reuse the existing atomic UI library — do not reinvent any of these** (`frontend/src/components/ui/`):
+   `Avatar` (per-user avatar w/ monogram fallback), `Badge` (status chips), `LiveDot` (pulsing status dot —
+   already supports the exact online/away/offline color semantics you need for presence), `Button`,
+   `Input`, `Panel` (sidebar/section card), `Modal`, `EmptyState`, `ErrorState.tsx`'s `ApiErrorState` /
+   `InlineErrorBanner` (route every social mutation's failure through this, not a hand-rolled error div),
+   `Skeleton` (+ the `ThreadCardSkeleton` geometry-matching pattern — build an equivalent
+   `SocialRowSkeleton` if your new rows need one), `LoadMoreButton` (cursor "LOAD MORE ↓", never page
+   numbers), `LiveBanner` (for "new message arrived" style announcements, mirroring how new threads are
+   announced rather than silently inserted), `TagChip`, `CornerBrackets`, `Monogram`, and the
+   `CategoryIcon`/`ThreadIcon` per-target-file-lookup pattern (build a `GroupIcon` component that's a
+   structural copy of `CategoryIcon.tsx`, pointed at the new `group_icon` file target — see below).
+   `toast` (`useToast().showError(apiError)`) is the standard place to surface a failed mutation.
+
+3. **Icon convention: hand-authored inline SVG, no icon library exists in this app.** Every icon
+   (`TopNav.tsx`'s bell/friends/messages icons, `ReactionButton`'s like icon, `ThreadCard`'s pin icon) is
+   a literal `<svg viewBox="0 0 24 24" fill="currentColor">...</svg>` (or `stroke="currentColor"` for
+   line-style icons) written inline at the call site, sized via `width`/`height`. Any new icon you need
+   (person-add, group, chat-bubble) should be authored the same way, inline, at its own use site — do NOT
+   introduce a new icon library/dependency for this.
+
+4. **Efficient data fetching — the concrete rules, derived from what's already in this codebase:**
+   - Friends, friend requests, groups, group members, group invites, conversations, messages, and
+     notifications are ALL covered by realtime WS push (see the exact entity/route table below) — use
+     `staleTimes.realtimeCovered` (5 min, `frontend/src/lib/api/stale-times.ts`) for every one of these
+     queries, exactly like `threads`/`comments`/`reactions` do today. Do not invent a shorter poll
+     interval for them; the WS layer keeps them fresh while mounted, `staleTime` only governs
+     back-navigation.
+   - **Presence is the one exception — it is NOT WS-covered by backend design** (confirmed: "presence
+     never on the bus"). It needs its OWN mechanism, separate from `staleTime`: (a) a periodic
+     `POST /api/social/presence/heartbeat` fired on a ~30s interval while the tab is active/visible
+     (use the Page Visibility API to pause it when hidden, saving needless requests) via a small custom
+     hook, e.g. `usePresenceHeartbeat()`; (b) a `GET /api/social/presence?userIds=id,id,...` query for
+     whichever users are currently visible (friend list, group member list, a DM's other participant)
+     using React Query's `refetchInterval` (e.g. 20-30s), NOT `staleTime` — this is active polling, a
+     different mechanism from the push-invalidation pattern. Batch every visible userId into ONE call
+     per view (mirror `useReactionBatch`'s one-round-trip-many-ids shape) — never fire one presence
+     request per row.
+   - Avatars/group icons reuse the EXISTING `presignedFiles` staleTime tier (5 min) via the existing
+     `Avatar`/new-`GroupIcon` components — no new tier needed there. Be aware (don't "fix" this, it's
+     consistent with the rest of the app, just don't make it WORSE): each component fetches
+     `GET /api/files?targetType=...&targetId=...` per distinct id — there is no batch-files endpoint
+     anywhere in this app (Files module has none, and adding one is backend work out of this session's
+     scope). Because every social list is keyset-paginated with a bounded page size (except the
+     conversation list, hard-capped at 200), this reproduces exactly the same bounded per-page fetch
+     pattern `ThreadCard`/`CategoryIcon` already use for feeds — not a regression, just don't make it
+     worse by e.g. rendering an unbounded/unpaginated avatar-heavy list anywhere.
+   - Extend **`PUSH_COVERED_KEY_ROOTS`** in `frontend/src/lib/realtime/realtime-context.tsx` (~line 58)
+     with every new social query-key root (`friends`, `friendRequests`, `groups`, `groupMembers`,
+     `groupInvites`, `conversations`, `messages`, `notifications`) — otherwise reconnects won't resync
+     social data that changed while disconnected.
+
+5. **Visual/interaction target: follow `frontend/design-reference/Social.dc.html`, not the throwaway
+   mock page.** That reference file (CLAUDE.md-documented as the design source of truth, tokens already
+   in `src/styles/tokens/`) depicts a floating multi-chat-dock: a row of minimized "chat pills" (avatar +
+   name + unread badge) plus one or more simultaneously-open floating chat windows (header with
+   avatar+status dot+minimize/close, scrollable bubble history showing the author's avatar/name only on
+   an author change, a composer). The current mock's single embedded chat panel is a simplification of
+   this, not the target. Build toward the design-reference interaction model; keep the existing rail's
+   FRIENDS/REQUESTS/GROUPS/IGNORED tab structure since it matches both the reference and the current
+   preview.
+
+═══════════════════════════════════════════════════════════════════════════
+THE REAL API SURFACE (verified against shipped backend source, 2026-07-17)
+═══════════════════════════════════════════════════════════════════════════
+
+ALL 36 endpoints require authentication (`RequireAuthorization`) — there is no anonymous social surface,
+unlike Files' anonymous reads. Base path `/api/social`. Keyset cursors are the plain ULID string of the
+last row (simpler than Content's Base64Url cursor) — pass it back verbatim as `?cursor=`.
+
+Friends:
+  POST   /friends/requests               { addresseeId }               → send a request
+  POST   /friends/requests/{id}/accept                                 → accept
+  DELETE /friends/requests/{id}                                        → decline (addressee) or cancel (requester)
+  DELETE /friends/{userId}                                             → remove an accepted friend
+  GET    /friends?cursor=&limit=                                       → keyset FriendResponse[]
+  GET    /friends/requests                                             → { incoming: [...], outgoing: [...] }
+
+Blocks:
+  PUT    /blocks/{userId}                                              → block (idempotent)
+  DELETE /blocks/{userId}                                              → unblock
+  GET    /blocks                                                       → BlockedUserResponse[] (no cursor)
+
+Groups:
+  POST   /groups                          { name, description, visibility: "public"|"private" }
+  GET    /groups?filter=mine|public|all&cursor=&limit=                 → keyset GroupSummaryResponse[]
+  GET    /groups/{id}                                                  → GroupDetailResponse
+  PUT    /groups/{id}                     { name, description, visibility }
+  DELETE /groups/{id}                                                  → owner only
+  GET    /groups/{id}/members?cursor=&limit=                           → keyset GroupMemberResponse[]
+  DELETE /groups/{id}/members/{userId}                                 → kick (owner/admin only; NOT self-leave)
+  POST   /groups/{id}/join                                             → public groups only
+  POST   /groups/{id}/leave                                            → self-leave (owner gets 422 — must transfer/delete first)
+  PUT    /groups/{id}/members/{userId}/role   { role: "admin"|"member" }
+  PUT    /groups/{id}/owner               { userId }                  → transfer ownership (only way an owner can leave)
+  POST   /groups/{id}/invites             { userId }
+  GET    /invites                                                     → pending invites addressed to me (GroupInviteResponse[], no cursor)
+  POST   /invites/{id}/accept
+  DELETE /invites/{id}                                                 → decline (invitee) or cancel (inviter)
+
+Messaging:
+  POST   /conversations/direct            { userId }                  → get-or-create a DM; privacy/block gated
+  GET    /conversations?limit=                                        → ConversationResponse[] — NO CURSOR, hard-capped at 200,
+                                                                          unstable last-activity order (the one deliberate non-keyset list)
+  GET    /conversations/{id}/messages?cursor=&limit=                   → keyset MessageResponse[], newest-first
+  POST   /conversations/{id}/messages     { body }                    → send (max 4000 chars, markdown)
+  PUT    /messages/{id}                   { body }                    → edit (sender only)
+  DELETE /messages/{id}                                                → sender, or group owner/admin for group chats (tombstones to "[deleted]")
+  POST   /conversations/{id}/read                                     → stamp own last-read position (drives MY unread count only — never a receipt to the sender)
+
+Notifications:
+  GET    /notifications?cursor=&unreadOnly=&limit=                     → keyset NotificationResponse[]
+  POST   /notifications/read              { ids? }                    → absent ids = mark all read
+  GET    /notifications/unread-count                                  → { count: number } — closed kind set:
+                                                                          friend.request / friend.accepted / group.invite /
+                                                                          group.invite.accepted / group.kicked.
+                                                                          Message arrivals NEVER create a notification row —
+                                                                          the message/DM unread badge is a SEPARATE number,
+                                                                          see below.
+
+Privacy:
+  GET    /privacy                                                     → { friendRequests, messages, groupInvites, showOnlineStatus }
+  PUT    /privacy                         (same shape)                → audience values are EXACTLY "everyone" | "friends" | "no_one"
+
+Presence:
+  GET    /presence?userIds=id,id,...      (comma-separated, ≤100)     → [{ userId, status: "online"|"away"|"offline" }]
+  POST   /presence/heartbeat              (empty body, 204)           → call every ~30s while active; 2 missed beats ⇒ away/offline
+
+TOPNAV'S TWO EXISTING HARDCODED BADGES ("2" friends-icon, "3" messages-icon, ~lines 266-277) map to TWO
+DIFFERENT, INDEPENDENT DATA SOURCES — do not conflate them:
+  - Friends/bell badge  ← `GET /notifications/unread-count` (`count`)
+  - Messages badge      ← client-side sum of `unreadCount` across every row of `GET /conversations`
+
+Response DTO shapes (author matching TypeScript interfaces in `frontend/src/lib/api/types.ts`):
+  FriendResponse            { friendshipId, userId, username, friendsSinceUtc }
+  FriendRequestResponse     { friendshipId, requesterId, requesterUsername, addresseeId, addresseeUsername, sentOnUtc }
+  BlockedUserResponse       { userId, username, blockedOnUtc }
+  GroupSummaryResponse      { groupId, name, description, visibility, ownerId, ownerUsername, memberCount, isMember, createdOnUtc }
+  GroupDetailResponse       { ...GroupSummaryResponse fields, isAdmin }
+  GroupMemberResponse       { userId, username, joinedOnUtc, isOwner, isAdmin }
+  GroupInviteResponse       { inviteId, groupId, groupName, invitedUserId, invitedUserUsername, invitedBy, invitedByUsername, sentOnUtc }
+  ConversationResponse      { conversationId, type: "direct"|"group", displayName, otherUserId?, groupId?,
+                              lastMessageId?, lastMessagePreview?, lastMessageSenderId?, lastMessageOnUtc?,
+                              unreadCount, isMuted }
+  MessageResponse           { messageId, conversationId, senderId, senderUsername, body, sentOnUtc, editedOnUtc?, isDeleted }
+  NotificationResponse      { notificationId, kind, actorId?, actorUsername?, targetId?, isRead, createdOnUtc }
+  PresenceEntry             { userId, status }
+
+UI RULES THESE SHAPES IMPLY (don't skip these, they're real backend invariants, not styling choices):
+  - Group `visibility` affects DISCOVERY/JOIN ONLY — a private group's members/chat are exactly as
+    invisible to non-members as a public group's; don't gate the UI on visibility beyond the groups list
+    and the join button.
+  - The owner can never leave or be kicked (backend 422s it) — disable/hide "Leave" for the owner in
+    `GroupDetailResponse`/membership UI and offer "Transfer ownership" / "Delete group" instead.
+  - `isAdmin` on `GroupMemberResponse`/`GroupDetailResponse` already resolves owner-OR-promoted-admin —
+    use it directly for showing admin-only actions (kick, invite, set-role), don't re-derive it.
+  - Message edit/delete only reveal their controls for: your own messages (edit+delete), or (delete only)
+    if you're admin/owner of a GROUP conversation — never for someone else's DM.
+  - A deleted message's `body` already arrives as `"[deleted]"` from the backend (tombstone) — render it
+    styled/muted like a removed comment, don't hide the row.
+
+═══════════════════════════════════════════════════════════════════════════
+REALTIME WIRING (exact, verified against `Forum.Api/Realtime/RealtimeEventMap.cs` + `ChangeNotification.cs`)
+═══════════════════════════════════════════════════════════════════════════
+
+Envelope is UNCHANGED from what Content/Engagement already use — `{ type, entity, id, parentId?,
+categoryId? }`, camelCase, absent fields omitted (never present-but-null). Social events always have
+`categoryId: null`. New `RealtimeViewKind` values: `"group"`, `"conversation"` (in addition to the
+existing `"category"|"thread"|"user"`). New `ChangeNotification.entity` values, EXACTLY these six string
+literals (no "conversation" or "friend_request" entity exists — these are the only six):
+`"friendship"`, `"group"`, `"group_member"`, `"group_invite"`, `"message"`, `"notification"`.
+
+| Event(s)                                              | entity          | routes it reaches (what you must be subscribed to) |
+|--------------------------------------------------------|-----------------|------------------------------------------------------|
+| Friend request sent/accepted/declined, friend removed  | `friendship`    | `user:<requesterId>` + `user:<addresseeId>` — i.e. your OWN `user` view, already subscribed for the whole app |
+| Group renamed/updated, group deleted                   | `group`         | `group:<groupId>` — subscribe when viewing that group's page |
+| Member joined/left a group                             | `group_member`  | `group:<groupId>` |
+| Group invite sent/accepted/declined                    | `group_invite`  | `user:<inviteeId>` + `user:<inviterId>` — your own `user` view again, NOT the group view (an invitee isn't a member yet) |
+| Message sent/edited/deleted — DIRECT conversation      | `message`       | `conversation:<conversationId>` (open chat) + BOTH participants' `user` views (badge path, even when the chat isn't open) |
+| Message sent/edited/deleted — GROUP conversation       | `message`       | `conversation:<conversationId>` (== the group's id) + `group:<groupId>` — **no per-member fan-out**: a member not subscribed to either view will only see the new unread count on next open/resync, not live. This is a documented backend tradeoff, not a bug to route around. |
+| A durable notification was created (the bell)          | `notification`  | `user:<recipientId>` only |
+| Presence changes                                        | — NOT ON THE BUS AT ALL — | poll `GET /presence`, see above |
+| Group created                                            | — NOT WIRED — | the creator already has it from the POST response; nobody else can see an unlisted new group yet |
+
+`parentId` = the container: the conversation id for messages, the group id for group_invite/group_member
+events, absent for friendship/notification.
+
+Practical subscription rules:
+- Every authenticated user is already subscribed to their own `user:<selfId>` view somewhere in the app
+  shell (mirror however the existing bell/`user` subscription is wired today) — friendship, group_invite,
+  and notification events all arrive there for free once you extend `invalidation.ts`'s switch and
+  `PUSH_COVERED_KEY_ROOTS`. You do NOT need a new subscription for these three.
+  the two-participant DM badge case needs no extra subscription either, for the same reason.
+- Subscribe to `useRealtimeSubscription("group", groupId)` only while a group's detail/member page is open.
+- Subscribe to `useRealtimeSubscription("conversation", conversationId)` only while that chat
+  window/pill is open (mirrors the existing `useRealtimeSubscription("thread", threadId)` pattern in
+  `frontend/src/app/t/[id]/page.tsx`).
+- `frontend/src/lib/realtime/invalidation.ts` — add a `switch` case per new entity, invalidating the
+  right `queryKeys.*` root (mirror the existing `"reaction"` case's predicate-based shape for anything
+  keyed by more than one id, e.g. invalidate both `queryKeys.groupMembers(groupId)` AND
+  `queryKeys.notifications()` where relevant).
+- `frontend/src/lib/realtime/notification-href.ts` and `TopNav.tsx`'s `ActivityBell()` /
+  `LiveActivityPanel.tsx` rendering both need new cases for the six entities above, or they'll render as
+  generic unclickable/unlabeled rows in the live-activity log (they still APPEAR there automatically —
+  only the icon/label/link needs new branches).
+
+═══════════════════════════════════════════════════════════════════════════
+FILES / MINIO INTEGRATION (exact — the target-type name changed from the original brief)
+═══════════════════════════════════════════════════════════════════════════
+
+`FileTargetType` in `frontend/src/lib/api/types.ts` currently has `"dm"` in its union — **this is now
+WRONG and must be corrected to `"message"`** (the backend repurposed/renamed the never-used `Dm` stub to
+`Message` — no live `"dm"` rows ever existed, so this is a clean rename, not a migration). Also add
+`"group_icon"` to the union. Both are now REAL and working (the backend closed the 422 stub AND the
+anonymous-read gap): message images are gated to conversation participants on read (an outsider gets 403,
+not just a broken image), group icons are anonymous-readable exactly like avatars/category icons (no
+gate). Reuse the existing upload pipeline (`frontend/src/lib/upload/upload.ts`, `use-upload-manager.ts`,
+`frontend/src/lib/api/files.ts`, `MarkdownEditor`'s `onUploadImage` prop) unchanged — just point it at
+`"message"` for the chat composer and build the `GroupIcon` component (structural copy of
+`CategoryIcon.tsx`) pointed at `"group_icon"` for group avatars, with the same replace-on-reupload
+semantics group owners/admins already get for category icons.
+
+═══════════════════════════════════════════════════════════════════════════
 WHAT TO BUILD
+═══════════════════════════════════════════════════════════════════════════
 
-- Replace the mock `/social` page's data layer entirely: real fetches/mutations for friend list +
-  requests (send/accept/decline/remove), group list + detail (create/invite/join/leave/member list with
-  role), a real group-chat and DM composer/history view (reuse `MarkdownEditor` + the render side of the
-  existing `image:`/`@video()` media convention — `frontend/src/lib/markdown/media-convention.ts` — for
-  message bodies), real presence dots (online/away/offline) driven by the new realtime entity, and a real
-  notification list/unread-count wired to the two `TopNav` badges.
-- A privacy-settings section/page for the new preference toggles the backend session ships (who can
-  friend-request/DM/invite-to-group me, show-online-status).
-- Group icon upload reusing the existing presigned-upload attach flow (same shape as avatar/category
-  icon replace-semantics elsewhere in the app).
-- Keep the existing tab/rail/chat-panel visual language from the mock (it's reasonable CSS) but strip
-  every local-state stub in favor of the real API/realtime wiring above.
+- New `frontend/src/components/social/` component set (see architecture section above) + a `use-social.ts`
+  hooks module + `socialApi` fetch module (mirror `engagement.ts`) + `queryKeys` additions, all typed
+  against the exact DTOs above.
+- Replace the mock `/social` page's data layer entirely, restructured toward the design-reference's
+  floating multi-chat-dock model: friend list + requests (send/accept/decline/remove) with real presence
+  dots, group discovery/detail/members/roles/invites, a real DM+group chat (floating pills + windows per
+  the design reference), a privacy-settings section, and a real notification list wired to
+  `unread-count`.
+- `usePresenceHeartbeat()` hook (visibility-aware ~30s interval) mounted once near the app root (e.g.
+  alongside where realtime connection lifecycle already lives) — not per-page.
+- Group icon upload/display via the new `GroupIcon` component.
 
 TESTING (required)
 
-- Vitest unit tests mirroring the existing precedents (`feed-merge`, `socket-manager`,
-  `invalidation-mapping` test files) for any new client-side logic you introduce — e.g. conversation-list
-  sort/merge, notification dedup, presence-status derivation from heartbeat timestamps.
+- Vitest unit tests mirroring existing precedents (`feed-merge`, `socket-manager`,
+  `invalidation-mapping` test files) for new client logic: conversation-list sort/merge (remember it's
+  the one no-cursor, cap-200 list), notification/unread-count aggregation, presence-status derivation,
+  the two independent TopNav badge sources.
 - Manually exercise the golden path in a real browser against the live backend before calling this done
-  (per this repo's CLAUDE.md rule: UI changes must be verified by actually using the feature, not just
-  type-checked) — friend request → accept → DM round trip with a live WS push visible in another
-  session/tab, group create → invite → join → group message live-pushed to all members, presence
-  indicator flips on connect/disconnect.
+  (per CLAUDE.md's rule: UI changes are verified by actually using the feature) — friend request → accept
+  → DM round trip with a live WS push visible in a second browser session, group create → invite → join →
+  group message live-pushed to members with the group view open, presence heartbeat flips
+  online→away→offline realistically, owner-cannot-leave is enforced in the UI (not just the API).
 
 DOCUMENTATION (required)
 
-- Update `frontend/README.md` — remove the "Social UI-only mock" gap note, add any new gaps you find
-  (e.g. anything the backend session left as a TODO that blocks a nice-to-have UI affordance).
+- Update `frontend/README.md` — remove the "Social UI-only mock" gap note, add any new gaps found.
 
 Do NOT create git commits or pushes — stage changes only; commits/pushes are the human's job, always.
 ```

@@ -57,5 +57,51 @@ export function applyNotificationInvalidation(
       });
       break;
     }
+
+    // --- Social (categoryId is always null here; parentId = the container) ------
+
+    case "friendship": {
+      // created = new request, updated = accepted, deleted = declined/cancelled/removed
+      // — every transition can move a row between the requests split and the friends list.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.friendRequests });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.friends });
+      break;
+    }
+    case "group": {
+      // id = the group; ["groups"] prefixes the lists AND every detail entry.
+      void queryClient.invalidateQueries({ queryKey: ["groups"] });
+      break;
+    }
+    case "group_member": {
+      // id = the member's USER id; parentId = the group. Member counts live on the
+      // group summaries, so refresh those too.
+      if (notification.parentId) {
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.groupMembers(notification.parentId),
+        });
+      }
+      void queryClient.invalidateQueries({ queryKey: ["groups"] });
+      break;
+    }
+    case "group_invite": {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groupInvites });
+      break;
+    }
+    case "message": {
+      // parentId = the conversation. The list's previews/unread counts change with
+      // every send/edit/delete, whether or not that chat is open here.
+      if (notification.parentId) {
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.messages(notification.parentId),
+        });
+      }
+      void queryClient.invalidateQueries({ queryKey: queryKeys.conversations });
+      break;
+    }
+    case "notification": {
+      // ["notifications"] prefixes both the lists and the unread-count entry.
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      break;
+    }
   }
 }

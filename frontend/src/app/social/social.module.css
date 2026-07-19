@@ -1,36 +1,33 @@
-.previewBanner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid var(--color-warning);
-  padding: 12px 16px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.previewLink {
-  font-weight: 600;
-}
+/* Social page: rail + detail column. Row/card/chat styling lives with the components
+   (components/social/rows.module.css, chat.module.css); this file only lays out the page. */
 
 .grid {
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
   gap: 24px;
   align-items: start;
-  max-width: 1000px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
-.rail,
-.chat {
+.rail {
   background: var(--color-neutral-900);
   border: 1px solid var(--color-border-subtle);
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-lg);
   animation: rail-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes rail-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .railHeader {
@@ -98,11 +95,25 @@
   animation: unread-pulse 2s ease-out infinite;
 }
 
+@keyframes unread-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 5px rgba(255, 107, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+  }
+}
+
 .railBody {
   flex: 1;
   overflow-y: auto;
   padding: 8px;
-  max-height: 480px;
+  max-height: 560px;
+  display: flex;
+  flex-direction: column;
 }
 
 .groupLabel {
@@ -113,108 +124,6 @@
   padding: 10px 8px 6px;
 }
 
-.friendRow {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 8px;
-  border: 1px solid transparent;
-  border-radius: 2px;
-}
-
-.friendRow:hover {
-  background: var(--color-neutral-800);
-  border-color: var(--color-border-default);
-}
-
-.friendOffline {
-  opacity: 0.7;
-}
-
-.friendAvatar,
-.requestAvatar {
-  position: relative;
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  background: var(--color-neutral-800);
-  border: 1px solid var(--color-border-default);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-cyan-base);
-  flex-shrink: 0;
-}
-
-.requestAvatar {
-  background: var(--color-accent-subtle);
-  border-color: var(--color-accent-dark);
-  color: var(--color-accent-base);
-}
-
-.statusDot {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  border: 2px solid var(--color-neutral-900);
-}
-
-.green {
-  background: var(--color-success);
-}
-
-.amber {
-  background: var(--color-warning);
-}
-
-.red {
-  background: var(--color-neutral-500);
-}
-
-.friendText {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.friendName {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.friendStatus {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--color-text-tertiary);
-}
-
-.messageIcon {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  background: transparent;
-  border: 1px solid var(--color-border-default);
-  color: var(--color-text-secondary);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.messageIcon:hover {
-  color: var(--color-accent-base);
-  border-color: var(--color-accent-base);
-}
-
 .railEmpty {
   padding: 24px 12px;
   text-align: center;
@@ -222,173 +131,150 @@
   color: var(--color-text-tertiary);
 }
 
-.requestCard {
-  background: var(--color-neutral-950);
-  border: 1px solid var(--color-border-default);
-  padding: 10px 11px;
-  margin: 0 4px 8px;
-}
-
-.requestHead {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.requestActions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.accept {
-  flex: 1;
+.filterInput {
+  margin: 6px 4px 2px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--color-text-inverse);
-  background: var(--color-accent-base);
-  border: none;
-  padding: 7px;
-  border-radius: 2px;
-}
-
-.accept:hover {
-  background: var(--color-accent-dark);
-}
-
-.decline {
-  flex: 1;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--color-text-secondary);
-  background: transparent;
-  border: 1px solid var(--color-border-default);
-  padding: 7px;
-  border-radius: 2px;
-}
-
-.decline:hover {
-  color: var(--color-error-light);
-  border-color: var(--color-error);
-}
-
-.chat {
-  min-height: 480px;
-  animation: chat-pop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.chatHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 12px;
-  border-bottom: 1px solid var(--color-border-default);
-}
-
-.chatBody {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  background: var(--color-neutral-950);
-}
-
-.chatNote {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: var(--color-neutral-600);
-  text-align: center;
-  padding: 2px 0 4px;
-}
-
-.bubbleRow,
-.bubbleRowMe {
-  display: flex;
-}
-
-.bubbleRowMe {
-  justify-content: flex-end;
-}
-
-.bubbleCol {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-width: 84%;
-}
-
-.bubble,
-.bubbleMe {
-  padding: 8px 11px;
-  font-size: 13px;
-  line-height: 1.45;
-  border-radius: 3px;
-  text-wrap: pretty;
-}
-
-.bubble {
-  background: var(--color-neutral-800);
-  color: var(--color-neutral-100);
-  border: 1px solid var(--color-border-default);
-}
-
-.bubbleMe {
-  background: var(--color-accent-base);
-  color: var(--color-text-inverse);
-  align-self: flex-end;
-}
-
-.bubbleTime {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--color-text-tertiary);
-}
-
-.bubbleRowMe .bubbleTime {
-  align-self: flex-end;
-}
-
-.chatComposer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 10px;
-  border-top: 1px solid var(--color-border-default);
-}
-
-.chatInput {
-  flex: 1;
-  min-width: 0;
-  font-size: 13px;
+  font-size: 12px;
   padding: 8px 10px;
   background: var(--color-neutral-950);
   border: 1px solid var(--color-border-default);
   border-radius: 2px;
+  color: var(--color-text-primary);
 }
 
-.chatInput:focus {
+.filterInput:focus {
+  border-color: var(--color-accent-base);
+  outline: none;
+}
+
+.cardSlot {
+  margin: 0 4px 8px;
+}
+
+.newGroupButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 4px 2px;
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.newGroupButton:hover {
+  border-color: var(--color-accent-base);
+  color: var(--color-accent-base);
+}
+
+.segmented {
+  display: flex;
+  gap: 4px;
+  margin: 8px 4px 4px;
+}
+
+.segment,
+.segmentActive {
+  flex: 1;
+  padding: 6px 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  border-radius: 2px;
+}
+
+.segmentActive {
+  color: var(--color-accent-base);
+  border-color: var(--color-accent-base);
+  font-weight: 700;
+}
+
+.ignoredNote {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+  margin: 8px 4px 12px;
+  text-wrap: pretty;
+}
+
+/* --- detail column ----------------------------------------------------------- */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.panelHeaderExtra {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.markAllRead {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+
+.markAllRead:hover {
+  color: var(--color-accent-base);
   border-color: var(--color-accent-base);
 }
 
-.sendButton {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  background: var(--color-accent-base);
-  color: var(--color-text-inverse);
-  border: none;
-  border-radius: 2px;
-  flex-shrink: 0;
+/* --- privacy form ------------------------------------------------------------ */
+
+.privacyRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
 }
 
-.sendButton:hover {
-  background: var(--color-accent-dark);
+.privacyLabel {
+  flex: 1;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.privacySelect {
+  width: 160px;
+  font-size: 13px;
+  border-radius: 2px;
+}
+
+.privacyCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.privacyActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
 }
 
 @media (max-width: 860px) {

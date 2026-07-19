@@ -11,6 +11,8 @@ import { useState, type ReactNode } from "react";
 
 import { CategoryModalProvider } from "@/components/category/category-context";
 import { ComposeProvider } from "@/components/compose/compose-context";
+import { PresenceHeartbeat } from "@/components/social/PresenceHeartbeat";
+import { ChatDockProvider } from "@/components/social/chat-dock-context";
 import { ToastProvider } from "@/components/ui/toast";
 import { ApiError } from "@/lib/api/problem";
 import { AuthProvider } from "@/lib/auth/auth-context";
@@ -41,9 +43,12 @@ export function Providers({ children }: { children: ReactNode }) {
       <ToastProvider>
         <AuthProvider>
           <RealtimeProvider>
-            <ComposeProvider>
-              <CategoryModalProvider>{children}</CategoryModalProvider>
-            </ComposeProvider>
+            <ChatDockProvider>
+              <PresenceHeartbeat />
+              <ComposeProvider>
+                <CategoryModalProvider>{children}</CategoryModalProvider>
+              </ComposeProvider>
+            </ChatDockProvider>
           </RealtimeProvider>
         </AuthProvider>
       </ToastProvider>

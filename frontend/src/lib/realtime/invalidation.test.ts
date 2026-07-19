@@ -85,4 +85,90 @@ describe("notification → cache invalidation mapping (fetch-then-patch)", () =>
     expect(isInvalidated(queryKeys.reactions("comment", "01C"))).toBe(true);
     expect(isInvalidated(queryKeys.reactions("thread", "01C"))).toBe(false);
   });
+
+  // --- Social (categoryId always null; parentId = the container) --------------
+
+  it("friendship events → refresh both the requests split and the friends list", () => {
+    seed(queryKeys.friendRequests);
+    seed(queryKeys.friends);
+    applyNotificationInvalidation(queryClient, {
+      type: "updated",
+      entity: "friendship",
+      id: "01F",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.friendRequests)).toBe(true);
+    expect(isInvalidated(queryKeys.friends)).toBe(true);
+  });
+
+  it("group events → invalidate the lists AND the detail under the shared root", () => {
+    seed(queryKeys.groups("mine"));
+    seed(queryKeys.group("01G"));
+    applyNotificationInvalidation(queryClient, {
+      type: "updated",
+      entity: "group",
+      id: "01G",
+      parentId: "01G",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.groups("mine"))).toBe(true);
+    expect(isInvalidated(queryKeys.group("01G"))).toBe(true);
+  });
+
+  it("group_member events → target the group's member list plus the groups root (counts)", () => {
+    seed(queryKeys.groupMembers("01G"));
+    seed(queryKeys.groupMembers("01H"));
+    seed(queryKeys.groups("mine"));
+    applyNotificationInvalidation(queryClient, {
+      type: "created",
+      entity: "group_member",
+      id: "01U",
+      parentId: "01G",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.groupMembers("01G"))).toBe(true);
+    expect(isInvalidated(queryKeys.groupMembers("01H"))).toBe(false);
+    expect(isInvalidated(queryKeys.groups("mine"))).toBe(true);
+  });
+
+  it("group_invite events → refresh my pending invites", () => {
+    seed(queryKeys.groupInvites);
+    applyNotificationInvalidation(queryClient, {
+      type: "created",
+      entity: "group_invite",
+      id: "01I",
+      parentId: "01G",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.groupInvites)).toBe(true);
+  });
+
+  it("message events → the conversation's history AND the list (previews, unread badges)", () => {
+    seed(queryKeys.messages("01C"));
+    seed(queryKeys.messages("01D"));
+    seed(queryKeys.conversations);
+    applyNotificationInvalidation(queryClient, {
+      type: "created",
+      entity: "message",
+      id: "01M",
+      parentId: "01C",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.messages("01C"))).toBe(true);
+    expect(isInvalidated(queryKeys.messages("01D"))).toBe(false);
+    expect(isInvalidated(queryKeys.conversations)).toBe(true);
+  });
+
+  it("notification events → both the bell list and the unread count under one root", () => {
+    seed(queryKeys.notifications(false));
+    seed(queryKeys.notificationUnreadCount);
+    applyNotificationInvalidation(queryClient, {
+      type: "created",
+      entity: "notification",
+      id: "01N",
+      categoryId: null,
+    });
+    expect(isInvalidated(queryKeys.notifications(false))).toBe(true);
+    expect(isInvalidated(queryKeys.notificationUnreadCount)).toBe(true);
+  });
 });

@@ -1,0 +1,421 @@
+/* Floating chat dock (design: Social.dc.html): pill row + open windows, bottom-right. */
+
+.dock {
+  position: fixed;
+  right: 16px;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 46;
+}
+
+/* --- minimized pill ---------------------------------------------------------- */
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 210px;
+  padding: 10px 12px;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-subtle);
+  border-bottom: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.pill:hover {
+  background: var(--color-neutral-800);
+}
+
+.pillName {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text-primary);
+}
+
+.pillBadge {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--color-accent-base);
+  color: var(--color-neutral-950);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+  animation: unread-pulse 2s ease-out infinite;
+}
+
+@keyframes unread-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 5px rgba(255, 107, 53, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+  }
+}
+
+/* --- window ------------------------------------------------------------------ */
+
+.window {
+  width: 328px;
+  height: 436px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-border-subtle);
+  border-bottom: none;
+  box-shadow: var(--shadow-2xl);
+  animation: chat-pop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes chat-pop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.headerName {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerName:hover {
+  color: var(--color-accent-base);
+}
+
+.headerSub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerSubOnline {
+  color: var(--color-success);
+}
+
+.headerSubAway {
+  color: var(--color-warning);
+}
+
+.headerButton {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.headerButton:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-subtle);
+}
+
+.headerButtonDanger:hover {
+  color: var(--color-error-light);
+  border-color: var(--color-error);
+}
+
+/* --- history ----------------------------------------------------------------- */
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background: var(--color-neutral-950);
+}
+
+.bodyNote {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-neutral-600);
+  text-align: center;
+  padding: 2px 0 4px;
+}
+
+.loadOlder {
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+
+.loadOlder:hover {
+  color: var(--color-accent-base);
+  border-color: var(--color-accent-base);
+}
+
+.emptyNote {
+  padding: 20px 8px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--color-text-tertiary);
+}
+
+/* --- bubbles ----------------------------------------------------------------- */
+
+.bubbleRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.bubbleRowMe {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bubbleCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 84%;
+  min-width: 0;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.authorName {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.bubble {
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-100);
+  border: 1px solid var(--color-border-default);
+  padding: 8px 11px;
+  font-size: 13px;
+  line-height: 1.45;
+  border-radius: 3px;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.bubbleMe {
+  background: var(--color-accent-subtle);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-accent-dark);
+  padding: 8px 11px;
+  font-size: 13px;
+  line-height: 1.45;
+  border-radius: 3px;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.bubbleDeleted {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+/* Keep rendered markdown compact inside a bubble. */
+.bubble :global(p),
+.bubbleMe :global(p) {
+  margin: 0 0 6px;
+}
+
+.bubble :global(p:last-child),
+.bubbleMe :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.bubble :global(img),
+.bubbleMe :global(img) {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 4px 0;
+}
+
+.bubbleFooter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bubbleRowMe .bubbleFooter {
+  justify-content: flex-end;
+}
+
+.bubbleTime {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+}
+
+.bubbleAction {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.bubbleAction:hover {
+  color: var(--color-accent-base);
+}
+
+.bubbleActionDanger:hover {
+  color: var(--color-error-light);
+}
+
+.editArea {
+  width: 100%;
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.45;
+  padding: 8px 11px;
+  background: var(--color-neutral-950);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-accent-base);
+  border-radius: 3px;
+  resize: vertical;
+}
+
+/* --- composer ---------------------------------------------------------------- */
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 9px 10px;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.composerInput {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.4;
+  padding: 8px 10px;
+  background: var(--color-neutral-950);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: 2px;
+  resize: none;
+  max-height: 96px;
+}
+
+.composerInput:focus {
+  border-color: var(--color-accent-base);
+  outline: none;
+}
+
+.composerButton {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  color: var(--color-text-secondary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.composerButton:hover {
+  color: var(--color-accent-base);
+  border-color: var(--color-accent-base);
+}
+
+.composerButton:disabled {
+  opacity: 0.5;
+}
+
+.sendButton {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  background: var(--color-accent-base);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.sendButton:hover {
+  background: var(--color-accent-dark);
+}
+
+.sendButton:disabled {
+  opacity: 0.5;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .dock {
+    right: 8px;
+  }
+
+  .window {
+    width: min(328px, calc(100vw - 16px));
+  }
+}
