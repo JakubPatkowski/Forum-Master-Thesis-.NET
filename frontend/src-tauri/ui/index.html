@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Server Settings</title>
+    <link rel="stylesheet" href="settings.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Server</h1>
+      <p class="hint">
+        The forum this app connects to. Origin only — <code>scheme://host[:port]</code>, no
+        path.
+      </p>
+      <form id="settings-form">
+        <label for="server-url">Server URL</label>
+        <input id="server-url" name="server-url" type="text" autocomplete="off" spellcheck="false" />
+        <p id="feedback" class="feedback" role="status"></p>
+        <div class="actions">
+          <button type="submit" id="save">Save &amp; reload</button>
+          <button type="button" id="reset" class="secondary">Reset to default</button>
+        </div>
+      </form>
+      <p class="default-hint">Built-in default: <code id="default-url"></code></p>
+    </main>
+    <script src="settings.js"></script>
+  </body>
+</html>
