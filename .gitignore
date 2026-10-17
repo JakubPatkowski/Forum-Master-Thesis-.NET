@@ -36,5 +36,19 @@ Thumbs.db
 ## Load test output
 load/results/
 
+## Local benchmark output (dev-loop-bench.sh, lighthouse.sh — same convention as gomx)
+.bench/
+.lighthouseci/
+
+## Security scan artifacts (security-scan.sh)
+trivy-report*.json
+
+## SonarQube scanner working dirs (sonar-scan.sh)
+.sonarqube/
+.scannerwork/
+
 ## Graphify
 graphify-out/
+
+# A/B benchmark: gomx base rendered by scripts/gomx-bench-deploy.sh (regenerated every deploy)
+k8s/gomx-bench/gomx-base.rendered.yaml

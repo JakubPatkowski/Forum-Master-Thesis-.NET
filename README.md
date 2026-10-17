@@ -4,7 +4,7 @@
 
 **A deliberately over-engineered, production-grade forum built as a module-first .NET 10 modular monolith with a decoupled React SPA — deployed on hardened Kubernetes with a full CNCF observability stack and a reproducible benchmark harness.**
 
-.NET 10 · ASP.NET Core Minimal APIs · PostgreSQL 17 · RabbitMQ 4 · MinIO · Next.js 15 / React 19 · Kubernetes (minikube + Calico) · Prometheus / Grafana / Loki / Tempo · k6
+.NET 10 · ASP.NET Core Minimal APIs · PostgreSQL 18 · RabbitMQ 4 · MinIO · Next.js 15 / React 19 · Kubernetes (minikube + Calico) · Prometheus / Grafana / Loki / Tempo · k6
 
 <br/>
 
@@ -140,7 +140,7 @@
 | **Backend** | .NET 10 modular monolith (module-first, CQRS, outbox) | Go + Templ server-side rendering |
 | **Frontend** | React 19 / Next.js 15, pure CSR, TanStack Query | HTMX + Alpine.js over SSR HTML |
 | **Real-time** | WebSocket change-notifications, fetch-then-patch | SSE / HTMX partial swaps |
-| **Data** | PostgreSQL 17 + RabbitMQ + MinIO | PostgreSQL + Redis + MinIO |
+| **Data** | PostgreSQL 18 + RabbitMQ + MinIO | PostgreSQL + Redis + MinIO |
 | **Benchmark role** | The "enterprise-decomposed" contender | The "radically-simple" contender |
 
 The goal of *this* codebase goes beyond "a working forum" — it is **deliberately, professionally over-engineered** to showcase how a serious production system is built end to end:
@@ -303,7 +303,7 @@ flowchart LR
     subgraph K8s["☸️ Kubernetes — namespace forum-dotnet (PSS restricted)"]
         API["Forum.Api<br/>.NET 10 modular monolith<br/>(HPA 1→3 replicas)"]
         FE["Frontend<br/>(Next.js static shell)"]
-        PG[("PostgreSQL 17<br/>6 schemas, 1 per module")]
+        PG[("PostgreSQL 18<br/>6 schemas, 1 per module")]
         RMQ[["RabbitMQ 4<br/>5 topic exchanges<br/>outbox → relay → consumers"]]
         S3[("MinIO<br/>presigned PUT/GET")]
     end
@@ -511,7 +511,7 @@ Every consequential decision is a numbered, immutable record in [`docs/architect
 
 | Concern | Technology | Notes |
 |---|---|---|
-| Local dev infra | Docker Compose | Postgres 17 + RabbitMQ 4 (management) + MinIO |
+| Local dev infra | Docker Compose | Postgres 18 + RabbitMQ 4 (management) + MinIO |
 | Container images | Multi-stage Dockerfiles | Backend on a **chiseled** (shell-less) runtime base, numeric UIDs |
 | Orchestration | Kubernetes via minikube, **Calico CNI** | Calico is required — the default CNI silently ignores NetworkPolicies |
 | Pod security | PSS **`restricted`** (enforce+warn+audit) | Zero warnings on deploy |
@@ -1529,7 +1529,7 @@ First archived official run (3 repeats, clean baseline):
 
 ## 🧪 Testing & Quality Gates
 
-**278 automated tests** across 10 projects — and the integration tier is the real thing: full REST→outbox→broker→consumer→WebSocket pipelines against **real Postgres 17 + RabbitMQ 4 + MinIO containers** (Testcontainers), not mocks.
+**278 automated tests** across 10 projects — and the integration tier is the real thing: full REST→outbox→broker→consumer→WebSocket pipelines against **real Postgres 18 + RabbitMQ 4 + MinIO containers** (Testcontainers), not mocks.
 
 | Suite | Tests | What it proves |
 |---|---:|---|
@@ -1592,7 +1592,7 @@ Planned pipeline growth (post-defense): coverage collection (coverlet → Codeco
 
 ```bash
 cp .env.example .env
-make infra-up          # Postgres 17 + RabbitMQ 4 + MinIO via docker compose
+make infra-up          # Postgres 18 + RabbitMQ 4 + MinIO via docker compose
 make api ARGS=--migrate  # migrate + run Forum.Api on :5099
 make web               # Next.js dev server on :3000
 ```

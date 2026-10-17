@@ -67,6 +67,8 @@ Domain Meter `Forum` (`Forum.Common.Telemetry.ForumMetrics`), plan names plus th
 | **`forum_api_rejections_total`** (new) | `status`, `errorType` = `NotFound`\|`Forbidden`\|`Unauthorized`\|`Conflict`\|`Validation`\|`Failure`\|`BadRequest` | expected Result-pattern rejections; a 401/403 spike is a security signal, a 422 spike a frontend bug |
 | **`forum_errors_unhandled_total`** (new) | `category` = `database` \| `timeout` \| `other` (closed set) | unhandled exceptions; client disconnects (OperationCanceledException + aborted request) are **excluded** |
 | **`forum_hosted_service_tick_age_seconds`** (new) | `service` = `outbox-relay-<module>` \| `consumer-<module>` \| `orphan-sweep` \| `realtime-feed` | seconds since each background loop last reported alive (series exists from boot — each loop ticks once on start) |
+| **`forum_web_vitals_duration_seconds_bucket/_sum/_count`** (A-3) | `metric` = `LCP` \| `FCP` \| `INP` \| `TTFB` (allow-listed at the endpoint), `rating` = `good` \| `needs-improvement` \| `poor` \| `unknown` | real-user timing Core Web Vitals beaconed by the SPA to `POST /api/telemetry/vitals` (anonymous, permissive 204); buckets are B's `web_vitals_duration_seconds` values verbatim, so the A/B RUM histograms compare 1:1 |
+| **`forum_web_vitals_cls_bucket/_sum/_count`** (A-3) | `rating` (same closed set) | real-user Cumulative Layout Shift (unitless), separate histogram like B's `web_vitals_cls` |
 
 ### "Recent errors" rate panel / alert (Prometheus)
 

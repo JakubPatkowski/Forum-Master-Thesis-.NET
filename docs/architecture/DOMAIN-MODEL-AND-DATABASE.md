@@ -12,7 +12,7 @@
 
 ## 1. Conventions (apply to every table)
 
-- **Database:** PostgreSQL 17, single database `forum_net`, **one schema per module**
+- **Database:** PostgreSQL 18, single database `forum_net`, **one schema per module**
   (`forum_identity`, `forum_authz`, `forum_content`, `forum_files`, `forum_engagement`, `forum_social`,
   `forum_audit`). No FK crosses a schema boundary (modular-monolith rule — cross-module links are logical
   ULIDs kept consistent by integration events).

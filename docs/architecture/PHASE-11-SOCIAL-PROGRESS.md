@@ -215,13 +215,15 @@ presence (A-only, NOT in B-parity seed/k6 numbers).
 - [x] 16. Tests: Forum.Modules.Social.Tests (25 green) + Api.Tests rewritten for routes/visibility (51 green) + Files.Tests updated (42 green) + ArchitectureTests Social rules (2 green)
 - [x] 18. `dotnet format --verify-no-changes` clean + ALL suites green = **238 total** (incl. 38 integration: new migrations+views applied on live Postgres, SeedFlowTests ran SocialSeeder with the real ACL grant, realtime suite passed on the refactored hub)
 - [x] 19. Docs: CLAUDE.md Phase 11 entry + Next, DOMAIN-MODEL §6 replaced, permissions-acl group-scope section, REQUIREMENTS Social/A-only/OUT rewrite, ADR 0011 written
-- [ ] 17. **THE ONE REMAINING ITEM — `SocialFlowTests` E2E in Forum.IntegrationTests** (ForumApiFactory + TestWait.UntilAsync pattern; InternalsVisibleTo already granted). Scenarios per the brief: friend request → accept → first DM creates conversation → real WS push (subscribe `user`/`conversation` views); group create → invite → accept → group message → push to members via `group` view; block prevents request+DM (same generic 403); privacy NoOne/Friends 403s; group-icon attach replace + message-image attach (additive) + read-gate 403 for non-participant + detach on message delete via relay; presence heartbeat online→offline over threshold. Also verify OpenAPI lists the 26 endpoints (live-host check).
+- [x] 17. **DONE 2026-07-19 — `SocialFlowTests` E2E in Forum.IntegrationTests** (6 tests green; OpenAPI check counts the REAL surface: 30 paths / 38 operations — the "26 endpoints" below was a stale tally) (ForumApiFactory + TestWait.UntilAsync pattern; InternalsVisibleTo already granted). Scenarios per the brief: friend request → accept → first DM creates conversation → real WS push (subscribe `user`/`conversation` views); group create → invite → accept → group message → push to members via `group` view; block prevents request+DM (same generic 403); privacy NoOne/Friends 403s; group-icon attach replace + message-image attach (additive) + read-gate 403 for non-participant + detach on message delete via relay; presence heartbeat online→offline over threshold. Also verify OpenAPI lists the 26 endpoints (live-host check).
 
 ## Session log
 
 - 2026-07-16 (session 1): recon complete; this design locked; starting scaffold.
 - 2026-07-17 (session 1 cont.): EVERYTHING built and green except item 17 (SocialFlowTests E2E). 238 tests pass,
   format clean, docs done (CLAUDE.md entry, DOMAIN-MODEL §6, permissions-acl, REQUIREMENTS, ADR 0011).
+- 2026-07-19 (A/B unification session): item 17 landed — SocialFlowTests (6 E2E) green on PG 18. Every checklist
+  box is ticked; this file can be deleted once CLAUDE.md's pointers to it are updated.
   Implementation notes: (a) IIntegrationEventHandler's method is HandleAsync; (b) regenerate migrations with
   `dotnet ef migrations add X -p src/Modules/Social/Forum.Modules.Social -s src/Bootstrap/Forum.Api -c
   SocialDbContext -o Infrastructure/Persistence/Migrations` (stray root `Migrations/` folder = forgotten -o);
