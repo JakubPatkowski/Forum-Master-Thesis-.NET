@@ -18,8 +18,10 @@ export const PNG_1X1 = new Uint8Array([
 export const PNG_1X1_BYTES = 68;
 
 /**
- * Search corpus = the seeder's exact word bank (SeedText.cs) — every seeded thread body draws from
- * these words, so websearch_to_tsquery gets real FTS hits instead of benchmarking the empty-result path.
+ * Search corpus = the word bank BOTH seeders draw from (A: SeedText.cs; B: seedbench.go benchWordBank, ported
+ * verbatim in B-09) plus the `seeded` token every body starts with — so J6 gets real hits on both sides instead
+ * of benchmarking an empty-result path. Known limitation (decision D4 / OD-6): with a 31-word bank and 120–320-word
+ * bodies every word matches almost every thread, so J6 measures "match all, rank/sort, return 20" on both sides.
  */
 export const SEARCH_WORDS = [
   'forum', 'thread', 'comment', 'keyset', 'pagination', 'benchmark', 'architecture', 'module',

@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gomx
+  namespace: gomx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts: [gomx.local]
+      secretName: gomx-tls   # created by scripts/mkcert-tls.sh (gomx.local SAN) — not in git

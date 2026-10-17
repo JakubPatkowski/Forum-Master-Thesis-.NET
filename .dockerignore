@@ -11,6 +11,12 @@ frontend/dist
 frontend/.next
 frontend/design-reference
 frontend/coverage
+# Phase 12 desktop shell: Rust sources + a multi-GB cargo target/ dir (was 5 GB of build context per image build).
+frontend/src-tauri
+# Local tooling output (headless Chrome, Lighthouse, trivy/Sonar caches) and the result archive — never inputs.
+.bench
+**/.sonarqube
+thesis
 load/results
 docs
 **/*.md
