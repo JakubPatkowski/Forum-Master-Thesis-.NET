@@ -147,6 +147,55 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
     }
 
     [SkippableFact]
+    public async Task Private_category_content_is_readable_only_by_its_owner_and_moderators()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var owner = await RegisterAndLogin(client, "priv-owner");
+        var outsider = await RegisterAndLogin(client, "priv-outsider");
+        var moderator = await RegisterAndLogin(client, "priv-moderator");
+        await GrantRole(moderator.UserId, ModeratorRoleId);
+
+        var created = await Send(client, owner, HttpMethod.Post, "/api/content/categories",
+            new { slug = "priv-cat", name = "Private club", description = "test", visibility = "private" });
+        created.StatusCode.ShouldBe(HttpStatusCode.Created);
+        var categoryId = (await created.Content.ReadFromJsonAsync<CategoryCreated>())!.CategoryId;
+        var threadId = await CreateThread(client, owner, categoryId, "Secret sturgeon spot");
+        await CreateComment(client, owner, threadId, parentId: null, body: "Bring a sturgeon net.");
+
+        var feedUrl = $"/api/content/threads?categoryId={categoryId}&limit=10";
+        var detailUrl = $"/api/content/threads/{threadId}";
+        var treeUrl = $"/api/content/threads/{threadId}/comments";
+        var userThreadsUrl = $"/api/content/users/{owner.UserId}/threads";
+        var userCommentsUrl = $"/api/content/users/{owner.UserId}/comments";
+
+        // Anonymous and authenticated outsiders: the private category is indistinguishable from a missing one —
+        // item reads 404, list reads silently omit its rows (A-12).
+        foreach (var reader in new Session?[] { null, outsider })
+        {
+            (await Get(client, reader, feedUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await ReadPage(client, reader, "/api/content/search?q=sturgeon")).Items.ShouldBeEmpty();
+            (await ReadPage(client, reader, userThreadsUrl)).Items.ShouldBeEmpty();
+            (await ReadActivity(client, reader, userCommentsUrl)).ShouldBe(0);
+        }
+
+        // The owner and a (global) moderator open everything.
+        foreach (var reader in new[] { owner, moderator })
+        {
+            (await ReadPage(client, reader, feedUrl)).Items.ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await ReadPage(client, reader, "/api/content/search?q=sturgeon")).Items
+                .ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await ReadPage(client, reader, userThreadsUrl)).Items.ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await ReadActivity(client, reader, userCommentsUrl)).ShouldBe(1);
+        }
+    }
+
+    [SkippableFact]
     public async Task Moderator_can_pin_and_delete_someone_elses_thread_but_a_plain_user_cannot()
     {
         Skip.IfNot(_factory.Available, "Docker is not available.");
@@ -240,6 +289,31 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         return (await client.GetFromJsonAsync<FeedPage>(url))!;
     }
 
+    private static Task<HttpResponseMessage> Get(HttpClient client, Session? session, string url)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        if (session is not null)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", session.AccessToken);
+        }
+
+        return client.SendAsync(request);
+    }
+
+    private static async Task<FeedPage> ReadPage(HttpClient client, Session? session, string url)
+    {
+        var response = await Get(client, session, url);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<FeedPage>())!;
+    }
+
+    private static async Task<int> ReadActivity(HttpClient client, Session? session, string url)
+    {
+        var response = await Get(client, session, url);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<ActivityPage>())!.Items.Count;
+    }
+
     private static Task<HttpResponseMessage> Send(
         HttpClient client, Session session, HttpMethod method, string url, object? body = null)
     {
@@ -277,6 +351,10 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
     private sealed record FeedPage(List<FeedItem> Items, string? NextCursor, bool HasMore);
 
     private sealed record FeedItem(string Id, string Title, bool IsPinned, string Username);
+
+    private sealed record ActivityPage(List<ActivityItem> Items, string? NextCursor, bool HasMore);
+
+    private sealed record ActivityItem(string Id, string ThreadId);
 
     private sealed record ThreadDetail(string Id, string Title, string Body, List<string> Tags);
 
