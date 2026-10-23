@@ -24,12 +24,25 @@ export function setup(baseUrl, poolSize, loginStaggerMs);
 //   `auth` is whatever the target needs per authenticated request (A: bearer token, B: Cookie header value).
 //   threadsBySpace holds EVERY public thread of the space in feed order (pinned, then newest) — both adapters
 //   crawl their feeds to the end (harness v1). Setup-time requests are tagged endpoint=setup.
-export const journeys = { J1, J2, J3, J5, J6, J7, nav /*, J4, J4upload, J9 */ };
+export const journeys = { J1, J2, J3, J4, J5, J6, J7, J9, nav };
 //   each: (baseUrl, data, session, pick) → void, reporting via lib/track.js `track(res, endpoint, okStatuses)`
-//   pick = { space(data), thread(data) → { space, thread }, word(), commentBody() } (built by main.js)
-export function wsHold(baseUrl, data, session, holdMs, counters, pick);
-//   counters = { subscribed, notifications, errors } (k6 Counters); returns the ws.connect response or null
+//   pick = { space(data), thread(data) → { thread }, word(), commentBody() } (built by main.js)
+//   J4 = thread WITH a photo (lib/assets.js makePng, J4_IMAGE_PX; A: presigned path + attach, B: ingest + 202/poll);
+//   J9 = direct message (A: open-or-get conversation once per VU, then send; B: POST /messages/{friend}).
+export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe);
+//   counters = { subscribed, notifications, errors, probesSent, probesReceived, probesLost, probesUnresolved,
+//   receipt } (k6 metrics owned by main.js); probe = { intervalMs, timeoutMs } | null — every intervalMs the holding
+//   VU writes ONE comment and times the write request's start until the push carrying that comment id reaches its
+//   own socket (forum_ws_receipt); unanswered after timeoutMs = lost. Returns the ws.connect response or null.
 ```
+
+Variants every adapter honours (harness h4): `AUTH_READS=1` — read journeys carry the session (A bearer, B
+cookie; deviation D3's signed-in browsing); A additionally re-logs a VU in on a 401 (expired 15-min access
+token; `forum_relogins`), B's DB sessions live 30 days.
+
+Mix `v2` / harness `h4-2026-10-18`: J4 (3 %) and J9 (4 %) have weight on both targets, J8 holds carry receipt
+probes, and the seeders' word bank is the 300-word Zipf bank (`lib/assets.js` SEARCH_WORDS — the same list as
+A's `SeedText.cs` and B's `seedbench.go`). v2 numbers are not comparable to v1.
 
 Rules: every journey must exist on **both** adapters before it gets weight in `main.js` `MIX`
 (bump `MIX_VERSION` when weights change, `HARNESS_VERSION` when adapter behaviour changes); never follow

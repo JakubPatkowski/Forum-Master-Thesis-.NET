@@ -1,5 +1,6 @@
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Categories;
 using Forum.Modules.Content.Application.Threads;
 
 namespace Forum.Modules.Content.Application;
@@ -28,6 +29,11 @@ internal sealed class ContentReadAccess
         _currentUser = currentUser;
         _queries = queries;
     }
+
+    /// <summary>The read-gate facts of a category read model (its <c>visibility</c> is the lower-cased enum name).</summary>
+    public static CategoryReadInfo ReadInfo(CategoryResponse category) =>
+        new(category.Id, category.OwnerId,
+            string.Equals(category.Visibility, "private", StringComparison.OrdinalIgnoreCase));
 
     public async Task<bool> CanReadAsync(CategoryReadInfo category, CancellationToken cancellationToken) =>
         !category.IsPrivate

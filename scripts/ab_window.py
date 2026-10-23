@@ -14,7 +14,13 @@ Pods are classified (app / db / bus / storage / frontend / other); per class and
 also divided by the HTTP journeys served in the window (cpu_ms_per_journey — the H1 unit). The shared ingress-nginx
 controller is reported separately (both targets' compression happens there) and the node's busy cores give context.
 
+With --idle-start-ms/--idle-end-ms the same per-class CPU is also read over a short NO-TRAFFIC window after the run
+(k6 finished, pods still up): the "idle" section records the fixed cost of each class in cores (A: RabbitMQ + outbox
+relays, B: River polling, …) and marginal_cpu_ms_per_journey = (cpu_core_s − idle_cores × window_s) / journeys, so
+the H1 tables can separate the per-journey cost from the standing cost of each architecture.
+
 Usage: ab_window.py --prom URL --ns NAMESPACE --app-prefix backend- --run-dir DIR --target a|b
+                    [--idle-start-ms MS --idle-end-ms MS]
 """
 import argparse
 import glob
@@ -60,6 +66,8 @@ def main():
     ap.add_argument("--app-prefix", required=True)
     ap.add_argument("--run-dir", required=True)
     ap.add_argument("--target", required=True)
+    ap.add_argument("--idle-start-ms", type=float, default=None)
+    ap.add_argument("--idle-end-ms", type=float, default=None)
     args = ap.parse_args()
 
     files = sorted(glob.glob(f"{args.run_dir}/journeys-*.json"))
@@ -113,19 +121,51 @@ def main():
     namespace["cpu_ms_per_journey"] = per_j(namespace["cpu_core_s"])
     namespace["avg_cores"] = round(namespace["cpu_core_s"] / w, 4)
 
+    idle = None
+    if args.idle_start_ms and args.idle_end_ms and args.idle_end_ms > args.idle_start_ms:
+        i_end = args.idle_end_ms / 1000.0
+        i_w = max(1, int(round(i_end - args.idle_start_ms / 1000.0)))
+        lag = i_end + 45 - time.time()
+        if lag > 0:
+            time.sleep(lag)
+        i_cpu = by_pod(query(args.prom, f"sum by (pod) (increase(container_cpu_usage_seconds_total{{{sel}}}[{i_w}s]))", i_end))
+        i_classes = {}
+        for pod, core_s in i_cpu.items():
+            c = i_classes.setdefault(classify(pod, args.app_prefix), {"pods": 0, "cpu_core_s": 0.0})
+            c["pods"] += 1
+            c["cpu_core_s"] += core_s
+        i_total = 0.0
+        for c in i_classes.values():
+            c["avg_cores"] = round(c["cpu_core_s"] / i_w, 4)
+            c["cpu_core_s"] = round(c["cpu_core_s"], 3)
+            i_total += c["avg_cores"]
+        i_ingress = scalar(query(args.prom, f'sum(increase(container_cpu_usage_seconds_total{{namespace="ingress-nginx",container=""}}[{i_w}s]))', i_end))
+        idle = {"start_ms": args.idle_start_ms, "end_ms": args.idle_end_ms, "window_s": i_w,
+                "classes": i_classes, "namespace_avg_cores": round(i_total, 4),
+                "ingress_nginx_avg_cores": round(i_ingress / i_w, 4)}
+        # Marginal cost = measured CPU minus the standing cost the same pods burn with no traffic.
+        for name, c in classes.items():
+            idle_cores = (i_classes.get(name) or {}).get("avg_cores", 0.0)
+            c["idle_avg_cores"] = idle_cores
+            c["marginal_cpu_ms_per_journey"] = per_j(max(0.0, c["cpu_core_s"] - idle_cores * w))
+        namespace["idle_avg_cores"] = idle["namespace_avg_cores"]
+        namespace["marginal_cpu_ms_per_journey"] = per_j(max(0.0, namespace["cpu_core_s"] - idle["namespace_avg_cores"] * w))
+
     out = {
         "target": args.target, "namespace": ns, "window": window, "window_s": w,
         "http_journeys": journeys,
         "pods": pods, "classes": classes, "namespace_total": namespace,
         "ingress_nginx": {"cpu_core_s": round(ingress_cpu, 3), "cpu_ms_per_journey": per_j(ingress_cpu)},
         "node_busy_cores_avg": round(node_busy, 3),
+        "idle": idle,
         "queried_at": time.time(),
     }
     json.dump(out, open(f"{args.run_dir}/resources.json", "w"), indent=2)
     app = classes.get("app", {})
     print(f"  window {w}s, {journeys} journeys: app {app.get('cpu_core_s', 0):.1f} core-s "
           f"({app.get('cpu_ms_per_journey')} ms/journey, mem avg {app.get('mem_avg_mib', 0):.0f} MiB) | "
-          f"namespace {namespace['cpu_ms_per_journey']} ms/journey | ingress {out['ingress_nginx']['cpu_ms_per_journey']} ms/journey")
+          f"namespace {namespace['cpu_ms_per_journey']} ms/journey | ingress {out['ingress_nginx']['cpu_ms_per_journey']} ms/journey"
+          + (f" | idle app {app.get('idle_avg_cores')} cores → marginal {app.get('marginal_cpu_ms_per_journey')} ms/journey" if idle else ""))
 
 
 if __name__ == "__main__":

@@ -15,6 +15,9 @@ import os
 import statistics
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ab_stats  # noqa: E402  (pure-Python Welch / Mann-Whitney / Cliff / Holm)
+
 T975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228,
         11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131, 16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093,
         20: 2.086, 25: 2.060, 30: 2.042}
@@ -113,21 +116,37 @@ def aggregate(runs):
             "kib_received_per_journey": stat([t.get("kib_received_per_journey") for t in tot]),
         }
         entry["ws"] = {k: stat([(t.get("ws") or {}).get(k) for t in tot]) for k in ("subscribed", "notifications", "errors")}
+        # J8 receipt probes (harness h4): latency from the write's HTTP response to the matching push, and loss.
+        entry["ws"].update({
+            "probes_sent": stat([(t.get("ws") or {}).get("probes_sent") for t in tot]),
+            "probes_received": stat([(t.get("ws") or {}).get("probes_received") for t in tot]),
+            "probe_loss_pct": stat([(t.get("ws") or {}).get("probe_loss_pct") for t in tot]),
+            "probe_late_pct": stat([(t.get("ws") or {}).get("probe_late_pct") for t in tot]),
+            "receipt_med_ms": stat([((t.get("ws") or {}).get("receipt_ms") or {}).get("med") for t in tot]),
+            "receipt_p95_ms": stat([((t.get("ws") or {}).get("receipt_ms") or {}).get("p95") for t in tot]),
+            "receipt_max_ms": stat([((t.get("ws") or {}).get("receipt_ms") or {}).get("max") for t in tot]),
+        })
         res = [r["resources"] for r in rs if r.get("resources")]
         if res:
             def cls(c, k):
                 return stat([(x["classes"].get(c) or {}).get(k) for x in res])
             entry["resources"] = {
                 "app_cpu_ms_per_journey": cls("app", "cpu_ms_per_journey"),
+                "app_marginal_cpu_ms_per_journey": cls("app", "marginal_cpu_ms_per_journey"),
+                "app_idle_avg_cores": cls("app", "idle_avg_cores"),
                 "app_avg_cores": cls("app", "avg_cores"),
                 "app_mem_avg_mib": cls("app", "mem_avg_mib"),
                 "app_mem_max_mib": cls("app", "mem_max_mib"),
                 "db_cpu_ms_per_journey": cls("db", "cpu_ms_per_journey"),
+                "db_idle_avg_cores": cls("db", "idle_avg_cores"),
                 "db_mem_avg_mib": cls("db", "mem_avg_mib"),
                 "bus_cpu_ms_per_journey": cls("bus", "cpu_ms_per_journey"),
+                "bus_idle_avg_cores": cls("bus", "idle_avg_cores"),
                 "bus_mem_avg_mib": cls("bus", "mem_avg_mib"),
                 "frontend_mem_avg_mib": cls("frontend", "mem_avg_mib"),
                 "ns_cpu_ms_per_journey": stat([x["namespace_total"]["cpu_ms_per_journey"] for x in res]),
+                "ns_marginal_cpu_ms_per_journey": stat([x["namespace_total"].get("marginal_cpu_ms_per_journey") for x in res]),
+                "ns_idle_avg_cores": stat([x["namespace_total"].get("idle_avg_cores") for x in res]),
                 "ns_mem_avg_mib": stat([x["namespace_total"]["mem_avg_mib"] for x in res]),
                 "ingress_cpu_ms_per_journey": stat([x["ingress_nginx"]["cpu_ms_per_journey"] for x in res]),
                 "node_busy_cores_avg": stat([x.get("node_busy_cores_avg") for x in res]),
@@ -261,15 +280,21 @@ def report(round_dir, runs, summary):
             md.append("### Resources over the scenario window (H1)")
             rows = []
             for label, key, d in (("app CPU per journey (ms)", "app_cpu_ms_per_journey", 3),
+                                  ("app MARGINAL CPU per journey (ms, idle cost removed)", "app_marginal_cpu_ms_per_journey", 3),
+                                  ("app idle cores (no traffic, all replicas)", "app_idle_avg_cores", 3),
                                   ("app avg cores", "app_avg_cores", 3),
                                   ("app memory avg (MiB, all replicas)", "app_mem_avg_mib", 0),
                                   ("app memory max (MiB, all replicas)", "app_mem_max_mib", 0),
                                   ("DB CPU per journey (ms)", "db_cpu_ms_per_journey", 3),
+                                  ("DB idle cores (no traffic)", "db_idle_avg_cores", 3),
                                   ("DB memory avg (MiB)", "db_mem_avg_mib", 0),
                                   ("bus CPU per journey (ms) — A RabbitMQ / B Redis", "bus_cpu_ms_per_journey", 3),
+                                  ("bus idle cores (no traffic)", "bus_idle_avg_cores", 3),
                                   ("bus memory avg (MiB)", "bus_mem_avg_mib", 0),
                                   ("A frontend pod memory avg (MiB)", "frontend_mem_avg_mib", 0),
                                   ("WHOLE namespace CPU per journey (ms)", "ns_cpu_ms_per_journey", 3),
+                                  ("WHOLE namespace MARGINAL CPU per journey (ms)", "ns_marginal_cpu_ms_per_journey", 3),
+                                  ("WHOLE namespace idle cores (no traffic)", "ns_idle_avg_cores", 3),
                                   ("WHOLE namespace memory avg (MiB)", "ns_mem_avg_mib", 0),
                                   ("ingress-nginx CPU per journey (ms, shared edge)", "ingress_cpu_ms_per_journey", 3),
                                   ("node busy cores avg (context)", "node_busy_cores_avg", 2)):
@@ -280,8 +305,16 @@ def report(round_dir, runs, summary):
         wa, wb = (a or {}).get("ws", {}), (b or {}).get("ws", {})
         if (wa.get("subscribed") or {}).get("mean") or (wb.get("subscribed") or {}).get("mean"):
             md.append("### WebSocket holds (J8) — semantics differ (A: per-view subscription; B: broadcast to every socket)")
-            md.append(table([[k, fmt(wa.get(k), 0), fmt(wb.get(k), 0)] for k in ("subscribed", "notifications", "errors")],
-                            ["metric", "A", "B"]))
+            rows = [[k, fmt(wa.get(k), 0), fmt(wb.get(k), 0)] for k in ("subscribed", "notifications", "errors")]
+            if (wa.get("probes_sent") or {}).get("mean") or (wb.get("probes_sent") or {}).get("mean"):
+                rows += [["receipt probes sent (comment → own push)", fmt(wa.get("probes_sent"), 0), fmt(wb.get("probes_sent"), 0)],
+                         ["receipt probes received", fmt(wa.get("probes_received"), 0), fmt(wb.get("probes_received"), 0)],
+                         ["probe loss (%, never pushed within the hold)", fmt(wa.get("probe_loss_pct"), 2), fmt(wb.get("probe_loss_pct"), 2)],
+                         ["probe late (%, pushed after the timeout)", fmt(wa.get("probe_late_pct"), 2), fmt(wb.get("probe_late_pct"), 2)],
+                         ["receipt latency median (ms)", fmt(wa.get("receipt_med_ms"), 0), fmt(wb.get("receipt_med_ms"), 0)],
+                         ["receipt latency p95 (ms)", fmt(wa.get("receipt_p95_ms"), 0), fmt(wb.get("receipt_p95_ms"), 0)],
+                         ["receipt latency max (ms)", fmt(wa.get("receipt_max_ms"), 0), fmt(wb.get("receipt_max_ms"), 0)]]
+            md.append(table(rows, ["metric", "A", "B"]))
             md.append("")
 
         ka, kb = (a or {}).get("k6", {}), (b or {}).get("k6", {})
@@ -308,6 +341,16 @@ def report(round_dir, runs, summary):
                       f"B {fmt((cb or {}).get('sustained_jps'), 0)} j/s. Knees: A {(ca or {}).get('knees')}, B {(cb or {}).get('knees')}.")
             md.append("")
 
+    tests = ab_stats.run_round_tests(summary)
+    if any(fam["headline"] or fam["journeys"] for fam in tests.values()):
+        md.append("## Statistical tests (per-repeat values; the repeat is the experimental unit)")
+        md.append("Welch's t-test (two-sided), exact Mann-Whitney U, Cliff's δ (effect size, positive = B larger) and "
+                  "Holm-Bonferroni adjusted p over each family of metrics (`scripts/ab_stats.py`). Verdicts: *distinct* = "
+                  "Holm-adjusted p < 0.05; *raw-only* = only the unadjusted p < 0.05 (suggestive); *no difference detected* "
+                  "≠ equal (no equivalence test is run); *n<3* = too few repeats. With 5 vs 5 the smallest exact "
+                  "Mann-Whitney p is 0.0079 (complete separation of the ten values).")
+        md.append("")
+        md.append(ab_stats.markdown_tables(tests))
     md.append("## Reading guide and known limits")
     md.append("See `thesis/results/AB-COMPARISON-v1.md` for the methodology, the fairness invariants and the deviation "
               "register (§6) that every number in this report carries. In short: A's adapter is an idealized SPA "
@@ -327,6 +370,7 @@ def main():
     json.dump({"round": os.path.basename(round_dir), "runs": [{k: v for k, v in r.items() if k not in ("journeys_doc", "resources")} for r in runs],
                "summary": summary}, open(os.path.join(round_dir, "round-summary.json"), "w"), indent=2)
     open(os.path.join(round_dir, "REPORT.md"), "w").write(report(round_dir, runs, summary))
+    json.dump(ab_stats.run_round_tests(summary), open(os.path.join(round_dir, "stats.json"), "w"), indent=2)
     valid = sum(1 for r in runs if r.get("valid"))
     print(f"{len(runs)} runs ({valid} valid) → round-summary.json + REPORT.md")
 

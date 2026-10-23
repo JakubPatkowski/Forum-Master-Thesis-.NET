@@ -7,6 +7,11 @@
 #   scripts/ab-round.sh --plan demo:3 --label quick
 #   scripts/ab-round.sh --plan smoke:1 --label dryrun        # ~15 min end-to-end check of the whole pipeline
 #   make ab-round ARGS="--plan demo:5,capacity:1"
+#   scripts/ab-round.sh --plan demo:5 --label v2-auth --auth-reads          # D3: logged-in reads
+#   scripts/ab-round.sh --plan demo:5 --label v2-hpa --hpa                  # A-15: identical HPA 1–3 @ 70 %
+#   scripts/ab-round.sh --plan demo:3 --label v2-gc --gc-variant            # D8: workstation GC / GOMEMLIMIT
+#   scripts/ab-round.sh --plan demo:3 --label v2-relay --relay-poll-ms 500  # A outbox poll (J8 receipt floor)
+#   scripts/ab-round.sh --plan soak:1 --label v2-soak --k6-env SOAK_MINUTES=60
 #
 # Per measured run (target t, profile p, repeat k):
 #   1. the OTHER architecture's app is scaled to 0 (runs never overlap; its DB/broker stay up and idle — they are
@@ -19,14 +24,16 @@
 #   4. a 60 s warm-up (discarded): every journey incl. ~6 % writes, so JIT/tiered compilation, pools and caches are
 #      warm on every measured code path; it adds only ~30 comments + ~30 reactions (same on both sides, recorded)
 #   5. the measured k6 run (run-load-test.sh) → summary / journeys (incl. the scenario window) / samples / report
-#   6. resources over exactly the scenario window from Prometheus (ab_window.py → resources.json)
+#   6. resources over exactly the scenario window from Prometheus (ab_window.py → resources.json), plus the same
+#      pods over an idle window 20–50 s after k6 exited → standing cost per class and marginal CPU per journey
 #   7. post-run facts: dataset growth, pod restarts, events → run.json (validity flags)
 #   8. cool-down
 # Order: repeat 1 = A,B; repeat 2 = B,A; … (ABBA cancels slow drift — page cache, thermal, background noise).
 # At the end ab_report.py aggregates everything into round-summary.json + REPORT.md (mean ± 95 % CI).
 #
-# Duration (defaults): per run ≈ reset 1.5 min + warm-up 1.5 min + setup 1–2.5 min + scenario + cool-down 1 min.
-# demo:5 ≈ 10 × 13 min ≈ 2 h 10 min; stress:1 ≈ 25 min; capacity:1 ≈ 30 min → default plan ≈ 3 h 05 min.
+# Duration (defaults): per run ≈ reset 1.5 min + warm-up 1.5 min + setup 1–2.5 min + scenario + ~1.6 min after
+# (window + idle-window reads, cool-down). demo:5 ≈ 10 × 14 min ≈ 2 h 20 min; stress:1 ≈ 25 min; capacity:1 ≈ 30 min
+# → default plan ≈ 3 h 15 min.
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 load_env
 source "$LIB_DIR/lib-bench.sh"
@@ -38,6 +45,9 @@ RESEED=true
 WARMUP=true
 ALLOW_MISMATCH=false
 TARGETS="ab"
+K6_ENV=()
+# Variants (harness h4) — see lib-bench.sh: --hpa, --gc-variant, --relay-poll-ms N, --auth-reads, plus any
+# --k6-env KEY=VALUE forwarded to k6 (e.g. WS_PROBE_INTERVAL_MS=5000, SOAK_MINUTES=90).
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --plan) PLAN="${2:?--plan needs profile:repeats[,profile:repeats…]}"; shift 2 ;;
@@ -47,14 +57,22 @@ while [[ $# -gt 0 ]]; do
     --no-warmup) WARMUP=false; shift ;;
     --allow-mismatch) ALLOW_MISMATCH=true; shift ;;
     --only) TARGETS="${2:?--only needs a or b}"; shift 2 ;;
-    -h|--help) sed -n '2,27p' "$0"; exit 0 ;;
+    --hpa) AB_HPA=true; shift ;;
+    --gc-variant) AB_GC_VARIANT=true; shift ;;
+    --relay-poll-ms) AB_RELAY_POLL_MS="${2:?--relay-poll-ms needs milliseconds}"; shift 2 ;;
+    --auth-reads) AB_AUTH_READS=true; shift ;;
+    --k6-env) K6_ENV+=("${2:?--k6-env needs KEY=VALUE}"); shift 2 ;;
+    -h|--help) sed -n '2,31p' "$0"; exit 0 ;;
     *) die "Unknown argument: $1 (see --help)" ;;
   esac
 done
 IFS=',' read -r -a PLAN_ITEMS <<<"$PLAN"
 for item in "${PLAN_ITEMS[@]}"; do
-  [[ "$item" =~ ^(smoke|demo|stress|capacity):[0-9]+$ ]] || die "bad plan item '$item' (profile:repeats; profiles smoke|demo|stress|capacity)"
+  [[ "$item" =~ ^(smoke|demo|stress|capacity|soak|spike):[0-9]+$ ]] || die "bad plan item '$item' (profile:repeats; profiles smoke|demo|stress|capacity|soak|spike)"
 done
+# Variant env for k6 (main.js records them in the journeys block; run-load-test.sh forwards them).
+[[ "$AB_AUTH_READS" == true ]] && export AUTH_READS=1
+for kv in "${K6_ENV[@]}"; do export "${kv?}"; done
 
 # --- preflight -------------------------------------------------------------------------------------------------
 step "Preflight"
@@ -103,12 +121,16 @@ for t in a b; do
 done
 python3 - "$ROUND/round.json" "$PLAN" "$LABEL" "$COOLDOWN_SECONDS" "$RESEED" "$WARMUP" "$AB_REPLICAS" \
   "$(sed -n "s/^export const MIX_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
-  "$(sed -n "s/^export const HARNESS_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" <<'PY'
+  "$(sed -n "s/^export const HARNESS_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
+  "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "${K6_ENV[*]}" <<'PY'
 import json, sys, time
 out, plan, label, cooldown, reseed, warmup, replicas, mix, harness = sys.argv[1:10]
+hpa, gc, relay, auth, k6env = sys.argv[10:15]
 json.dump({"label": label, "plan": plan, "started_epoch": time.time(), "cooldown_s": int(cooldown),
            "reseed_each_run": reseed == "true", "warmup_each_run": warmup == "true", "replicas": int(replicas),
-           "mix_version": mix, "harness_version": harness, "order": "ABBA (odd repeat: A then B; even: B then A)"},
+           "mix_version": mix, "harness_version": harness, "order": "ABBA (odd repeat: A then B; even: B then A)",
+           "variants": {"hpa": hpa == "true", "gc_variant": gc == "true", "relay_poll_ms": int(relay) if relay else None,
+                        "auth_reads": auth == "true", "k6_env": k6env.split() if k6env else []}},
           open(out, "w"), indent=2)
 PY
 
@@ -126,9 +148,9 @@ run_one() {
   fi
   if $RESEED; then
     ab_reseed "$t"
-    ok "dataset reset to the Benchmark seed ($AB_EXPECTED_SEED), $AB_REPLICAS fresh pods"
+    ok "dataset reset to the Benchmark seed ($AB_EXPECTED_SEED) + ANALYZE, $(ab_start_replicas) fresh pod(s)"
   else
-    ab_scale "$t" "$AB_REPLICAS"
+    ab_scale "$t" "$(ab_start_replicas)"
   fi
   local profile_ok=true
   ab_check_profile "$t" >"$run_dir/profile-check.txt" || profile_ok=false
@@ -149,7 +171,11 @@ run_one() {
   restarts_after="$(ab_kubectl "$t" get pods -o jsonpath='{range .items[*]}{.metadata.name}={.status.containerStatuses[0].restartCount}{" "}{end}')"
 
   if ls "$run_dir"/journeys-*.json >/dev/null 2>&1; then
-    ab_window_metrics "$t" "$run_dir" || warn "window metrics failed (Prometheus) — resources.json missing for this run."
+    # Idle (no-traffic) window 20–50 s after k6 exited: same pods, nothing to serve → the standing cost of each
+    # class (A: RabbitMQ + relays, B: River polling) and the marginal CPU per journey. The wait for it (~95 s after
+    # the run, cAdvisor scrape lag included) replaces most of the cool-down.
+    ab_window_metrics "$t" "$run_dir" "$(( (finished + 20) * 1000 ))" "$(( (finished + 50) * 1000 ))" \
+      || warn "window metrics failed (Prometheus) — resources.json missing for this run."
   fi
   python3 - "$run_dir/run.json" "$t" "$profile" "$k" "$pos" "$rc" "$started" "$finished" "$before" "$after" \
     "$restarts_before" "$restarts_after" "$profile_ok" <<'PY'
@@ -174,7 +200,7 @@ if totals.get("rate_limited"):
     reasons.append(f"{totals['rate_limited']} responses were 429")
 if not jfiles:
     reasons.append("no journeys block")
-if profile in ("smoke", "demo") and (totals.get("http_req_failed_pct") or 0) > 1:
+if profile in ("smoke", "demo", "soak") and (totals.get("http_req_failed_pct") or 0) > 1:
     reasons.append(f"failed requests {totals['http_req_failed_pct']}% > 1%")
 if profile_ok != "true":
     reasons.append("common-profile check failed (--allow-mismatch)")
@@ -185,8 +211,10 @@ json.dump({"target": t, "profile": profile, "repeat": int(k), "position_in_pair"
           open(out, "w"), indent=2)
 print(f"  run.json: valid={not reasons}" + (f" ({'; '.join(reasons)})" if reasons else ""))
 PY
-  info "cool-down ${COOLDOWN_SECONDS}s"
-  sleep "$COOLDOWN_SECONDS"
+  local remaining=$(( COOLDOWN_SECONDS - ($(date +%s) - finished) ))
+  (( remaining > 0 )) || remaining=0
+  info "cool-down ${remaining}s (of ${COOLDOWN_SECONDS}s; the idle-window read already waited)"
+  sleep "$remaining"
 }
 
 # --- the round -------------------------------------------------------------------------------------------------
@@ -205,7 +233,7 @@ done
 
 # Leave both apps up for inspection after the round.
 for t in a b; do
-  [[ "$TARGETS" == *"$t"* ]] && ab_scale "$t" "$AB_REPLICAS"
+  [[ "$TARGETS" == *"$t"* ]] && ab_scale "$t" "$(ab_start_replicas)"
 done
 
 step "Report"

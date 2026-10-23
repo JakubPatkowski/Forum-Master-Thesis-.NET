@@ -37,7 +37,10 @@ export function ThreadCard({
   isNew = false,
 }: ThreadCardProps) {
   return (
-    <div className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}>
+    <div
+      className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}
+      data-testid="thread-card"
+    >
       <Link href={`/t/${thread.id}`} className={styles.main}>
         <ThreadIcon
           threadId={thread.id}
@@ -74,7 +77,13 @@ export function ThreadCard({
             {pinAction.pinned ? "UNPIN" : "PIN"}
           </button>
         ) : null}
-        <ReactionButton targetType="thread" targetId={thread.id} initial={reaction} covered size="sm" />
+        <ReactionButton
+          targetType="thread"
+          targetId={thread.id}
+          initial={reaction}
+          covered
+          size="sm"
+        />
       </span>
     </div>
   );

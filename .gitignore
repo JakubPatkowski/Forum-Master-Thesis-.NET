@@ -52,3 +52,24 @@ graphify-out/
 
 # A/B benchmark: gomx base rendered by scripts/gomx-bench-deploy.sh (regenerated every deploy)
 k8s/gomx-bench/gomx-base.rendered.yaml
+
+## Playwright end-to-end output (frontend/playwright.config.ts)
+frontend/test-results/
+frontend/playwright-report/
+
+## Python bytecode (scripts/ab_report.py imports ab_stats.py)
+__pycache__/
+
+## Raw benchmark artifacts — kept locally (backup tarball), never committed
+thesis/results/**/*.log
+thesis/results/**/*.out
+thesis/results/**/*.jsonl
+thesis/results/**/*.patch
+thesis/results/**/*.err
+thesis/results/**/*.xml
+thesis/results/**/*.csv.gz
+thesis/results/**/*.report.html
+thesis/results/**/*.report.json
+thesis/results/**/02-live-checks/raw/
+thesis/results/**/logs-round-window/
+thesis/results/**/logs-before-round/

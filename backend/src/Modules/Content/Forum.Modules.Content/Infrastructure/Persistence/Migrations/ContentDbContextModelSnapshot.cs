@@ -263,6 +263,11 @@ namespace Forum.Modules.Content.Infrastructure.Persistence.Migrations
                     b.HasIndex("ThreadId", "Path")
                         .HasDatabaseName("ix_comments_thread_path");
 
+                    b.HasIndex("OwnerId", "CreatedOnUtc", "Id")
+                        .IsDescending(false, true, true)
+                        .HasDatabaseName("ix_comments_owner_activity")
+                        .HasFilter("is_deleted = false");
+
                     b.ToTable("comments", "forum_content");
                 });
 
@@ -369,6 +374,11 @@ namespace Forum.Modules.Content.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_threads");
+
+                    b.HasIndex("OwnerId", "CreatedOnUtc", "Id")
+                        .IsDescending(false, true, true)
+                        .HasDatabaseName("ix_threads_owner_activity")
+                        .HasFilter("is_deleted = false");
 
                     b.HasIndex("CategoryId", "IsPinned", "CreatedOnUtc", "Id")
                         .IsDescending(false, true, true, true)

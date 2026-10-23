@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Run one k6 profile against a deployed target (Phase 9c, target-aware since the A/B alignment —
-# AB-ALIGNMENT-INSTRUCTIONS-A.md A-02). Profiles: smoke | warmup | demo | stress | capacity (load/k6/main.js).
+# AB-ALIGNMENT-INSTRUCTIONS-A.md A-02). Profiles: smoke | warmup | demo | stress | capacity | soak | spike
+# (load/k6/main.js; soak = long stability run, spike = burst + recovery — both harness h4).
 # Targets: a (forum-dotnet) | b (gomx).
 #
 #   scripts/run-load-test.sh [smoke|warmup|demo|stress|capacity] [BASE_URL]   # TARGET=a default
@@ -22,7 +23,7 @@ load_env
 
 PROFILE="${1:-smoke}"
 TARGET="${TARGET:-a}"
-case "$PROFILE" in smoke|warmup|demo|stress|capacity) ;; *) die "Unknown profile '$PROFILE' (use smoke|warmup|demo|stress|capacity)" ;; esac
+case "$PROFILE" in smoke|warmup|demo|stress|capacity|soak|spike) ;; *) die "Unknown profile '$PROFILE' (use smoke|warmup|demo|stress|capacity|soak|spike)" ;; esac
 case "$TARGET" in
   a) BENCH_NS="$K8S_NAMESPACE";  BENCH_DEPLOY=backend; BENCH_HPA=backend; BENCH_LABEL="app=backend"; DEFAULT_BASE="https://$INGRESS_HOST" ;;
   b) BENCH_NS="$GOMX_NAMESPACE"; BENCH_DEPLOY=gomx;    BENCH_HPA=gomx;    BENCH_LABEL="app=gomx";    DEFAULT_BASE="https://$GOMX_INGRESS_HOST" ;;
@@ -124,10 +125,15 @@ step "k6 $PROFILE [target $TARGET] → $BASE_URL${INGRESS_IP:+  (ingress $INGRES
 set +e
 # Optional open-model knobs (capacity profile) pass straight through to k6 when set.
 K6_EXTRA=()
-for var in CAP_STEPS CAP_RAMP_S CAP_HOLD_S CAP_MAX_VUS WS_HOLD_MS LOGIN_STAGGER_MS; do
+# Harness h4 variants (A/B round flags): AUTH_READS (reads carry the session), the J8 receipt-probe cadence,
+# soak/spike sizing. Recorded by main.js in the journeys block, so every archive says which variant it measured.
+for var in CAP_STEPS CAP_RAMP_S CAP_HOLD_S CAP_MAX_VUS WS_HOLD_MS LOGIN_STAGGER_MS \
+           AUTH_READS WS_PROBE_INTERVAL_MS WS_PROBE_TIMEOUT_MS SOAK_MINUTES SOAK_VUS SPIKE_VUS; do
   [[ -n "${!var:-}" ]] && K6_EXTRA+=(-e "$var=${!var}")
 done
-k6 run --quiet \
+# K6_OUT (e.g. csv=…/points.csv.gz) streams every metric point out of k6 — ab-chaos.sh needs the per-second error
+# timeline around an injected fault; measured rounds leave it unset (the summary blocks are enough and cheaper).
+k6 run --quiet ${K6_OUT:+--out "$K6_OUT"} \
   -e TARGET="$TARGET" \
   -e PROFILE="$PROFILE" \
   -e BASE_URL="$BASE_URL" \
@@ -169,7 +175,7 @@ if (( K6_RC == 99 )); then
   if grep -q '"rate_limited":[1-9]' "$JOURNEYS_FILE" 2>/dev/null; then
     die "429 responses during the run — a rate limiter is active; this run is INVALID."
   fi
-  if [[ "$PROFILE" == "stress" || "$PROFILE" == "capacity" || "$PROFILE" == "warmup" ]]; then
+  if [[ "$PROFILE" == "stress" || "$PROFILE" == "capacity" || "$PROFILE" == "warmup" || "$PROFILE" == "spike" ]]; then
     warn "$PROFILE thresholds breached — informational by design, numbers are in the summary."
     exit 0
   fi

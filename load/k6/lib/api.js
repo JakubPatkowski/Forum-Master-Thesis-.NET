@@ -2,9 +2,10 @@
 // summary (and the thesis tables) break latency out per logical operation, and every helper returns
 // the raw k6 response — the adapter owns checks and metrics.
 //
-// Read helpers take an optional `opts` = { endpoint?: string, discard?: boolean }: `endpoint` re-tags a
-// setup-time call (so pool discovery never pollutes a journey's endpoint row) and `discard` drops a body the
-// journey never parses (lib/wire.js DISCARD). Every request carries the browser's Accept-Encoding.
+// Read helpers take an optional `opts` = { endpoint?: string, discard?: boolean, token?: string }: `endpoint`
+// re-tags a setup-time call (so pool discovery never pollutes a journey's endpoint row), `discard` drops a body the
+// journey never parses (lib/wire.js DISCARD) and `token` makes an otherwise anonymous read a signed-in one (the
+// AUTH_READS variant, deviation D3). Every request carries the browser's Accept-Encoding.
 
 import http from 'k6/http';
 
@@ -20,12 +21,12 @@ function params(endpoint, token, extra = {}) {
 }
 
 export function apiGet(baseUrl, path, endpoint, token = null, opts = {}) {
-  return http.get(`${baseUrl}${path}`, params(opts.endpoint || endpoint, token, opts.discard ? DISCARD : {}));
+  return http.get(`${baseUrl}${path}`, params(opts.endpoint || endpoint, token || opts.token || null, opts.discard ? DISCARD : {}));
 }
 
 export function apiPost(baseUrl, path, body, endpoint, token = null, opts = {}) {
   return http.post(`${baseUrl}${path}`, body === null ? null : JSON.stringify(body),
-    params(endpoint, token, {
+    params(opts.endpoint || endpoint, token, {
       ...(opts.discard ? DISCARD : {}),
       headers: body === null ? {} : { 'Content-Type': 'application/json' },
     }));
@@ -135,4 +136,19 @@ export function commitUpload(baseUrl, token, fileId) {
 /** Trades the bearer token for the single-use WS handshake ticket (endpoint is not rate-limited). */
 export function realtimeTicket(baseUrl, token) {
   return apiPost(baseUrl, '/api/realtime/ticket', null, 'ticket', token);
+}
+
+/** Files: bind a committed file to a target (the SPA composer attaches READY files to the created thread). */
+export function attachFile(baseUrl, token, fileId, targetType, targetId) {
+  return apiPost(baseUrl, `/api/files/${fileId}/attachments`, { targetType, targetId }, 'file_attach', token);
+}
+
+/** Social: get-or-create the direct conversation with a user (200 + conversationId either way). */
+export function openDirectConversation(baseUrl, token, userId) {
+  return apiPost(baseUrl, '/api/social/conversations/direct', { userId }, 'dm_open', token);
+}
+
+/** Social: send a message into a conversation (200 + messageId; realtime push to both user views). */
+export function sendMessage(baseUrl, token, conversationId, body, opts = {}) {
+  return apiPost(baseUrl, `/api/social/conversations/${conversationId}/messages`, { body }, 'dm_send', token, opts);
 }

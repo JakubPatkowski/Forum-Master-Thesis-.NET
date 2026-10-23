@@ -171,9 +171,12 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         var userCommentsUrl = $"/api/content/users/{owner.UserId}/comments";
 
         // Anonymous and authenticated outsiders: the private category is indistinguishable from a missing one —
-        // item reads 404, list reads silently omit its rows (A-12).
+        // the category itself is absent from the list and 404 by slug, item reads 404, list reads silently omit
+        // its rows (A-12). Architecture B's /communities hides private spaces the same way (fairness invariant F5).
         foreach (var reader in new Session?[] { null, outsider })
         {
+            (await ListCategorySlugs(client, reader)).ShouldNotContain("priv-cat");
+            (await Get(client, reader, "/api/content/categories/priv-cat")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
             (await Get(client, reader, feedUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
             (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
             (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -182,9 +185,11 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
             (await ReadActivity(client, reader, userCommentsUrl)).ShouldBe(0);
         }
 
-        // The owner and a (global) moderator open everything.
+        // The owner and a (global) moderator open everything — including the category in the list and by slug.
         foreach (var reader in new[] { owner, moderator })
         {
+            (await ListCategorySlugs(client, reader)).ShouldContain("priv-cat");
+            (await Get(client, reader, "/api/content/categories/priv-cat")).StatusCode.ShouldBe(HttpStatusCode.OK);
             (await ReadPage(client, reader, feedUrl)).Items.ShouldHaveSingleItem().Id.ShouldBe(threadId);
             (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
             (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -307,6 +312,13 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         return (await response.Content.ReadFromJsonAsync<FeedPage>())!;
     }
 
+    private static async Task<List<string>> ListCategorySlugs(HttpClient client, Session? session)
+    {
+        var response = await Get(client, session, "/api/content/categories");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<List<CategoryListItem>>())!.Select(c => c.Slug).ToList();
+    }
+
     private static async Task<int> ReadActivity(HttpClient client, Session? session, string url)
     {
         var response = await Get(client, session, url);
@@ -343,6 +355,8 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
     private sealed record TokenResponse(string AccessToken, DateTimeOffset ExpiresOnUtc);
 
     private sealed record CategoryCreated(string CategoryId, string Slug);
+
+    private sealed record CategoryListItem(string Id, string Slug, string Visibility);
 
     private sealed record ThreadCreated(string ThreadId);
 
