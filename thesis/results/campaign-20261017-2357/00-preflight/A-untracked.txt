@@ -1,0 +1,5 @@
+backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Migrations/20261017211738_AddOwnerActivityIndexes.Designer.cs
+backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Migrations/20261017211738_AddOwnerActivityIndexes.cs
+docs/architecture/AB-TEST-RUN-FABLE5-PROMPT.md
+thesis/results/campaign-20261017-2357/
+thesis/results/rounds/20261017-2332-verify/

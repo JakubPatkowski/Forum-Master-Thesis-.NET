@@ -1,0 +1,29 @@
+
+target=a  profile=warmup  mix=v1  harness=h3-2026-10-17  base=https://forum.local
+http_reqs=2675  p95=9ms  p99=21ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                 2    850    850    850    851    851
+categories          110      4      3      4      6    115
+feed                617      4      4      6     16     80
+thread              334      5      3      5     13    318
+comments            334      6      4      7     17    298
+reactions_batch     951      4      3      5     11    307
+search              117     11      8     12     19    313
+comment_create       36     31      9     75    424    524
+reaction_add         34     17     10     49    109    114
+user_stats           54      4      3      7     12     14
+user_threads         54      4      3      6     11     12
+setup                32     11      7     45     58     64
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           472   7.87      8     20     36
+J2           334   5.57     10     16     29
+J3            36   0.60     10     76    430
+J5            34   0.57     11     49    109
+J6           117   1.95      9     12     20
+J7            54   0.90      7     12     24
+nav          110   1.83      3      5      6
+
+all thresholds passed
+

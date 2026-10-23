@@ -184,6 +184,15 @@ match.
 
 ## 9. Measurement protocol
 
+> **Implementation status 2026-10-17 (A side; part of the pending sign-off).** The protocol actually implemented is
+> harness v1 (`load/k6/main.js`, mix `v1`, harness `h3-2026-10-17`) + `scripts/ab-round.sh`, described in
+> `thesis/results/AB-COMPARISON-v1.md` §5. Differences to the proposal below: profiles add `warmup` (discarded, before
+> every run) and an **open-model `capacity` profile — that, not `stress`, measures the H2 ceiling**; the v1 mix is
+> J1 33 / J2 22 / J6 11 / nav 8 / J3 11 / J5 13 / J7 2 (J4 and J9 weight 0 until the B adapter has them); v1 rounds
+> use 5 interleaved (ABBA) repeats with a reseed and fresh pods before every run; artifacts live in
+> `thesis/results/rounds/<stamp>-<label>/` (+ the per-journey block now also carries the measured window, totals,
+> transfer per journey and, for `capacity`, the per-step table); WS receipt latency (§9.2) is not measured yet.
+
 ### 9.1 Profiles
 smoke (sanity, 5 VU/60 s) · demo (ramp to 80 VU, HPA showcase) · stress (ramp to 150+ VU
 until p95 journey > 500 ms — the H2 ceiling). Same ramps both sides; ≥3 repeats exploratory,
@@ -203,11 +212,28 @@ Per run: k6 summary JSON, meta.json (git SHA, image digest, seed counts, limiter
 sizing, k6 version), infra samples (HPA/`kubectl top`), Prometheus query snapshots.
 Layout: `thesis/results/{A,B}/<stamp>-<profile>/…` (A's existing layout; B mirrors — B-6).
 
+Shared per-journey summary (both sides' k6 scripts emit this exact shape; A: `journeys-<stamp>.json`,
+implemented in `load/k6/main.js` — B mirrors in B-2):
+
+```json
+{ "profile": "demo",
+  "journeys": { "J1": { "count": 0, "per_second": 0.0,
+                        "duration_ms": { "med": 0, "p95": 0, "p99": 0 } } } }
+```
+
 ### 9.5 Non-load metrics
 - Lighthouse: 2 pages (feed, thread), 3 runs, same budgets file on both.
+  A: `scripts/lighthouse.sh` (budgets `frontend/lighthouserc.json` = B's numbers verbatim;
+  OpenMetrics summary schema-identical to B's `lighthouse-metrics`). B: `task lighthouse`.
 - Dev-loop: 10 runs each of clean build / incremental build / test wall-clock /
   edit→running-change / cold start, same machine, same day; B's `reload-bench` JSON schema.
-- Trivy (pinned version) + SonarQube (one server) same-day on both repos.
+  A: `make reload-bench` (BENCH_RUNS=10 default). B: `BENCH_RUNS=10 task reload-bench`.
+- Trivy (pinned version, same binary both repos) + SonarQube (one server) same-day on both
+  repos. A: `scripts/security-scan.sh` (+ `scripts/security-scan.sh ../gomx` for the paired
+  run — same flags as B's `security:trivy-fs` CI job) and `scripts/sonar-scan.sh` against the
+  shared server from B's `scripts/sonarqube-local.sh`.
+- Artifact sizes: OpenMetrics, B's `ci-artifact-metrics.sh` schema. A: `scripts/artifact-size.sh`
+  (first-load JS+CSS raw+gzip, both images, desktop installer — installer row filled on Windows).
 - Dependency counts: direct from manifests; transitive from lockfile/module graph; rules
   documented in the results tables.
 - Desktop: installer size + process-tree RSS/CPU during a scripted 5-minute session.

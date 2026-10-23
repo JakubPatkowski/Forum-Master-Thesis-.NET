@@ -1,0 +1,64 @@
+{
+  "architecture": "B (Go + Templ/HTMX SSR monolith)",
+  "target": "b",
+  "profile": "demo",
+  "mix_version": "v0-day0",
+  "repeats": 3,
+  "started_utc": "2026-10-17T00:40:06Z",
+  "base_url": "https://gomx.local",
+  "git_sha": "8b23bc18a9e7facc59c4ea640c030fe0b1a48d79",
+  "git_dirty": false,
+  "harness_git_sha": "ee0faee8dc823f58533f361d1b82284d62ff65c5",
+  "deployed_image": "gomx:bench",
+  "image_digest": "docker://sha256:00b7762b9ca5c3f9b6494af804924db379f3e48fe720344d0fe0dbc7ca9ab090",
+  "k6_version": "k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)",
+  "replicas_fixed": 2,
+  "hpa": "absent (fixed replicas)",
+  "resources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "250m",
+      "memory": "256Mi"
+    }
+  },
+  "seed": {
+    "database": "gomx",
+    "users": 800,
+    "threads": 1600,
+    "comments": 9073,
+    "reactions": 15083
+  },
+  "node": {
+    "kubectl_nodes": "forum   Ready   control-plane   94d   v1.35.1   192.168.49.2   <none>   Debian GNU/Linux 12 (bookworm)   5.15.146.1-microsoft-standard-WSL2   docker://29.2.1",
+    "kubectl_top_node": "forum   704m   8%    4347Mi   36%",
+    "minikube_vm": "8000000000 nanocpus / 10737418240 bytes",
+    "wsl_kernel": "5.15.146.1-microsoft-standard-WSL2",
+    "wsl_mem_mb": "11966"
+  },
+  "k6_host": "WSL host, outside the cluster, through ingress-nginx (plan \u00a79c design decision)",
+  "rate_limiter": {
+    "GOMX_AUTH_RATELIMIT": "0",
+    "GOMX_BEACON_RATELIMIT": "0"
+  },
+  "tracing": {
+    "OTEL_EXPORTER_OTLP_ENDPOINT": "(unset \u2192 off)"
+  },
+  "bench_overlay_env": {
+    "GOMX_SEED": "bench",
+    "GOMX_COMPRESS": "0",
+    "GOMX_NOTIFY_FRIENDS_ON_POST": "0",
+    "GOMX_SECURE_COOKIES": "1",
+    "GOMX_DB_MAX_CONNS": "30"
+  },
+  "seed_deviations": [
+    "pinned: 1 post (A: 1% = 16)",
+    "comments: 25% on 1% of posts (A: squared-uniform skew)",
+    "reactions: 12000 post votes incl. 10% downvotes + 3000 comment likes (A: 11250/3750 likes, no downvotes)",
+    "bodies: 10 fixed sentences 0.3-1.2 KB (A: 31-word bank, 120-320 words)",
+    "private spaces: 2 x ~200 members (A: 4 x 25)",
+    "no blocked users / deleted content (A: 20 blocked, ~1% deleted)"
+  ]
+}

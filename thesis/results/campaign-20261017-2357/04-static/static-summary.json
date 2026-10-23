@@ -1,0 +1,377 @@
+{
+  "generated": "2026-10-18T04:06+02:00",
+  "trivy_version": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-10-18 00:43:37.96251718 +0000 UTC\n  NextUpdate: 2026-10-19 00:43:37.96251693 +0000 UTC\n  DownloadedAt: 2026-10-18 01:45:13.865089349 +0000 UTC\nCheck Bundle:\n  Digest: sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058\n  DownloadedAt: 2026-10-18 01:45:14.552081997 +0000 UTC",
+  "cloc_version": "2.06",
+  "trivy_A": {
+    "vulns_by_severity": {
+      "HIGH": 11,
+      "CRITICAL": 2
+    },
+    "vulns_total": 13,
+    "distinct_vulnerable_packages": 10,
+    "vulnerable_packages": [
+      "next@15.5.20 (fix 15.5.21, 16.2.11) x3",
+      "next@15.5.20 (fix 15.5.24, 16.3.3) x2",
+      "nanoid@3.3.15 (fix 3.3.18, 5.1.6) x1",
+      "nanoid@3.3.15 (fix 3.3.16, 5.1.16) x1",
+      "postcss@8.4.31 (fix 8.5.12) x1",
+      "postcss@8.4.31 (fix 8.5.18) x1",
+      "sharp@0.34.5 (fix 0.35.0) x1",
+      "sharp@0.34.5 (fix 0.35.4) x1",
+      "sharp@0.34.5 (fix 0.35.5) x1",
+      "source-map-js@1.2.1 (fix 1.2.2) x1"
+    ],
+    "secrets": 0,
+    "misconfig_total": 5,
+    "misconfig": [
+      "HIGH KSV-0014 Root file system is not read-only x3",
+      "HIGH KSV-0118 Default security context configured x2"
+    ]
+  },
+  "trivy_A_snapshot_2026-10-17": {
+    "vulns_by_severity": {
+      "HIGH": 11,
+      "CRITICAL": 2
+    },
+    "vulns_total": 13,
+    "distinct_vulnerable_packages": 10,
+    "vulnerable_packages": [
+      "next@15.5.20 (fix 15.5.21, 16.2.11) x3",
+      "next@15.5.20 (fix 15.5.24, 16.3.3) x2",
+      "nanoid@3.3.15 (fix 3.3.18, 5.1.6) x1",
+      "nanoid@3.3.15 (fix 3.3.16, 5.1.16) x1",
+      "postcss@8.4.31 (fix 8.5.12) x1",
+      "postcss@8.4.31 (fix 8.5.18) x1",
+      "sharp@0.34.5 (fix 0.35.0) x1",
+      "sharp@0.34.5 (fix 0.35.4) x1",
+      "sharp@0.34.5 (fix 0.35.5) x1",
+      "source-map-js@1.2.1 (fix 1.2.2) x1"
+    ],
+    "secrets": 0,
+    "misconfig_total": 7,
+    "misconfig": [
+      "HIGH KSV-0118 Default security context configured x4",
+      "HIGH KSV-0014 Root file system is not read-only x3"
+    ]
+  },
+  "cloc_A_whole": {
+    "cloc_version": "2.06",
+    "files": 1109,
+    "code": 130853,
+    "comment": 5372,
+    "blank": 15766,
+    "by_language_code": {
+      "HTML": 34052,
+      "JSON": 30637,
+      "C#": 29164,
+      "Markdown": 11871,
+      "TypeScript": 10652,
+      "CSS": 5197,
+      "JavaScript": 3024,
+      "Bourne Shell": 2223,
+      "Text": 1211,
+      "YAML": 1172,
+      "Python": 464,
+      "Rust": 333,
+      "SVG": 281,
+      "MSBuild script": 269,
+      "XML": 99,
+      "make": 87,
+      "INI": 49,
+      "Dockerfile": 48,
+      "TOML": 20
+    }
+  },
+  "cloc_A_whole_snapshot_2026-10-17": {
+    "cloc_version": "2.06",
+    "files": 986,
+    "code": 85389,
+    "comment": 4910,
+    "blank": 11367
+  },
+  "cloc_A_core": {
+    "cloc_version": "2.06",
+    "files": 789,
+    "code": 52097,
+    "comment": 3712,
+    "blank": 7861,
+    "by_language_code": {
+      "C#": 23166,
+      "TypeScript": 10652,
+      "JSON": 10305,
+      "CSS": 4666,
+      "Markdown": 1907,
+      "HTML": 728,
+      "MSBuild script": 269,
+      "YAML": 125,
+      "XML": 99,
+      "make": 87,
+      "Dockerfile": 48,
+      "INI": 45
+    }
+  },
+  "cloc_A_core_snapshot_2026-10-17": {
+    "cloc_version": "2.06",
+    "files": 785,
+    "code": 51745,
+    "comment": 3642,
+    "blank": 7817
+  },
+  "trivy_B": {
+    "vulns_by_severity": {},
+    "vulns_total": 0,
+    "distinct_vulnerable_packages": 0,
+    "vulnerable_packages": [],
+    "secrets": 0,
+    "misconfig_total": 5,
+    "misconfig": [
+      "HIGH KSV-0014 Root file system is not read-only x2",
+      "HIGH KSV-0118 Default security context configured x2",
+      "HIGH DS-0002 Image user should not be 'root' x1"
+    ]
+  },
+  "trivy_B_snapshot_2026-10-17": {
+    "vulns_by_severity": {},
+    "vulns_total": 0,
+    "distinct_vulnerable_packages": 0,
+    "vulnerable_packages": [],
+    "secrets": 0,
+    "misconfig_total": 1,
+    "misconfig": [
+      "HIGH DS-0002 Image user should not be 'root' x1"
+    ]
+  },
+  "cloc_B_whole": {
+    "cloc_version": "2.06",
+    "files": 772,
+    "code": 95512,
+    "comment": 6991,
+    "blank": 8160,
+    "by_language_code": {
+      "Go": 63712,
+      "CSS": 11743,
+      "TypeScript": 4782,
+      "Templ": 4758,
+      "YAML": 2873,
+      "Markdown": 2677,
+      "TOML": 1422,
+      "SQL": 1163,
+      "Bourne Shell": 829,
+      "JSON": 704,
+      "XML": 339,
+      "Kotlin": 152,
+      "Gradle": 116,
+      "DOS Batch": 64,
+      "HTML": 59,
+      "Properties": 51,
+      "Rust": 37,
+      "INI": 24,
+      "Dockerfile": 7,
+      "JavaScript": 0,
+      "ProGuard": 0
+    }
+  },
+  "cloc_B_whole_snapshot_2026-10-17": {
+    "cloc_version": "2.06",
+    "files": 763,
+    "code": 94864,
+    "comment": 6907,
+    "blank": 8100
+  },
+  "cloc_B_core": {
+    "cloc_version": "2.06",
+    "files": 295,
+    "code": 30088,
+    "comment": 4369,
+    "blank": 4520,
+    "by_language_code": {
+      "Go": 18403,
+      "TypeScript": 2846,
+      "Templ": 2641,
+      "TOML": 1393,
+      "SQL": 1163,
+      "Markdown": 1147,
+      "YAML": 970,
+      "CSS": 777,
+      "JSON": 622,
+      "XML": 42,
+      "Properties": 40,
+      "Bourne Shell": 23,
+      "INI": 14,
+      "Dockerfile": 7
+    }
+  },
+  "cloc_B_core_snapshot_2026-10-17": {
+    "cloc_version": "2.06",
+    "files": 267,
+    "code": 28755,
+    "comment": 4308,
+    "blank": 4177
+  },
+  "artifact_A": {
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"raw\"}": 644653.0,
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"gzip\"}": 194901.0,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"raw\"}": 69040.0,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"gzip\"}": 15801.0,
+    "web_assets_total_bytes{encoding=\"gzip\"}": 210702.0
+  },
+  "artifact_A_snapshot_2026-10-17": {
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"raw\"}": 644611.0,
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"gzip\"}": 194889.0,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"raw\"}": 69040.0,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"gzip\"}": 15801.0,
+    "web_assets_total_bytes{encoding=\"gzip\"}": 210690.0,
+    "container_image_size_bytes{image=\"api\"}": 178743032.0,
+    "container_image_size_bytes{image=\"web\"}": 243475415.0
+  },
+  "artifact_B": {
+    "artifact_size_bytes{artifact=\"server\",encoding=\"raw\"}": 39948450.0,
+    "artifact_size_bytes{artifact=\"server\",encoding=\"gzip\"}": 13167067.0,
+    "artifact_size_bytes{artifact=\"styles.css\",encoding=\"raw\"}": 211225.0,
+    "artifact_size_bytes{artifact=\"styles.css\",encoding=\"gzip\"}": 31472.0,
+    "artifact_size_bytes{artifact=\"bridge-alpine.js\",encoding=\"raw\"}": 62806.0,
+    "artifact_size_bytes{artifact=\"bridge-alpine.js\",encoding=\"gzip\"}": 21718.0,
+    "artifact_size_bytes{artifact=\"bridge.js\",encoding=\"raw\"}": 71629.0,
+    "artifact_size_bytes{artifact=\"bridge.js\",encoding=\"gzip\"}": 21421.0,
+    "artifact_size_bytes{artifact=\"forum.js\",encoding=\"raw\"}": 209100.0,
+    "artifact_size_bytes{artifact=\"forum.js\",encoding=\"gzip\"}": 70639.0,
+    "web_assets_total_bytes{encoding=\"gzip\"}": 145250.0
+  },
+  "image_sizes": {
+    "container_image_size_bytes{image=\"gomx:bench\"}": 41188802.0,
+    "container_image_size_bytes{image=\"forum-dotnet-api:git-57f63d0-dirty\"}": 178769346.0,
+    "container_image_size_bytes{image=\"forum-dotnet-web:git-57f63d0-dirty\"}": 243475415.0
+  },
+  "image_sizes_snapshot_2026-10-17": {
+    "container_image_size_bytes{image=\"gomx:bench\"}": 41172418.0,
+    "container_image_size_bytes{image=\"forum-dotnet-api:git-ee0faee-dirty\"}": 178743032.0,
+    "container_image_size_bytes{image=\"forum-dotnet-web:git-ee0faee-dirty\"}": 243475415.0
+  },
+  "dependency_counts": {
+    "A": {
+      "nuget_central_versions": 42,
+      "nuget_referenced_in_src": 24,
+      "npm_dependencies": 9,
+      "npm_devDependencies": 14,
+      "npm_lock_packages_total": 665
+    },
+    "B": {
+      "go_require_direct": 29,
+      "go_require_indirect": 105,
+      "go_sum_modules": 227,
+      "bun_dependencies": 9,
+      "bun_devDependencies": 27,
+      "bun_lock_packages_total": 1320
+    }
+  },
+  "lighthouse_A": {
+    "lighthouse_category_score{path=\"/\",category=\"performance\"}": 0.84,
+    "lighthouse_category_score{path=\"/\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"lcp_ms\"}": 4135.495999999999,
+    "lighthouse_web_vital{path=\"/\",metric=\"fcp_ms\"}": 1069.4109999999998,
+    "lighthouse_web_vital{path=\"/\",metric=\"tbt_ms\"}": 172.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"cls\"}": 0.01041713147188212,
+    "lighthouse_web_vital{path=\"/\",metric=\"speed_index_ms\"}": 1069.4109999999998,
+    "lighthouse_web_vital{path=\"/\",metric=\"tti_ms\"}": 4135.495999999999,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"performance\"}": 0.81,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"lcp_ms\"}": 4007.3240000000005,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"fcp_ms\"}": 1070.306,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tbt_ms\"}": 279.0,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"cls\"}": 0.0004381322942585717,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"speed_index_ms\"}": 1070.306,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tti_ms\"}": 4007.324000000001
+  },
+  "lighthouse_A_snapshot_2026-10-17": {
+    "lighthouse_category_score{path=\"/\",category=\"performance\"}": 0.8,
+    "lighthouse_category_score{path=\"/\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"lcp_ms\"}": 4310.562,
+    "lighthouse_web_vital{path=\"/\",metric=\"fcp_ms\"}": 1068.9655000000002,
+    "lighthouse_web_vital{path=\"/\",metric=\"tbt_ms\"}": 272.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"cls\"}": 0.01041713147188212,
+    "lighthouse_web_vital{path=\"/\",metric=\"speed_index_ms\"}": 1068.9655000000002,
+    "lighthouse_web_vital{path=\"/\",metric=\"tti_ms\"}": 4310.562,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"performance\"}": 0.81,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"lcp_ms\"}": 3917.016999999999,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"fcp_ms\"}": 1067.899,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tbt_ms\"}": 317.0,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"cls\"}": 0.0004381322942585717,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"speed_index_ms\"}": 1067.899,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tti_ms\"}": 3917.0169999999994
+  },
+  "lighthouse_B": {
+    "lighthouse_category_score{path=\"/\",category=\"performance\"}": 0.92,
+    "lighthouse_category_score{path=\"/\",category=\"accessibility\"}": 0.87,
+    "lighthouse_category_score{path=\"/\",category=\"best-practices\"}": 1.0,
+    "lighthouse_category_score{path=\"/\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"lcp_ms\"}": 1890.576,
+    "lighthouse_web_vital{path=\"/\",metric=\"fcp_ms\"}": 937.576,
+    "lighthouse_web_vital{path=\"/\",metric=\"tbt_ms\"}": 26.5,
+    "lighthouse_web_vital{path=\"/\",metric=\"cls\"}": 0.1770466065543831,
+    "lighthouse_web_vital{path=\"/\",metric=\"speed_index_ms\"}": 937.576,
+    "lighthouse_web_vital{path=\"/\",metric=\"tti_ms\"}": 2243.4094,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"performance\"}": 0.99,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"accessibility\"}": 0.9,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"best-practices\"}": 1.0,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"lcp_ms\"}": 2089.168,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"fcp_ms\"}": 1056.252,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"tbt_ms\"}": 5.0,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"cls\"}": 0.0407362423299925,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"speed_index_ms\"}": 1056.252,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"tti_ms\"}": 2096.6680000000006
+  },
+  "lighthouse_B_snapshot_2026-10-17": {
+    "lighthouse_category_score{path=\"/\",category=\"performance\"}": 0.91,
+    "lighthouse_category_score{path=\"/\",category=\"accessibility\"}": 0.91,
+    "lighthouse_category_score{path=\"/\",category=\"best-practices\"}": 1.0,
+    "lighthouse_category_score{path=\"/\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"lcp_ms\"}": 2230.4269999999997,
+    "lighthouse_web_vital{path=\"/\",metric=\"fcp_ms\"}": 1055.427,
+    "lighthouse_web_vital{path=\"/\",metric=\"tbt_ms\"}": 0.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"cls\"}": 0.1770466065543831,
+    "lighthouse_web_vital{path=\"/\",metric=\"speed_index_ms\"}": 1055.427,
+    "lighthouse_web_vital{path=\"/\",metric=\"tti_ms\"}": 2237.9269999999997,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"performance\"}": 0.99,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"accessibility\"}": 0.94,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"best-practices\"}": 1.0,
+    "lighthouse_category_score{path=\"/thread/1\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"lcp_ms\"}": 2084.592,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"fcp_ms\"}": 1058.3880000000001,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"tbt_ms\"}": 2.0,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"cls\"}": 0.0407362423299925,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"speed_index_ms\"}": 1058.3880000000001,
+    "lighthouse_web_vital{path=\"/thread/1\",metric=\"tti_ms\"}": 2092.092
+  },
+  "lighthouse_A_attempt1_old_compose_api": {
+    "lighthouse_category_score{path=\"/\",category=\"performance\"}": 0.75,
+    "lighthouse_category_score{path=\"/\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"lcp_ms\"}": 4361.0555,
+    "lighthouse_web_vital{path=\"/\",metric=\"fcp_ms\"}": 1071.5304999999998,
+    "lighthouse_web_vital{path=\"/\",metric=\"tbt_ms\"}": 401.0,
+    "lighthouse_web_vital{path=\"/\",metric=\"cls\"}": 0.01041713147188212,
+    "lighthouse_web_vital{path=\"/\",metric=\"speed_index_ms\"}": 1071.5304999999998,
+    "lighthouse_web_vital{path=\"/\",metric=\"tti_ms\"}": 4361.0555,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"performance\"}": 0.77,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"accessibility\"}": 0.95,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"best-practices\"}": 0.96,
+    "lighthouse_category_score{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",category=\"seo\"}": 1.0,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"lcp_ms\"}": 3975.020999999999,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"fcp_ms\"}": 1067.823,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tbt_ms\"}": 416.99999999999955,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"cls\"}": 0.0004381322942585717,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"speed_index_ms\"}": 1067.823,
+    "lighthouse_web_vital{path=\"/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6\",metric=\"tti_ms\"}": 3975.0209999999993
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "A": {
+    "nav (A categories | B /communities)": {
+      "foreground": 1,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 5,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5,
+        "postgres-exporter (monitoring)": 1
+      },
+      "foreground_statements": [
+        "SELECT c.id, c.created_by, c.created_on_utc, c.deleted_by, c.deleted_on_utc, c.description, c.icon_file_id, c.is_deleted, c.last_modified_by, c.last_modified_on"
+      ]
+    },
+    "J1 page 1 (A feed | B /c/general)": {
+      "foreground": 4,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 10,
+        "health check SELECT 1": 1,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5
+      },
+      "foreground_statements": [
+        "SELECT c.id, c.owner_id, c.visibility = 'private'",
+        "SELECT id, category_id, category_slug, category_name, title, is_pinned,",
+        "SELECT c.id, c.owner_id, c.visibility = 'private'",
+        "SELECT id, category_id, category_slug, category_name, title, is_pinned,"
+      ]
+    },
+    "J1 reaction batch (A only)": {
+      "foreground": 2,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 6,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5
+      },
+      "foreground_statements": [
+        "SELECT target_id, reaction_count",
+        "SELECT target_id"
+      ]
+    },
+    "J2 detail + comment tree (A) | /thread/1 (B)": {
+      "foreground": 5,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 4,
+        "health check SELECT 1": 1,
+        "postgres-exporter (monitoring)": 2
+      },
+      "foreground_statements": [
+        "SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,",
+        "SELECT c0.id, c0.owner_id, c0.visibility = 'private'",
+        "SELECT id, thread_id, parent_id, path, depth, body, is_deleted,",
+        "SELECT c0.id, c0.owner_id, c0.visibility = 'private'",
+        "SELECT id, thread_id, parent_id, path, depth, body, is_deleted,"
+      ]
+    },
+    "J2 reaction batch (A only)": {
+      "foreground": 2,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 5,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5,
+        "postgres-exporter (monitoring)": 2,
+        "health check SELECT 1": 1
+      },
+      "foreground_statements": [
+        "SELECT target_id, reaction_count",
+        "SELECT target_id"
+      ]
+    },
+    "J6 search": {
+      "foreground": 1,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 6,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5
+      },
+      "foreground_statements": [
+        "SELECT id, category_id, category_slug, category_name, title, is_pinned,"
+      ]
+    },
+    "J7 profile (A stats + threads | B /u/34)": {
+      "foreground": 2,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 8,
+        "health check SELECT 1": 1,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 10,
+        "outbox relay poll": 5
+      },
+      "foreground_statements": [
+        "SELECT user_id, username, display_name, thread_count, comment_count, karma",
+        "SELECT id, category_id, category_slug, category_name, title, is_pinned,"
+      ]
+    },
+    "J3 comment create (+6 s for relay/consumers)": {
+      "foreground": 5,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 15,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 32,
+        "outbox relay poll": 17,
+        "postgres-exporter (monitoring)": 4,
+        "health check SELECT 1": 1
+      },
+      "foreground_statements": [
+        "SELECT t.id, t.body, t.category_id, t.created_by, t.created_on_utc, t.deleted_by, t.deleted_on_utc, t.is_deleted, t.is_pinned, t.last_modified_by, t.last_modifi",
+        "SELECT forum_authz.has_permission($1, $2, $3, $4) AS \"Value\"",
+        "INSERT INTO forum_content.comments (id, body, created_by, created_on_utc, deleted_by, deleted_on_utc, depth, is_deleted, last_modified_by, last_modified_on_utc,",
+        "SAVEPOINT \"__EFSavePoint\"",
+        "RELEASE SAVEPOINT \"__EFSavePoint\""
+      ]
+    },
+    "J5 reaction/vote (+6 s for relay/consumers)": {
+      "foreground": 3,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 20,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 30,
+        "outbox relay poll": 15,
+        "psql marker/meta": 1,
+        "health check SELECT 1": 1
+      },
+      "foreground_statements": [
+        "SELECT t.category_id, c.owner_id, c.visibility, t.id",
+        "SELECT forum_authz.has_permission($1, $2, $3, $4) AS \"Value\"",
+        "SELECT r.user_id, r.target_type, r.target_id, r.reaction_type, r.created_on_utc, r.value"
+      ]
+    },
+    "idle 20 s": {
+      "foreground": 0,
+      "background": {
+        "Npgsql pooled-connection reset (D9)": 49,
+        "tx control (BEGIN/COMMIT/ROLLBACK)": 90,
+        "outbox relay poll": 45,
+        "health check SELECT 1": 4
+      },
+      "foreground_statements": []
+    }
+  },
+  "B": {
+    "nav (A categories | B /communities)": {
+      "foreground": 1,
+      "background": {
+        "tx control (begin/commit/rollback)": 2,
+        "River job queue poll": 5,
+        "pgx pool ping": 3
+      },
+      "foreground_statements": [
+        "-- name: ListCommunities :many"
+      ]
+    },
+    "J1 page 1 (A feed | B /c/general)": {
+      "foreground": 0,
+      "background": {
+        "River job queue poll": 6,
+        "pgx pool ping": 2,
+        "tx control (begin/commit/rollback)": 2
+      },
+      "foreground_statements": []
+    },
+    "J1 reaction batch (A only)": {
+      "foreground": 2,
+      "background": {
+        "pgx pool ping": 5,
+        "River job queue poll": 4,
+        "River leader election": 1
+      },
+      "foreground_statements": [
+        "-- name: GetCommunityBySlug :one",
+        "-- name: ListCommunityPostsCursorNewest :many"
+      ]
+    },
+    "J2 detail + comment tree (A) | /thread/1 (B)": {
+      "foreground": 0,
+      "background": {
+        "pgx pool ping": 6,
+        "River job queue poll": 4,
+        "River leader election": 1
+      },
+      "foreground_statements": []
+    },
+    "J2 reaction batch (A only)": {
+      "foreground": 3,
+      "background": {
+        "pgx pool ping": 3,
+        "River job queue poll": 4
+      },
+      "foreground_statements": [
+        "-- name: GetPost :one",
+        "-- name: GetCommunityBySlug :one",
+        "-- name: ListComments :many"
+      ]
+    },
+    "J6 search": {
+      "foreground": 1,
+      "background": {
+        "River job queue poll": 5,
+        "pgx pool ping": 4,
+        "River leader election": 1
+      },
+      "foreground_statements": [
+        "-- name: SearchPostsPaged :many"
+      ]
+    },
+    "J7 profile (A stats + threads | B /u/34)": {
+      "foreground": 3,
+      "background": {
+        "pgx pool ping": 5,
+        "River job queue poll": 4,
+        "River leader election": 1
+      },
+      "foreground_statements": [
+        "-- name: GetUserByID :one",
+        "-- name: AuthorStats :one",
+        "-- name: PostsByAuthor :many"
+      ]
+    },
+    "J3 comment create (+6 s for relay/consumers)": {
+      "foreground": 4,
+      "background": {
+        "tx control (begin/commit/rollback)": 6,
+        "River leader election": 6,
+        "River job queue poll": 17,
+        "pgx pool ping": 14
+      },
+      "foreground_statements": [
+        "-- name: GetUserByToken :one",
+        "-- name: GetPost :one",
+        "-- name: GetCommunityBySlug :one",
+        "-- name: CreateComment :one"
+      ]
+    },
+    "J5 reaction/vote (+6 s for relay/consumers)": {
+      "foreground": 6,
+      "background": {
+        "pgx pool ping": 15,
+        "River job queue poll": 16,
+        "tx control (begin/commit/rollback)": 8,
+        "River leader election": 6
+      },
+      "foreground_statements": [
+        "-- name: GetUserByToken :one",
+        "-- name: GetPostBaseVotesForUpdate :one",
+        "-- name: GetPostVoteDir :one",
+        "-- name: DeletePostVote :exec",
+        "-- name: SumPostVotes :one",
+        "-- name: GetPostVoteDir :one"
+      ]
+    },
+    "idle 20 s": {
+      "foreground": 0,
+      "background": {
+        "pgx pool ping": 39,
+        "River job queue poll": 48,
+        "River leader election": 13,
+        "tx control (begin/commit/rollback)": 16
+      },
+      "foreground_statements": []
+    }
+  }
+}

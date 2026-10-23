@@ -1,0 +1,74 @@
+LAST SEEN   TYPE      REASON                  OBJECT                                  MESSAGE
+58m         Normal    ScalingReplicaSet       deployment/gomx                         Scaled up replica set gomx-dc6f68f55 from 0 to 1
+58m         Normal    SuccessfulCreate        statefulset/minio                       Create Pod minio-0 in StatefulSet minio successful
+58m         Normal    SuccessfulCreate        statefulset/minio                       Create Claim data-minio-0 Pod minio-0 in StatefulSet minio success
+58m         Normal    ExternalProvisioning    persistentvolumeclaim/data-postgres-0   Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+58m         Normal    SuccessfulCreate        statefulset/postgres                    Create Claim data-postgres-0 Pod postgres-0 in StatefulSet postgres success
+58m         Normal    SuccessfulCreate        statefulset/postgres                    Create Pod postgres-0 in StatefulSet postgres successful
+58m         Normal    ScalingReplicaSet       deployment/redis                        Scaled up replica set redis-75c79bffcf from 0 to 1
+58m         Normal    SuccessfulCreate        replicaset/redis-75c79bffcf             Created pod: redis-75c79bffcf-tsjhb
+58m         Normal    Scheduled               pod/redis-75c79bffcf-tsjhb              Successfully assigned gomx/redis-75c79bffcf-tsjhb to forum
+58m         Normal    SuccessfulCreate        replicaset/gomx-dc6f68f55               Created pod: gomx-dc6f68f55-rdjw8
+58m         Normal    Scheduled               pod/gomx-dc6f68f55-rdjw8                Successfully assigned gomx/gomx-dc6f68f55-rdjw8 to forum
+58m         Normal    ExternalProvisioning    persistentvolumeclaim/data-minio-0      Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+58m         Normal    ProvisioningSucceeded   persistentvolumeclaim/data-postgres-0   Successfully provisioned volume pvc-fdc1cfe9-6783-4a79-98af-958220aeb7f3
+58m         Normal    Scheduled               pod/minio-0                             Successfully assigned gomx/minio-0 to forum
+58m         Warning   FailedScheduling        pod/minio-0                             0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+58m         Normal    Scheduled               pod/postgres-0                          Successfully assigned gomx/postgres-0 to forum
+58m         Normal    Provisioning            persistentvolumeclaim/data-postgres-0   External provisioner is provisioning volume for claim "gomx/data-postgres-0"
+58m         Normal    ProvisioningSucceeded   persistentvolumeclaim/data-minio-0      Successfully provisioned volume pvc-58d80111-e2e5-4782-ab26-05fbbef0772c
+58m         Normal    Provisioning            persistentvolumeclaim/data-minio-0      External provisioner is provisioning volume for claim "gomx/data-minio-0"
+58m         Warning   FailedScheduling        pod/postgres-0                          0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+58m         Normal    Created                 pod/gomx-dc6f68f55-rdjw8                Container created
+58m         Normal    Pulled                  pod/gomx-dc6f68f55-rdjw8                Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+58m         Normal    Started                 pod/gomx-dc6f68f55-rdjw8                Container started
+58m         Normal    Pulling                 pod/postgres-0                          Pulling image "docker.io/library/postgres:18-alpine"
+58m         Normal    Pulling                 pod/redis-75c79bffcf-tsjhb              Pulling image "docker.io/library/redis:7-alpine"
+58m         Normal    Started                 pod/minio-0                             Container started
+58m         Normal    Created                 pod/minio-0                             Container created
+58m         Normal    Pulled                  pod/minio-0                             Container image "docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+57m         Normal    Pulled                  pod/redis-75c79bffcf-tsjhb              Successfully pulled image "docker.io/library/redis:7-alpine" in 4.099s (4.099s including waiting). Image size: 39067394 bytes.
+57m         Normal    Created                 pod/redis-75c79bffcf-tsjhb              Container created
+57m         Normal    Started                 pod/redis-75c79bffcf-tsjhb              Container started
+57m         Normal    Pulled                  pod/postgres-0                          Successfully pulled image "docker.io/library/postgres:18-alpine" in 10.709s (14.319s including waiting). Image size: 303729906 bytes.
+57m         Warning   Unhealthy               pod/redis-75c79bffcf-tsjhb              Liveness probe failed: command timed out: "redis-cli ping" timed out after 1s
+57m         Warning   Unhealthy               pod/redis-75c79bffcf-tsjhb              Readiness probe failed: command timed out: "redis-cli ping" timed out after 1s
+57m         Normal    Started                 pod/postgres-0                          Container started
+57m         Normal    Created                 pod/postgres-0                          Container created
+57m         Normal    Sync                    ingress/gomx                            Scheduled for sync
+57m         Normal    Pulled                  pod/gomx-dc6f68f55-rdjw8                Container image "gomx:bench" already present on machine and can be accessed by the pod
+57m         Normal    Created                 pod/gomx-dc6f68f55-rdjw8                Container created
+57m         Normal    Started                 pod/gomx-dc6f68f55-rdjw8                Container started
+56m         Warning   Unhealthy               pod/gomx-dc6f68f55-rdjw8                Startup probe failed: Get "http://10.244.133.168:8080/healthz": dial tcp 10.244.133.168:8080: connect: connection refused
+56m         Normal    ScalingReplicaSet       deployment/gomx                         Scaled up replica set gomx-dc6f68f55 from 1 to 2
+56m         Normal    Scheduled               pod/gomx-dc6f68f55-pgxds                Successfully assigned gomx/gomx-dc6f68f55-pgxds to forum
+56m         Normal    SuccessfulCreate        replicaset/gomx-dc6f68f55               Created pod: gomx-dc6f68f55-pgxds
+56m         Normal    Pulled                  pod/gomx-dc6f68f55-pgxds                Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+56m         Normal    Created                 pod/gomx-dc6f68f55-pgxds                Container created
+56m         Normal    Started                 pod/gomx-dc6f68f55-pgxds                Container started
+56m         Normal    Started                 pod/gomx-dc6f68f55-pgxds                Container started
+56m         Normal    Created                 pod/gomx-dc6f68f55-pgxds                Container created
+56m         Normal    Pulled                  pod/gomx-dc6f68f55-pgxds                Container image "gomx:bench" already present on machine and can be accessed by the pod
+54m         Normal    ScalingReplicaSet       deployment/gomx                         Scaled down replica set gomx-dc6f68f55 from 2 to 0
+54m         Normal    SuccessfulDelete        replicaset/gomx-dc6f68f55               Deleted pod: gomx-dc6f68f55-rdjw8
+54m         Normal    SuccessfulDelete        replicaset/gomx-dc6f68f55               Deleted pod: gomx-dc6f68f55-pgxds
+54m         Normal    Killing                 pod/gomx-dc6f68f55-rdjw8                Stopping container gomx
+54m         Normal    Killing                 pod/gomx-dc6f68f55-pgxds                Stopping container gomx
+54m         Normal    NoPods                  poddisruptionbudget/gomx                No matching pods found
+21m         Normal    Created                 pod/gomx-dc6f68f55-jm2l5                Container created
+21m         Normal    Created                 pod/gomx-dc6f68f55-2mvft                Container created
+21m         Normal    ScalingReplicaSet       deployment/gomx                         Scaled up replica set gomx-dc6f68f55 from 0 to 2
+21m         Normal    Scheduled               pod/gomx-dc6f68f55-2mvft                Successfully assigned gomx/gomx-dc6f68f55-2mvft to forum
+21m         Normal    SuccessfulCreate        replicaset/gomx-dc6f68f55               Created pod: gomx-dc6f68f55-jm2l5
+21m         Normal    SuccessfulCreate        replicaset/gomx-dc6f68f55               Created pod: gomx-dc6f68f55-2mvft
+21m         Normal    Started                 pod/gomx-dc6f68f55-jm2l5                Container started
+21m         Normal    Pulled                  pod/gomx-dc6f68f55-2mvft                Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+21m         Normal    Pulled                  pod/gomx-dc6f68f55-jm2l5                Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+21m         Normal    Scheduled               pod/gomx-dc6f68f55-jm2l5                Successfully assigned gomx/gomx-dc6f68f55-jm2l5 to forum
+21m         Normal    Pulled                  pod/gomx-dc6f68f55-jm2l5                Container image "gomx:bench" already present on machine and can be accessed by the pod
+21m         Normal    Started                 pod/gomx-dc6f68f55-2mvft                Container started
+21m         Normal    Started                 pod/gomx-dc6f68f55-jm2l5                Container started
+21m         Normal    Created                 pod/gomx-dc6f68f55-jm2l5                Container created
+21m         Normal    Created                 pod/gomx-dc6f68f55-2mvft                Container created
+21m         Normal    Pulled                  pod/gomx-dc6f68f55-2mvft                Container image "gomx:bench" already present on machine and can be accessed by the pod
+21m         Normal    Started                 pod/gomx-dc6f68f55-2mvft                Container started

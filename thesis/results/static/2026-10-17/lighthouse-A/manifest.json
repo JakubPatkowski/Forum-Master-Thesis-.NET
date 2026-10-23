@@ -1,0 +1,74 @@
+[
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_13_54.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_13_54.report.json",
+    "summary": {
+      "performance": 0.76,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_14_08.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_14_08.report.json",
+    "summary": {
+      "performance": 0.78,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_14_45.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_14_45.report.json",
+    "summary": {
+      "performance": 0.78,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_14_57.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_14_57.report.json",
+    "summary": {
+      "performance": 0.81,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_14_32.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost--2026_10_17_01_14_32.report.json",
+    "summary": {
+      "performance": 0.8,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_15_10.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/forum-dotnet/.bench/lighthouse/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_17_01_15_10.report.json",
+    "summary": {
+      "performance": 0.81,
+      "accessibility": 0.95,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  }
+]

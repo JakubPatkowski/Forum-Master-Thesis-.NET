@@ -1,0 +1,26 @@
+# A (forum-dotnet) — 2026-10-17T23:57:57+02:00
+## 31-feat-phase-13---ab-benchmark...origin/31-feat-phase-13---ab-benchmark
+ M CLAUDE.md
+ M backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Configurations/CommentConfiguration.cs
+ M backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Configurations/ThreadConfiguration.cs
+ M backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Migrations/ContentDbContextModelSnapshot.cs
+ M docs/architecture/AB-ALIGNMENT-INSTRUCTIONS-A.md
+ M docs/architecture/AB-ALIGNMENT-INSTRUCTIONS-B.md
+ M docs/architecture/AB-SCOPE-ALIGNMENT-2026-10.md
+ M docs/architecture/AB-START-HERE.md
+ M scripts/ab-round.sh
+ M scripts/ab_report.py
+ M scripts/ab_window.py
+ M scripts/lib-bench.sh
+ M thesis/results/AB-COMPARISON-v1.md
+?? backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Migrations/20261017211738_AddOwnerActivityIndexes.Designer.cs
+?? backend/src/Modules/Content/Forum.Modules.Content/Infrastructure/Persistence/Migrations/20261017211738_AddOwnerActivityIndexes.cs
+?? docs/architecture/AB-TEST-RUN-FABLE5-PROMPT.md
+?? thesis/results/campaign-20261017-2357/
+?? thesis/results/rounds/20261017-2332-verify/
+
+57f63d0ebce7771cf08e6ea1db8b89244b44dc82 2026-10-17 22:29:25 +0200 docs: A/B alignment, v1 comparison doc, Day-0 and dry-run results
+67b2648aef34e177a12b9d41aab10ddc56b7810b 2026-10-17 22:29:12 +0200 fix: pin MinIO Testcontainers image so the integration suite runs
+afa8f2b6ec52cbf202fb884534a320ff28c435a6 2026-10-17 22:29:02 +0200 fix: A-12 private-category read gate in Content
+34fc4102b7006ab4dffaf1bd08a4fb803d024d4c 2026-10-17 22:28:50 +0200 feat: A/B benchmark harness v1 (shared k6 adapters, gomx bench deploy, ab-round orchestrator)
+4224315d80785a26dbb04176855dd522086e55ec 2026-10-17 22:28:27 +0200 feat: A/B tooling parity (PG 18, RUM web vitals, Lighthouse, trivy, Sonar, dev-loop bench, CI)

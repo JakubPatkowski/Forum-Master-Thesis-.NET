@@ -1,0 +1,58 @@
+{
+  "architecture": "A (React SPA + .NET 10 modular monolith)",
+  "target": "a",
+  "profile": "demo",
+  "mix_version": "v0-day0",
+  "repeats": 3,
+  "started_utc": "2026-10-17T00:06:00Z",
+  "base_url": "https://forum.local",
+  "git_sha": "ee0faee8dc823f58533f361d1b82284d62ff65c5",
+  "git_dirty": true,
+  "harness_git_sha": "ee0faee8dc823f58533f361d1b82284d62ff65c5",
+  "deployed_image": "forum-dotnet-api:git-ee0faee-dirty",
+  "image_digest": "docker://sha256:9aaf7d8b1f3405aabd6803da0070ba88920eb3de5a53b1a855532f504dc5b827",
+  "k6_version": "k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)",
+  "replicas_fixed": 2,
+  "hpa": "absent (fixed replicas)",
+  "resources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "250m",
+      "memory": "256Mi"
+    }
+  },
+  "seed": {
+    "database": "forum_net",
+    "users": 800,
+    "threads": 1600,
+    "comments": 9050,
+    "reactions": 15033
+  },
+  "node": {
+    "kubectl_nodes": "forum   Ready   control-plane   94d   v1.35.1   192.168.49.2   <none>   Debian GNU/Linux 12 (bookworm)   5.15.146.1-microsoft-standard-WSL2   docker://29.2.1",
+    "kubectl_top_node": "forum   718m   8%    4726Mi   39%",
+    "minikube_vm": "8000000000 nanocpus / 10737418240 bytes",
+    "wsl_kernel": "5.15.146.1-microsoft-standard-WSL2",
+    "wsl_mem_mb": "11966"
+  },
+  "k6_host": "WSL host, outside the cluster, through ingress-nginx (plan \u00a79c design decision)",
+  "rate_limiter": {
+    "raised_for_run": {
+      "RateLimiting__Global__PermitLimit": "1000000",
+      "RateLimiting__Auth__PermitLimit": "1000000"
+    },
+    "restored_to": {
+      "global_env_override": null,
+      "auth_env_override": null,
+      "configmap_global": "1000",
+      "configmap_auth": "50"
+    }
+  },
+  "tracing": {
+    "OTEL_TRACES_SAMPLER": null,
+    "Observability__TracingEnabled": "false"
+  }
+}
