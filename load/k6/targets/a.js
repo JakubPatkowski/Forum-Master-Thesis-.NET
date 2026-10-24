@@ -18,7 +18,11 @@
 // matching `comment created` envelope back (A's floor = the outbox relay poll, Messaging:PollIntervalMilliseconds).
 // REAL_SPA=1 (2026-10-24, deviation D1): the read journeys replay the REAL React pages' cold-cache request sets
 // instead of the idealized core calls — see the `spa` section below and the derived table in targets/README.md.
-// Unset, every journey is byte-for-byte the h4 behaviour.
+// Harness h6 (2026-10-24, pre-final audit): J2 fires detail + tree in PARALLEL and J7 stats + threads in parallel (the
+// SPA mounts both queries at once over one HTTP/2 connection; h5 serialized them = +1 RTT on A per journey); J4 posts
+// an UNTAGGED thread into the VU's per-user public space (B's `postableSlug` rule; tags are an A-only feature outside
+// the shared core); J9 messages a RANDOM seeded friend (friends listed once per session in setup — B's /messages rule)
+// with one conversation per (user, friend) pair; WS holds count early closes.
 
 import encoding from 'k6/encoding';
 import { sleep } from 'k6';
@@ -26,11 +30,11 @@ import { Counter } from 'k6/metrics';
 import ws from 'k6/ws';
 
 import {
-  addReaction, apiBatch, attachFile, batchGet, commentTree, commitUpload, createComment, createThread, initiateUpload,
-  listCategories, login, openDirectConversation, reactionBatch, realtimeTicket, removeReaction, searchThreads,
-  sendMessage, spaPaths, threadDetail, threadFeed, uploadToPresignedUrl, userStats, userThreads,
+  addReaction, apiBatch, attachFile, batchGet, commitUpload, createComment, createThread, initiateUpload,
+  listCategories, listFriends, login, openDirectConversation, reactionBatch, realtimeTicket, removeReaction,
+  searchThreads, sendMessage, spaPaths, threadFeed, uploadToPresignedUrl,
 } from '../lib/api.js';
-import { SEARCH_WORDS as SHARED_WORDS, makePng, randomTagSlugs, threadBody, threadTitle } from '../lib/assets.js';
+import { SEARCH_WORDS as SHARED_WORDS, makePng, threadBody, threadTitle } from '../lib/assets.js';
 import { track } from '../lib/track.js';
 
 export const NAME = 'a';
@@ -153,9 +157,22 @@ export function setup(baseUrl, poolSize, loginStaggerMs) {
   if (sessions.length === 0) {
     throw new Error('No logins succeeded — is the database seeded? (make seed ARGS="--benchmark --cluster")');
   }
-  // J9 peer: the next pool member (an active, ordinary account; A's privacy default = everyone may message).
+  // J9 peers: the session's accepted friends (the Benchmark seed mirrors B's ring + chords, so every bench user has
+  // ~6) — the same per-session discovery B does from its /messages inbox, one setup-tagged call per pool member.
+  // A's privacy default lets anyone message anyone, so a friendless account (Development seed) falls back to the
+  // next pool member instead of skipping J9 — recorded as a warning, never silent.
+  let fallbacks = 0;
   for (let i = 0; i < sessions.length; i++) {
-    sessions[i].peerUserId = sessions[(i + 1) % sessions.length].userId;
+    const res = listFriends(baseUrl, sessions[i].auth, SETUP);
+    const peers = res.status === 200 ? (res.json('items') || []).map((f) => f.userId).filter(Boolean) : [];
+    if (peers.length === 0) {
+      fallbacks++;
+      peers.push(sessions[(i + 1) % sessions.length].userId);
+    }
+    sessions[i].peers = peers;
+  }
+  if (fallbacks > 0) {
+    console.warn(`A: ${fallbacks} of ${sessions.length} sessions have no friends — J9 falls back to the next pool member for them.`);
   }
 
   // Public categories only: the pool users are ordinary accounts, and a private-category 404 would
@@ -210,9 +227,9 @@ function batchFeedIds(baseUrl, body, session) {
 // seeded like by the same user (≈0.2% of pairs) only turns that first PUT into a no-op.
 const likedByThisVu = new Map();
 
-// J9 conversation per VU: opened on the first DM (get-or-create, 200), reused afterwards — like the SPA's open
-// chat dock. Keyed by the session user so a re-login never crosses conversations.
-const conversationByUser = new Map();
+// J9 conversations per VU: opened on the first DM to a given friend (get-or-create, 200), reused afterwards — like
+// the SPA's open chat dock. Keyed by (session user, friend) so a re-login never crosses conversations.
+const conversationByPair = new Map();
 
 // --- REAL_SPA — the cold-cache waterfall of the real React pages (deviation D1) --------------------------------------
 //
@@ -455,8 +472,13 @@ export const journeys = {
       return;
     }
     const { thread } = pick.thread(data);
-    track(threadDetail(baseUrl, thread.id, readOpts(session, DISCARD)), 'thread');
-    const tree = commentTree(baseUrl, thread.id, readOpts(session));
+    // useThread + useComments mount together → both requests leave at once (one HTTP/2 connection); only the like
+    // batch depends on the tree's ids. (h5 issued detail → tree sequentially: one extra RTT counted against A.)
+    const [detail, tree] = apiBatch([
+      batchGet(baseUrl, spaPaths.thread(thread.id), 'thread', readOpts(session, DISCARD)),
+      batchGet(baseUrl, spaPaths.comments(thread.id), 'comments', readOpts(session)),
+    ]);
+    track(detail, 'thread');
     let batchIds = [thread.id];
     let batchType = 'thread';
     if (track(tree, 'comments')) {
@@ -481,9 +503,12 @@ export const journeys = {
    * PUT straight to MinIO → commit (backend stats the object + sniffs the magic bytes + reads the IHDR) → create
    * the thread with the inline-media token in its body → attach the file to the thread. One journey = one user
    * action ("post a thread with a picture"); B does the same with its server-side ingest + 202/poll (targets/b.js).
+   * Placement and content follow B's rules so the write work is the same shape: the thread goes into the VU's
+   * per-user public space (B: `postableSlug(userIndex)` — a membership rule A does not have, so the index rule is
+   * mirrored) and carries NO tags (tags are an A-only feature outside the shared core; h5 added 1–3 tag upserts).
    */
-  J4(baseUrl, data, session, pick) {
-    const space = pick.space(data);
+  J4(baseUrl, data, session) {
+    const space = data.spaces[session.userIndex % data.spaces.length];
     const png = makePng(J4_IMAGE_PX, J4_IMAGE_PX, Math.random);
     const initiate = authed(baseUrl, session, (auth) => initiateUpload(baseUrl, auth, 'image/png', png.size));
     if (!track(initiate, 'file_initiate', [200, 201])) {
@@ -499,7 +524,7 @@ export const journeys = {
     }
     const body = `${threadBody(Math.random)}\n\n![photo](image:${fileId})\n`;
     const created = authed(baseUrl, session, (auth) =>
-      createThread(baseUrl, auth, space.key, threadTitle(Math.random), body, randomTagSlugs(Math.random)));
+      createThread(baseUrl, auth, space.key, threadTitle(Math.random), body, []));
     if (!track(created, 'thread_create', [200, 201])) {
       return;
     }
@@ -528,30 +553,37 @@ export const journeys = {
     track(searchThreads(baseUrl, pick.word(), readOpts(session, DISCARD)), 'search');
   },
 
-  /** J7 — profile: stats + the user's threads (the SPA's /u/[userId] core calls). */
+  /** J7 — profile: stats + the user's threads (the SPA's /u/[userId] core calls, both at mount → parallel). */
   J7(baseUrl, data, session, pick) {
     if (REAL_SPA) {
       spa.profile(baseUrl, data, session, pick);
       return;
     }
     const { thread } = pick.thread(data);
-    track(userStats(baseUrl, thread.ownerId, readOpts(session, DISCARD)), 'user_stats');
-    track(userThreads(baseUrl, thread.ownerId, readOpts(session, DISCARD)), 'user_threads');
+    const [stats, threads] = apiBatch([
+      batchGet(baseUrl, spaPaths.userStats(thread.ownerId), 'user_stats', readOpts(session, DISCARD)),
+      batchGet(baseUrl, spaPaths.userThreads(thread.ownerId), 'user_threads', readOpts(session, DISCARD)),
+    ]);
+    track(stats, 'user_stats');
+    track(threads, 'user_threads');
   },
 
-  /** J9 — direct message to the VU's peer: open-or-get the conversation once, then one send per journey. */
+  /** J9 — direct message to a random seeded friend: open-or-get that conversation once per pair, then one send. */
   J9(baseUrl, _data, session, pick) {
-    if (!session.peerUserId) {
+    const peers = session.peers || [];
+    if (peers.length === 0) {
       return;
     }
-    let conversationId = conversationByUser.get(session.userId);
+    const peer = peers[Math.floor(Math.random() * peers.length)];
+    const key = `${session.userId}:${peer}`;
+    let conversationId = conversationByPair.get(key);
     if (!conversationId) {
-      const opened = authed(baseUrl, session, (auth) => openDirectConversation(baseUrl, auth, session.peerUserId));
+      const opened = authed(baseUrl, session, (auth) => openDirectConversation(baseUrl, auth, peer));
       if (!track(opened, 'dm_open', [200, 201])) {
         return;
       }
       conversationId = opened.json('conversationId');
-      conversationByUser.set(session.userId, conversationId);
+      conversationByPair.set(key, conversationId);
     }
     const body = pick.commentBody();
     track(authed(baseUrl, session, (auth) => sendMessage(baseUrl, auth, conversationId, body, DISCARD)), 'dm_send', [200, 201]);
@@ -639,7 +671,7 @@ export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe = n
             const t0 = Date.now();
             const res = authed(baseUrl, session, (auth) =>
               createComment(baseUrl, auth, thread.id, `probe ${t0} ${pick.commentBody()}`, { endpoint: 'probe_comment' }));
-            if (res.status === 201 || res.status === 200) {
+            if (track(res, 'probe_comment', [200, 201])) {
               const id = res.json('commentId');
               counters.probesSent.add(1);
               const seen = early.get(id);
@@ -665,10 +697,13 @@ export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe = n
     });
     socket.on('error', () => counters.errors.add(1));
     socket.on('close', () => {
+      const now = Date.now();
+      if (now - startedAt < holdMs - 2000) {
+        counters.earlyClose.add(1); // the server/hub ended the hold, not our timer (e.g. a slow-consumer policy)
+      }
       if (!probe) {
         return;
       }
-      const now = Date.now();
       for (const t0 of pending.values()) {
         if (now - t0 > probe.timeoutMs) {
           counters.probesLost.add(1); // never pushed back within the hold

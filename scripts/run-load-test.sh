@@ -134,7 +134,15 @@ for var in CAP_STEPS CAP_RAMP_S CAP_HOLD_S CAP_MAX_VUS WS_HOLD_MS LOGIN_STAGGER_
 done
 # K6_OUT (e.g. csv=…/points.csv.gz) streams every metric point out of k6 — ab-chaos.sh needs the per-second error
 # timeline around an injected fault; measured rounds leave it unset (the summary blocks are enough and cheaper).
-k6 run --quiet ${K6_OUT:+--out "$K6_OUT"} \
+# Hard upper bound per profile (h6): a k6 that hangs (broker, DNS, a stuck VU) must END the run as INVALID instead
+# of stalling an unattended round forever. Generous — ~2× the nominal setup + scenario length. Override: K6_TIMEOUT_S.
+case "$PROFILE" in
+  smoke|warmup)      K6_TIMEOUT_S="${K6_TIMEOUT_S:-600}" ;;
+  demo|stress|spike) K6_TIMEOUT_S="${K6_TIMEOUT_S:-1800}" ;;
+  capacity)          K6_TIMEOUT_S="${K6_TIMEOUT_S:-2400}" ;;
+  soak)              K6_TIMEOUT_S="${K6_TIMEOUT_S:-$(( (${SOAK_MINUTES:-60} + 25) * 60 ))}" ;;
+esac
+timeout --kill-after=30 "$K6_TIMEOUT_S" k6 run --quiet ${K6_OUT:+--out "$K6_OUT"} \
   -e TARGET="$TARGET" \
   -e PROFILE="$PROFILE" \
   -e BASE_URL="$BASE_URL" \
@@ -142,12 +150,22 @@ k6 run --quiet ${K6_OUT:+--out "$K6_OUT"} \
   ${LOGIN_POOL:+-e LOGIN_POOL="$LOGIN_POOL"} \
   "${K6_EXTRA[@]}" \
   "$REPO_ROOT/load/k6/main.js" >"$RAW_OUT" &
-K6_PID=$!
-echo "$K6_PID" >"$K6_PID_FILE"
-wait "$K6_PID"
+WRAP_PID=$!
+# The sampler wants k6's OWN pid (load-generator CPU/RSS), which is timeout's child.
+K6_PID=""
+for _ in $(seq 1 50); do
+  K6_PID="$(pgrep -P "$WRAP_PID" -x k6 2>/dev/null | head -1 || true)"
+  [[ -n "$K6_PID" ]] && break
+  sleep 0.1
+done
+echo "${K6_PID:-$WRAP_PID}" >"$K6_PID_FILE"
+wait "$WRAP_PID"
 K6_RC=$?
 set -e
 stop_sampler
+if (( K6_RC == 124 || K6_RC == 137 )); then
+  die "k6 exceeded ${K6_TIMEOUT_S}s and was killed (rc $K6_RC) — the run is INVALID; raw output kept at $RAW_OUT"
+fi
 
 # --- persist artifacts ---------------------------------------------------------------------------
 if $CLUSTER_UP && [[ -s "$SAMPLES_TMP" ]]; then

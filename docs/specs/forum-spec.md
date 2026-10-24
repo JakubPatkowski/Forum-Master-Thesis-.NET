@@ -1,7 +1,12 @@
 # Forum A/B Shared Functional Specification
 
 > **STATUS: DRAFT — pending Hubert's review and sign-off.** §9 (protocol) and §10 (decisions) rewritten 2026-10-24 to
-> the implemented harness h4 / mix v2; the rest of the document is unchanged since 2026-07-18.
+> the implemented harness h5 / mix v2; the rest of the document is unchanged since 2026-07-18.
+>
+> **Measured versions (frozen 2026-10-24):** A = tag `thesis-v2-a` (`e838b3f`), B = tag `thesis-v2-b` (`a457114`,
+> branch `feature/master-thesis`). B's `master` is not measured. **Working rules for the B repository (what must not
+> change, what is allowed, gates) are in [`B-BENCHMARK-GUARDRAILS.md`](B-BENCHMARK-GUARDRAILS.md)** — binding for
+> humans and AI agents alike.
 > Drafted 2026-07-18 by the A side from a read-only audit of both repositories
 > (`forum-dotnet` @ branch `27-feat-phase-11---social`; `gomx` @ `eeca387`). This document is
 > cited across `forum-dotnet` (CLAUDE.md, several ADRs) as "the authoritative shared A/B
@@ -183,7 +188,7 @@ match.
 - PostgreSQL 18, MinIO pinned versions; broker/redis per side.
 - Rate limiters set to documented benchmark values (recorded in meta.json) on both sides.
 
-## 9. Measurement protocol (binding version: harness h4 / mix v2, 2026-10-24)
+## 9. Measurement protocol (binding version: harness h5 / mix v2, 2026-10-24)
 
 > Rewritten 2026-10-24 from the proposal of 2026-07-18 to the protocol that is actually implemented and was used
 > for the v1 round (`thesis/results/rounds/20261018-0051-v1/`) and that the v2 round uses. The single source of the

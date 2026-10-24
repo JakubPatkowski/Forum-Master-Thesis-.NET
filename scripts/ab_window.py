@@ -33,13 +33,22 @@ import urllib.request
 CLASSES = (("db", ("postgres-",)), ("bus", ("rabbitmq-", "redis-")), ("storage", ("minio-",)), ("frontend", ("frontend-",)))
 
 
-def query(prom, expr, at):
+def query(prom, expr, at, attempts=4):
+    """One instant query; retried (the port-forward hiccups for a few seconds now and then — h6)."""
     url = f"{prom}/api/v1/query?" + urllib.parse.urlencode({"query": expr, "time": f"{at:.3f}"})
-    with urllib.request.urlopen(url, timeout=30) as response:
-        body = json.load(response)
-    if body.get("status") != "success":
-        raise RuntimeError(f"{expr}: {body}")
-    return body["data"]["result"]
+    last = None
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(url, timeout=30) as response:
+                body = json.load(response)
+            if body.get("status") != "success":
+                raise RuntimeError(f"{expr}: {body}")
+            return body["data"]["result"]
+        except Exception as exc:  # noqa: BLE001 — any transport/JSON failure is retried the same way
+            last = exc
+            if attempt + 1 < attempts:
+                time.sleep(5 * (attempt + 1))
+    raise RuntimeError(f"Prometheus query failed after {attempts} attempts: {last}")
 
 
 def by_pod(result, scale=1.0):
@@ -57,6 +66,33 @@ def classify(pod, app_prefix):
         if pod.startswith(prefixes):
             return name
     return "other"
+
+
+def step_metrics(prom, sel, app_prefix, start, plan):
+    """Per-step CPU (cores) of the app / db / bus classes + the shared ingress for step-tagged profiles (capacity,
+    spike): the hold window of every step is read exactly like the whole-scenario window (h6 — the v1 campaign
+    computed these by hand into capacity-per-step-cpu.json). Steps without hold offsets (older archives) are skipped."""
+    out = []
+    for s in plan.get("steps") or []:
+        hs, he = s.get("hold_start_s"), s.get("hold_end_s")
+        if hs is None or he is None:
+            continue
+        w = max(1, int(round(he - hs)))
+        at = start + he
+        cpu = by_pod(query(prom, f"sum by (pod) (increase(container_cpu_usage_seconds_total{{{sel}}}[{w}s]))", at))
+        classes = {}
+        for pod, core_s in cpu.items():
+            c = classify(pod, app_prefix)
+            classes[c] = classes.get(c, 0.0) + core_s / w
+        ingress = scalar(query(prom, f'sum(increase(container_cpu_usage_seconds_total{{namespace="ingress-nginx",container=""}}[{w}s]))', at)) / w
+        p95 = (s.get("core_duration_ms") or s.get("duration_ms") or {}).get("p95")
+        out.append({
+            "step": s["step"], "offered_jps": s.get("offered_jps"), "vus": s.get("vus"),
+            "achieved_jps": s.get("achieved_jps"), "p95_ms": p95, "failed_pct": s.get("failed_pct"),
+            "app_cores": round(classes.get("app", 0.0), 3), "db_cores": round(classes.get("db", 0.0), 3),
+            "bus_cores": round(classes.get("bus", 0.0), 3), "ingress_cores": round(ingress, 3),
+        })
+    return out
 
 
 def main():
@@ -151,6 +187,11 @@ def main():
         namespace["idle_avg_cores"] = idle["namespace_avg_cores"]
         namespace["marginal_cpu_ms_per_journey"] = per_j(max(0.0, namespace["cpu_core_s"] - idle["namespace_avg_cores"] * w))
 
+    steps = None
+    plan = jdoc.get("capacity") or jdoc.get("spike")
+    if plan:
+        steps = step_metrics(args.prom, sel, args.app_prefix, start, plan)
+
     out = {
         "target": args.target, "namespace": ns, "window": window, "window_s": w,
         "http_journeys": journeys,
@@ -158,6 +199,7 @@ def main():
         "ingress_nginx": {"cpu_core_s": round(ingress_cpu, 3), "cpu_ms_per_journey": per_j(ingress_cpu)},
         "node_busy_cores_avg": round(node_busy, 3),
         "idle": idle,
+        "steps": steps,
         "queried_at": time.time(),
     }
     json.dump(out, open(f"{args.run_dir}/resources.json", "w"), indent=2)

@@ -74,7 +74,12 @@ const WS_PROBE_TIMEOUT_MS = Number(__ENV.WS_PROBE_TIMEOUT_MS || 15_000);
 //     v2 numbers are not comparable to v1.
 // HARNESS_VERSION: bumps whenever adapter behaviour changes without a weight change.
 export const MIX_VERSION = 'v2';
-export const HARNESS_VERSION = 'h5-2026-10-24'; // h5: REAL_SPA variant (D1); measured apps carry card-excerpt parity (D2)
+// h6 (2026-10-24, pre-final audit): semantic failures count (checks threshold + run.json validity), a CORE journey
+// trend without J4 drives the headline p95 and the capacity knee (B's J4 waits ≥ 1 s for its upload poll by design),
+// A's J2/J7 fire their independent calls in parallel like the SPA, A's J4 posts untagged into a per-user space and A's
+// J9 messages a random seeded friend (both = B's rules), capacity logs one session per VU, finer capacity steps,
+// WS early-close counter. Not comparable to h5 at the per-journey level for J2/J4/J7/J9.
+export const HARNESS_VERSION = 'h6-2026-10-24';
 const MIX = [
   ['J1', 30], // space feed (page + 30% cursor page 2)
   ['J2', 20], // thread open
@@ -112,14 +117,20 @@ const wsProbesReceived = new Counter('forum_ws_probes_received');
 const wsProbesLost = new Counter('forum_ws_probes_lost');
 const wsProbesLate = new Counter('forum_ws_probes_late'); // pushed back later than the timeout (delivered, slow)
 const wsProbesUnresolved = new Counter('forum_ws_probes_unresolved');
+const wsEarlyClose = new Counter('forum_ws_early_close'); // a hold that ended > 2 s before holdMs (server/hub closed it)
 const wsReceipt = new Trend('forum_ws_receipt', true); // write request start → matching push on the writer's socket
 const WS_COUNTERS = {
-  subscribed: wsSubscribed, notifications: wsNotifications, errors: wsErrors,
+  subscribed: wsSubscribed, notifications: wsNotifications, errors: wsErrors, earlyClose: wsEarlyClose,
   probesSent: wsProbesSent, probesReceived: wsProbesReceived, probesLost: wsProbesLost, probesLate: wsProbesLate,
   probesUnresolved: wsProbesUnresolved, receipt: wsReceipt,
 };
 const journeys = new Counter('forum_journeys');
 const journeyDuration = new Trend('forum_journey_duration', true);
+// CORE journeys = everything except J4. B's J4 waits ≥ 1 s for the browser-cadence upload poll by design (D12), so with
+// J4 at 3 % of the mix the all-journey p95 of B is in effect the p98 of its other journeys; the headline latency and
+// the capacity knee therefore read this trend, while J4 keeps its own per-journey row (and the all-journey trend stays).
+const CORE_EXCLUDED = new Set(['J4']);
+const journeyCoreDuration = new Trend('forum_journey_core_duration', true);
 
 /** Runs one journey: tags every request in fn with {journey}, times it, counts it. */
 function runJourney(name, fn) {
@@ -128,7 +139,11 @@ function runJourney(name, fn) {
   try {
     fn();
   } finally {
-    journeyDuration.add(Date.now() - started, { journey: name });
+    const elapsed = Date.now() - started;
+    journeyDuration.add(elapsed, { journey: name });
+    if (!CORE_EXCLUDED.has(name)) {
+      journeyCoreDuration.add(elapsed, { journey: name });
+    }
     journeys.add(1, { journey: name });
     delete exec.vu.tags.journey;
   }
@@ -136,9 +151,10 @@ function runJourney(name, fn) {
 
 // --- step plans (time-tagged windows of a scenario) ------------------------------------------------------------
 // capacity: offered load in journeys/s per step; each step = a short ramp (tagged 'ramp', excluded) + a hold
-// (tagged c01, c02, …). Defaults finish in 8 min so setup (~2.5 min of A logins) + run stays inside A's 15-min
-// access-token lifetime. Override with CAP_STEPS="25,50,…" CAP_RAMP_S=15 CAP_HOLD_S=45 CAP_MAX_VUS=300.
-const CAP_STEPS = (__ENV.CAP_STEPS || '25,50,100,150,200,300,400,500').split(',').map(Number).filter((n) => n > 0);
+// (tagged c01, c02, …). h6: 50-j/s steps from 150 up (v1's 200→300→400 placed both knees ±50 j/s; A sustained 300,
+// B 200) — 11 steps × 60 s = 11 min; writes re-login on 401, so A's 15-min access token is no longer a bound.
+// Override with CAP_STEPS="25,50,…" CAP_RAMP_S=15 CAP_HOLD_S=45 CAP_MAX_VUS=300.
+const CAP_STEPS = (__ENV.CAP_STEPS || '25,50,100,150,200,250,300,350,400,450,500').split(',').map(Number).filter((n) => n > 0);
 const CAP_RAMP_S = Number(__ENV.CAP_RAMP_S || 15);
 const CAP_HOLD_S = Number(__ENV.CAP_HOLD_S || 45);
 const CAP_MAX_VUS = Number(__ENV.CAP_MAX_VUS || 300);
@@ -190,6 +206,7 @@ const PROFILES = {
     thresholds: {
       'http_req_failed{scenario:http}': ['rate<0.01'],
       'http_req_duration{scenario:http}': ['p(95)<500'],
+      'checks{scenario:http}': ['rate>0.99'],
     },
   },
   // Discarded before every measured run (ab-round.sh): all journeys warm, ~8 % writes (see WARMUP_MIX).
@@ -218,6 +235,7 @@ const PROFILES = {
     thresholds: {
       'http_req_failed{scenario:http}': ['rate<0.02'],
       'http_req_duration{scenario:http}': ['p(95)<800'],
+      'checks{scenario:http}': ['rate>0.99'], // semantic failures (B's 303-on-rejection, A's non-2xx) fail the run too
       forum_ws_subscribed: ['count>0'],
     },
   },
@@ -245,7 +263,9 @@ const PROFILES = {
     },
   },
   capacity: {
-    loginPool: 200,
+    // One session per VU: the open model may run every one of CAP_MAX_VUS http VUs plus the WS holders at once, and
+    // two VUs sharing a session would desynchronize A's per-VU like state (J5 no-ops) — 200 sessions were too few.
+    loginPool: CAP_MAX_VUS + 20,
     openModel: true,
     steps: CAP_PLAN,
     http: {
@@ -282,6 +302,7 @@ const PROFILES = {
     thresholds: {
       'http_req_failed{scenario:http}': ['rate<0.01'],
       'http_req_duration{scenario:http}': ['p(95)<800'],
+      'checks{scenario:http}': ['rate>0.99'],
       forum_ws_subscribed: ['count>0'],
     },
   },
@@ -349,9 +370,17 @@ function buildOptions() {
     forum_rate_limited: ['count<1'],
     'data_received{scenario:http}': ['count>=0'],
     'data_sent{scenario:http}': ['count>=0'],
+    // Materialized for every profile: the share of failed checks (semantic failures that come back with a 2xx/3xx —
+    // B's 303-on-rejection, synthetic 598/599 statuses — and plain non-2xx) lands in the journeys block and in
+    // run.json; the pass/fail profiles above additionally threshold it. http_req_failed alone sees only status ≥ 400.
+    'checks{scenario:http}': profile.thresholds['checks{scenario:http}'] || ['rate>=0'],
+    'checks{scenario:ws}': ['rate>=0'],
+    'forum_journey_core_duration{scenario:http}': ['max>=0'],
   };
   for (const endpoint of target.ENDPOINTS) {
     thresholds[`http_req_duration{endpoint:${endpoint}}`] = ['max>=0']; // informational, never fails
+    thresholds[`forum_check_ok{endpoint:${endpoint}}`] = ['count>=0']; // accepted / rejected per endpoint (lib/track.js)
+    thresholds[`forum_check_failed{endpoint:${endpoint}}`] = ['count>=0'];
   }
   for (const j of JOURNEYS) {
     // Informational: materializes the per-journey sub-metrics (journeys/sec + duration) in the summary.
@@ -362,6 +391,7 @@ function buildOptions() {
     for (const step of STEP_PLAN) {
       thresholds[`forum_journeys{step:${step.tag}}`] = ['count>=0'];
       thresholds[`forum_journey_duration{step:${step.tag}}`] = ['max>=0'];
+      thresholds[`forum_journey_core_duration{step:${step.tag}}`] = ['max>=0'];
       thresholds[`http_req_failed{step:${step.tag}}`] = ['rate>=0'];
       thresholds[`http_req_duration{step:${step.tag}}`] = ['max>=0'];
     }
@@ -490,8 +520,10 @@ export function wsHold(data) {
     sleep(3); // ticket/handshake prerequisite failed (already tracked by the adapter) — back off
     return;
   }
-  check(res, { 'ws handshake 101': (r) => r && r.status === 101 });
-  journeys.add(1, { journey: 'J8' });
+  const connected = check(res, { 'ws handshake 101': (r) => r && r.status === 101 });
+  if (connected) {
+    journeys.add(1, { journey: 'J8' }); // a failed handshake is a check failure, not a served hold
+  }
   delete exec.vu.tags.journey;
 }
 
@@ -516,32 +548,38 @@ function stepSummary(data, lines) {
   let knee = null;
   lines.push('');
   lines.push(open
-    ? 'capacity step  offered  achieved   p50    p95    p99  failed%'
-    : 'spike phase        vus  jour/s   p50    p95    p99  failed%');
+    ? 'capacity step  offered  achieved   p50    p95    p99  failed%   (core journeys = without J4)'
+    : 'spike phase        vus  jour/s   p50    p95    p99  failed%   (core journeys = without J4)');
   for (const step of STEP_PLAN) {
     const c = data.metrics[`forum_journeys{step:${step.tag}}`];
     const d = data.metrics[`forum_journey_duration{step:${step.tag}}`];
+    const core = data.metrics[`forum_journey_core_duration{step:${step.tag}}`];
     const f = data.metrics[`http_req_failed{step:${step.tag}}`];
     const count = c ? c.values.count : 0;
     const holdS = step.holdEndS - step.holdStartS;
     const achieved = count / holdS;
     const dv = d ? d.values : {};
+    // The knee reads the CORE trend (without J4 — B's ≥ 1-s upload poll would otherwise trip the 500-ms rule on its
+    // own at 3 % of the mix); the all-journey percentiles stay in the row for the record.
+    const cv = core ? core.values : dv;
     const failedPct = f ? f.values.rate * 100 : null;
     const row = {
       step: step.tag, offered_jps: open ? step.rate : null, vus: open ? null : step.rate, hold_s: holdS,
+      hold_start_s: step.holdStartS, hold_end_s: step.holdEndS,
       achieved_jps: round3(achieved), journeys: count,
       duration_ms: { med: dv.med ?? null, p95: dv['p(95)'] ?? null, p99: dv['p(99)'] ?? null },
+      core_duration_ms: { med: cv.med ?? null, p95: cv['p(95)'] ?? null, p99: cv['p(99)'] ?? null },
       failed_pct: round3(failedPct),
     };
-    const breached = open && ((dv['p(95)'] ?? 0) > 500 || (failedPct ?? 0) > 1 || achieved < 0.95 * step.rate);
+    const breached = open && ((cv['p(95)'] ?? 0) > 500 || (failedPct ?? 0) > 1 || achieved < 0.95 * step.rate);
     if (breached && knee === null) {
-      knee = { step: step.tag, offered_jps: step.rate, reason: (dv['p(95)'] ?? 0) > 500 ? 'p95>500ms'
+      knee = { step: step.tag, offered_jps: step.rate, reason: (cv['p(95)'] ?? 0) > 500 ? 'core p95>500ms'
         : (failedPct ?? 0) > 1 ? 'failed>1%' : 'achieved<95%' };
     }
     steps.push(row);
     lines.push(
       `  ${step.tag}`.padEnd(14) + String(step.rate).padStart(8) + achieved.toFixed(1).padStart(10) +
-      fmt(dv.med).padStart(6) + fmt(dv['p(95)']).padStart(7) + fmt(dv['p(99)']).padStart(7) +
+      fmt(cv.med).padStart(6) + fmt(cv['p(95)']).padStart(7) + fmt(cv['p(99)']).padStart(7) +
       (failedPct === null ? '-' : failedPct.toFixed(2)).padStart(9) + (breached ? '  <-' : ''));
   }
   const dropped = data.metrics.dropped_iterations ? data.metrics.dropped_iterations.values.count : 0;
@@ -558,8 +596,8 @@ function stepSummary(data, lines) {
   }
   const base = steps.find((s) => s.step === 'base-1');
   const recovery = steps.filter((s) => s.step.startsWith('recover-')).map((s) => ({
-    phase: s.step, p95_ms: s.duration_ms.p95,
-    p95_vs_base: base && base.duration_ms.p95 ? round3(s.duration_ms.p95 / base.duration_ms.p95) : null,
+    phase: s.step, p95_ms: s.core_duration_ms.p95,
+    p95_vs_base: base && base.core_duration_ms.p95 ? round3(s.core_duration_ms.p95 / base.core_duration_ms.p95) : null,
   }));
   lines.push(`recovery vs baseline p95: ${recovery.map((r) => `${r.phase} ${r.p95_vs_base ?? '-'}×`).join(', ')}`);
   return { steps, recovery, spike_vus: SPIKE_VUS, base_vus: SPIKE_BASE_VUS };
@@ -574,15 +612,32 @@ export function handleSummary(data) {
   const totals = data.metrics['http_req_duration{scenario:http}'] || data.metrics.http_req_duration;
   const failed = data.metrics['http_req_failed{scenario:http}'] || data.metrics.http_req_failed;
   const reqs = data.metrics.http_reqs;
+  // checks{scenario:http}: every track() check of the measured scenario — passes/fails count semantic failures that
+  // http_req_failed cannot see (status < 400 with a rejection inside).
+  const checksHttp = data.metrics['checks{scenario:http}'];
+  const checksFailed = checksHttp ? checksHttp.values.fails : null;
+  const checksPassed = checksHttp ? checksHttp.values.passes : null;
+  const checksFailedPct = checksHttp && checksPassed + checksFailed > 0
+    ? round3((checksFailed / (checksPassed + checksFailed)) * 100) : null;
   if (reqs && totals) {
     lines.push(`http_reqs=${reqs.values.count}  p95=${fmt(totals.values['p(95)'])}ms  p99=${fmt(totals.values['p(99)'])}ms  ` +
-      `failed=${failed ? (failed.values.rate * 100).toFixed(2) : '?'}%  (scenario ${SCENARIO_S}s, setup excluded)`);
+      `failed=${failed ? (failed.values.rate * 100).toFixed(2) : '?'}%  checks_failed=${checksFailed ?? '?'}` +
+      `${checksFailedPct === null ? '' : ` (${checksFailedPct.toFixed(2)}%)`}  (scenario ${SCENARIO_S}s, setup excluded)`);
   }
 
+  // Per-endpoint accepted/rejected outcomes (lib/track.js) — the write rows feed the dataset-delta validity check.
+  const endpointOutcomes = {};
   lines.push('');
-  lines.push('endpoint          count    avg    med  p(95)  p(99)    max');
+  lines.push('endpoint          count    avg    med  p(95)  p(99)    max      ok  failed');
   for (const endpoint of target.ENDPOINTS) {
     const m = data.metrics[`http_req_duration{endpoint:${endpoint}}`];
+    const okC = data.metrics[`forum_check_ok{endpoint:${endpoint}}`];
+    const failC = data.metrics[`forum_check_failed{endpoint:${endpoint}}`];
+    const okN = okC ? okC.values.count : 0;
+    const failN = failC ? failC.values.count : 0;
+    if (okN + failN > 0) {
+      endpointOutcomes[endpoint] = { ok: okN, failed: failN };
+    }
     if (!m || !m.values.count) {
       continue;
     }
@@ -590,7 +645,8 @@ export function handleSummary(data) {
     lines.push(
       endpoint.padEnd(16) +
       String(v.count).padStart(7) + fmt(v.avg).padStart(7) + fmt(v.med).padStart(7) +
-      fmt(v['p(95)']).padStart(7) + fmt(v['p(99)']).padStart(7) + fmt(v.max).padStart(7));
+      fmt(v['p(95)']).padStart(7) + fmt(v['p(99)']).padStart(7) + fmt(v.max).padStart(7) +
+      String(okN).padStart(8) + String(failN).padStart(8));
   }
 
   // Per-journey table + the shared A/B journey-summary object (schema: forum-spec §9.4). per_second is computed
@@ -619,7 +675,12 @@ export function handleSummary(data) {
   }
   const all = data.metrics.forum_journeys;
   const allD = data.metrics.forum_journey_duration;
+  const coreD = data.metrics['forum_journey_core_duration{scenario:http}'] || data.metrics.forum_journey_core_duration;
   const httpJourneys = Object.entries(journeySummary).filter(([j]) => j !== 'J8').reduce((n, [, v]) => n + v.count, 0);
+  if (coreD) {
+    lines.push(`core journeys (without J4): med=${fmt(coreD.values.med)}ms  p95=${fmt(coreD.values['p(95)'])}ms  ` +
+      `p99=${fmt(coreD.values['p(99)'])}ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)`);
+  }
   const received = data.metrics['data_received{scenario:http}'];
   const sent = data.metrics['data_sent{scenario:http}'];
 
@@ -630,6 +691,7 @@ export function handleSummary(data) {
   const wsSub = data.metrics.forum_ws_subscribed;
   const wsNotif = data.metrics.forum_ws_notifications;
   const wsErr = data.metrics.forum_ws_errors;
+  const wsEarly = data.metrics.forum_ws_early_close;
   const pSent = data.metrics.forum_ws_probes_sent;
   const pRecv = data.metrics.forum_ws_probes_received;
   const pLost = data.metrics.forum_ws_probes_lost;
@@ -640,7 +702,7 @@ export function handleSummary(data) {
   const lossPct = count(pSent) > 0 ? round3((count(pLost) / count(pSent)) * 100) : null;
   if (wsSub || wsNotif) {
     lines.push('');
-    lines.push(`ws: subscribed=${count(wsSub)}  notifications=${count(wsNotif)}  errors=${count(wsErr)}`);
+    lines.push(`ws: subscribed=${count(wsSub)}  notifications=${count(wsNotif)}  errors=${count(wsErr)}  early_close=${count(wsEarly)}`);
     if (count(pSent) > 0) {
       const rv = receipt ? receipt.values : {};
       lines.push(`ws receipt probes: sent=${count(pSent)}  received=${count(pRecv)}  late=${count(pLate)}  lost=${count(pLost)}  ` +
@@ -695,13 +757,19 @@ export function handleSummary(data) {
       soak_vus: PROFILE === 'soak' ? SOAK_VUS : null, spike_vus: PROFILE === 'spike' ? SPIKE_VUS : null,
     },
     window, journeys: journeySummary,
+    endpoints: endpointOutcomes,
     totals: {
       http_journeys: httpJourneys,
       http_journeys_per_second: SCENARIO_S > 0 ? round3(httpJourneys / SCENARIO_S) : null,
       all_journeys_k6: all ? all.values.count : 0,
       journey_duration_ms: allD ? { med: allD.values.med, p95: allD.values['p(95)'], p99: allD.values['p(99)'] } : null,
+      // Core = without J4 (see CORE_EXCLUDED); the report's headline latency.
+      journey_core_duration_ms: coreD ? { med: coreD.values.med, p95: coreD.values['p(95)'], p99: coreD.values['p(99)'] } : null,
       http_reqs: reqs ? reqs.values.count : 0,
       http_req_failed_pct: failed ? round3(failed.values.rate * 100) : null,
+      checks_passed: checksPassed,
+      checks_failed: checksFailed,
+      checks_failed_pct: checksFailedPct,
       http_req_p95_ms: totals ? totals.values['p(95)'] : null,
       data_received_bytes: received ? received.values.count : null,
       data_sent_bytes: sent ? sent.values.count : null,
@@ -709,7 +777,7 @@ export function handleSummary(data) {
       rate_limited: limited ? limited.values.count : 0,
       relogins: relogins ? relogins.values.count : 0,
       ws: {
-        subscribed: count(wsSub), notifications: count(wsNotif), errors: count(wsErr),
+        subscribed: count(wsSub), notifications: count(wsNotif), errors: count(wsErr), early_close: count(wsEarly),
         probes_sent: count(pSent), probes_received: count(pRecv), probes_late: count(pLate), probes_lost: count(pLost),
         probes_unresolved: count(pUnres), probe_loss_pct: lossPct,
         probe_late_pct: count(pSent) > 0 ? round3((count(pLate) / count(pSent)) * 100) : null,

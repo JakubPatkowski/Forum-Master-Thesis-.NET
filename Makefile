@@ -6,7 +6,7 @@ SHELL := /usr/bin/env bash
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
         images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-tls tunnels load bench reload-bench security-scan sonar pods logs urls \
-        mon-up mon-down mon-check ab-round ab-report ab-chaos gomx-deploy bench-b load-b lighthouse lighthouse-cluster artifact-size
+        mon-up mon-down mon-check ab-round ab-report ab-status ab-chaos gomx-deploy bench-b load-b lighthouse lighthouse-cluster artifact-size
 
 help: ## Show this help
 	@awk 'BEGIN{FS=":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
@@ -82,6 +82,8 @@ ab-round: ## FULL A/B measurement round, unattended (make ab-round ARGS="--plan 
 	@bash scripts/ab-round.sh $(ARGS)
 ab-report: ## Re-generate REPORT.md + round-summary.json of a round archive (make ab-report ARGS=thesis/results/rounds/<dir>)
 	@python3 scripts/ab_report.py $(ARGS)
+ab-status: ## State of the latest (or given) A/B round: RUNNING/DONE/FAILED/STALLED, progress, heartbeat, last log lines
+	@bash scripts/ab-status.sh $(ARGS)
 ab-chaos: ## Fault-injection run under demo load, one target (make ab-chaos ARGS="--target a --fault both") → thesis/results/chaos/
 	@bash scripts/ab-chaos.sh $(ARGS)
 lighthouse-cluster: ## Lighthouse against the benchmark deployment (make lighthouse-cluster ARGS="--target a --preset mobile")

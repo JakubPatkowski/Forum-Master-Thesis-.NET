@@ -8,12 +8,15 @@ of A and B (the repeat is the experimental unit: every repeat starts from a rese
   * exact two-sided Mann-Whitney U (the null distribution of U is enumerated — with 5 vs 5 the smallest
     reachable p is 2/252 = 0.0079, which is why that value appears so often in small rounds);
   * Cliff's delta (effect size in [-1, 1]; |δ| ≥ 0.474 is conventionally "large");
-  * Holm-Bonferroni adjustment of the Welch p-values within a family of metrics (the headline table is one
-    family, the per-journey table another), so a thesis table never reports 20 raw p-values as if they were one.
+  * Holm-Bonferroni adjustment within a family of metrics (the headline table is one family, the per-journey
+    table another), so a thesis table never reports 20 raw p-values as if they were one. h6: the PRIMARY test is
+    the exact Mann-Whitney U (non-parametric — the methodology's choice for latency/resource distributions);
+    Welch's t and its own Holm-adjusted p are reported as the parametric cross-check.
 
-A verdict is attached per metric: `distinct` (Holm-adjusted p < 0.05), `raw-only` (raw p < 0.05, not after the
-correction — report as suggestive), `no difference detected` (raw p ≥ 0.05 — NOT "equal": no equivalence test
-is run) or `n<3` (too few repeats for any verdict).
+A verdict is attached per metric: `distinct` (MW Holm-adjusted p < 0.05), `raw-only` (raw MW p < 0.05, not after
+the correction — report as suggestive), `underpowered` (even complete separation could not pass Holm at this n —
+e.g. 5 vs 5 over 14 tests: 0.0079 × 14 > 0.05; N ≥ 10 per side resolves it), `no difference detected` (raw p ≥ 0.05
+— NOT "equal": no equivalence test is run) or `n<3` (too few repeats for any verdict).
 
 CLI:  ab_stats.py <round-dir>          # prints the tables; also importable (run_round_tests)
 """
@@ -173,21 +176,29 @@ def holm(pvalues):
     return adjusted
 
 
-def verdict(n_a, n_b, p_raw, p_adj):
+def verdict(n_a, n_b, p_raw, p_adj, min_p=None, family_size=1):
+    """Primary verdict from the exact Mann-Whitney p (non-parametric, methodology §10) after Holm over the family.
+    `underpowered` = even complete separation of the two samples (min_p = 2/C(n_a+n_b, n_a)) could not pass the
+    Holm-adjusted threshold at this n — e.g. 5 vs 5 over 14 tests (0.0079 × 14 > 0.05); N ≥ 10 per side resolves it."""
     if n_a < 3 or n_b < 3:
         return "n<3"
     if p_adj is not None and p_adj < ALPHA:
         return "distinct"
+    unreachable = min_p is not None and min_p * family_size > ALPHA
     if p_raw is not None and p_raw < ALPHA:
-        return "raw-only"
+        return "raw-only (underpowered for Holm)" if unreachable else "raw-only"
+    if unreachable:
+        return "underpowered"
     return "no difference detected"
 
 
 # ---------------------------------------------------------------- round-level driver
 
 HEADLINE = [
-    ("journey latency median (ms)", "totals", "journey_med_ms"),
-    ("journey latency p95 (ms)", "totals", "journey_p95_ms"),
+    ("journey latency median (ms, core = without J4)", "totals", "journey_core_med_ms"),
+    ("journey latency p95 (ms, core = without J4)", "totals", "journey_core_p95_ms"),
+    ("journey latency median (ms, all journeys)", "totals", "journey_med_ms"),
+    ("journey latency p95 (ms, all journeys)", "totals", "journey_p95_ms"),
     ("HTTP request p95 (ms)", "totals", "http_req_p95_ms"),
     ("KiB received per journey", "totals", "kib_received_per_journey"),
     ("app CPU per journey (ms)", "resources", "app_cpu_ms_per_journey"),
@@ -228,10 +239,15 @@ def compare(label, va, vb):
 
 
 def run_family(rows):
-    adj = holm([r["welch_p"] for r in rows])
-    for r, p_adj in zip(rows, adj):
-        r["holm_p"] = p_adj
-        r["verdict"] = verdict(r["n_a"], r["n_b"], r["welch_p"], p_adj)
+    """Holm over the exact Mann-Whitney p-values (primary — non-parametric, methodology §10); Welch's t is kept as
+    the parametric cross-check (its own Holm-adjusted p in `welch_holm_p`). h6: before, the verdict read Welch."""
+    adj_mw = holm([r["mw_p"] for r in rows])
+    adj_w = holm([r["welch_p"] for r in rows])
+    for r, p_mw, p_w in zip(rows, adj_mw, adj_w):
+        r["holm_p"] = p_mw
+        r["welch_holm_p"] = p_w
+        r["family_size"] = len(rows)
+        r["verdict"] = verdict(r["n_a"], r["n_b"], r["mw_p"], p_mw, r.get("mw_min_p"), len(rows))
     return rows
 
 
@@ -279,13 +295,14 @@ def markdown_tables(tests):
                 continue
             n = f"n = {rows[0]['n_a']} vs {rows[0]['n_b']}"
             md.append(f"#### `{p}` — {name} ({n}; Holm over {len(rows)} tests)")
-            md.append("| metric | A mean | B mean | B−A | Welch p | MW exact p | Cliff's δ | Holm p | verdict |")
-            md.append("|---|---|---|---|---|---|---|---|---|")
+            md.append("| metric | A mean | B mean | B−A | MW exact p | MW Holm p | Cliff's δ | Welch p | Welch Holm p | verdict |")
+            md.append("|---|---|---|---|---|---|---|---|---|---|")
             for r in rows:
                 md.append("| " + " | ".join([
                     r["metric"], _fmt(r["mean_a"], 3), _fmt(r["mean_b"], 3),
                     ("–" if r["diff_pct"] is None else f"{r['diff_pct']:+.1f} %"),
-                    _fmt_p(r["welch_p"]), _fmt_p(r["mw_p"]), _fmt(r["cliffs_delta"]), _fmt_p(r.get("holm_p")),
+                    _fmt_p(r["mw_p"]), _fmt_p(r.get("holm_p")), _fmt(r["cliffs_delta"]),
+                    _fmt_p(r["welch_p"]), _fmt_p(r.get("welch_holm_p")),
                     r["verdict"]]) + " |")
             md.append("")
     return "\n".join(md)

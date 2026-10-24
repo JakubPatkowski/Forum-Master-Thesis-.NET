@@ -119,8 +119,12 @@ def fig_capacity(summary: dict, out: str) -> None:
     off = [a["capacity"]["steps"][s]["offered_jps"] for s in steps]
     acha = [m(a["capacity"]["steps"][s]["achieved_jps"]) for s in steps]
     achb = [m(b["capacity"]["steps"][s]["achieved_jps"]) for s in steps]
-    p95a = [m(a["capacity"]["steps"][s]["p95_ms"]) for s in steps]
-    p95b = [m(b["capacity"]["steps"][s]["p95_ms"]) for s in steps]
+    # h6 archives carry the core p95 (every journey except J4 — the knee's own rule); older ones only the all-journey p95.
+    def step_p95(side, s):
+        st = side["capacity"]["steps"][s]
+        return m(st["core_p95_ms"] if st.get("core_p95_ms") else st["p95_ms"])
+    p95a = [step_p95(a, s) for s in steps]
+    p95b = [step_p95(b, s) for s in steps]
 
     fig, ax = plt.subplots(figsize=(6.4, 4.4))
     ax.plot([0, max(off)], [0, max(off)], ls="--", color="#737b8a", lw=1, label="obsłużono wszystko")
@@ -258,8 +262,16 @@ def fig_repeats(summary: dict, stats: dict | None, out: str) -> None:
     a, b = summary.get("demo/a"), summary.get("demo/b")
     if not a or not b:
         return
+    # h6 archives: the core p95 (without J4) is the headline latency and carries its own test row; older archives
+    # have only the all-journey p95 (the stats label changed with h6 — both spellings are looked up).
+    if a["totals"].get("journey_core_p95_ms") and b["totals"].get("journey_core_p95_ms"):
+        p95_row = ("p95 podróży bez J4 [ms]", a["totals"]["journey_core_p95_ms"], b["totals"]["journey_core_p95_ms"],
+                   "journey latency p95 (ms, core = without J4)")
+    else:
+        p95_row = ("p95 podróży [ms]", a["totals"]["journey_p95_ms"], b["totals"]["journey_p95_ms"],
+                   "journey latency p95 (ms, all journeys)")
     rows = [
-        ("p95 podróży [ms]", a["totals"]["journey_p95_ms"], b["totals"]["journey_p95_ms"], "journey latency p95 (ms)"),
+        p95_row,
         ("CPU bazy / podróż [ms]", a["resources"]["db_cpu_ms_per_journey"], b["resources"]["db_cpu_ms_per_journey"], "DB CPU per journey (ms)"),
         ("CPU aplikacji / podróż [ms]", a["resources"]["app_cpu_ms_per_journey"], b["resources"]["app_cpu_ms_per_journey"], "app CPU per journey (ms)"),
         ("CPU przestrz. nazw marg. / podróż [ms]", a["resources"]["ns_marginal_cpu_ms_per_journey"], b["resources"]["ns_marginal_cpu_ms_per_journey"], "WHOLE namespace MARGINAL CPU per journey (ms)"),

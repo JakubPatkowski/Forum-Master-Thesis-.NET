@@ -32,6 +32,12 @@
 // Harness h4 (2026-10-18): J4 (+image) and J9 as above, AUTH_READS=1 sends the session cookie on reads (signed-in
 // browsing, D3 — B then pays per-card vote/membership lookups), J8 holds send receipt probes (own comment →
 // matching broadcast frame).
+// Harness h6 (2026-10-24): rejected writes are visible — J9's handler (thesis-v3-b) redirects a rejected DM to
+// /messages/{peer}?error=rejected, a rejected/failed post never lands on /thread/0 (regex requires a positive id), and
+// every failed check counts (main.js `checks{scenario:http}` threshold + run.json validity). Receipt-probe caveat: the
+// probe POST runs inside the socket's event loop, so a frame B publishes BEFORE writing the 303 is only timestamped
+// after the POST returns — B's receipt latency is bounded below by its own comment round-trip (≈ the POST time) and
+// is an upper bound of the true push latency (D14).
 
 import { sleep } from 'k6';
 import http from 'k6/http';
@@ -104,7 +110,7 @@ function login(baseUrl, username) {
   const res = http.post(`${baseUrl}/login`, { username, password: PASSWORD },
     { ...noJar(), redirects: 0, tags: { endpoint: 'login' }, headers: { ...BROWSER_HEADERS } });
   const cookie = res.cookies && res.cookies.forum_session;
-  if (res.status !== 303 || !cookie || cookie.length === 0) {
+  if (res.status !== 303 || !cookie || cookie.length === 0 || !cookie[0].value) {
     return { auth: null, status: res.status };
   }
   return { auth: `forum_session=${cookie[0].value}`, status: res.status };
@@ -295,7 +301,9 @@ export const journeys = {
     const res = postForm(baseUrl, '/posts', {
       community: postableSlug(session.userIndex), title: threadTitle(Math.random), body,
     }, 'thread_create', session);
-    const ok = res.status === 303 && /\/thread\/\d+$/.test(location(res));
+    // A rejected post redirects to `/`; a store error used to redirect to `/thread/0` (fixed in thesis-v3-b, and the
+    // regex requires a positive id anyway) — both are failures of the journey, recorded as a failed check.
+    const ok = res.status === 303 && /\/thread\/[1-9]\d*$/.test(location(res));
     track({ status: ok ? 303 : (res.status === 303 ? 599 : res.status) }, 'thread_create', [303]);
   },
 
@@ -316,14 +324,20 @@ export const journeys = {
     track(get(baseUrl, `/u/${thread.ownerId}`, 'profile', { session }), 'profile');
   },
 
-  /** J9 — direct message to one of the session's seeded friends (303 either way — see the header). */
+  /**
+   * J9 — direct message to one of the session's seeded friends. Accepted → 303 /messages/{peer}; rejected (not
+   * friends, empty body, unknown peer) → 303 /messages/{peer}?error=rejected (thesis-v3-b) — the marker turns the
+   * rejection into a failed check; a redirect anywhere else (/login?next=…) fails the same way.
+   */
   J9(baseUrl, _data, session, pick) {
     const peers = session.peers || [];
     if (peers.length === 0) {
       return;
     }
     const peer = peers[Math.floor(Math.random() * peers.length)];
-    track(postForm(baseUrl, `/messages/${peer}`, { body: pick.commentBody() }, 'dm_send', session), 'dm_send', [303]);
+    const res = postForm(baseUrl, `/messages/${peer}`, { body: pick.commentBody() }, 'dm_send', session);
+    const ok = res.status === 303 && location(res).replace(/^https?:\/\/[^/]+/, '') === `/messages/${peer}`;
+    track({ status: ok ? 303 : (res.status === 303 ? 599 : res.status) }, 'dm_send', [303]);
   },
 
   /** nav — list spaces. */
@@ -379,7 +393,9 @@ export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe = n
           const res = postForm(baseUrl, `/posts/${thread.id}/comments`, { body: `probe ${t0} ${pick.commentBody()}` },
             'probe_comment', session);
           const m = location(res).match(/#comment-(\d+)$/);
-          if (res.status === 303 && m) {
+          const accepted = res.status === 303 && Boolean(m);
+          track({ status: accepted ? 303 : (res.status === 303 ? 599 : res.status) }, 'probe_comment', [303]);
+          if (accepted) {
             const id = m[1];
             counters.probesSent.add(1);
             const seen = early.get(id);
@@ -421,10 +437,13 @@ export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe = n
     });
     socket.on('error', () => counters.errors.add(1));
     socket.on('close', () => {
+      const now = Date.now();
+      if (now - startedAt < holdMs - 2000) {
+        counters.earlyClose.add(1); // the hub closed us (slow-consumer policy 1008, pod gone), not our timer
+      }
       if (!probe) {
         return;
       }
-      const now = Date.now();
       for (const t0 of pending.values()) {
         if (now - t0 > probe.timeoutMs) {
           counters.probesLost.add(1);

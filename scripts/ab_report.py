@@ -41,7 +41,15 @@ def stat(values):
     mean = statistics.mean(values)
     sd = statistics.stdev(values) if n > 1 else 0.0
     ci = t975(n - 1) * sd / math.sqrt(n) if n > 1 else None
-    return {"n": n, "mean": mean, "sd": sd, "ci95": ci, "min": min(values), "max": max(values), "values": values}
+    # Median + IQR (p25/p75) next to mean ± CI (h6): the methodology reports both for non-normal performance data.
+    median = statistics.median(values)
+    if n >= 2:
+        q = statistics.quantiles(values, n=4, method="inclusive")
+        p25, p75 = q[0], q[2]
+    else:
+        p25 = p75 = values[0]
+    return {"n": n, "mean": mean, "sd": sd, "ci95": ci, "median": median, "p25": p25, "p75": p75,
+            "min": min(values), "max": max(values), "values": values}
 
 
 def load(path):
@@ -110,12 +118,18 @@ def aggregate(runs):
             "http_journeys_per_second": stat([t.get("http_journeys_per_second") for t in tot]),
             "journey_p95_ms": stat([(t.get("journey_duration_ms") or {}).get("p95") for t in tot]),
             "journey_med_ms": stat([(t.get("journey_duration_ms") or {}).get("med") for t in tot]),
+            # Core = without J4 (h6): B's J4 waits ≥ 1 s for its upload poll by design, which turned B's all-journey
+            # p95 into the p98 of its other journeys. Absent in archives older than h6.
+            "journey_core_p95_ms": stat([(t.get("journey_core_duration_ms") or {}).get("p95") for t in tot]),
+            "journey_core_med_ms": stat([(t.get("journey_core_duration_ms") or {}).get("med") for t in tot]),
             "http_req_p95_ms": stat([t.get("http_req_p95_ms") for t in tot]),
             "http_req_failed_pct": stat([t.get("http_req_failed_pct") for t in tot]),
+            "checks_failed_pct": stat([t.get("checks_failed_pct") for t in tot]),
+            "checks_failed": stat([t.get("checks_failed") for t in tot]),
             "http_reqs": stat([t.get("http_reqs") for t in tot]),
             "kib_received_per_journey": stat([t.get("kib_received_per_journey") for t in tot]),
         }
-        entry["ws"] = {k: stat([(t.get("ws") or {}).get(k) for t in tot]) for k in ("subscribed", "notifications", "errors")}
+        entry["ws"] = {k: stat([(t.get("ws") or {}).get(k) for t in tot]) for k in ("subscribed", "notifications", "errors", "early_close")}
         # J8 receipt probes (harness h4): latency from the write's HTTP response to the matching push, and loss.
         entry["ws"].update({
             "probes_sent": stat([(t.get("ws") or {}).get("probes_sent") for t in tot]),
@@ -153,22 +167,32 @@ def aggregate(runs):
             }
         k6 = [r["k6"] for r in rs if r.get("k6")]
         entry["k6"] = {"cpu_pct_max": stat([x["cpu_pct_max"] for x in k6]), "rss_mib_max": stat([x["rss_mib_max"] for x in k6])}
-        caps = [d.get("capacity") for d in jd if d.get("capacity")]
+        caps = [(r["journeys_doc"].get("capacity"), r.get("resources") or {}) for r in rs if r["journeys_doc"].get("capacity")]
         if caps:
             steps = {}
-            for c in caps:
+            for c, res_doc in caps:
+                # Per-step CPU (h6, ab_window.py `steps`): app / db / ingress cores over each hold window.
+                res_steps = {s["step"]: s for s in (res_doc.get("steps") or [])}
                 for s in c["steps"]:
-                    st = steps.setdefault(s["step"], {"offered_jps": s["offered_jps"], "achieved": [], "p95": [], "p99": [], "failed": []})
+                    st = steps.setdefault(s["step"], {"offered_jps": s["offered_jps"], "achieved": [], "p95": [], "p99": [],
+                                                      "core_p95": [], "failed": [], "app_cores": [], "db_cores": [], "ingress_cores": []})
                     st["achieved"].append(s["achieved_jps"])
                     st["p95"].append(s["duration_ms"]["p95"])
                     st["p99"].append(s["duration_ms"]["p99"])
+                    st["core_p95"].append((s.get("core_duration_ms") or s["duration_ms"]).get("p95"))
                     st["failed"].append(s["failed_pct"])
+                    rs_step = res_steps.get(s["step"]) or {}
+                    st["app_cores"].append(rs_step.get("app_cores"))
+                    st["db_cores"].append(rs_step.get("db_cores"))
+                    st["ingress_cores"].append(rs_step.get("ingress_cores"))
             entry["capacity"] = {
-                "sustained_jps": stat([c.get("sustained_jps") for c in caps]),
-                "knees": [c.get("knee") for c in caps],
-                "dropped_iterations": stat([c.get("dropped_iterations") for c in caps]),
+                "sustained_jps": stat([c.get("sustained_jps") for c, _ in caps]),
+                "knees": [c.get("knee") for c, _ in caps],
+                "dropped_iterations": stat([c.get("dropped_iterations") for c, _ in caps]),
                 "steps": {k: {"offered_jps": v["offered_jps"], "achieved_jps": stat(v["achieved"]),
-                              "p95_ms": stat(v["p95"]), "p99_ms": stat(v["p99"]), "failed_pct": stat(v["failed"])}
+                              "p95_ms": stat(v["p95"]), "p99_ms": stat(v["p99"]), "core_p95_ms": stat(v["core_p95"]),
+                              "failed_pct": stat(v["failed"]), "app_cores": stat(v["app_cores"]),
+                              "db_cores": stat(v["db_cores"]), "ingress_cores": stat(v["ingress_cores"])}
                           for k, v in sorted(steps.items())},
             }
         summary[f"{profile}/{target}"] = entry
@@ -182,6 +206,15 @@ def fmt(s, digits=1, ci=True):
     if ci and s.get("ci95") is not None and s["n"] > 1:
         v += f" ± {s['ci95']:.{digits}f}"
     return v
+
+
+def fmt_iqr(s, digits=1):
+    """median [p25–p75] over the repeats (h6); the bare median when there are fewer than 3 repeats."""
+    if not s or s.get("median") is None:
+        return "–"
+    if s["n"] < 3:
+        return f"{s['median']:.{digits}f}"
+    return f"{s['median']:.{digits}f} [{s['p25']:.{digits}f}–{s['p75']:.{digits}f}]"
 
 
 def ratio(a, b):
@@ -218,8 +251,10 @@ def report(round_dir, runs, summary):
     md = [f"# A/B measurement round `{os.path.basename(round_dir)}`", ""]
     md.append("Generated by `scripts/ab_report.py` from the raw archive in this directory — do not edit by hand; "
               "re-run the script instead. Statistics: mean ± 95 % CI (Student t over the valid repeats; every repeat "
-              "starts from a reseeded dataset and fresh pods). Ratios are B/A. *distinct* = the two 95 % CIs do not "
-              "overlap; *overlap* = this round cannot separate the two means.")
+              "starts from a reseeded dataset and fresh pods) and, per side, median [p25–p75] over the same repeats. "
+              "Ratios are B/A of the means. *distinct* = the two 95 % CIs do not overlap; *overlap* = this round cannot "
+              "separate the two means by that heuristic — the hypothesis tests at the end are the verdict that counts. "
+              "*core* latency = every journey except J4 (B's J4 waits ≥ 1 s for its upload poll by design, D12).")
     md.append("")
     md.append(table([
         ["plan", rnd.get("plan", "?"), "order", rnd.get("order", "?")],
@@ -262,14 +297,20 @@ def report(round_dir, runs, summary):
         md.append("### Throughput, errors, overall latency")
         rows = []
         for label, key, d in (("HTTP journeys / s (scenario window)", "http_journeys_per_second", 2),
-                              ("journey latency median (ms)", "journey_med_ms", 1),
-                              ("journey latency p95 (ms)", "journey_p95_ms", 1),
+                              ("journey latency median (ms) — core, without J4", "journey_core_med_ms", 1),
+                              ("journey latency p95 (ms) — core, without J4", "journey_core_p95_ms", 1),
+                              ("journey latency median (ms) — all journeys", "journey_med_ms", 1),
+                              ("journey latency p95 (ms) — all journeys incl. J4", "journey_p95_ms", 1),
                               ("HTTP request p95 (ms)", "http_req_p95_ms", 1),
                               ("HTTP requests per run", "http_reqs", 0),
                               ("KiB received per journey (wire: gzip + TLS)", "kib_received_per_journey", 2),
-                              ("failed requests (%)", "http_req_failed_pct", 2)):
-            rows.append([label, fmt(ta.get(key), d), fmt(tb.get(key), d), ratio(ta.get(key), tb.get(key)), overlap(ta.get(key), tb.get(key))])
-        md.append(table(rows, ["metric", "A", "B", "B/A", "95 % CIs"]))
+                              ("failed requests (%, status ≥ 400)", "http_req_failed_pct", 2),
+                              ("failed checks (%, incl. rejections answered with a 3xx)", "checks_failed_pct", 2)):
+            if not ta.get(key) and not tb.get(key):
+                continue  # metric absent from this archive's harness version
+            rows.append([label, fmt(ta.get(key), d), fmt(tb.get(key), d), ratio(ta.get(key), tb.get(key)), overlap(ta.get(key), tb.get(key)),
+                         fmt_iqr(ta.get(key), d), fmt_iqr(tb.get(key), d)])
+        md.append(table(rows, ["metric", "A", "B", "B/A", "95 % CIs", "A median [IQR]", "B median [IQR]"]))
         md.append("")
         md.append("Closed-model profiles fix the offered load (VUs × think time), so journeys/s is near-equal by design; "
                   "the comparison lives in latency and in the resources each architecture spends on the same work.")
@@ -312,14 +353,17 @@ def report(round_dir, runs, summary):
                                   ("WHOLE namespace memory avg (MiB)", "ns_mem_avg_mib", 0),
                                   ("ingress-nginx CPU per journey (ms, shared edge)", "ingress_cpu_ms_per_journey", 3),
                                   ("node busy cores avg (context)", "node_busy_cores_avg", 2)):
-                rows.append([label, fmt(ra.get(key), d), fmt(rb.get(key), d), ratio(ra.get(key), rb.get(key)), overlap(ra.get(key), rb.get(key))])
-            md.append(table(rows, ["metric", "A", "B", "B/A", "95 % CIs"]))
+                rows.append([label, fmt(ra.get(key), d), fmt(rb.get(key), d), ratio(ra.get(key), rb.get(key)), overlap(ra.get(key), rb.get(key)),
+                             fmt_iqr(ra.get(key), d), fmt_iqr(rb.get(key), d)])
+            md.append(table(rows, ["metric", "A", "B", "B/A", "95 % CIs", "A median [IQR]", "B median [IQR]"]))
             md.append("")
 
         wa, wb = (a or {}).get("ws", {}), (b or {}).get("ws", {})
         if (wa.get("subscribed") or {}).get("mean") or (wb.get("subscribed") or {}).get("mean"):
             md.append("### WebSocket holds (J8) — semantics differ (A: per-view subscription; B: broadcast to every socket)")
             rows = [[k, fmt(wa.get(k), 0), fmt(wb.get(k), 0)] for k in ("subscribed", "notifications", "errors")]
+            if (wa.get("early_close") or {}).get("n") or (wb.get("early_close") or {}).get("n"):
+                rows.append(["holds closed early by the server (< hold − 2 s)", fmt(wa.get("early_close"), 0), fmt(wb.get("early_close"), 0)])
             if (wa.get("probes_sent") or {}).get("mean") or (wb.get("probes_sent") or {}).get("mean"):
                 rows += [["receipt probes sent (comment → own push)", fmt(wa.get("probes_sent"), 0), fmt(wb.get("probes_sent"), 0)],
                          ["receipt probes received", fmt(wa.get("probes_received"), 0), fmt(wb.get("probes_received"), 0)],
@@ -341,35 +385,47 @@ def report(round_dir, runs, summary):
         if ca or cb:
             md.append("### Capacity (open model): offered vs achieved journeys/s per step (H2)")
             steps = sorted(set((ca or {}).get("steps", {}).keys()) | set((cb or {}).get("steps", {}).keys()))
+            has_cores = any((((ca or {}).get("steps", {}).get(s, {}).get("db_cores") or {}).get("n")
+                             or ((cb or {}).get("steps", {}).get(s, {}).get("db_cores") or {}).get("n")) for s in steps)
             rows = []
             for s in steps:
                 sa = (ca or {}).get("steps", {}).get(s, {})
                 sb = (cb or {}).get("steps", {}).get(s, {})
-                rows.append([s, str(sa.get("offered_jps") or sb.get("offered_jps")),
-                             fmt(sa.get("achieved_jps")), fmt(sa.get("p95_ms"), 0), fmt(sa.get("failed_pct"), 2),
-                             fmt(sb.get("achieved_jps")), fmt(sb.get("p95_ms"), 0), fmt(sb.get("failed_pct"), 2)])
-            md.append(table(rows, ["step", "offered j/s", "A achieved", "A p95 ms", "A failed %", "B achieved", "B p95 ms", "B failed %"]))
+                row = [s, str(sa.get("offered_jps") or sb.get("offered_jps")),
+                       fmt(sa.get("achieved_jps")), fmt(sa.get("core_p95_ms") or sa.get("p95_ms"), 0), fmt(sa.get("failed_pct"), 2),
+                       fmt(sb.get("achieved_jps")), fmt(sb.get("core_p95_ms") or sb.get("p95_ms"), 0), fmt(sb.get("failed_pct"), 2)]
+                if has_cores:
+                    row += [fmt(sa.get("app_cores"), 2), fmt(sa.get("db_cores"), 2), fmt(sb.get("app_cores"), 2), fmt(sb.get("db_cores"), 2)]
+                rows.append(row)
+            header = ["step", "offered j/s", "A achieved", "A core p95 ms", "A failed %", "B achieved", "B core p95 ms", "B failed %"]
+            if has_cores:
+                header += ["A app cores", "A DB cores", "B app cores", "B DB cores"]
+            md.append(table(rows, header))
             md.append("")
-            md.append(f"**Sustained throughput** (highest step before the knee: p95 > 500 ms, failures > 1 % or achieved "
+            md.append(f"**Sustained throughput** (highest step before the knee: core p95 > 500 ms, failures > 1 % or achieved "
                       f"< 95 % of offered): A {fmt((ca or {}).get('sustained_jps'), 0)} j/s, "
-                      f"B {fmt((cb or {}).get('sustained_jps'), 0)} j/s. Knees: A {(ca or {}).get('knees')}, B {(cb or {}).get('knees')}.")
+                      f"B {fmt((cb or {}).get('sustained_jps'), 0)} j/s. Knees: A {(ca or {}).get('knees')}, B {(cb or {}).get('knees')}."
+                      + (" Per-step CPU = cores averaged over each 45-s hold (app = all replicas, DB = postgres pod; limits 2 × 1 / 1 CPU)." if has_cores else ""))
             md.append("")
 
     tests = ab_stats.run_round_tests(summary)
     if any(fam["headline"] or fam["journeys"] for fam in tests.values()):
         md.append("## Statistical tests (per-repeat values; the repeat is the experimental unit)")
-        md.append("Welch's t-test (two-sided), exact Mann-Whitney U, Cliff's δ (effect size, positive = B larger) and "
-                  "Holm-Bonferroni adjusted p over each family of metrics (`scripts/ab_stats.py`). Verdicts: *distinct* = "
-                  "Holm-adjusted p < 0.05; *raw-only* = only the unadjusted p < 0.05 (suggestive); *no difference detected* "
-                  "≠ equal (no equivalence test is run); *n<3* = too few repeats. With 5 vs 5 the smallest exact "
-                  "Mann-Whitney p is 0.0079 (complete separation of the ten values).")
+        md.append("Primary test: exact two-sided Mann-Whitney U with Holm-Bonferroni adjustment over each family of metrics "
+                  "(`scripts/ab_stats.py`); Cliff's δ = effect size (positive = B larger; |δ| ≥ 0.474 large); Welch's t-test "
+                  "(two-sided) and its own Holm-adjusted p are the parametric cross-check. Verdicts: *distinct* = MW Holm p "
+                  "< 0.05; *raw-only* = only the unadjusted MW p < 0.05 (suggestive); *underpowered* = even complete "
+                  "separation of the samples could not pass Holm at this n (with 5 vs 5 the smallest exact MW p is 0.0079, "
+                  "× 14 tests > 0.05 — N ≥ 10 per side is needed for a Holm-level verdict); *no difference detected* ≠ equal "
+                  "(no equivalence test is run); *n<3* = too few repeats.")
         md.append("")
         md.append(ab_stats.markdown_tables(tests))
     md.append("## Reading guide and known limits")
     md.append("See `thesis/results/AB-COMPARISON-v1.md` for the methodology, the fairness invariants and the deviation "
-              "register (§6) that every number in this report carries. In short: A's adapter is an idealized SPA "
-              "client (D1), B renders a body preview per feed/search card while A's cards carry none (D2), read journeys "
-              "are anonymous (D3), J6 matches nearly every thread on both sides (D4).")
+              "register (§6.2) that every number in this report carries — in particular D1 (A's default adapter is an "
+              "idealized SPA client; `--real-spa` rounds measure the real one), D3 (read journeys are anonymous unless "
+              "`--auth-reads`), D8 (platform-default GC policies behind the memory rows), D12 (B's J4 waits for its upload "
+              "poll — hence the *core* latency rows) and D14 (A's realtime receipt floor is its outbox poll).")
     return "\n".join(md) + "\n"
 
 
@@ -385,8 +441,35 @@ def main():
                "summary": summary}, open(os.path.join(round_dir, "round-summary.json"), "w"), indent=2)
     open(os.path.join(round_dir, "REPORT.md"), "w").write(report(round_dir, runs, summary))
     json.dump(ab_stats.run_round_tests(summary), open(os.path.join(round_dir, "stats.json"), "w"), indent=2)
+    write_capacity_cpu(round_dir, summary)
     valid = sum(1 for r in runs if r.get("valid"))
     print(f"{len(runs)} runs ({valid} valid) → round-summary.json + REPORT.md")
+
+
+def write_capacity_cpu(round_dir, summary):
+    """capacity-per-step-cpu.json in the schema `scripts/thesis_figures.py --capacity-cpu` reads (the v1 campaign
+    produced it by hand): per side, one row per step with the mean achieved rate, core p95 and app/db/ingress cores
+    (h6: read per hold window by ab_window.py). Written only when at least one run carries per-step cores."""
+    out = {}
+    for side, key in (("A", "capacity/a"), ("B", "capacity/b")):
+        steps = ((summary.get(key) or {}).get("capacity") or {}).get("steps") or {}
+        rows = []
+        for _, s in sorted(steps.items()):
+            if not (s.get("db_cores") or {}).get("n"):
+                continue
+            rows.append({
+                "step": _, "offered_jps": s["offered_jps"],
+                "achieved_jps": round(s["achieved_jps"]["mean"], 3) if s.get("achieved_jps") else None,
+                "p95_ms": round((s.get("core_p95_ms") or s.get("p95_ms"))["mean"], 1) if (s.get("core_p95_ms") or s.get("p95_ms")) else None,
+                "db_cores": round(s["db_cores"]["mean"], 3),
+                "app_cores_2_replicas": round(s["app_cores"]["mean"], 3) if (s.get("app_cores") or {}).get("n") else None,
+                "ingress_cores": round(s["ingress_cores"]["mean"], 3) if (s.get("ingress_cores") or {}).get("n") else None,
+                "repeats": s["db_cores"]["n"],
+            })
+        if rows:
+            out[side] = rows
+    if out:
+        json.dump(out, open(os.path.join(round_dir, "capacity-per-step-cpu.json"), "w"), indent=2)
 
 
 if __name__ == "__main__":

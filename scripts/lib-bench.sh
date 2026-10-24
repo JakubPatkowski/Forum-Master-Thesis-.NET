@@ -221,26 +221,30 @@ PY
 
 # --- dataset -------------------------------------------------------------------------------------------------------
 
-# "users threads comments reactions" of the target's live database (scalar subqueries — UNION ALL branch order is
-# not guaranteed under a parallel Append; found live in 9c).
+# "users threads comments reactions messages" of the target's live database (scalar subqueries — UNION ALL branch
+# order is not guaranteed under a parallel Append; found live in 9c). `messages` (h6) = direct messages, so the J9
+# writes are verified by the dataset delta like comments (J3 + probes) and threads (J4). Every exec is bounded by
+# `timeout` — a hung psql must fail the step, never stall the round.
 ab_seed_counts() {
   local t="$1"
   if [[ "$t" == a ]]; then
     local db; db="$(kc get secret postgres-credentials -o jsonpath='{.data.POSTGRES_DB}' | base64 -d)"
-    kc exec postgres-0 -- psql -U "$POSTGRES_USER" -d "$db" -tAc \
+    timeout 120 kubectl -n "$K8S_NAMESPACE" exec postgres-0 -- psql -U "$POSTGRES_USER" -d "$db" -tAc \
       "SELECT (SELECT count(*) FROM forum_identity.users) || ' ' || (SELECT count(*) FROM forum_content.threads) || ' ' ||
-              (SELECT count(*) FROM forum_content.comments) || ' ' || (SELECT count(*) FROM forum_engagement.reactions)" | tr -d '\n'
+              (SELECT count(*) FROM forum_content.comments) || ' ' || (SELECT count(*) FROM forum_engagement.reactions) || ' ' ||
+              (SELECT count(*) FROM forum_social.messages)" | tr -d '\n'
   else
     local db user
     db="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_DB}' | base64 -d)"
     user="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_USER}' | base64 -d)"
-    ab_kubectl b exec postgres-0 -- psql -U "$user" -d "$db" -tAc \
+    timeout 120 kubectl -n "$GOMX_NAMESPACE" exec postgres-0 -- psql -U "$user" -d "$db" -tAc \
       "SELECT (SELECT count(*) FROM accounts) || ' ' || (SELECT count(*) FROM posts) || ' ' ||
-              (SELECT count(*) FROM comments) || ' ' || ((SELECT count(*) FROM post_votes) + (SELECT count(*) FROM comment_likes))" | tr -d '\n'
+              (SELECT count(*) FROM comments) || ' ' || ((SELECT count(*) FROM post_votes) + (SELECT count(*) FROM comment_likes)) || ' ' ||
+              (SELECT count(*) FROM dm_messages)" | tr -d '\n'
   fi
 }
 
-AB_EXPECTED_SEED="800 1600 9000 15000"
+AB_EXPECTED_SEED="800 1600 9000 15000 2000"
 
 # Planner statistics right after the bulk insert, on BOTH sides (harness h4): neither seeder analyzes, so without
 # this the first minutes of a run plan against whatever autoanalyze had reached — run-to-run plan noise that was
@@ -249,12 +253,12 @@ ab_analyze() {
   local t="$1"
   if [[ "$t" == a ]]; then
     local db; db="$(kc get secret postgres-credentials -o jsonpath='{.data.POSTGRES_DB}' | base64 -d)"
-    kc exec postgres-0 -- psql -U "$POSTGRES_USER" -d "$db" -qc "ANALYZE" >/dev/null
+    timeout 300 kubectl -n "$K8S_NAMESPACE" exec postgres-0 -- psql -U "$POSTGRES_USER" -d "$db" -qc "ANALYZE" >/dev/null
   else
     local db user
     db="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_DB}' | base64 -d)"
     user="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_USER}' | base64 -d)"
-    ab_kubectl b exec postgres-0 -- psql -U "$user" -d "$db" -qc "ANALYZE" >/dev/null
+    timeout 300 kubectl -n "$GOMX_NAMESPACE" exec postgres-0 -- psql -U "$user" -d "$db" -qc "ANALYZE" >/dev/null
   fi
 }
 
@@ -280,7 +284,7 @@ ab_reseed() {
     db="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_DB}' | base64 -d)"
     user="$(ab_kubectl b get secret gomx-secrets -o jsonpath='{.data.POSTGRES_USER}' | base64 -d)"
     ab_scale b 0
-    ab_kubectl b exec postgres-0 -- psql -U "$user" -d postgres -v ON_ERROR_STOP=1 \
+    timeout 300 kubectl -n "$GOMX_NAMESPACE" exec postgres-0 -- psql -U "$user" -d postgres -v ON_ERROR_STOP=1 \
       -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$db' AND pid <> pg_backend_pid();" \
       -c "DROP DATABASE IF EXISTS $db;" -c "CREATE DATABASE $db OWNER $user;" >/dev/null
     # One pod seeds (the advisory lock would also serialize two — one first keeps the logs unambiguous).
@@ -340,7 +344,7 @@ meta = {
     "probes": {k: c.get(k) for k in ("livenessProbe", "readinessProbe", "startupProbe") if c.get(k)},
     "env": {e["name"]: e.get("value") for e in c.get("env", []) if "value" in e},
     "postgres": {"image": pg["image"], "args": pg.get("args", []), "resources": pg.get("resources", {})},
-    "seed_counts": dict(zip(["users", "threads", "comments", "reactions"], map(int, seed))) if len(seed) == 4 else None,
+    "seed_counts": dict(zip(["users", "threads", "comments", "reactions", "messages"], map(int, seed))) if len(seed) in (4, 5) else None,
     "k6_version": sh("k6 version"),
     "variants": {"hpa": hpa_on == "true", "gc_variant": gc_variant == "true",
                  "relay_poll_ms": int(relay_ms) if relay_ms else None, "auth_reads": auth_reads == "true",
@@ -385,12 +389,33 @@ ab_prom_stop() {
   AB_PF_PID=""
 }
 
+# The port-forward is a single process that lives for the whole round; kubectl drops it silently when the API
+# server hiccups, and every later window read would then fail (resources.json missing → H1 data lost). Called
+# before each Prometheus read: re-establishes the forward when /-/ready stops answering. Returns 1 (never dies)
+# when Prometheus is still unreachable after the restart — the caller flags the run instead of aborting the round.
+ab_prom_ensure() {
+  if curl -sf --max-time 5 "http://localhost:$PROM_LOCAL_PORT/-/ready" >/dev/null 2>&1; then
+    return 0
+  fi
+  warn "Prometheus port-forward on :$PROM_LOCAL_PORT is down — re-establishing"
+  ab_prom_stop
+  kubectl -n "$MONITORING_NAMESPACE" port-forward svc/monitoring-kube-prometheus-prometheus "$PROM_LOCAL_PORT:9090" >/dev/null 2>&1 &
+  AB_PF_PID=$!
+  for _ in $(seq 1 30); do
+    curl -sf --max-time 5 "http://localhost:$PROM_LOCAL_PORT/-/ready" >/dev/null 2>&1 && return 0
+    sleep 1
+  done
+  return 1
+}
+
 # Resource usage of the target's namespace (per pod, classified) + ingress-nginx over the k6 scenario window read
 # from the run's journeys-*.json, divided by the journeys served in it → resources.json next to it.
 # Optional 3rd/4th args = an idle (no-traffic) window in epoch ms, read in the same call → "idle" + marginal cost.
 ab_window_metrics() {
   local t="$1" run_dir="$2" idle_start_ms="${3:-}" idle_end_ms="${4:-}"
-  python3 "$LIB_DIR/ab_window.py" --prom "http://localhost:$PROM_LOCAL_PORT" --ns "$(ab_ns "$t")" \
+  ab_prom_ensure || { warn "Prometheus unreachable — window metrics skipped"; return 1; }
+  # Bounded: the script itself waits ≤ ~100 s for the scrape lag; anything beyond 15 min is a hang.
+  timeout 900 python3 "$LIB_DIR/ab_window.py" --prom "http://localhost:$PROM_LOCAL_PORT" --ns "$(ab_ns "$t")" \
     --app-prefix "$(ab_deploy "$t")-" --run-dir "$run_dir" --target "$t" \
     ${idle_start_ms:+--idle-start-ms "$idle_start_ms"} ${idle_end_ms:+--idle-end-ms "$idle_end_ms"}
 }

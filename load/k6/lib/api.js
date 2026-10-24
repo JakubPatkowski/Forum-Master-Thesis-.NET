@@ -153,6 +153,11 @@ export function sendMessage(baseUrl, token, conversationId, body, opts = {}) {
   return apiPost(baseUrl, `/api/social/conversations/${conversationId}/messages`, { body }, 'dm_send', token, opts);
 }
 
+/** Social: the caller's accepted friends (CursorPage → items[].userId); setup-only (J9 peer discovery, like B's /messages). */
+export function listFriends(baseUrl, token, opts = {}) {
+  return apiGet(baseUrl, '/api/social/friends?limit=50', 'social_friends', token, opts);
+}
+
 // --- REAL_SPA (deviation D1): the React pages' secondary reads, issued as browser-like parallel fan-outs -------------
 //
 // targets/a.js replays each page's cold-cache waterfall wave by wave; a wave = the requests one React render fires at
