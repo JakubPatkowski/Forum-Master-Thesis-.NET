@@ -16,6 +16,9 @@
 // 15-minute access token would otherwise end every profile longer than ~12 min — soak); J8 holds send RECEIPT
 // PROBES: a comment written by the holding VU into its subscribed category, timed until the hub pushes the
 // matching `comment created` envelope back (A's floor = the outbox relay poll, Messaging:PollIntervalMilliseconds).
+// REAL_SPA=1 (2026-10-24, deviation D1): the read journeys replay the REAL React pages' cold-cache request sets
+// instead of the idealized core calls — see the `spa` section below and the derived table in targets/README.md.
+// Unset, every journey is byte-for-byte the h4 behaviour.
 
 import encoding from 'k6/encoding';
 import { sleep } from 'k6';
@@ -23,9 +26,9 @@ import { Counter } from 'k6/metrics';
 import ws from 'k6/ws';
 
 import {
-  addReaction, attachFile, commentTree, commitUpload, createComment, createThread, initiateUpload, listCategories,
-  login, openDirectConversation, reactionBatch, realtimeTicket, removeReaction, searchThreads, sendMessage,
-  threadDetail, threadFeed, uploadToPresignedUrl, userStats, userThreads,
+  addReaction, apiBatch, attachFile, batchGet, commentTree, commitUpload, createComment, createThread, initiateUpload,
+  listCategories, login, openDirectConversation, reactionBatch, realtimeTicket, removeReaction, searchThreads,
+  sendMessage, spaPaths, threadDetail, threadFeed, uploadToPresignedUrl, userStats, userThreads,
 } from '../lib/api.js';
 import { SEARCH_WORDS as SHARED_WORDS, makePng, randomTagSlugs, threadBody, threadTitle } from '../lib/assets.js';
 import { track } from '../lib/track.js';
@@ -35,6 +38,8 @@ export const DEFAULT_BASE_URL = 'https://forum.local';
 export const SEARCH_WORDS = SHARED_WORDS; // the word bank BOTH seeders draw from (identical list on B)
 
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
+// Read journeys replay the real SPA pages' cold-cache waterfalls (deviation D1) — opt-in, see the `spa` section.
+const REAL_SPA = __ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true';
 const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || 256); // 256×256 RGBA ≈ 262 KB — a small photo, same bytes on B
 
 // Setup-time calls (login pool, pool discovery) are tagged with this endpoint so they never land in a journey's
@@ -52,6 +57,15 @@ export const ENDPOINTS = [
   'login', 'categories', 'feed', 'thread', 'comments', 'reactions_batch', 'search',
   'comment_create', 'thread_create', 'reaction_add', 'reaction_remove', 'file_initiate', 'file_put',
   'file_commit', 'file_attach', 'dm_open', 'dm_send', 'probe_comment', 'user_stats', 'user_threads', 'ticket', 'setup',
+  // REAL_SPA only (the real pages' secondary reads; zero rows unless the variant is on):
+  'category_by_slug', // GET /api/content/categories/{slug} — the route resolves slug → id
+  'thread_icon', 'category_icon', 'avatar', // GET /api/files?targetType=<name>&targetId= — one per rendered icon/avatar
+  'attachments', // GET /api/files?targetType=thread&targetId= — the thread page's attachment rail
+  'reaction_get', // GET /api/engagement/reactions/thread/{id} — the thread's own like button (not batch-covered)
+  'related_search', // GET /api/content/search?q=<first tag>&limit=5 — RELATED THREADS panel
+  'user_comments', // GET /api/content/users/{id}/comments — the profile's activity timeline (second source)
+  'social_unread', 'social_convos', // TopNav badges, signed-in chrome (AUTH_READS)
+  'social_friends', 'social_requests', 'social_blocks', // someone else's profile, signed-in (AUTH_READS)
 ];
 
 /** k6 `hosts` pin map (forum.local resolves to 127.0.0.1 first on the WSL box — Windows-tunnel entry). */
@@ -180,7 +194,7 @@ export function setup(baseUrl, poolSize, loginStaggerMs) {
     }
     threadsBySpace[space.key] = threads;
   }
-  return { sessions, spaces, threadsBySpace, devMode, authReads: AUTH_READS };
+  return { sessions, spaces, threadsBySpace, devMode, authReads: AUTH_READS, realSpa: REAL_SPA };
 }
 
 function batchFeedIds(baseUrl, body, session) {
@@ -200,9 +214,225 @@ const likedByThisVu = new Map();
 // chat dock. Keyed by the session user so a re-login never crosses conversations.
 const conversationByUser = new Map();
 
+// --- REAL_SPA — the cold-cache waterfall of the real React pages (deviation D1) --------------------------------------
+//
+// Opt-in (REAL_SPA=1; recorded as variant.real_spa in the journeys block). Every read journey then issues the HTTP
+// requests the SPA page issues on a COLD React-Query cache (every page = a first visit), derived from the frontend
+// sources on 2026-10-24 — targets/README.md tabulates each request with the component that issues it. Mechanics:
+//   • a WAVE = the requests one render fires at once (independent queries + per-card icon/avatar lookups) → ONE
+//     http.batch(); the next wave waits for the responses it depends on (slug → feed → cards; detail → author stats,
+//     related search, avatars) exactly like the browser's dependent fetches. The journey duration = the waterfall.
+//   • React Query dedupes identical query keys WITHIN a page: the author's avatar rendered twice is one request, a
+//     card's category-icon fallback shares the header's key — `seen` reproduces that. Nothing is reused ACROSS
+//     journeys (the SPA's 5-minute staleTime tiers are deliberately NOT modelled: this variant is the upper bound of
+//     A's per-page server work, the default adapter the lower bound).
+//   • Fallback tiles render WHILE the primary lookup loads (ThreadIcon → CategoryIcon → Monogram), so a card's
+//     thread_icon and category_icon lookups are concurrent, never sequential.
+//   • Signed-in chrome (AUTH_READS only): TopNav mounts the unread-notification count, the conversation list and the
+//     user menu's own avatar on every page; someone else's profile adds the friends / requests / blocks queries.
+//   • NOT replayed: the app-shell boot (POST /api/identity/refresh, static assets, WS connect — once per browser
+//     session, J8 models the socket), the presence heartbeat, the home page's merged feed (no B equivalent).
+// k6 caps http.batch() concurrency with batchPerHost (default 6 = Chrome's HTTP/1.1 per-host limit); main.js raises it
+// to 128 over https, where the browser multiplexes the whole wave on one HTTP/2 connection (REAL_SPA_BATCH_PER_HOST).
+
+/** One fan-out entry + its accounting (endpoint tag, accepted statuses). Reads carry the bearer only under AUTH_READS. */
+function entry(baseUrl, path, endpoint, session, extra = {}, ok = [200]) {
+  return { req: batchGet(baseUrl, path, endpoint, readOpts(session, extra)), endpoint, ok };
+}
+
+/** Issues one wave and tracks every response under its endpoint; responses come back in entry order. */
+function wave(entries) {
+  const responses = apiBatch(entries.map((e) => e.req));
+  entries.forEach((e, i) => track(responses[i], e.endpoint, e.ok));
+  return responses;
+}
+
+/** File lookups (`GET /api/files?targetType=&targetId=`) for the (type, id) pairs this page has not asked for yet. */
+function fileLookups(baseUrl, session, seen, targetType, targetIds, endpoint) {
+  const entries = [];
+  for (const id of targetIds) {
+    const key = `${targetType}:${id}`;
+    if (!id || seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    entries.push(entry(baseUrl, spaPaths.filesByTarget(targetType, id), endpoint, session, DISCARD));
+  }
+  return entries;
+}
+
+/** The signed-in chrome TopNav mounts on every page (components/layout/TopNav.tsx) — nothing for anonymous visitors. */
+function chromeEntries(baseUrl, session, seen) {
+  if (!AUTH_READS) {
+    return [];
+  }
+  return [
+    entry(baseUrl, spaPaths.unreadNotifications, 'social_unread', session, DISCARD),
+    entry(baseUrl, spaPaths.conversations, 'social_convos', session, DISCARD),
+    ...fileLookups(baseUrl, session, seen, 'avatar', [session.userId], 'avatar'),
+  ];
+}
+
+/**
+ * A list of ThreadCards (feed / search): ONE like-count batch over the ids the page holds (useReactionBatch sorts
+ * them, ≤ 100) + each card's thread-icon lookup + the category-icon fallback per distinct category. Cards show
+ * `@username` as text — no avatars — and their ReactionButtons are batch-covered (no single GETs).
+ */
+function cardEntries(baseUrl, session, seen, items, batchIds) {
+  const sorted = [...batchIds].sort().slice(0, 100);
+  return [
+    ...(sorted.length > 0 ? [entry(baseUrl, spaPaths.reactionBatch('thread', sorted), 'reactions_batch', session, DISCARD)] : []),
+    ...fileLookups(baseUrl, session, seen, 'thread_icon', items.map((t) => t.id), 'thread_icon'),
+    ...fileLookups(baseUrl, session, seen, 'category_icon', items.map((t) => t.categoryId), 'category_icon'),
+  ];
+}
+
+const spa = {
+  /** /c/[slug] — J1 (app/c/[slug]/page.tsx). */
+  category(baseUrl, data, session, pick) {
+    const space = pick.space(data);
+    const seen = new Set();
+    // wave 1: the route resolves slug → category (useCategory) while the CATEGORIES sidebar lists every category
+    // the visitor may see (useCategories); the feed and the batch are disabled until the id is known
+    const w1 = wave([
+      entry(baseUrl, spaPaths.categoryBySlug(space.slug), 'category_by_slug', session),
+      entry(baseUrl, spaPaths.categories, 'categories', session),
+      ...chromeEntries(baseUrl, session, seen),
+    ]);
+    if (w1[0].status !== 200) {
+      return; // the page renders the error state — nothing below mounts
+    }
+    const categoryId = w1[0].json('id');
+    const sidebarIds = w1[1].status === 200 ? w1[1].json().map((c) => c.id) : [];
+    // wave 2: feed page 1 + the header's CategoryIcon + one CategoryIcon per sidebar row (the current category is
+    // the same query key as the header → one lookup)
+    const w2 = wave([
+      entry(baseUrl, spaPaths.threadFeed(categoryId), 'feed', session),
+      ...fileLookups(baseUrl, session, seen, 'category_icon', [categoryId, ...sidebarIds], 'category_icon'),
+    ]);
+    if (w2[0].status !== 200) {
+      return;
+    }
+    const page1 = w2[0].json();
+    // wave 3: the cards — like-count batch + per-card ThreadIcon (its category fallback is already in flight);
+    // the MOST POPULAR card re-renders one of them (same keys, nothing new)
+    wave(cardEntries(baseUrl, session, seen, page1.items, page1.items.map((t) => t.id)));
+    // 30 % LOAD MORE ↓ (the ideal J1's cursor-follow): page 2, then the batch is RE-KEYED on the whole list — the
+    // SPA re-requests the like counts of all 40 loaded cards — plus the 20 new cards' icon lookups
+    if (Math.random() < 0.3 && page1.hasMore && page1.nextCursor) {
+      const w4 = wave([entry(baseUrl, spaPaths.threadFeed(categoryId, page1.nextCursor), 'feed', session)]);
+      if (w4[0].status === 200) {
+        const page2 = w4[0].json();
+        wave(cardEntries(baseUrl, session, seen, page2.items, [...page1.items, ...page2.items].map((t) => t.id)));
+      }
+    }
+  },
+
+  /** /t/[id] — J2 (app/t/[id]/page.tsx + components/comments/*). */
+  thread(baseUrl, data, session, pick) {
+    const { thread } = pick.thread(data);
+    const seen = new Set();
+    // wave 1: detail (useThread) + the comment tree (the page-level useComments; CommentSection shares its key)
+    const w1 = wave([
+      entry(baseUrl, spaPaths.thread(thread.id), 'thread', session),
+      entry(baseUrl, spaPaths.comments(thread.id), 'comments', session),
+      ...chromeEntries(baseUrl, session, seen),
+    ]);
+    if (w1[0].status !== 200) {
+      return; // error state — the article, its panels and the comment section never mount
+    }
+    const detail = w1[0].json();
+    const comments = w1[1].status === 200 ? w1[1].json() : [];
+    const commentIds = comments.map((c) => c.id).sort().slice(0, 100); // = useReactionBatch('comment', ids)
+    const firstTag = detail.tags && detail.tags.length > 0 ? detail.tags[0] : null;
+    // wave 2: everything the rendered page fires at once — author-card stats, the attachment rail, RELATED THREADS
+    // (search by the first tag, 5), the thread's own like state (its ReactionButton is not batch-covered), the
+    // article's ThreadIcon + its category fallback, the author's Avatar (card + byline = one key), the comment
+    // section's like batch and one Avatar per distinct commenter
+    const w2entries = [
+      entry(baseUrl, spaPaths.userStats(detail.ownerId), 'user_stats', session, DISCARD),
+      entry(baseUrl, spaPaths.filesByTarget('thread', detail.id), 'attachments', session, DISCARD),
+      ...(firstTag ? [entry(baseUrl, spaPaths.search(firstTag, 5), 'related_search', session)] : []),
+      entry(baseUrl, spaPaths.reactionSummary('thread', detail.id), 'reaction_get', session, DISCARD),
+      ...fileLookups(baseUrl, session, seen, 'thread_icon', [detail.id], 'thread_icon'),
+      ...fileLookups(baseUrl, session, seen, 'category_icon', [detail.categoryId], 'category_icon'),
+      ...fileLookups(baseUrl, session, seen, 'avatar', [detail.ownerId, ...comments.map((c) => c.ownerId)], 'avatar'),
+      ...(commentIds.length > 0
+        ? [entry(baseUrl, spaPaths.reactionBatch('comment', commentIds), 'reactions_batch', session, DISCARD)]
+        : []),
+    ];
+    const w2 = wave(w2entries);
+    // wave 3: the RELATED THREADS rows (≤ 4, the thread itself filtered out) each render a CategoryIcon — distinct,
+    // not-yet-requested categories only
+    const relatedIdx = w2entries.findIndex((e) => e.endpoint === 'related_search');
+    if (relatedIdx >= 0 && w2[relatedIdx].status === 200) {
+      const rows = (w2[relatedIdx].json('items') || []).filter((t) => t.id !== detail.id).slice(0, 4);
+      wave(fileLookups(baseUrl, session, seen, 'category_icon', rows.map((t) => t.categoryId), 'category_icon'));
+    }
+  },
+
+  /** /search?q= — J6 (app/search/page.tsx; no sidebar). */
+  search(baseUrl, _data, session, pick) {
+    const seen = new Set();
+    const w1 = wave([
+      entry(baseUrl, spaPaths.search(pick.word(), 20), 'search', session),
+      ...chromeEntries(baseUrl, session, seen),
+    ]);
+    if (w1[0].status !== 200) {
+      return;
+    }
+    const items = w1[0].json('items') || [];
+    // wave 2: the result cards — like-count batch + per-card ThreadIcon + category fallback per distinct category
+    wave(cardEntries(baseUrl, session, seen, items, items.map((t) => t.id)));
+  },
+
+  /** /u/[userId] — J7 (app/u/[userId]/page.tsx). */
+  profile(baseUrl, data, session, pick) {
+    const { thread } = pick.thread(data);
+    const userId = thread.ownerId;
+    const seen = new Set();
+    // wave 1: the identity card (useUserStats + Avatar) and RECENT ACTIVITY (useUserThreads + useUserComments,
+    // merged client-side) — four independent queries, all at mount; the activity rows are badge + text, no icons
+    const w1 = wave([
+      entry(baseUrl, spaPaths.userStats(userId), 'user_stats', session, DISCARD),
+      ...fileLookups(baseUrl, session, seen, 'avatar', [userId], 'avatar'),
+      entry(baseUrl, spaPaths.userThreads(userId), 'user_threads', session, DISCARD),
+      entry(baseUrl, spaPaths.userComments(userId), 'user_comments', session, DISCARD),
+      ...chromeEntries(baseUrl, session, seen),
+    ]);
+    // wave 2 (signed in, someone else's profile): ProfileSocialActions mounts once the stats landed and derives the
+    // relationship from the friends / requests / blocks queries
+    if (AUTH_READS && userId !== session.userId && w1[0].status === 200) {
+      wave([
+        entry(baseUrl, spaPaths.friends, 'social_friends', session, DISCARD),
+        entry(baseUrl, spaPaths.friendRequests, 'social_requests', session, DISCARD),
+        entry(baseUrl, spaPaths.blocks, 'social_blocks', session, DISCARD),
+      ]);
+    }
+  },
+
+  /** nav — the CATEGORIES sidebar (components/layout/CategorySidebar.tsx), the SPA's only "list spaces" surface. */
+  nav(baseUrl, _data, session) {
+    const seen = new Set();
+    const w1 = wave([
+      entry(baseUrl, spaPaths.categories, 'categories', session),
+      ...chromeEntries(baseUrl, session, seen),
+    ]);
+    if (w1[0].status !== 200) {
+      return;
+    }
+    // wave 2: one CategoryIcon per row
+    wave(fileLookups(baseUrl, session, seen, 'category_icon', w1[0].json().map((c) => c.id), 'category_icon'));
+  },
+};
+
 export const journeys = {
   /** J1 — space feed: page 1 + reaction batch over its cards (the SPA's real render); 30% follow the cursor. */
   J1(baseUrl, data, session, pick) {
+    if (REAL_SPA) {
+      spa.category(baseUrl, data, session, pick);
+      return;
+    }
     const space = pick.space(data);
     const first = threadFeed(baseUrl, space.key, null, 20, readOpts(session));
     if (!track(first, 'feed')) {
@@ -220,6 +450,10 @@ export const journeys = {
 
   /** J2 — thread open: detail + comment tree + reaction batch over the comments (SPA: sorted ids, ≤100). */
   J2(baseUrl, data, session, pick) {
+    if (REAL_SPA) {
+      spa.thread(baseUrl, data, session, pick);
+      return;
+    }
     const { thread } = pick.thread(data);
     track(threadDetail(baseUrl, thread.id, readOpts(session, DISCARD)), 'thread');
     const tree = commentTree(baseUrl, thread.id, readOpts(session));
@@ -286,12 +520,20 @@ export const journeys = {
   },
 
   /** J6 — FTS search with words both seeders actually wrote. */
-  J6(baseUrl, _data, session, pick) {
+  J6(baseUrl, data, session, pick) {
+    if (REAL_SPA) {
+      spa.search(baseUrl, data, session, pick);
+      return;
+    }
     track(searchThreads(baseUrl, pick.word(), readOpts(session, DISCARD)), 'search');
   },
 
   /** J7 — profile: stats + the user's threads (the SPA's /u/[userId] core calls). */
   J7(baseUrl, data, session, pick) {
+    if (REAL_SPA) {
+      spa.profile(baseUrl, data, session, pick);
+      return;
+    }
     const { thread } = pick.thread(data);
     track(userStats(baseUrl, thread.ownerId, readOpts(session, DISCARD)), 'user_stats');
     track(userThreads(baseUrl, thread.ownerId, readOpts(session, DISCARD)), 'user_threads');
@@ -316,7 +558,11 @@ export const journeys = {
   },
 
   /** nav — list spaces (same navigation call on both sides; replaces the A-only tag autocomplete). */
-  nav(baseUrl, _data, session) {
+  nav(baseUrl, data, session) {
+    if (REAL_SPA) {
+      spa.nav(baseUrl, data, session);
+      return;
+    }
     track(listCategories(baseUrl, readOpts(session, DISCARD)), 'categories');
   },
 };

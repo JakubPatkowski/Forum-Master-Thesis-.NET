@@ -62,9 +62,11 @@ No `playwright install` is needed: the config uses the portable `chrome-headless
 `E2E_CHROME_PATH`). `E2E_BASE_URL` / `E2E_API_URL` retarget the suite (e.g. the cluster's
 `https://forum.local`; HTTPS errors are ignored for the mkcert cert). Tests only add rows with
 unique titles and never delete, so a run is repeatable; `make seed ARGS=--force` resets the data.
-The `mobile-layout` spec also carries two `test.fail`-marked checks that document measured phone
-gaps (signed-in TopNav wider than 412 px, sub-40 px secondary tap targets) — they turn into real
-failures the day the product fixes them, which is the cue to delete the markers.
+The `mobile-layout` spec's last block asserts the two phone gaps measured on 2026-10-18 and fixed
+on 2026-10-24 (signed-in TopNav wider than 412 px → the top row now wraps the search onto its own
+line and collapses the button labels at ≤ 720 px; sub-40 px secondary tap targets → every control
+carries a 40 px floor under `@media (pointer: coarse), (max-width: 480px)`, desktop density
+unchanged). They were `test.fail`-pinned until then.
 
 ## Docker image (Phase 10a)
 

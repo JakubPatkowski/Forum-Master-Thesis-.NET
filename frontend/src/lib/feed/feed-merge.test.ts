@@ -27,6 +27,7 @@ function thread(
     ownerId: "01OWNER",
     username: "u",
     displayName: "U",
+    excerpt: "",
     likeCount: 0,
     commentCount: 0,
     createdOnUtc,

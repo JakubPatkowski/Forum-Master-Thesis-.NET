@@ -95,6 +95,8 @@ export interface ThreadFeedItemResponse {
   commentCount: number;
   createdOnUtc: string;
   lastModifiedOnUtc: string | null;
+  /** 300-char plain-text excerpt of the body (server-side; A/B parity with B's card previews). */
+  excerpt: string;
 }
 
 export interface ThreadDetailResponse {

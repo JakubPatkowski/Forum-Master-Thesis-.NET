@@ -7,10 +7,9 @@
  * alone would miss), the primary navigation reachable without any menu (the SPA has no hamburger:
  * the 01 FORUM · 02 SEARCH · 03 PROFILE tab row stays visible and tappable at every width), tap
  * targets of the main actions at least 40 CSS px tall, and the login + compose + comment + logout
- * journey driven with touch. Two product gaps measured on 2026-10-18 are pinned as EXPECTED
- * FAILURES (`test.fail`) so the suite stays green yet flips the day they are fixed: the signed-in
- * TopNav is wider than the phone, and several secondary controls are below the 40 px floor.
- * Skipped under the desktop project.
+ * journey driven with touch. The last describe block asserts the two product gaps measured on
+ * 2026-10-18 and fixed on 2026-10-24 (signed-in TopNav wider than the phone; secondary controls
+ * below the 40 px floor) — they were `test.fail`-pinned until then. Skipped under the desktop project.
  */
 
 import type { Locator, Page } from "@playwright/test";
@@ -196,7 +195,7 @@ test.describe("Pixel 7 touch flows", () => {
     await expect(page.getByRole("button", { name: alice.username })).toBeVisible();
     await expect(page).toHaveURL(/\/$/);
 
-    // Compose from the category header (the only "+ New thread" that meets the 40 px floor).
+    // Compose from the category header (`.last()`; the TopNav's own "+ New thread" is `.first()`).
     await page.goto(`/c/${category.slug}`);
     await expect(page.getByRole("button", { name: alice.username })).toBeVisible();
     await press(page.getByRole("button", { name: "+ New thread" }).last());
@@ -224,12 +223,16 @@ test.describe("Pixel 7 touch flows", () => {
   });
 });
 
-test.describe("known gaps — expected failures until the product changes", () => {
+/**
+ * Formerly `test.fail`-pinned product gaps (measured 2026-10-18: the signed-in TopNav needed ~532
+ * CSS px so Chrome widened the layout viewport past 412 px and cut off the user menu and the
+ * composer; Post comment 32.8 px, TopNav + New thread 32.8, icon buttons 36, user menu 38, REPLY
+ * 17.6, breadcrumb 17.6, …). Fixed 2026-10-24: the top row wraps the search onto its own line and
+ * collapses the button labels at phone widths, and every control carries a 40 px touch floor under
+ * `(pointer: coarse), (max-width: 480px)` — these now assert the fix.
+ */
+test.describe("signed-in chrome and secondary actions on the phone", () => {
   test("signed-in chrome fits the phone width", async ({ page, press }) => {
-    test.fail(
-      true,
-      "Measured 2026-10-18: with the signed-in controls (WS pill, + New thread, friends, messages, bell, user menu) the TopNav needs ~532 CSS px; Chrome widens the layout viewport past the Pixel 7's 412 px, the user menu sits off-screen (x ≈ 426–532) and fixed-position modals such as the composer are laid out 532 px wide and cut off on the right.",
-    );
     await loginThroughUi(page, devUser("alice"), press);
     await page.goto(`/c/${PUBLIC_CATEGORY_SLUG}`);
     await expect(page.getByRole("button", { name: "alice" })).toBeVisible();
@@ -238,10 +241,6 @@ test.describe("known gaps — expected failures until the product changes", () =
   });
 
   test("secondary actions reach the 40 px tap floor", async ({ page, request, press }) => {
-    test.fail(
-      true,
-      "Measured 2026-10-18 (CSS px): Post comment 32.8, TopNav + New thread 32.8, social/bell icon buttons 36, user menu 38, modal Close 34, article like 36.8, card/comment like 19.2, REPLY 17.6, breadcrumb 17.6, tag chip 29.2, 'Log in to post' 20.8, TopNav Log in/Register 36.8.",
-    );
     const { thread } = await publicThreadWithComments(request);
     await loginThroughUi(page, devUser("alice"), press);
     await page.goto(`/t/${thread.id}`);

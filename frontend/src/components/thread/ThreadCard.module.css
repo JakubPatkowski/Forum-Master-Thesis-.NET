@@ -60,6 +60,17 @@
   text-wrap: pretty;
 }
 
+.excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
 .author {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -88,4 +99,17 @@
 .pinButton:hover {
   color: var(--color-accent-base);
   border-color: var(--color-accent-base);
+}
+
+/* Touch floor (coarse pointers / phone widths): PIN measured 28 px; the like toggle grows to 40×40
+   (ReactionButton.module.css) — bleed its 8 px side padding into the card padding so the count
+   keeps the desktop right edge. */
+@media (pointer: coarse), (max-width: 480px) {
+  .side {
+    margin-right: -8px;
+  }
+
+  .pinButton {
+    min-height: 40px;
+  }
 }

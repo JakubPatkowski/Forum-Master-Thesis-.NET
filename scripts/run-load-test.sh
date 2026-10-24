@@ -125,10 +125,11 @@ step "k6 $PROFILE [target $TARGET] → $BASE_URL${INGRESS_IP:+  (ingress $INGRES
 set +e
 # Optional open-model knobs (capacity profile) pass straight through to k6 when set.
 K6_EXTRA=()
-# Harness h4 variants (A/B round flags): AUTH_READS (reads carry the session), the J8 receipt-probe cadence,
-# soak/spike sizing. Recorded by main.js in the journeys block, so every archive says which variant it measured.
+# Harness h4 variants (A/B round flags): AUTH_READS (reads carry the session), REAL_SPA (A's read journeys replay the
+# real SPA pages' cold-cache request sets — D1; REAL_SPA_BATCH_PER_HOST = fan-out concurrency), the J8 receipt-probe
+# cadence, soak/spike sizing. Recorded by main.js in the journeys block, so every archive says which variant it measured.
 for var in CAP_STEPS CAP_RAMP_S CAP_HOLD_S CAP_MAX_VUS WS_HOLD_MS LOGIN_STAGGER_MS \
-           AUTH_READS WS_PROBE_INTERVAL_MS WS_PROBE_TIMEOUT_MS SOAK_MINUTES SOAK_VUS SPIKE_VUS; do
+           AUTH_READS REAL_SPA REAL_SPA_BATCH_PER_HOST WS_PROBE_INTERVAL_MS WS_PROBE_TIMEOUT_MS SOAK_MINUTES SOAK_VUS SPIKE_VUS; do
   [[ -n "${!var:-}" ]] && K6_EXTRA+=(-e "$var=${!var}")
 done
 # K6_OUT (e.g. csv=…/points.csv.gz) streams every metric point out of k6 — ab-chaos.sh needs the per-second error

@@ -141,4 +141,144 @@ internal static class AuthzSchema
         """;
 
     public const string Down = "DROP SCHEMA IF EXISTS forum_authz CASCADE;";
+
+    /// <summary>
+    /// Migration <c>OptimizeEffectiveMask</c> (2026-10-24): same algebra, one sargable pass over <c>acl_entries</c>,
+    /// a cache fast path in <c>has_permission()</c>, and row triggers that drop a user's cache rows on ANY write to
+    /// <c>user_roles</c> / <c>acl_entries</c> (so the fast path can never serve a mask older than the last write).
+    /// </summary>
+    public const string OptimizedResolversUp =
+        """
+        CREATE OR REPLACE FUNCTION forum_authz.effective_mask(
+            p_user  forum_authz.ulid26,
+            p_scope text,
+            p_scope_id forum_authz.ulid26 DEFAULT NULL)
+          RETURNS int LANGUAGE sql STABLE PARALLEL SAFE AS $fn$
+          WITH role_ids AS (
+              SELECT role_id FROM forum_authz.user_roles WHERE user_id = p_user
+          ),
+          templates AS (
+              SELECT forum_authz.int_or_agg(r.allow_bits) AS m
+              FROM forum_authz.roles r
+              WHERE r.role_id IN (SELECT role_id FROM role_ids)
+          ),
+          scoped AS (
+              -- ONE pass over the scope's entries (was two); the predicate is index-friendly on
+              -- ix_acl_hotpath (scope, scope_id, principal_type, principal_id) — no COALESCE on scope_id.
+              SELECT forum_authz.int_or_agg(e.allow_bits) AS allow_m,
+                     forum_authz.int_or_agg(e.deny_bits)  AS deny_m
+              FROM forum_authz.acl_entries e
+              WHERE e.scope = p_scope
+                AND ((p_scope_id IS NULL AND e.scope_id IS NULL) OR e.scope_id = p_scope_id)
+                AND ((e.principal_type = 'user' AND e.principal_id = p_user)
+                  OR (e.principal_type = 'role' AND e.principal_id IN (SELECT role_id FROM role_ids)))
+          )
+          SELECT (COALESCE((SELECT m FROM templates), 0) | COALESCE((SELECT allow_m FROM scoped), 0))
+                 & ~COALESCE((SELECT deny_m FROM scoped), 0);
+        $fn$;
+
+        CREATE OR REPLACE FUNCTION forum_authz.has_permission(
+            p_user forum_authz.ulid26, p_action text, p_scope text, p_scope_id forum_authz.ulid26 DEFAULT NULL)
+          RETURNS boolean LANGUAGE sql STABLE AS $fn$
+          -- Cache fast path: a row exists for every (user, scope) the user holds an explicit ACL at, plus 'global';
+          -- it is rewritten synchronously by recompute_user_perms() inside every role/ACL write. No row → live mask.
+          SELECT (COALESCE(
+                    (SELECT c.effective FROM forum_authz.effective_perm_cache c
+                      WHERE c.user_id = p_user AND c.scope = p_scope
+                        AND COALESCE(c.scope_id, '') = COALESCE(p_scope_id, '')),
+                    forum_authz.effective_mask(p_user, p_scope, p_scope_id))
+                  & COALESCE((SELECT (1 << a.bit) FROM forum_authz.actions a WHERE a.code = p_action), 0)) <> 0;
+        $fn$;
+
+        -- The cache is self-invalidating: ANY write to user_roles / acl_entries — the application's stores, the
+        -- seeders, an operator's psql — drops the affected users' cache rows, so has_permission() falls back to the
+        -- live mask until the next recompute_user_perms(). The SQL stays the live source of truth; callers that
+        -- recompute in the same request merely restore the fast path at once.
+        CREATE OR REPLACE FUNCTION forum_authz.invalidate_perm_cache_user_roles()
+          RETURNS trigger LANGUAGE plpgsql AS $fn$
+        BEGIN
+          IF TG_OP IN ('INSERT', 'UPDATE') THEN
+            DELETE FROM forum_authz.effective_perm_cache WHERE user_id = NEW.user_id;
+          END IF;
+          IF TG_OP IN ('DELETE', 'UPDATE') THEN
+            DELETE FROM forum_authz.effective_perm_cache WHERE user_id = OLD.user_id;
+          END IF;
+          RETURN NULL;
+        END;
+        $fn$;
+
+        CREATE OR REPLACE FUNCTION forum_authz.invalidate_perm_cache_acl_entries()
+          RETURNS trigger LANGUAGE plpgsql AS $fn$
+        DECLARE
+          r RECORD;
+        BEGIN
+          FOR r IN
+            SELECT NEW.principal_type AS principal_type, NEW.principal_id AS principal_id WHERE TG_OP IN ('INSERT', 'UPDATE')
+            UNION
+            SELECT OLD.principal_type, OLD.principal_id WHERE TG_OP IN ('DELETE', 'UPDATE')
+          LOOP
+            IF r.principal_type = 'user' THEN
+              DELETE FROM forum_authz.effective_perm_cache WHERE user_id = r.principal_id;
+            ELSE
+              DELETE FROM forum_authz.effective_perm_cache
+              WHERE user_id IN (SELECT ur.user_id FROM forum_authz.user_roles ur WHERE ur.role_id = r.principal_id);
+            END IF;
+          END LOOP;
+          RETURN NULL;
+        END;
+        $fn$;
+
+        DROP TRIGGER IF EXISTS trg_user_roles_invalidate_perm_cache ON forum_authz.user_roles;
+        CREATE TRIGGER trg_user_roles_invalidate_perm_cache
+          AFTER INSERT OR UPDATE OR DELETE ON forum_authz.user_roles
+          FOR EACH ROW EXECUTE FUNCTION forum_authz.invalidate_perm_cache_user_roles();
+
+        DROP TRIGGER IF EXISTS trg_acl_entries_invalidate_perm_cache ON forum_authz.acl_entries;
+        CREATE TRIGGER trg_acl_entries_invalidate_perm_cache
+          AFTER INSERT OR UPDATE OR DELETE ON forum_authz.acl_entries
+          FOR EACH ROW EXECUTE FUNCTION forum_authz.invalidate_perm_cache_acl_entries();
+        """;
+
+    /// <summary>Restores the original (two-pass, cache-less) resolvers and drops the invalidation triggers.</summary>
+    public const string OptimizedResolversDown =
+        """
+        DROP TRIGGER IF EXISTS trg_user_roles_invalidate_perm_cache ON forum_authz.user_roles;
+        DROP TRIGGER IF EXISTS trg_acl_entries_invalidate_perm_cache ON forum_authz.acl_entries;
+        DROP FUNCTION IF EXISTS forum_authz.invalidate_perm_cache_user_roles();
+        DROP FUNCTION IF EXISTS forum_authz.invalidate_perm_cache_acl_entries();
+
+        CREATE OR REPLACE FUNCTION forum_authz.effective_mask(
+            p_user  forum_authz.ulid26,
+            p_scope text,
+            p_scope_id forum_authz.ulid26 DEFAULT NULL)
+          RETURNS int LANGUAGE sql STABLE AS $fn$
+          WITH role_ids AS (
+              SELECT role_id FROM forum_authz.user_roles WHERE user_id = p_user
+          ),
+          allow AS (
+              SELECT forum_authz.int_or_agg(bits) AS m FROM (
+                  SELECT allow_bits AS bits FROM forum_authz.roles WHERE role_id IN (SELECT role_id FROM role_ids)
+                  UNION ALL
+                  SELECT allow_bits FROM forum_authz.acl_entries
+                    WHERE (scope, COALESCE(scope_id,'')) = (p_scope, COALESCE(p_scope_id,''))
+                      AND ((principal_type='user' AND principal_id=p_user)
+                        OR (principal_type='role' AND principal_id IN (SELECT role_id FROM role_ids)))
+              ) s
+          ),
+          deny AS (
+              SELECT forum_authz.int_or_agg(deny_bits) AS m FROM forum_authz.acl_entries
+                WHERE (scope, COALESCE(scope_id,'')) = (p_scope, COALESCE(p_scope_id,''))
+                  AND ((principal_type='user' AND principal_id=p_user)
+                    OR (principal_type='role' AND principal_id IN (SELECT role_id FROM role_ids)))
+          )
+          SELECT COALESCE((SELECT m FROM allow),0) & ~COALESCE((SELECT m FROM deny),0);
+        $fn$;
+
+        CREATE OR REPLACE FUNCTION forum_authz.has_permission(
+            p_user forum_authz.ulid26, p_action text, p_scope text, p_scope_id forum_authz.ulid26 DEFAULT NULL)
+          RETURNS boolean LANGUAGE sql STABLE AS $fn$
+          SELECT (forum_authz.effective_mask(p_user, p_scope, p_scope_id)
+                  & COALESCE((SELECT (1 << bit) FROM forum_authz.actions WHERE code = p_action), 0)) <> 0;
+        $fn$;
+        """;
 }

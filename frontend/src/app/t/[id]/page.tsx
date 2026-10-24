@@ -188,7 +188,7 @@ export default function ThreadPage() {
                 <Link
                   href="/social"
                   className={styles.messageButton}
-                  title="Messaging is a preview — backend not implemented"
+                  title="Message the author (opens Social)"
                 >
                   MESSAGE
                 </Link>

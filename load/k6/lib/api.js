@@ -152,3 +152,42 @@ export function openDirectConversation(baseUrl, token, userId) {
 export function sendMessage(baseUrl, token, conversationId, body, opts = {}) {
   return apiPost(baseUrl, `/api/social/conversations/${conversationId}/messages`, { body }, 'dm_send', token, opts);
 }
+
+// --- REAL_SPA (deviation D1): the React pages' secondary reads, issued as browser-like parallel fan-outs -------------
+//
+// targets/a.js replays each page's cold-cache waterfall wave by wave; a wave = the requests one React render fires at
+// once = ONE http.batch(). The helpers below only BUILD requests (same headers/tags/discard semantics as apiGet) and
+// issue a wave; nothing here is used by the default (idealized) path. Paths are the SPA's own
+// (frontend/src/lib/api/{content,engagement,files,social}.ts) — a comma-joined id list stays raw, as fetch() sends it.
+
+/** Path builders mirroring frontend/src/lib/api/*.ts (query-string order and encoding included). */
+export const spaPaths = {
+  categories: '/api/content/categories',
+  categoryBySlug: (slug) => `/api/content/categories/${encodeURIComponent(slug)}`,
+  threadFeed: (categoryId, cursor = null, limit = 20) =>
+    `/api/content/threads?categoryId=${categoryId}&${cursor ? `cursor=${encodeURIComponent(cursor)}&` : ''}limit=${limit}`,
+  thread: (threadId) => `/api/content/threads/${threadId}`,
+  comments: (threadId) => `/api/content/threads/${threadId}/comments`,
+  search: (q, limit = 20) => `/api/content/search?q=${encodeURIComponent(q)}&limit=${limit}`,
+  userThreads: (userId) => `/api/content/users/${userId}/threads?limit=20`,
+  userComments: (userId) => `/api/content/users/${userId}/comments?limit=20`,
+  reactionBatch: (targetType, ids) => `/api/engagement/reactions/batch?targetType=${targetType}&targetIds=${ids.join(',')}`,
+  reactionSummary: (targetType, targetId) => `/api/engagement/reactions/${targetType}/${targetId}`,
+  userStats: (userId) => `/api/engagement/users/${userId}/stats`,
+  filesByTarget: (targetType, targetId) => `/api/files?targetType=${targetType}&targetId=${targetId}`,
+  unreadNotifications: '/api/social/notifications/unread-count',
+  conversations: '/api/social/conversations',
+  friends: '/api/social/friends?limit=50',
+  friendRequests: '/api/social/friends/requests',
+  blocks: '/api/social/blocks',
+};
+
+/** One entry of an http.batch() fan-out: the headers, endpoint tag and discard handling of apiGet. */
+export function batchGet(baseUrl, path, endpoint, opts = {}) {
+  return { method: 'GET', url: `${baseUrl}${path}`, params: params(endpoint, opts.token || null, opts.discard ? DISCARD : {}) };
+}
+
+/** Issues one wave (the browser fires these in parallel); responses come back in request order. */
+export function apiBatch(requests) {
+  return requests.length === 0 ? [] : http.batch(requests);
+}

@@ -7,7 +7,8 @@
 #              liveness/readiness timeoutSeconds 5, tracing OFF, rate limiters neutralized (recorded)
 #   postgres : postgres:18 (Debian) with shared_buffers=256MB effective_cache_size=512MB max_connections=100,
 #              requests 250m/512Mi, limits 1000m/1Gi; app pool 30 per replica
-#   B only   : GOMX_SEED=bench, GOMX_COMPRESS=0, GOMX_NOTIFY_FRIENDS_ON_POST=0, GOMX_DB_MAX_CONNS=30
+#   B only   : GOMX_SEED=bench, GOMX_COMPRESS=0, GOMX_NOTIFY_FRIENDS_ON_POST=0, GOMX_DB_MAX_CONNS=30,
+#              GOMX_CARD_PREVIEW_CHARS=300 (list cards carry a 300-char excerpt like A's — D2 parity, 2026-10-24)
 # ab_apply_profile enforces the parts that are live-configurable on A (B's come from its kustomize overlay);
 # ab_check_profile VERIFIES all of it from the live objects and refuses to measure a drifted cluster.
 
@@ -22,10 +23,14 @@
 #   AB_RELAY_POLL_MS=N   A's outbox relay poll interval (Messaging__PollIntervalMilliseconds; default 5000 —
 #                        the floor of A's WS receipt latency, see the J8 probes)
 #   AB_AUTH_READS=true   read journeys carry the session (D3 logged-in variant; forwarded to k6 as AUTH_READS)
+#   AB_REAL_SPA=true     A's read journeys replay the real React pages' cold-cache request sets instead of the idealized
+#                        core calls (D1; forwarded to k6 as REAL_SPA; load/k6/targets/README.md has the derived table).
+#                        B is unaffected — its journeys are full pages already — so a round reports "A ideal / A real / B"
 : "${AB_HPA:=false}"
 : "${AB_GC_VARIANT:=false}"
 : "${AB_RELAY_POLL_MS:=}"
 : "${AB_AUTH_READS:=false}"
+: "${AB_REAL_SPA:=false}"
 AB_HPA_MIN=1; AB_HPA_MAX=3; AB_HPA_CPU=70
 AB_B_GOMEMLIMIT="384MiB"
 ab_start_replicas() { if [[ "$AB_HPA" == true ]]; then echo "$AB_HPA_MIN"; else echo "$AB_REPLICAS"; fi; }
@@ -194,7 +199,8 @@ else:
     else:
         check("GOMEMLIMIT" not in env, f"default GC policy (GOMEMLIMIT unset, found {env.get('GOMEMLIMIT')!r})")
     want = {"GOMX_SEED": "bench", "GOMX_AUTH_RATELIMIT": "0", "GOMX_COMPRESS": "0",
-            "GOMX_NOTIFY_FRIENDS_ON_POST": "0", "GOMX_DB_MAX_CONNS": "30"}
+            "GOMX_NOTIFY_FRIENDS_ON_POST": "0", "GOMX_DB_MAX_CONNS": "30",
+            "GOMX_CARD_PREVIEW_CHARS": "300"}
     for k, v in want.items():
         check(env.get(k) == v, f"{k} = {env.get(k)} (want {v})")
     check(not (env.get("OTEL_EXPORTER_OTLP_ENDPOINT") or env.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")),
@@ -307,11 +313,11 @@ ab_meta() {
     "$(kubectl -n "$ns" get pods -l "$label" -o json)" \
     "$(kubectl -n "$ns" get statefulset postgres -o json)" \
     "$(ab_seed_counts "$t" 2>/dev/null || echo '')" \
-    "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" \
+    "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "$AB_REAL_SPA" \
     "$(kubectl -n "$ns" get hpa -o json 2>/dev/null || echo '{}')" <<'PY'
 import json, subprocess, sys
 out, t, name, code, harness, dep, pods, sts, seed = sys.argv[1:10]
-hpa_on, gc_variant, relay_ms, auth_reads, hpa_json = sys.argv[10:15]
+hpa_on, gc_variant, relay_ms, auth_reads, real_spa, hpa_json = sys.argv[10:16]
 dep, pods, sts = json.loads(dep), json.loads(pods), json.loads(sts)
 def sh(cmd):
     try:
@@ -338,6 +344,7 @@ meta = {
     "k6_version": sh("k6 version"),
     "variants": {"hpa": hpa_on == "true", "gc_variant": gc_variant == "true",
                  "relay_poll_ms": int(relay_ms) if relay_ms else None, "auth_reads": auth_reads == "true",
+                 "real_spa": real_spa == "true" and t == "a",  # an A-adapter variant: B's journeys are full pages
                  "hpa_spec": [h["spec"] for h in (json.loads(hpa_json).get("items") or [])]},
     "node": {"kubectl_nodes": sh("kubectl get nodes -o wide --no-headers"),
              "allocatable": sh("kubectl get nodes -o jsonpath='{.items[0].status.allocatable}'"),

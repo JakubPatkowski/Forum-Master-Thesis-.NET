@@ -78,12 +78,24 @@ internal sealed class ContentQueries : IContentQueries
             .Select(static category => new CategoryReadInfo(category.Id, category.OwnerId, true))
             .ToListAsync(cancellationToken);
 
+    // A/B parity (deviation D2): every card carries a 300-char plain-text excerpt, the length Architecture B renders
+    // under GOMX_CARD_PREVIEW_CHARS=300. The excerpt is computed AFTER the keyset LIMIT through a PK join, so a page
+    // costs exactly `limit + 1` excerpts (never one per scanned/sorted row); the outer ORDER BY repeats the page keys
+    // because a join does not promise to preserve the subquery's order.
+    private static string WithExcerpt(string pagedSql, string pageOrderBy) =>
+        $"""
+        SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+        FROM ({pagedSql}) AS page
+        JOIN forum_content.threads AS t ON t.id = page.id
+        ORDER BY {pageOrderBy}
+        """;
+
     public async Task<CursorPage<ThreadFeedItemResponse>> GetThreadFeedAsync(
         Ulid categoryId, ThreadFeedCursor? cursor, int limit, CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns}
             FROM forum_content.thread_feed_v
@@ -94,7 +106,8 @@ internal sealed class ContentQueries : IContentQueries
                    OR (is_pinned = @cursorPinned AND created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY is_pinned DESC, created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.is_pinned DESC, page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@categoryId", categoryId.ToString(), DbType.String);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
         command.AddParameter("@cursorPinned", cursor?.IsPinned ?? (object)DBNull.Value, DbType.Boolean);
@@ -128,7 +141,7 @@ internal sealed class ContentQueries : IContentQueries
 
         // websearch_to_tsquery tolerates arbitrary user input; ts_rank is deterministic per (row, query),
         // so the rank captured on one page is a stable keyset resume point on the next.
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns},
                    ts_rank(search_tsv, query) AS rank
@@ -141,7 +154,8 @@ internal sealed class ContentQueries : IContentQueries
                    OR (ts_rank(search_tsv, query) = @cursorRank AND created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY rank DESC, created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.rank DESC, page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@query", query, DbType.String);
         command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
@@ -276,7 +290,7 @@ internal sealed class ContentQueries : IContentQueries
         await using var command = connection.CreateCommand();
 
         // Plain chronological keyset — is_pinned is a category-feed concept, not an activity one.
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns}
             FROM forum_content.thread_feed_v
@@ -287,7 +301,8 @@ internal sealed class ContentQueries : IContentQueries
                    OR (created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@ownerId", ownerId.ToString(), DbType.String);
         command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
@@ -446,6 +461,9 @@ internal sealed class ContentQueries : IContentQueries
         {
             var items = new List<ThreadFeedItemResponse>(limit + 1);
             await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            // The excerpt is appended by WithExcerpt after any query-specific trailing columns (search adds `rank`
+            // at 13), so it is read by name rather than by position.
+            var excerptOrdinal = reader.GetOrdinal("excerpt");
             while (await reader.ReadAsync(cancellationToken))
             {
                 items.Add(new ThreadFeedItemResponse(
@@ -461,7 +479,8 @@ internal sealed class ContentQueries : IContentQueries
                     reader.GetInt32(9),
                     reader.GetInt32(10),
                     reader.GetFieldValue<DateTimeOffset>(11),
-                    reader.IsDBNull(12) ? null : reader.GetFieldValue<DateTimeOffset>(12)));
+                    reader.IsDBNull(12) ? null : reader.GetFieldValue<DateTimeOffset>(12),
+                    reader.IsDBNull(excerptOrdinal) ? string.Empty : reader.GetString(excerptOrdinal)));
                 onRow?.Invoke(reader);
             }
 

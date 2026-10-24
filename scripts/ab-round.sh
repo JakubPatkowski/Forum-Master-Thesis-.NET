@@ -8,6 +8,8 @@
 #   scripts/ab-round.sh --plan smoke:1 --label dryrun        # ~15 min end-to-end check of the whole pipeline
 #   make ab-round ARGS="--plan demo:5,capacity:1"
 #   scripts/ab-round.sh --plan demo:5 --label v2-auth --auth-reads          # D3: logged-in reads
+#   scripts/ab-round.sh --plan demo:5 --label v2-realspa --real-spa         # D1: A replays the real SPA's cold-cache
+#                                                                           #     waterfall (B unchanged → "A ideal / A real / B")
 #   scripts/ab-round.sh --plan demo:5 --label v2-hpa --hpa                  # A-15: identical HPA 1–3 @ 70 %
 #   scripts/ab-round.sh --plan demo:3 --label v2-gc --gc-variant            # D8: workstation GC / GOMEMLIMIT
 #   scripts/ab-round.sh --plan demo:3 --label v2-relay --relay-poll-ms 500  # A outbox poll (J8 receipt floor)
@@ -46,8 +48,8 @@ WARMUP=true
 ALLOW_MISMATCH=false
 TARGETS="ab"
 K6_ENV=()
-# Variants (harness h4) — see lib-bench.sh: --hpa, --gc-variant, --relay-poll-ms N, --auth-reads, plus any
-# --k6-env KEY=VALUE forwarded to k6 (e.g. WS_PROBE_INTERVAL_MS=5000, SOAK_MINUTES=90).
+# Variants (harness h4) — see lib-bench.sh: --hpa, --gc-variant, --relay-poll-ms N, --auth-reads, --real-spa, plus any
+# --k6-env KEY=VALUE forwarded to k6 (e.g. WS_PROBE_INTERVAL_MS=5000, SOAK_MINUTES=90, REAL_SPA_BATCH_PER_HOST=64).
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --plan) PLAN="${2:?--plan needs profile:repeats[,profile:repeats…]}"; shift 2 ;;
@@ -61,8 +63,9 @@ while [[ $# -gt 0 ]]; do
     --gc-variant) AB_GC_VARIANT=true; shift ;;
     --relay-poll-ms) AB_RELAY_POLL_MS="${2:?--relay-poll-ms needs milliseconds}"; shift 2 ;;
     --auth-reads) AB_AUTH_READS=true; shift ;;
+    --real-spa) AB_REAL_SPA=true; shift ;;
     --k6-env) K6_ENV+=("${2:?--k6-env needs KEY=VALUE}"); shift 2 ;;
-    -h|--help) sed -n '2,31p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,33p' "$0"; exit 0 ;;
     *) die "Unknown argument: $1 (see --help)" ;;
   esac
 done
@@ -72,6 +75,7 @@ for item in "${PLAN_ITEMS[@]}"; do
 done
 # Variant env for k6 (main.js records them in the journeys block; run-load-test.sh forwards them).
 [[ "$AB_AUTH_READS" == true ]] && export AUTH_READS=1
+[[ "$AB_REAL_SPA" == true ]] && export REAL_SPA=1   # targets/a.js + main.js read it; the B adapter ignores it
 for kv in "${K6_ENV[@]}"; do export "${kv?}"; done
 
 # --- preflight -------------------------------------------------------------------------------------------------
@@ -122,15 +126,16 @@ done
 python3 - "$ROUND/round.json" "$PLAN" "$LABEL" "$COOLDOWN_SECONDS" "$RESEED" "$WARMUP" "$AB_REPLICAS" \
   "$(sed -n "s/^export const MIX_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
   "$(sed -n "s/^export const HARNESS_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
-  "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "${K6_ENV[*]}" <<'PY'
+  "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "$AB_REAL_SPA" "${K6_ENV[*]}" <<'PY'
 import json, sys, time
 out, plan, label, cooldown, reseed, warmup, replicas, mix, harness = sys.argv[1:10]
-hpa, gc, relay, auth, k6env = sys.argv[10:15]
+hpa, gc, relay, auth, real_spa, k6env = sys.argv[10:16]
 json.dump({"label": label, "plan": plan, "started_epoch": time.time(), "cooldown_s": int(cooldown),
            "reseed_each_run": reseed == "true", "warmup_each_run": warmup == "true", "replicas": int(replicas),
            "mix_version": mix, "harness_version": harness, "order": "ABBA (odd repeat: A then B; even: B then A)",
            "variants": {"hpa": hpa == "true", "gc_variant": gc == "true", "relay_poll_ms": int(relay) if relay else None,
-                        "auth_reads": auth == "true", "k6_env": k6env.split() if k6env else []}},
+                        "auth_reads": auth == "true", "real_spa": real_spa == "true",
+                        "k6_env": k6env.split() if k6env else []}},
           open(out, "w"), indent=2)
 PY
 

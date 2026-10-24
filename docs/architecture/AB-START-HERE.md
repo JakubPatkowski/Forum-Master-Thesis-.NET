@@ -7,10 +7,10 @@ hours before.
 
 | | |
 |---|---|
-| **Last updated** | 2026-10-18 04:00, after the first full measured campaign (`thesis/results/campaign-20261017-2357/`) |
+| **Last updated** | 2026-10-24 — comparability fixes implemented on BOTH trees (`AB-STATUS-AND-PLAN-2026-10-23.md` §0b lists them; `AB-COMPARISON-v1.md` §5.8 is the measurement-relevant summary); previous: 2026-10-23 status snapshot, 2026-10-18 first full campaign |
 | **State** | Both apps and the shared harness are **aligned (v1)** and **measured**: round `thesis/results/rounds/20261018-0051-v1/` (demo 5+5, stress 1+1, capacity 1+1 — 14/14 valid, 0 % failed, 0 × 429), functional gates green on both (A 248/0/0, B 378/0/25 + 81/0/0), live checks, static metrics (trivy/cloc/sizes/Lighthouse) — all archived with the exact patches + image digests under test. Results tables: `thesis/results/AB-COMPARISON-v1.md` §9; analysis, anomalies, threats and the v2 list: `thesis/results/campaign-20261017-2357/05-analysis/CAMPAIGN-REPORT.md`. |
-| **Next** | (1) commit A (`31-feat-phase-13---ab-benchmark`: the re-verification edits + the campaign folder + the home-feed fix) and commit + push the B edit (`handlers_community.go` + tests) for Hubert's review; (2) `make mk-deploy` when the production posture is wanted back (also deploys the web image with the home-feed fix — the cluster is still in bench shape: no HPA, A limiter raised to 1 000 000 permits, tracing off); (3) v2 per CAMPAIGN-REPORT §8 — N ≥ 10 demo repeats, selective word bank (D4), logged-in variant (D3), real-SPA waterfall (D1), GC sensitivity (D8), B J8 receipt/loss, A frontend CVE upgrades |
-| **Deadline context** | class on **2026-10-18 08:00**: aligned apps + aligned tests + first round with saved data + v1 document — **done**; present from `CAMPAIGN-REPORT.md` §3–§5 |
+| **Next** | **2026-10-24:** both working trees carry the comparability fixes (uncommitted — owner commits A on `31-feat-phase-13---ab-benchmark` and B on `feature/master-thesis`, tags `thesis-v2-a`/`thesis-v2-b`); the cluster is **stopped** → `minikube -p forum start`, rebuild both from the clean HEADs (`make mk-deploy ARGS=--seed-benchmark`, `make gomx-deploy ARGS=--reset-db`; the B overlay now sets `GOMX_CARD_PREVIEW_CHARS=300` and A's seed carries the social graph), verify bank + profile (`ab_check_profile` expects the new B env), smoke, then the **v2 round** (§8.1) plus the `--real-spa` round. Results chapter for the class on **2026-10-25** from round v1 (`thesis/figures/v1/`) or v2 |
+| **Deadline context** | thesis-seminar class on **2026-10-25**: a results chapter (subsections, tables with units + in-text references, captioned figures) — skeleton in `AB-STATUS-AND-PLAN-2026-10-23.md` §7, data from round v1 (or v2 if it runs on 2026-10-23/24). Earlier: class 2026-10-18 — done |
 
 ---
 
@@ -37,6 +37,7 @@ hours before.
 | Document | Role | Status |
 |---|---|---|
 | **this file** | entry point, checklist, traps | current |
+| `docs/architecture/AB-STATUS-AND-PLAN-2026-10-23.md` | **2026-10-23 snapshot**: state of both repos/cluster/archives, stack + core inventory from code, reviewer objections and how each closes, test layers, gaps, unification decisions, dated plan with commands, results-chapter skeleton, thesis/article outline | current |
 | `thesis/results/AB-COMPARISON-v1.md` | the v1 comparison: systems, hypotheses, environment, dataset, journeys, fairness invariants F1–F8, deviation register, runbook, results §9 | current — **results to fill** |
 | `docs/architecture/AB-ALIGNMENT-INSTRUCTIONS-A.md` / `-B.md` | work items A-01…A-18 / B-01…B-15 with code; §4 = the wire **interface contract** (identical in both); §6 deviations; §7 open decisions | current (status boxes + §4 updated 2026-10-17) |
 | `docs/architecture/AB-SCOPE-ALIGNMENT-2026-10.md` | decision record (what was decided, why, implementation status) | current |
@@ -97,16 +98,24 @@ rules, scenario-only measurement windows, reseed + fresh pods per run, ABBA orde
 | campaign | B logs `500` for client-cancelled requests (8 × "canceling statement due to user request" when an orphaned k6 died) — outside every measured window | recorded; suggest 499 |
 | campaign | H2: the capacity knee is the **1-CPU Postgres** on both sides (B's DB at 1.00 core from 300 offered j/s, A's at 0.93 from 400) — B hits it at half the throughput because its DB cost per journey is 1.7–1.9× A's (J6 under D4, member_count COUNT, SumPostVotes) | recorded (`03-round/capacity-per-step-cpu.json`); v2: selective word bank, N ≥ 3 capacity repeats |
 | campaign | the first v1 round attempt died with the operator session (Bash-tool background tasks are killed on session exit) | relaunch detached (`setsid nohup make ab-round …`); archive `20261018-0029-v1-ABORTED-session-crash` excluded |
+| **2026-10-24** | B pushed every comment to every socket: `broadcastComment` lacked the community-visibility gate `broadcastPost` has → private-community comment HTML reached outsiders and anonymous sockets | gate + member-only delivery (`commentAudience`) + `TestPrivateCommunityCommentsReachMembersOnly` |
+| 2026-10-24 | D2: B cards rendered whole bodies, A cards none → unequal card work and bytes per J1/J6 | **both sides ship a 300-char plain-text excerpt** (A `thread_excerpt()` after the LIMIT; B `GOMX_CARD_PREVIEW_CHARS=300` in the bench overlay, product default unchanged); `ab_check_profile` expects the new B env |
+| 2026-10-24 | D6: A's Benchmark seed had 0 social rows, B 2 400 + 80 friendships / 2 000 DMs | A seeds the mirrored graph (`BenchSocialGraph`; e2e `SeedFlowBenchmarkTests`) |
+| 2026-10-24 | D10: `has_permission` recomputed the mask on every write with a non-sargable predicate | one-pass sargable `effective_mask` + cache fast path (migration `OptimizeEffectiveMask`; 0 mismatches over 3 300 pairs; −14 % live, 5.5× cached) |
+| 2026-10-24 | A: concurrent `POST /threads` sharing a brand-new tag slug → 500 (unique violation; found by the h5 smoke on the Development seed; Benchmark pre-creates every harness slug) | `INSERT … ON CONFLICT (slug) DO NOTHING` get-or-create + e2e regression test |
+| 2026-10-24 | B: hub queue 32 closed ~150 holders in stress/capacity; cancelled requests logged as 500 | queue 256 (close-on-full kept); 499 in `renderStatus` + `RequestLogger` + test |
+| 2026-10-24 | D1 had no measurement | `REAL_SPA=1` / `ab-round.sh --real-spa` replays the derived cold-cache waterfall (`load/k6/targets/README.md`); harness **h5-2026-10-24** |
+| 2026-10-24 | A mobile: signed-in TopNav 532 px on a 412 px phone, tap targets < 40 px; 13 fixable frontend CVEs | CSS fixes (Playwright 24/0/8, `test.fail` markers removed); next 15.5.28 + overrides (sharp/nanoid/postcss/source-map-js) |
 
 ### 4.3 What remains different (documented, not leveled)
-D1 A's adapter is an idealized SPA client (fewer calls than the real SPA, no client cache) → A's server cost is a
+D1 (default adapter; `--real-spa` variant since 2026-10-24) A's adapter is an idealized SPA client (fewer calls than the real SPA, no client cache) → A's server cost is a
 lower bound — **quantified 2026-10-18** from the SPA code: a cold space page = feed + batch + slug→id + 20 thread-icon
 lookups + ≤ 20 avatar lookups + 1 category icon (≈ 43 small calls, each one attachment/PK query) vs the adapter's 2; a
 cold thread page = detail + tree + batch + author stats + attachments + related search + icons + one avatar per
 distinct author (≈ 8 + N) vs the adapter's 3; B's real browser = 1 HTML + 1 Web-Vitals beacon per page (+ immutable
-assets from cache, one WebSocket per tab) vs the adapter's 1 · D2 B's feed/search cards render a body preview, A's cards carry none · D3 reads are anonymous (favours
+assets from cache, one WebSocket per tab) vs the adapter's 1 · D2 **closed 2026-10-24** (300-char excerpt on both; B product default still full bodies) · D3 reads are anonymous (favours
 B) · D4 the 31-word bank makes J6 match ~every thread on both · D5 seed timestamps differ (neutralized for thread
-journeys) · D6 social rows only in B's seed; tags/soft-deleted/blocked only in A's · D7 write journeys measure the
+journeys) · D6 **closed 2026-10-24** for social rows (tags/soft-deleted/blocked remain A-only) · D7 write journeys measure the
 write only · D8 runtime memory policy = platform defaults (A: .NET **Server GC**, `System.GC.Server: true`; B: Go
 GOGC=100, no GOMEMLIMIT) — part of each platform's default posture, stated next to every memory number ·
 **D9** (2026-10-18) A's per-request stack overhead: every pooled connection use ends with Npgsql's 7-statement reset
@@ -119,6 +128,12 @@ numbers) B's feed/search cards carry the **whole rendered body**: J1 page 174 KB
 JSON + 1.5 KB / 0.5 KB batch; J6 174 / 15.7 KB vs 8.0 / 1.8 KB.
 
 ### 4.4 Open items and risks
+- **2026-10-23:** three gomx files from the 2026-10-18 session are still uncommitted (the N+1 regression test, the
+  `newTestServerWithStore` helper, the bench README D4 note) although `5c569f7` is pushed; the cluster is stopped and
+  its images are `-dirty`-tagged builds of the (now committed) trees; the A branch was slimmed (raw result files are
+  gitignored — keep `thesis/results/` on disk and `~/backups/forum-dotnet-2026-10-23/`). **B leak confirmed in code:**
+  `app/forum/web/live.go` `broadcastComment` lacks the community-visibility gate that `broadcastPost` has → private-
+  community comment HTML reaches every socket (anonymous included). Full list + plan: `AB-STATUS-AND-PLAN-2026-10-23.md`.
 - The deployed `forum-dotnet-web:git-57f63d0-dirty` image carries the anonymous home-page regression (fixed in the working tree
   2026-10-18 03:47, not yet built/deployed); the API image is unaffected. `make mk-deploy` rebuilds both.
 - A's frontend toolchain has 13 fixable HIGH/CRITICAL CVEs (trivy 2026-10-18: next@15.5.20 ×5, sharp ×3, nanoid ×2, postcss ×2,
@@ -291,6 +306,8 @@ Keep `make tunnels` and Grafana browsing off during a round. Re-run only the fai
 24. `psql -c "ALTER SYSTEM …; SELECT pg_reload_conf()"` fails (both statements run in one transaction) — two `-c` calls.
 25. `cloc --vcs=git` lists files of the repository in the **current directory** — run it from inside each repo (an absolute path
     argument from another repo yields 0 files).
+26a. `ab_check_profile b` expects `GOMX_CARD_PREVIEW_CHARS=300` since 2026-10-24 — a B deployment from an older overlay fails the check (and measures full-body cards).
+26b. Run the gomx CI replay container as root with `git config --global --add safe.directory /src`, or `check-generated-go.sh` fails on the mounted repo's ownership.
 26. `~/.cache/gomx-gocache` is root-owned (written by a root container) — run the Go CI replay as root in the container, or use a
     fresh cache; uid-1000 runs fail with `permission denied` in seconds.
 
@@ -302,8 +319,8 @@ State after the 2026-10-18 evening gap-closure session (`AB-TEST-GAPS-PROGRESS.m
 | Area | Status | Owner |
 |---|---|---|
 | Sign-off | Hubert reviews the alignment edits on his branch (N+1 fix, `seedbench.go` word bank) and signs `forum-spec.md` (incl. updating its §9 to the agreed protocol) | both |
-| Journeys | **done (h4):** J4 (+image) and J9 on BOTH adapters, J8 receipt latency/loss probes; A-11 social seed on A still absent (J9 on A writes into empty social tables — recorded) | A + B |
-| Realism | **done (h4):** D4 shared 300-word Zipf bank in both seeders; D3 `--auth-reads` variant. **Open:** D1 replay of the real SPA waterfall (+ cache model); D2 feed previews (product decision) | both |
+| Journeys | **done (h4):** J4 (+image) and J9 on BOTH adapters, J8 receipt latency/loss probes; **A-11 social seed done (2026-10-24)** | A + B |
+| Realism | **done (h4):** D4 shared 300-word Zipf bank in both seeders; D3 `--auth-reads` variant. **done (h5, 2026-10-24):** D1 `--real-spa` cold-cache waterfall variant; D2 card-excerpt parity. **Open:** a cache-model (warm) replay | both |
 | Scaling | **done (h4):** `--hpa` = identical HPA 1–3 @ 70 % on both (verified by `ab_check_profile`) — measured run pending | both |
 | Statistics | **done:** Welch / exact Mann-Whitney / Cliff's δ / Holm in every REPORT.md (`ab_stats.py`). **Open:** the N ≥ 10 round itself (`make ab-round ARGS="--plan demo:10,stress:3,capacity:3 --label v2"`, ≈ 6 h) | A |
 | Client side | **done (tooling):** `lighthouse.sh --cluster` (mobile + desktop, both targets), Playwright suite on A (desktop + Android emulation). **Open:** the measured runs on the final images; RUM on the cluster | both |
@@ -311,9 +328,9 @@ State after the 2026-10-18 evening gap-closure session (`AB-TEST-GAPS-PROGRESS.m
 | Sensitivity | **done (tooling):** `--gc-variant`, `--relay-poll-ms`; measured runs pending | A + B |
 | Resilience | **done (tooling):** `ab-chaos.sh` (pod-crash / pod-delete / db-restart), `soak` + `spike` profiles; runs pending | both |
 | Infra | CI MinIO image mirror; keep the image backup | A |
-| A hot path | read `effective_perm_cache` in `has_permission` (D10: ≈ 1.9 ms → one PK lookup per write) — security-sensitive, needs the scope semantics for category-level role ACLs settled first | A |
-| B hot path (optional, Hubert) | `GetCommunityBySlug` recomputes `member_count` with a COUNT per page view (0.19 ms); `Vote` sums all votes (`SumPostVotes`, 0.38 ms on the hottest post) instead of reading the trigger-maintained `vote_score`; 499 (not 500) for cancelled requests; the hub's slow-consumer close policy | B |
-| D2 / D11 | decide whether B's cards keep the whole rendered body (16 KB gzip per feed page, 20 markdown renders per J1) or a truncated preview | both |
+| A hot path | **done (2026-10-24):** sargable `effective_mask` + cache fast path in `has_permission` (D10 reduced; see `AB-COMPARISON-v1.md` §5.8) | A |
+| B hot path (optional, Hubert) | `GetCommunityBySlug` recomputes `member_count` with a COUNT per page view (0.19 ms); `Vote` sums all votes (`SumPostVotes`, 0.38 ms on the hottest post) instead of reading the trigger-maintained `vote_score`. **Done 2026-10-24 (for Hubert's review):** 499 for cancelled requests, hub queue 256, private-comment gate, card preview knob | B |
+| D2 / D11 | **done (2026-10-24):** 300-char excerpt on both sides for measured runs (`GOMX_CARD_PREVIEW_CHARS=300`; B product default unchanged) | both |
 | Mobile | real-device / emulator pass of the Tauri Android shells (B has a committed Android project; A has the desktop shell only) | both |
 
 ### 8.1 Runbook for the v2 round (next session)

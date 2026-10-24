@@ -376,7 +376,7 @@ CREATE TABLE <schema>.outbox_messages (
 CREATE INDEX ix_outbox_unprocessed ON <schema>.outbox_messages (occurred_on_utc) WHERE processed_on_utc IS NULL;
 ```
 
-Consumers keep an **inbox**/dedupe table (`processed_event_ids`) for idempotency. See
+Consumers keep an **inbox**/dedupe table (`inbox_messages`, one per module schema — Phase 6) for idempotency. See
 [ADR 0009](./adr/0009-rabbitmq-inter-module-events.md).
 
 ---

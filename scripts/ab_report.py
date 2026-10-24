@@ -198,6 +198,13 @@ def overlap(a, b):
     return "overlap" if lo_a <= hi_b and lo_b <= hi_a else "distinct"
 
 
+def variants_label(rnd):
+    """The round's recorded variant flags (hpa, gc_variant, relay_poll_ms, auth_reads, real_spa) as one cell."""
+    variants = rnd.get("variants") or {}
+    flags = [f"{k}={v}" for k, v in variants.items() if k != "k6_env" and v not in (False, None)]
+    return ", ".join(flags) if flags else "none (default harness)"
+
+
 def table(rows, header):
     lines = ["| " + " | ".join(header) + " |", "|" + "|".join("---" for _ in header) + "|"]
     lines += ["| " + " | ".join(r) + " |" for r in rows]
@@ -220,8 +227,15 @@ def report(round_dir, runs, summary):
         ["A image", f"`{ma.get('deployed_image', '?')}`", "A git", f"{ma.get('git_branch', '?')} @ {str(ma.get('git_sha', '?'))[:9]}{' (dirty)' if ma.get('git_dirty') else ''}"],
         ["B image", f"`{mb.get('deployed_image', '?')}`", "B git", f"{mb.get('git_branch', '?')} @ {str(mb.get('git_sha', '?'))[:9]}{' (dirty)' if mb.get('git_dirty') else ''}"],
         ["replicas", str(rnd.get("replicas", "?")), "reseed / warm-up each run", f"{rnd.get('reseed_each_run')} / {rnd.get('warmup_each_run')}"],
+        ["variants", variants_label(rnd), "k6 env", " ".join((rnd.get("variants") or {}).get("k6_env") or []) or "—"],
     ], ["", "", "", ""]))
     md.append("")
+    if (rnd.get("variants") or {}).get("real_spa"):
+        md.append("**A = the real SPA client** (`--real-spa`, deviation D1): A's read journeys replay the React pages' "
+                  "cold-cache request sets (icons, avatars, author stats, related search, attachment rail — "
+                  "`load/k6/targets/README.md`), not the idealized core calls of the default rounds. Compare with a "
+                  "default round of the same plan to read A's cost as a lower/upper bound; B is identical in both.")
+        md.append("")
 
     md.append("## Run inventory")
     inv = []

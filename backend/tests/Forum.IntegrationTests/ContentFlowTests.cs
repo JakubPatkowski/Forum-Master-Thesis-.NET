@@ -239,6 +239,29 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         (await client.GetAsync($"/api/content/threads/{newer}")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    [SkippableFact]
+    public async Task Concurrent_thread_creates_sharing_a_brand_new_tag_all_succeed()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var author = await RegisterAndLogin(client, "tagracer");
+        var categoryId = await CreateCategory(client, author, "tag-race");
+        var slug = $"race-{Ulid.NewUlid().ToString()[^6..].ToLowerInvariant()}";
+
+        // Eight requests race to be the first user of the same slug: before the ON CONFLICT get-or-create the losers
+        // hit the unique index on tags.slug and surfaced as 500s (found by the k6 harness on the Development seed).
+        var responses = await Task.WhenAll(Enumerable.Range(0, 8).Select(i =>
+            Send(client, author, HttpMethod.Post, "/api/content/threads",
+                new { categoryId, title = $"Tag race {i}", body = "same new tag", tagSlugs = new[] { slug } })));
+
+        responses.Select(static response => response.StatusCode).ShouldAllBe(static status => status == HttpStatusCode.Created);
+
+        // Exactly one tag row carries the slug, used by all eight threads.
+        var suggestions = (await client.GetFromJsonAsync<List<TagSuggestion>>($"/api/content/tags?query={slug}"))!;
+        suggestions.Where(tag => tag.Slug == slug).ShouldHaveSingleItem().UsageCount.ShouldBe(8);
+    }
+
     private static async Task<Session> RegisterAndLogin(HttpClient client, string username)
     {
         var email = $"{username}@example.com";
@@ -359,6 +382,8 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
     private sealed record CategoryListItem(string Id, string Slug, string Visibility);
 
     private sealed record ThreadCreated(string ThreadId);
+
+    private sealed record TagSuggestion(string Slug, string Name, int UsageCount);
 
     private sealed record CommentCreated(string CommentId);
 

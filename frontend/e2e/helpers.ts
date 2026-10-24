@@ -193,14 +193,15 @@ export type Press = (locator: Locator) => Promise<void>;
 
 /**
  * A finger tap at the control's centre, as a raw touch event. Used instead of `locator.tap()` once
- * a user is signed in on the phone: the signed-in TopNav is wider than the Pixel 7 (see
- * mobile-layout.spec.ts), Chrome then widens the layout viewport beyond the visual one and pans the
- * visual viewport to focused fields, and Playwright's own hit-target check compares a point taken
- * from the visual viewport against layout coordinates — it reports an unrelated element
- * "intercepting pointer events" although the real hit test is clean. The hit test is therefore
- * done here in page coordinates (the CDP box translated by the visual viewport's pan and scale):
- * whatever is on top at the centre must be the target itself or one of its descendants, so a
- * genuinely covered control still fails loudly.
+ * a user is signed in on the phone: until 2026-10-24 the signed-in TopNav was wider than the Pixel 7
+ * (see mobile-layout.spec.ts), Chrome then widened the layout viewport beyond the visual one and
+ * panned the visual viewport to focused fields, and Playwright's own hit-target check compares a
+ * point taken from the visual viewport against layout coordinates — it reported an unrelated
+ * element "intercepting pointer events" although the real hit test was clean. The hit test is
+ * therefore done here in page coordinates (the CDP box translated by the visual viewport's pan and
+ * scale): whatever is on top at the centre must be the target itself or one of its descendants, so
+ * a genuinely covered control still fails loudly. Kept after the layout fix: it stays independent
+ * of Playwright's visual-viewport heuristics and costs nothing.
  */
 export async function tapAt(page: Page, locator: Locator) {
   await locator.scrollIntoViewIfNeeded();

@@ -94,3 +94,13 @@
   border-color: var(--color-accent-base);
   color: var(--color-accent-base);
 }
+
+/* Touch floor (coarse pointers / phone widths): the admin "New category" button measured 22 px;
+   the negative margin keeps the panel header's height. */
+@media (pointer: coarse), (max-width: 480px) {
+  .addButton {
+    width: 40px;
+    height: 40px;
+    margin: -9px 0;
+  }
+}

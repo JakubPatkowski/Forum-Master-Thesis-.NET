@@ -178,7 +178,7 @@ presence (A-only, NOT in B-parity seed/k6 numbers).
     2 groups (public "book-club" by alice, private "staff-room" by mod, 3 members each), 1 pending invite,
     1 direct conversation (alice↔bob) + the 2 group conversations, 12 messages, 3 notifications, privacy
     defaults, no presence. Group-admin ACLs seeded via IAclGrantService calls (tiny counts). Benchmark
-    counts = 0 (BLOCKED on Hubert — POST-9C-ROADMAP Decision 3; TODO marked in SeedPlan).
+    counts = 0 (BLOCKED on Hubert — POST-9C-ROADMAP Decision 3; TODO marked in SeedPlan).  **Update 2026-10-24:** Benchmark now seeds the B-mirrored social graph (2 400 accepted + 80 pending friendships, 800 direct conversations, 2 000 messages; `BenchSocialGraph`), see `AB-STATUS-AND-PLAN-2026-10-23.md`.
 
 12. **Tests**: `Forum.Modules.Social.Tests` (unit: friendship transitions, group owner-leave invariant,
     message tombstone, privacy gates, presence staleness, block effects, 404→403→422 ordering on key

@@ -24,7 +24,9 @@
 //
 // Variants (harness h4, all recorded in the journeys block): AUTH_READS=1 (reads carry the session — D3),
 // WS_PROBE_INTERVAL_MS / WS_PROBE_TIMEOUT_MS (J8 receipt probes: a push later than the timeout counts as LATE,
-// never pushed by the end of the hold as LOST), SOAK_MINUTES / SOAK_VUS, SPIKE_VUS, J4_IMAGE_PX.
+// never pushed by the end of the hold as LOST), SOAK_MINUTES / SOAK_VUS, SPIKE_VUS, J4_IMAGE_PX, and — target a
+// only — REAL_SPA=1 (read journeys replay the real React pages' cold-cache request sets instead of the idealized core
+// calls — D1; targets/README.md has the derived table) with REAL_SPA_BATCH_PER_HOST (fan-out concurrency).
 
 import { check, sleep } from 'k6';
 import exec from 'k6/execution';
@@ -49,6 +51,13 @@ const INGRESS_IP = __ENV.INGRESS_IP || '';
 const LOGIN_STAGGER_MS = Number(__ENV.LOGIN_STAGGER_MS || 250); // ≤4 logins/s against A's tight Auth limiter
 const WS_HOLD_MS = Number(__ENV.WS_HOLD_MS || 120_000); // > 60 s: an idle drop at exactly 60 s = G13 regression (A)
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
+// REAL_SPA (D1) is an A-adapter variant: B's journeys ARE full pages, so the flag means nothing there and is recorded
+// as off for B (setup() warns once). The adapter reads the same env var itself.
+const REAL_SPA = (__ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true') && TARGET === 'a';
+// Fan-out concurrency for the REAL_SPA waves (http.batch): a browser multiplexes a page's parallel requests on ONE
+// HTTP/2 connection (ingress-nginx allows 128 concurrent streams — the whole wave at once); over plain HTTP/1.1 Chrome
+// opens 6 connections per host. k6's batchPerHost default is 6, so over https the variant lifts it to the h2 figure.
+const REAL_SPA_BATCH_PER_HOST = Number(__ENV.REAL_SPA_BATCH_PER_HOST || (BASE_URL.startsWith('https') ? 128 : 6));
 // J8 receipt probes: one own-comment per hold every interval; unanswered after the timeout = lost. 30 s keeps the
 // probe writes at ≈ 0.7 % of the demo's journeys (symmetric on both sides, counted in the dataset delta).
 const WS_PROBE_INTERVAL_MS = Number(__ENV.WS_PROBE_INTERVAL_MS || 30_000);
@@ -65,7 +74,7 @@ const WS_PROBE_TIMEOUT_MS = Number(__ENV.WS_PROBE_TIMEOUT_MS || 15_000);
 //     v2 numbers are not comparable to v1.
 // HARNESS_VERSION: bumps whenever adapter behaviour changes without a weight change.
 export const MIX_VERSION = 'v2';
-export const HARNESS_VERSION = 'h4-2026-10-18';
+export const HARNESS_VERSION = 'h5-2026-10-24'; // h5: REAL_SPA variant (D1); measured apps carry card-excerpt parity (D2)
 const MIX = [
   ['J1', 30], // space feed (page + 30% cursor page 2)
   ['J2', 20], // thread open
@@ -358,7 +367,7 @@ function buildOptions() {
     }
   }
 
-  return {
+  const options = {
     scenarios,
     thresholds,
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'count'],
@@ -366,6 +375,12 @@ function buildOptions() {
     userAgent: 'forum-bench-k6/2.0',
     hosts: target.hosts(INGRESS_IP),
   };
+  if (REAL_SPA) {
+    // Only the REAL_SPA variant uses http.batch(); the defaults stay k6's for every other run.
+    options.batch = REAL_SPA_BATCH_PER_HOST;
+    options.batchPerHost = REAL_SPA_BATCH_PER_HOST;
+  }
+  return options;
 }
 
 export const options = buildOptions();
@@ -379,7 +394,10 @@ export function setup() {
   if (total === 0) {
     throw new Error('No threads discovered in any public space — seed the database first.');
   }
-  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}`);
+  if ((__ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true') && TARGET !== 'a') {
+    console.warn('REAL_SPA only changes target a (B journeys are full pages already) — ignored and recorded as off.');
+  }
+  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}${REAL_SPA ? ` [REAL_SPA batchPerHost=${REAL_SPA_BATCH_PER_HOST}]` : ''}`);
   // The measured window starts HERE: resources and journeys/s exclude the setup phase (200 logins = Argon2id
   // CPU on A vs PBKDF2 on B — Day-0 averaged it into both numbers).
   data.setupEndedAtMs = Date.now();
@@ -551,7 +569,7 @@ export function handleSummary(data) {
   const lines = [];
   const setupEndedAtMs = data.setup_data ? data.setup_data.setupEndedAtMs : null;
   lines.push(`\ntarget=${TARGET}  profile=${PROFILE}  mix=${MIX_VERSION}  harness=${HARNESS_VERSION}  base=${BASE_URL}` +
-    `${AUTH_READS ? '  reads=signed-in' : '  reads=anonymous'}`);
+    `${AUTH_READS ? '  reads=signed-in' : '  reads=anonymous'}${REAL_SPA ? '  client=real-spa(cold-cache)' : ''}`);
 
   const totals = data.metrics['http_req_duration{scenario:http}'] || data.metrics.http_req_duration;
   const failed = data.metrics['http_req_failed{scenario:http}'] || data.metrics.http_req_failed;
@@ -670,7 +688,8 @@ export function handleSummary(data) {
   const journeysBlock = JSON.stringify({
     target: TARGET, profile: PROFILE, mix_version: MIX_VERSION, harness_version: HARNESS_VERSION,
     variant: {
-      auth_reads: AUTH_READS, ws_probe_interval_ms: WS_PROBE ? WS_PROBE.intervalMs : null,
+      auth_reads: AUTH_READS, real_spa: REAL_SPA, real_spa_batch_per_host: REAL_SPA ? REAL_SPA_BATCH_PER_HOST : null,
+      ws_probe_interval_ms: WS_PROBE ? WS_PROBE.intervalMs : null,
       ws_probe_timeout_ms: WS_PROBE ? WS_PROBE.timeoutMs : null, ws_hold_ms: HOLD_MS,
       j4_image_px: Number(__ENV.J4_IMAGE_PX || 256), soak_minutes: PROFILE === 'soak' ? SOAK_MINUTES : null,
       soak_vus: PROFILE === 'soak' ? SOAK_VUS : null, spike_vus: PROFILE === 'spike' ? SPIKE_VUS : null,
