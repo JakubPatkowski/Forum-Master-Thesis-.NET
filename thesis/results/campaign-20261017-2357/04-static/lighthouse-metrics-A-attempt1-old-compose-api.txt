@@ -1,0 +1,24 @@
+# HELP lighthouse_category_score Lighthouse category score (0-1, higher is better).
+# TYPE lighthouse_category_score gauge
+# HELP lighthouse_web_vital Lighthouse lab Core Web Vital (milliseconds; cls is unitless).
+# TYPE lighthouse_web_vital gauge
+lighthouse_category_score{path="/",category="performance"} 0.75
+lighthouse_category_score{path="/",category="accessibility"} 0.95
+lighthouse_category_score{path="/",category="best-practices"} 0.96
+lighthouse_category_score{path="/",category="seo"} 1
+lighthouse_web_vital{path="/",metric="lcp_ms"} 4361.0555
+lighthouse_web_vital{path="/",metric="fcp_ms"} 1071.5304999999998
+lighthouse_web_vital{path="/",metric="tbt_ms"} 401
+lighthouse_web_vital{path="/",metric="cls"} 0.01041713147188212
+lighthouse_web_vital{path="/",metric="speed_index_ms"} 1071.5304999999998
+lighthouse_web_vital{path="/",metric="tti_ms"} 4361.0555
+lighthouse_category_score{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",category="performance"} 0.77
+lighthouse_category_score{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",category="accessibility"} 0.95
+lighthouse_category_score{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",category="best-practices"} 0.96
+lighthouse_category_score{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",category="seo"} 1
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="lcp_ms"} 3975.020999999999
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="fcp_ms"} 1067.823
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="tbt_ms"} 416.99999999999955
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="cls"} 0.0004381322942585717
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="speed_index_ms"} 1067.823
+lighthouse_web_vital{path="/t/01KYFSQ3WXKQNGYCVG1DAQ4TC6",metric="tti_ms"} 3975.0209999999993

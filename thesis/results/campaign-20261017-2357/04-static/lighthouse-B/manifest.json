@@ -1,0 +1,74 @@
+[
+  {
+    "url": "http://localhost:8080/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_21.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_21.report.json",
+    "summary": {
+      "performance": 0.92,
+      "accessibility": 0.87,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:8080/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_39.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_39.report.json",
+    "summary": {
+      "performance": 0.88,
+      "accessibility": 0.87,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:8080/thread/1",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_47_13.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_47_13.report.json",
+    "summary": {
+      "performance": 0.99,
+      "accessibility": 0.9,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:8080/thread/1",
+    "isRepresentativeRun": false,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_47_28.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_47_28.report.json",
+    "summary": {
+      "performance": 0.99,
+      "accessibility": 0.9,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:8080/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_00.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost--2026_10_18_01_46_00.report.json",
+    "summary": {
+      "performance": 0.92,
+      "accessibility": 0.87,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:8080/thread/1",
+    "isRepresentativeRun": true,
+    "htmlPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_46_58.report.html",
+    "jsonPath": "/home/ubuntuwsl/projects/gomx/.bench/lighthouse/localhost-thread_1-2026_10_18_01_46_58.report.json",
+    "summary": {
+      "performance": 0.99,
+      "accessibility": 0.9,
+      "best-practices": 1,
+      "seo": 1
+    }
+  }
+]

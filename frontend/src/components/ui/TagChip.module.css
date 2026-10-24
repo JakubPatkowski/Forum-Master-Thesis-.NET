@@ -40,3 +40,29 @@
 .remove:hover {
   color: var(--color-error-light);
 }
+
+/* Touch floor (coarse pointers / phone widths): chips measured 29 px tall, the remove "×" ~10 px
+   wide — both reach 40 CSS px; desktop density is unchanged. */
+@media (pointer: coarse), (max-width: 480px) {
+  .chip,
+  .chipStatic {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .chip {
+    padding: 0 12px;
+  }
+
+  .chipStatic {
+    padding: 0 0 0 10px;
+    gap: 4px;
+  }
+
+  .remove {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+  }
+}

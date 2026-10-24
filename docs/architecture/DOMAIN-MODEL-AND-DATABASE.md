@@ -12,7 +12,7 @@
 
 ## 1. Conventions (apply to every table)
 
-- **Database:** PostgreSQL 17, single database `forum_net`, **one schema per module**
+- **Database:** PostgreSQL 18, single database `forum_net`, **one schema per module**
   (`forum_identity`, `forum_authz`, `forum_content`, `forum_files`, `forum_engagement`, `forum_social`,
   `forum_audit`). No FK crosses a schema boundary (modular-monolith rule — cross-module links are logical
   ULIDs kept consistent by integration events).
@@ -376,7 +376,7 @@ CREATE TABLE <schema>.outbox_messages (
 CREATE INDEX ix_outbox_unprocessed ON <schema>.outbox_messages (occurred_on_utc) WHERE processed_on_utc IS NULL;
 ```
 
-Consumers keep an **inbox**/dedupe table (`processed_event_ids`) for idempotency. See
+Consumers keep an **inbox**/dedupe table (`inbox_messages`, one per module schema — Phase 6) for idempotency. See
 [ADR 0009](./adr/0009-rabbitmq-inter-module-events.md).
 
 ---

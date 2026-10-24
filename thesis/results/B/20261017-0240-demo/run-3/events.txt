@@ -1,0 +1,18 @@
+LAST SEEN   TYPE     REASON              OBJECT                      MESSAGE
+31m         Normal   Started             pod/gomx-dc6f68f55-jm2l5    Container started
+31m         Normal   Pulled              pod/gomx-dc6f68f55-2mvft    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+31m         Normal   Created             pod/gomx-dc6f68f55-2mvft    Container created
+31m         Normal   ScalingReplicaSet   deployment/gomx             Scaled up replica set gomx-dc6f68f55 from 0 to 2
+31m         Normal   SuccessfulCreate    replicaset/gomx-dc6f68f55   Created pod: gomx-dc6f68f55-jm2l5
+31m         Normal   SuccessfulCreate    replicaset/gomx-dc6f68f55   Created pod: gomx-dc6f68f55-2mvft
+31m         Normal   Scheduled           pod/gomx-dc6f68f55-2mvft    Successfully assigned gomx/gomx-dc6f68f55-2mvft to forum
+31m         Normal   Scheduled           pod/gomx-dc6f68f55-jm2l5    Successfully assigned gomx/gomx-dc6f68f55-jm2l5 to forum
+31m         Normal   Pulled              pod/gomx-dc6f68f55-jm2l5    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+31m         Normal   Created             pod/gomx-dc6f68f55-jm2l5    Container created
+31m         Normal   Created             pod/gomx-dc6f68f55-jm2l5    Container created
+31m         Normal   Pulled              pod/gomx-dc6f68f55-jm2l5    Container image "gomx:bench" already present on machine and can be accessed by the pod
+31m         Normal   Started             pod/gomx-dc6f68f55-jm2l5    Container started
+31m         Normal   Started             pod/gomx-dc6f68f55-2mvft    Container started
+31m         Normal   Started             pod/gomx-dc6f68f55-2mvft    Container started
+31m         Normal   Created             pod/gomx-dc6f68f55-2mvft    Container created
+31m         Normal   Pulled              pod/gomx-dc6f68f55-2mvft    Container image "gomx:bench" already present on machine and can be accessed by the pod

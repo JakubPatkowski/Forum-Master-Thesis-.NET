@@ -1,0 +1,46 @@
+   slug   | visibility | count | sum 
+----------+------------+-------+-----
+ general  | public     |   330 |   5
+ showcase | public     |   339 |   4
+ golang   | public     |   332 |   2
+ design   | public     |    65 |   0
+ help     | public     |    68 |   0
+ random   | public     |    68 |   3
+ bench7   | public     |    67 |   0
+ bench8   | public     |    68 |   1
+ bench9   | private    |    65 |   1
+ bench10  | private    |    65 |   0
+ bench11  | private    |    66 |   0
+ bench12  | private    |    67 |   0
+(12 rows)
+
+ public_threads | comments_mean | comments_median | comments_max 
+----------------+---------------+-----------------+--------------
+           1337 |          5.67 |               4 |          227
+(1 row)
+
+ avg_body_chars 
+----------------
+           1922
+(1 row)
+
+ post_votes | comment_likes | downvotes 
+------------+---------------+-----------
+      11250 |          3750 |         0
+(1 row)
+
+ j6_hits_kubernetes 
+--------------------
+               1337
+(1 row)
+
+ users | posts | comments 
+-------+-------+----------
+   800 |  1600 |     9002
+(1 row)
+
+ db_size 
+---------
+ 30 MB
+(1 row)
+

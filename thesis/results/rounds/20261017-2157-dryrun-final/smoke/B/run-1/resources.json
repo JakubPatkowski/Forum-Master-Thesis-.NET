@@ -1,0 +1,92 @@
+{
+  "target": "b",
+  "namespace": "gomx",
+  "window": {
+    "start_ms": 1792267462016,
+    "end_ms": 1792267522016,
+    "scenario_s": 60,
+    "setup_s": 3.351
+  },
+  "window_s": 60,
+  "http_journeys": 587,
+  "pods": {
+    "gomx-6f6975749b-v9v4t": {
+      "class": "app",
+      "cpu_core_s": 1.492,
+      "mem_avg_mib": 22.3,
+      "mem_max_mib": 22.7
+    },
+    "gomx-6f6975749b-zl75d": {
+      "class": "app",
+      "cpu_core_s": 1.462,
+      "mem_avg_mib": 36.6,
+      "mem_max_mib": 36.8
+    },
+    "minio-0": {
+      "class": "storage",
+      "cpu_core_s": 0.043,
+      "mem_avg_mib": 108.5,
+      "mem_max_mib": 108.5
+    },
+    "postgres-0": {
+      "class": "db",
+      "cpu_core_s": 2.412,
+      "mem_avg_mib": 169.8,
+      "mem_max_mib": 169.9
+    },
+    "redis-75c79bffcf-dnqb2": {
+      "class": "bus",
+      "cpu_core_s": 0.594,
+      "mem_avg_mib": 8.7,
+      "mem_max_mib": 8.8
+    }
+  },
+  "classes": {
+    "app": {
+      "pods": 2,
+      "cpu_core_s": 2.954,
+      "mem_avg_mib": 58.9,
+      "mem_max_mib": 59.5,
+      "cpu_ms_per_journey": 5.0324,
+      "avg_cores": 0.0492
+    },
+    "storage": {
+      "pods": 1,
+      "cpu_core_s": 0.043,
+      "mem_avg_mib": 108.5,
+      "mem_max_mib": 108.5,
+      "cpu_ms_per_journey": 0.0733,
+      "avg_cores": 0.0007
+    },
+    "db": {
+      "pods": 1,
+      "cpu_core_s": 2.412,
+      "mem_avg_mib": 169.8,
+      "mem_max_mib": 169.9,
+      "cpu_ms_per_journey": 4.109,
+      "avg_cores": 0.0402
+    },
+    "bus": {
+      "pods": 1,
+      "cpu_core_s": 0.594,
+      "mem_avg_mib": 8.7,
+      "mem_max_mib": 8.8,
+      "cpu_ms_per_journey": 1.0119,
+      "avg_cores": 0.0099
+    }
+  },
+  "namespace_total": {
+    "pods": 5,
+    "cpu_core_s": 6.003,
+    "mem_avg_mib": 345.9,
+    "mem_max_mib": 346.7,
+    "cpu_ms_per_journey": 10.2266,
+    "avg_cores": 0.1001
+  },
+  "ingress_nginx": {
+    "cpu_core_s": 1.257,
+    "cpu_ms_per_journey": 2.1421
+  },
+  "node_busy_cores_avg": 1.071,
+  "queried_at": 1792267567.093826
+}

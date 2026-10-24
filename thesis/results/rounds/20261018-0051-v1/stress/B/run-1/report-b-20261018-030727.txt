@@ -1,0 +1,30 @@
+
+target=b  profile=stress  mix=v1  harness=h3-2026-10-17  base=https://gomx.local
+http_reqs=67196  p95=415ms  p99=1167ms  failed=0.00%  (scenario 390s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200     20     20     25     28     31
+communities        4876     38     21    114    199    505
+space_page        20098     64     41    197    287   1014
+space_feed         6104     70     59    203    310   1006
+thread            13425     73     40    230    362   1249
+search             6742    425    209   1492   2163   3538
+profile            1269     77     42    251    351    879
+comment_create     6627    111     67    333    508   1135
+vote               7783    153     83    473    630   1290
+setup                72      7      7      8      9      9
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         20098  51.53     52    274    424
+J2         13425  34.42     41    231    363
+J3          6627  16.99     67    334    509
+J5          7783  19.96     84    474    631
+J6          6742  17.29    209   1493   2163
+J7          1269   3.25     42    251    352
+J8           268   0.69      0      0      0
+nav         4876  12.50     21    114    199
+
+ws: subscribed=308  notifications=259426  errors=148
+
+all thresholds passed
+

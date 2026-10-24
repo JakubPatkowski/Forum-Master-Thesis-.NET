@@ -19,13 +19,20 @@ internal sealed class GetThreadFeedQueryHandler : IQueryHandler<GetThreadFeedQue
     internal const int MaxLimit = 50;
 
     private readonly IContentQueries _queries;
+    private readonly ContentReadAccess _readAccess;
 
-    public GetThreadFeedQueryHandler(IContentQueries queries) => _queries = queries;
+    public GetThreadFeedQueryHandler(IContentQueries queries, ContentReadAccess readAccess)
+    {
+        _queries = queries;
+        _readAccess = readAccess;
+    }
 
     public async Task<Result<CursorPage<ThreadFeedItemResponse>>> Handle(
         GetThreadFeedQuery query, CancellationToken cancellationToken)
     {
-        if (!await _queries.CategoryExistsAsync(query.CategoryId, cancellationToken))
+        // A private category the reader cannot open is indistinguishable from a missing one (A-12).
+        var category = await _queries.GetCategoryReadInfoAsync(query.CategoryId, cancellationToken);
+        if (category is null || !await _readAccess.CanReadAsync(category, cancellationToken))
         {
             return Result.Failure<CursorPage<ThreadFeedItemResponse>>(CategoryErrors.NotFound);
         }

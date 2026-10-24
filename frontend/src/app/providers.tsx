@@ -7,7 +7,7 @@
  */
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import { CategoryModalProvider } from "@/components/category/category-context";
 import { ComposeProvider } from "@/components/compose/compose-context";
@@ -17,8 +17,11 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ApiError } from "@/lib/api/problem";
 import { AuthProvider } from "@/lib/auth/auth-context";
 import { RealtimeProvider } from "@/lib/realtime/realtime-context";
+import { startWebVitalsReporting } from "@/lib/telemetry/web-vitals";
 
 export function Providers({ children }: { children: ReactNode }) {
+  // RUM field data (A-3): one reporter per page load; no-op outside production builds.
+  useEffect(() => startWebVitalsReporting(), []);
   const [queryClient] = useState(
     () =>
       new QueryClient({

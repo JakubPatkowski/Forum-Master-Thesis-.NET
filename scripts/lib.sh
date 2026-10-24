@@ -80,6 +80,11 @@ load_env() {
     fi
   fi
   : "${INGRESS_HOST:=forum.local}"
+  # Architecture B (gomx) in the SAME minikube for the A/B benchmark (AB-ALIGNMENT-INSTRUCTIONS-A.md):
+  # its namespace, ingress host (added as a SAN to the shared mkcert cert) and checkout path.
+  : "${GOMX_NAMESPACE:=gomx}"
+  : "${GOMX_INGRESS_HOST:=gomx.local}"
+  : "${GOMX_DIR:=$REPO_ROOT/../gomx}"
   # Default flipped to true in Phase 10b: the 10-50 allow-rules now exist and setup-minikube.sh
   # provisions calico, so the policies are real and enforced. `false` remains an escape hatch.
   : "${APPLY_NETWORK_POLICIES:=true}"
@@ -98,6 +103,7 @@ load_env() {
          RABBITMQ_USER RABBITMQ_PASSWORD JWT_SIGNING_KEY \
          MINIKUBE_PROFILE MINIKUBE_CPUS MINIKUBE_MEMORY MINIKUBE_DRIVER \
          K8S_NAMESPACE IMAGE_NAME IMAGE_NAME_WEB IMAGE_TAG INGRESS_HOST APPLY_NETWORK_POLICIES \
+         GOMX_NAMESPACE GOMX_INGRESS_HOST GOMX_DIR \
          MONITORING_NAMESPACE KPS_VERSION LOKI_VERSION ALLOY_VERSION TEMPO_VERSION PGEXP_VERSION
 }
 

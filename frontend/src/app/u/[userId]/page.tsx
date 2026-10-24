@@ -213,7 +213,7 @@ export default function ProfilePage() {
               ) : null}
             </div>
 
-            <div className={styles.statsGrid}>
+            <div className={styles.statsGrid} data-testid="profile-stats">
               <div className={styles.statCell}>
                 <div className={styles.statValue}>{stats.data?.threadCount ?? "–"}</div>
                 <div className={styles.statLabel}>THREADS</div>

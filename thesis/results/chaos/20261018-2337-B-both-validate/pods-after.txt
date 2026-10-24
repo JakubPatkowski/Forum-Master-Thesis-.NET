@@ -1,0 +1,6 @@
+NAME                     READY   STATUS    RESTARTS      AGE     IP               NODE    NOMINATED NODE   READINESS GATES
+gomx-6f6975749b-mlnfl    1/1     Running   0             9m2s    10.244.133.173   forum   <none>           <none>
+gomx-6f6975749b-tp8mp    1/1     Running   0             5m15s   10.244.133.161   forum   <none>           <none>
+minio-0                  1/1     Running   1 (86m ago)   26h     10.244.133.157   forum   <none>           <none>
+postgres-0               1/1     Running   0             2m12s   10.244.133.171   forum   <none>           <none>
+redis-75c79bffcf-dnqb2   1/1     Running   7 (34m ago)   26h     10.244.133.142   forum   <none>           <none>

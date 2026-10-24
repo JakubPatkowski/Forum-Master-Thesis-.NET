@@ -1,0 +1,112 @@
+LAST SEEN   TYPE      REASON                         OBJECT                                  MESSAGE
+38m         Normal    SuccessfulCreate               statefulset/minio                       Create Claim data-minio-0 Pod minio-0 in StatefulSet minio success
+38m         Normal    SuccessfulCreate               statefulset/rabbitmq                    Create Pod rabbitmq-0 in StatefulSet rabbitmq successful
+38m         Normal    SuccessfulCreate               statefulset/rabbitmq                    Create Claim data-rabbitmq-0 Pod rabbitmq-0 in StatefulSet rabbitmq success
+38m         Normal    SuccessfulCreate               statefulset/postgres                    Create Claim data-postgres-0 Pod postgres-0 in StatefulSet postgres success
+38m         Normal    SuccessfulCreate               statefulset/postgres                    Create Pod postgres-0 in StatefulSet postgres successful
+38m         Normal    SuccessfulCreate               statefulset/minio                       Create Pod minio-0 in StatefulSet minio successful
+35m         Normal    ExternalProvisioning           persistentvolumeclaim/data-minio-0      Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+35m         Normal    ExternalProvisioning           persistentvolumeclaim/data-postgres-0   Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+35m         Normal    ExternalProvisioning           persistentvolumeclaim/data-rabbitmq-0   Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+35m         Normal    ProvisioningSucceeded          persistentvolumeclaim/data-postgres-0   Successfully provisioned volume pvc-d16892ce-3fc4-4de6-92ad-102ebc72e581
+35m         Normal    Provisioning                   persistentvolumeclaim/data-minio-0      External provisioner is provisioning volume for claim "forum-dotnet/data-minio-0"
+35m         Normal    Provisioning                   persistentvolumeclaim/data-rabbitmq-0   External provisioner is provisioning volume for claim "forum-dotnet/data-rabbitmq-0"
+35m         Normal    Scheduled                      pod/postgres-0                          Successfully assigned forum-dotnet/postgres-0 to forum
+35m         Normal    Provisioning                   persistentvolumeclaim/data-postgres-0   External provisioner is provisioning volume for claim "forum-dotnet/data-postgres-0"
+35m         Warning   FailedScheduling               pod/postgres-0                          0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+35m         Normal    Scheduled                      pod/minio-0                             Successfully assigned forum-dotnet/minio-0 to forum
+35m         Normal    ProvisioningSucceeded          persistentvolumeclaim/data-minio-0      Successfully provisioned volume pvc-7af1d914-c719-4145-8e59-a7a04775ba21
+35m         Normal    ProvisioningSucceeded          persistentvolumeclaim/data-rabbitmq-0   Successfully provisioned volume pvc-0dacbff9-bdd8-4b46-93cc-c2ac5502e15a
+35m         Warning   FailedScheduling               pod/rabbitmq-0                          0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+35m         Normal    Scheduled                      pod/rabbitmq-0                          Successfully assigned forum-dotnet/rabbitmq-0 to forum
+35m         Warning   FailedScheduling               pod/minio-0                             0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+35m         Normal    Created                        pod/minio-0                             Container created
+35m         Normal    Pulled                         pod/postgres-0                          Container image "postgres:18" already present on machine and can be accessed by the pod
+35m         Normal    Pulled                         pod/minio-0                             Container image "minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+35m         Normal    Started                        pod/minio-0                             Container started
+35m         Normal    Started                        pod/postgres-0                          Container started
+35m         Normal    Created                        pod/postgres-0                          Container created
+31m         Warning   Unhealthy                      pod/minio-0                             Liveness probe failed: Get "http://10.244.133.157:9000/minio/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+31m         Warning   Unhealthy                      pod/rabbitmq-0                          Readiness probe failed:
+31m         Warning   Unhealthy                      pod/rabbitmq-0                          Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (6231357abcab90c07ba97373bd5fd59544f72213807a76614e7130081263934b)
+30m         Warning   Unhealthy                      pod/minio-0                             Readiness probe failed: Get "http://10.244.133.157:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+29m         Warning   Unhealthy                      pod/postgres-0                          Liveness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+28m         Warning   Unhealthy                      pod/rabbitmq-0                          Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 15s
+28m         Normal    Killing                        pod/rabbitmq-0                          Container rabbitmq failed liveness probe, will be restarted
+28m         Normal    Pulled                         pod/rabbitmq-0                          Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+28m         Normal    Created                        pod/rabbitmq-0                          Container created
+28m         Normal    Started                        pod/rabbitmq-0                          Container started
+27m         Normal    SuccessfulCreate               job/minio-create-bucket                 Created pod: minio-create-bucket-4bv9k
+27m         Normal    Scheduled                      pod/minio-create-bucket-4bv9k           Successfully assigned forum-dotnet/minio-create-bucket-4bv9k to forum
+27m         Normal    Created                        pod/minio-create-bucket-4bv9k           Container created
+27m         Normal    Started                        pod/minio-create-bucket-4bv9k           Container started
+27m         Normal    Pulled                         pod/minio-create-bucket-4bv9k           Container image "minio/mc:RELEASE.2025-08-13T08-35-41Z" already present on machine and can be accessed by the pod
+27m         Normal    Completed                      job/minio-create-bucket                 Job completed
+27m         Normal    SuccessfulCreate               job/db-migrate                          Created pod: db-migrate-xf5vb
+27m         Normal    Scheduled                      pod/db-migrate-xf5vb                    Successfully assigned forum-dotnet/db-migrate-xf5vb to forum
+27m         Normal    Pulled                         pod/db-migrate-xf5vb                    Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+27m         Normal    Created                        pod/db-migrate-xf5vb                    Container created
+27m         Normal    Started                        pod/db-migrate-xf5vb                    Container started
+27m         Normal    SuccessfulCreate               job/db-seed-benchmark                   Created pod: db-seed-benchmark-49f4c
+27m         Normal    Scheduled                      pod/db-seed-benchmark-49f4c             Successfully assigned forum-dotnet/db-seed-benchmark-49f4c to forum
+27m         Normal    Completed                      job/db-migrate                          Job completed
+27m         Normal    Started                        pod/db-seed-benchmark-49f4c             Container started
+27m         Normal    Created                        pod/db-seed-benchmark-49f4c             Container created
+27m         Normal    Pulled                         pod/db-seed-benchmark-49f4c             Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+26m         Normal    Completed                      job/db-seed-benchmark                   Job completed
+26m         Normal    Pulled                         pod/backend-57c7cf6cc-bvvrx             Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+26m         Normal    Scheduled                      pod/backend-57c7cf6cc-bvvrx             Successfully assigned forum-dotnet/backend-57c7cf6cc-bvvrx to forum
+26m         Normal    Started                        pod/backend-57c7cf6cc-bvvrx             Container started
+26m         Normal    Created                        pod/backend-57c7cf6cc-bvvrx             Container created
+26m         Normal    ScalingReplicaSet              deployment/backend                      Scaled up replica set backend-57c7cf6cc from 0 to 1
+26m         Normal    SuccessfulCreate               replicaset/backend-57c7cf6cc            Created pod: backend-57c7cf6cc-bvvrx
+26m         Normal    ScalingReplicaSet              deployment/frontend                     Scaled up replica set frontend-6b64f9f4d5 from 0 to 1
+26m         Normal    Scheduled                      pod/frontend-6b64f9f4d5-ndwz9           Successfully assigned forum-dotnet/frontend-6b64f9f4d5-ndwz9 to forum
+26m         Normal    Pulled                         pod/frontend-6b64f9f4d5-ndwz9           Container image "forum-dotnet-web:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+26m         Normal    Created                        pod/frontend-6b64f9f4d5-ndwz9           Container created
+26m         Normal    Started                        pod/frontend-6b64f9f4d5-ndwz9           Container started
+26m         Normal    SuccessfulCreate               replicaset/frontend-6b64f9f4d5          Created pod: frontend-6b64f9f4d5-ndwz9
+26m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend         invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+26m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend         failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+26m         Warning   Unhealthy                      pod/postgres-0                          Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+26m         Warning   Unhealthy                      pod/frontend-6b64f9f4d5-ndwz9           Liveness probe failed: Get "http://10.244.133.179:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+25m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend         failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+25m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend         invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+25m         Normal    Sync                           ingress/forum                           Scheduled for sync
+25m         Normal    Sync                           ingress/minio                           Scheduled for sync
+25m         Normal    Scheduled                      pod/backend-b7988954c-xgnrn             Successfully assigned forum-dotnet/backend-b7988954c-xgnrn to forum
+25m         Normal    ScalingReplicaSet              deployment/backend                      Scaled up replica set backend-b7988954c from 0 to 1
+25m         Normal    ScalingReplicaSet              deployment/backend                      Scaled up replica set backend-b7988954c from 1 to 2
+25m         Normal    Scheduled                      pod/backend-b7988954c-fh49l             Successfully assigned forum-dotnet/backend-b7988954c-fh49l to forum
+25m         Normal    SuccessfulCreate               replicaset/backend-b7988954c            Created pod: backend-b7988954c-xgnrn
+25m         Normal    SuccessfulCreate               replicaset/backend-b7988954c            Created pod: backend-b7988954c-fh49l
+25m         Normal    Started                        pod/backend-b7988954c-fh49l             Container started
+25m         Normal    Started                        pod/backend-b7988954c-xgnrn             Container started
+25m         Normal    Created                        pod/backend-b7988954c-xgnrn             Container created
+25m         Normal    Pulled                         pod/backend-b7988954c-xgnrn             Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+25m         Normal    Created                        pod/backend-b7988954c-fh49l             Container created
+25m         Normal    Pulled                         pod/backend-b7988954c-fh49l             Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+25m         Normal    ScalingReplicaSet              deployment/backend                      Scaled down replica set backend-57c7cf6cc from 1 to 0
+25m         Normal    Killing                        pod/backend-57c7cf6cc-bvvrx             Stopping container backend
+25m         Normal    SuccessfulDelete               replicaset/backend-57c7cf6cc            Deleted pod: backend-57c7cf6cc-bvvrx
+25m         Warning   Unhealthy                      pod/backend-57c7cf6cc-bvvrx             Readiness probe failed: Get "http://10.244.133.146:8080/health/ready": dial tcp 10.244.133.146:8080: connect: connection refused
+24m         Warning   Unhealthy                      pod/frontend-6b64f9f4d5-ndwz9           Readiness probe failed: Get "http://10.244.133.179:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+23m         Warning   Unhealthy                      pod/rabbitmq-0                          Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 10s
+21m         Normal    SuccessfulCreate               replicaset/backend-7c746b545b           Created pod: backend-7c746b545b-c698g
+21m         Normal    Started                        pod/backend-7c746b545b-c698g            Container started
+21m         Normal    ScalingReplicaSet              deployment/backend                      Scaled up replica set backend-7c746b545b from 0 to 1
+21m         Normal    Created                        pod/backend-7c746b545b-c698g            Container created
+21m         Normal    Pulled                         pod/backend-7c746b545b-c698g            Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+21m         Normal    Scheduled                      pod/backend-7c746b545b-c698g            Successfully assigned forum-dotnet/backend-7c746b545b-c698g to forum
+20m         Normal    Scheduled                      pod/backend-7c746b545b-4mftt            Successfully assigned forum-dotnet/backend-7c746b545b-4mftt to forum
+20m         Normal    SuccessfulCreate               replicaset/backend-7c746b545b           Created pod: backend-7c746b545b-4mftt
+20m         Normal    Killing                        pod/backend-b7988954c-xgnrn             Stopping container backend
+20m         Normal    SuccessfulDelete               replicaset/backend-b7988954c            Deleted pod: backend-b7988954c-xgnrn
+20m         Normal    ScalingReplicaSet              deployment/backend                      Scaled down replica set backend-b7988954c from 2 to 1
+20m         Normal    ScalingReplicaSet              deployment/backend                      Scaled up replica set backend-7c746b545b from 1 to 2
+20m         Normal    Created                        pod/backend-7c746b545b-4mftt            Container created
+20m         Normal    Pulled                         pod/backend-7c746b545b-4mftt            Container image "forum-dotnet-api:git-ee0faee-dirty" already present on machine and can be accessed by the pod
+20m         Normal    Started                        pod/backend-7c746b545b-4mftt            Container started
+20m         Normal    Killing                        pod/backend-b7988954c-fh49l             Stopping container backend
+20m         Normal    SuccessfulDelete               replicaset/backend-b7988954c            Deleted pod: backend-b7988954c-fh49l
+20m         Normal    ScalingReplicaSet              deployment/backend                      Scaled down replica set backend-b7988954c from 1 to 0

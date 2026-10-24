@@ -1,0 +1,23 @@
+{
+  "target": "b",
+  "profile": "smoke",
+  "repeat": 1,
+  "position_in_pair": 2,
+  "started_epoch": 1792267458,
+  "finished_epoch": 1792267522,
+  "seed_before": {
+    "users": 800,
+    "threads": 1600,
+    "comments": 9028,
+    "reactions": 15028
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 1600,
+    "comments": 9103,
+    "reactions": 15075
+  },
+  "pod_restarts_during_run": [],
+  "valid": true,
+  "invalid_reasons": []
+}

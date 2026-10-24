@@ -168,7 +168,7 @@ export default function ThreadPage() {
                   OP · THREAD AUTHOR
                 </Badge>
               </div>
-              <div className={styles.statsGrid}>
+              <div className={styles.statsGrid} data-testid="author-stats">
                 <div className={styles.statCell}>
                   <div className={styles.statValue}>{stats.data?.threadCount ?? "–"}</div>
                   <div className={styles.statLabel}>THREADS</div>
@@ -188,7 +188,7 @@ export default function ThreadPage() {
                 <Link
                   href="/social"
                   className={styles.messageButton}
-                  title="Messaging is a preview — backend not implemented"
+                  title="Message the author (opens Social)"
                 >
                   MESSAGE
                 </Link>

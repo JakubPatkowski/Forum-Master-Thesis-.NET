@@ -1,0 +1,41 @@
+
+target=b  profile=capacity  mix=v1  harness=h3-2026-10-17  base=https://gomx.local
+http_reqs=74164  p95=2689ms  p99=3469ms  failed=0.00%  (scenario 480s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200     20     19     22     23     25
+communities        5447    280     99    972   1172   1653
+space_page        22251    554    199   1833   2182   2870
+space_feed         6678    558    200   1864   2203   2964
+thread            14805    799    263   2713   3117   3971
+search             7312   1012    804   2913   3717   5293
+profile            1303    835    295   2745   3085   3468
+comment_create     7356   1092    381   3672   4090   4519
+vote               8740    917    442   2906   3296   4088
+setup                72      7      7      9      9      9
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         22251  46.36    257   2298   3582
+J2         14805  30.84    264   2713   3118
+J3          7356  15.32    382   3672   4090
+J5          8740  18.21    442   2906   3296
+J6          7312  15.23    804   2913   3717
+J7          1303   2.71    294   2745   3085
+J8           212   0.44      0      0      0
+nav         5447  11.35     99    972   1172
+
+capacity step  offered  achieved   p50    p95    p99  failed%
+  c01               25      25.0     5     30     33     0.00
+  c02               50      50.0     5     32     36     0.00
+  c03              100     100.0     5     34     42     0.00
+  c04              150     149.6     8    158    636     0.00
+  c05              200     199.6    43    355    935     0.00
+  c06              300     209.1  1231   3210   3980     0.00  <-
+  c07              400     204.4  1403   2895   3601     0.00  <-
+  c08              500     203.8  1287   3507   4085     0.00  <-
+knee: c06 @ 300 j/s (p95>500ms)   sustained: 200 j/s   dropped_iterations: 32625
+
+ws: subscribed=222  notifications=107830  errors=152
+
+all thresholds passed
+

@@ -1,0 +1,45 @@
+
+target=a  profile=capacity  mix=v1  harness=h3-2026-10-17  base=https://forum.local
+http_reqs=188559  p95=531ms  p99=1103ms  failed=0.00%  (scenario 480s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200    117    104    145    424    573
+categories         7594     67      6    328    415   6041
+feed              40598    119      8    620    795   6469
+thread            20809     64      5    327    426   5845
+comments          20809    117      8    614    793   6363
+reactions_batch   61407     68      6    317    420   5999
+search            10369    110     18    449    627   6026
+comment_create    10407    214     15    992   1298   6989
+reaction_add      12065    301     16   1554   1972   7856
+reaction_remove     427    281     17   1581   1879   5836
+user_stats         1881     71      6    332    417   6026
+user_threads       1881     61      5    309    415   5784
+ticket               80     12      7     41     63     64
+setup                32      4      4      6      7      7
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         31171  64.94     21   1111   1707
+J2         20809  43.35     21   1063   1376
+J3         10407  21.68     15    993   1298
+J5         12492  26.02     17   1555   1966
+J6         10369  21.60     19    449    631
+J7          1881   3.92     12    541    751
+J8            80   0.17      0      0      0
+nav         7594  15.82      6    328    415
+
+capacity step  offered  achieved   p50    p95    p99  failed%
+  c01               25      25.0     7     13     14     0.00
+  c02               50      50.0     7     12     15     0.00
+  c03              100     100.0     7     14     22     0.00
+  c04              150     150.0     8     16     32     0.00
+  c05              200     199.3     9     34    317     0.00
+  c06              300     300.0    12     77    205     0.00
+  c07              400     393.2    69    595    917     0.00  <-
+  c08              500     404.5   620   1658   6181     0.00  <-
+knee: c07 @ 400 j/s (p95>500ms)   sustained: 300 j/s   dropped_iterations: 5116
+
+ws: subscribed=80  notifications=63193  errors=0
+
+all thresholds passed
+

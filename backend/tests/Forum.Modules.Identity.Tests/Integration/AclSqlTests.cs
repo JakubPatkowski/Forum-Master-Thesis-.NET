@@ -128,6 +128,89 @@ public sealed class AclSqlTests : IClassFixture<PostgresFixture>, IAsyncLifetime
         scoped.ShouldBe(UserRoleMask | Moderate);
     }
 
+    [SkippableFact]
+    public async Task Has_permission_answers_from_the_cache_and_revocation_takes_effect_with_the_recompute()
+    {
+        Skip.IfNot(_fixture.Available, "Docker is not available.");
+
+        await using var db = CreateContext();
+        var user = Ulid.NewUlid().ToString();
+        var category = Ulid.NewUlid().ToString();
+        await AssignRole(db, user, UserRoleId);
+        await AddAcl(db, user, "category", category, allowBits: Moderate, denyBits: 0);
+        await db.Database.ExecuteSqlRawAsync("SELECT forum_authz.recompute_user_perms({0})", user);
+
+        // Warm cache row for (user, category): the fast path answers without the live mask.
+        (await CachedEffective(db, user, "category")).ShouldBe(UserRoleMask | Moderate);
+        (await HasPermission(db, user, "moderate", "category", category)).ShouldBeTrue();
+
+        // Revoke the grant the way every writer does: mutate + recompute in the same request → immediate 403.
+        await db.Database.ExecuteSqlRawAsync(
+            "DELETE FROM forum_authz.acl_entries WHERE principal_type = 'user' AND principal_id = {0} AND scope = 'category'",
+            user);
+        await db.Database.ExecuteSqlRawAsync("SELECT forum_authz.recompute_user_perms({0})", user);
+
+        (await HasPermission(db, user, "moderate", "category", category)).ShouldBeFalse();
+        (await HasPermission(db, user, "comment", "category", category)).ShouldBeTrue(); // role template still applies
+    }
+
+    [SkippableFact]
+    public async Task A_direct_sql_role_or_acl_write_invalidates_the_cache_without_a_recompute()
+    {
+        Skip.IfNot(_fixture.Available, "Docker is not available.");
+
+        await using var db = CreateContext();
+        var user = Ulid.NewUlid().ToString();
+        var category = Ulid.NewUlid().ToString();
+        await AssignRole(db, user, UserRoleId);
+        await db.Database.ExecuteSqlRawAsync("SELECT forum_authz.recompute_user_perms({0})", user);
+        (await HasPermission(db, user, "moderate", "global", null)).ShouldBeFalse(); // served from the cached 'global' row
+
+        // A plain INSERT into user_roles (no recompute, as an operator or a test fixture would do) must be honoured
+        // on the next check: the trigger dropped the stale cache rows, so the live mask answers.
+        await AssignRole(db, user, ModeratorRoleId);
+        (await HasPermission(db, user, "moderate", "global", null)).ShouldBeTrue();
+        (await db.Database.SqlQueryRaw<int>(
+            "SELECT count(*)::int AS \"Value\" FROM forum_authz.effective_perm_cache WHERE user_id = {0}", user)
+            .ToListAsync())[0].ShouldBe(0);
+
+        // Same for a role-principal ACL entry: every holder of the role loses their cache rows.
+        await db.Database.ExecuteSqlRawAsync("SELECT forum_authz.recompute_user_perms({0})", user);
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            INSERT INTO forum_authz.acl_entries (acl_id, scope, scope_id, principal_type, principal_id, allow_bits, deny_bits)
+            VALUES ({0}, 'global', NULL, 'role', {1}, 0, {2})
+            """,
+            Ulid.NewUlid().ToString(), ModeratorRoleId, Like);
+        (await HasPermission(db, user, "like", "global", null)).ShouldBeFalse();
+        (await HasPermission(db, user, "moderate", "global", null)).ShouldBeTrue();
+    }
+
+    [SkippableFact]
+    public async Task Has_permission_without_a_cache_row_falls_back_to_the_live_mask()
+    {
+        Skip.IfNot(_fixture.Available, "Docker is not available.");
+
+        await using var db = CreateContext();
+        var user = Ulid.NewUlid().ToString();
+        var category = Ulid.NewUlid().ToString();
+        await AssignRole(db, user, UserRoleId);
+        // No recompute at all: the cache has no row for this user, so every answer is the live computation.
+
+        (await HasPermission(db, user, "comment", "category", category)).ShouldBeTrue();
+        (await HasPermission(db, user, "moderate", "category", category)).ShouldBeFalse();
+
+        // A role-principal grant at the category (migration-style constant data) is honoured by the live path.
+        await db.Database.ExecuteSqlRawAsync(
+            """
+            INSERT INTO forum_authz.acl_entries (acl_id, scope, scope_id, principal_type, principal_id, allow_bits, deny_bits)
+            VALUES ({0}, 'category', {1}, 'role', {2}, {3}, 0)
+            """,
+            Ulid.NewUlid().ToString(), category, UserRoleId, Moderate);
+        (await HasPermission(db, user, "moderate", "category", category)).ShouldBeTrue();
+        (await EffectiveMask(db, user, "category", category)).ShouldBe(UserRoleMask | Moderate);
+    }
+
     private static async Task AssignRole(IdentityDbContext db, string userId, string roleId) =>
         await db.Database.ExecuteSqlRawAsync(
             "INSERT INTO forum_authz.user_roles (user_id, role_id) VALUES ({0}, {1}) ON CONFLICT DO NOTHING",

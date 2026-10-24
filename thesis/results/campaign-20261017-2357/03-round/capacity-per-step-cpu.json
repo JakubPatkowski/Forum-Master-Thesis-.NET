@@ -1,0 +1,150 @@
+{
+  "A": [
+    {
+      "step": "c01",
+      "offered_jps": 25,
+      "achieved_jps": 25,
+      "p95_ms": 13,
+      "db_cores": 0.054,
+      "app_cores_2_replicas": 0.163,
+      "ingress_cores": 0.036
+    },
+    {
+      "step": "c02",
+      "offered_jps": 50,
+      "achieved_jps": 50,
+      "p95_ms": 12,
+      "db_cores": 0.101,
+      "app_cores_2_replicas": 0.172,
+      "ingress_cores": 0.059
+    },
+    {
+      "step": "c03",
+      "offered_jps": 100,
+      "achieved_jps": 100,
+      "p95_ms": 14,
+      "db_cores": 0.209,
+      "app_cores_2_replicas": 0.399,
+      "ingress_cores": 0.121
+    },
+    {
+      "step": "c04",
+      "offered_jps": 150,
+      "achieved_jps": 150,
+      "p95_ms": 16,
+      "db_cores": 0.319,
+      "app_cores_2_replicas": 0.512,
+      "ingress_cores": 0.187
+    },
+    {
+      "step": "c05",
+      "offered_jps": 200,
+      "achieved_jps": 199.333,
+      "p95_ms": 34,
+      "db_cores": 0.499,
+      "app_cores_2_replicas": 0.742,
+      "ingress_cores": 0.255
+    },
+    {
+      "step": "c06",
+      "offered_jps": 300,
+      "achieved_jps": 300,
+      "p95_ms": 77,
+      "db_cores": 0.656,
+      "app_cores_2_replicas": 1.024,
+      "ingress_cores": 0.348
+    },
+    {
+      "step": "c07",
+      "offered_jps": 400,
+      "achieved_jps": 393.178,
+      "p95_ms": 595,
+      "db_cores": 0.931,
+      "app_cores_2_replicas": 1.087,
+      "ingress_cores": 0.466
+    },
+    {
+      "step": "c08",
+      "offered_jps": 500,
+      "achieved_jps": 404.511,
+      "p95_ms": 1658,
+      "db_cores": 0.923,
+      "app_cores_2_replicas": 1.079,
+      "ingress_cores": 0.435
+    }
+  ],
+  "B": [
+    {
+      "step": "c01",
+      "offered_jps": 25,
+      "achieved_jps": 25,
+      "p95_ms": 30,
+      "db_cores": 0.082,
+      "app_cores_2_replicas": 0.087,
+      "ingress_cores": 0.054
+    },
+    {
+      "step": "c02",
+      "offered_jps": 50,
+      "achieved_jps": 50,
+      "p95_ms": 32,
+      "db_cores": 0.173,
+      "app_cores_2_replicas": 0.16,
+      "ingress_cores": 0.098
+    },
+    {
+      "step": "c03",
+      "offered_jps": 100,
+      "achieved_jps": 100,
+      "p95_ms": 34,
+      "db_cores": 0.343,
+      "app_cores_2_replicas": 0.344,
+      "ingress_cores": 0.21
+    },
+    {
+      "step": "c04",
+      "offered_jps": 150,
+      "achieved_jps": 149.644,
+      "p95_ms": 158,
+      "db_cores": 0.586,
+      "app_cores_2_replicas": 0.524,
+      "ingress_cores": 0.331
+    },
+    {
+      "step": "c05",
+      "offered_jps": 200,
+      "achieved_jps": 199.644,
+      "p95_ms": 355,
+      "db_cores": 0.834,
+      "app_cores_2_replicas": 0.728,
+      "ingress_cores": 0.444
+    },
+    {
+      "step": "c06",
+      "offered_jps": 300,
+      "achieved_jps": 209.111,
+      "p95_ms": 3210,
+      "db_cores": 0.994,
+      "app_cores_2_replicas": 0.814,
+      "ingress_cores": 0.458
+    },
+    {
+      "step": "c07",
+      "offered_jps": 400,
+      "achieved_jps": 204.378,
+      "p95_ms": 2895.199999999999,
+      "db_cores": 0.999,
+      "app_cores_2_replicas": 0.704,
+      "ingress_cores": 0.466
+    },
+    {
+      "step": "c08",
+      "offered_jps": 500,
+      "achieved_jps": 203.778,
+      "p95_ms": 3506.5499999999993,
+      "db_cores": 1.0,
+      "app_cores_2_replicas": 0.719,
+      "ingress_cores": 0.432
+    }
+  ]
+}

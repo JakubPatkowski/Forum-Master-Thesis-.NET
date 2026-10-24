@@ -1,0 +1,3 @@
+ M app/forum/web/handlers_community.go
+ M app/forum/web/handlers_community_test.go
+ M app/forum/web/web_test.go

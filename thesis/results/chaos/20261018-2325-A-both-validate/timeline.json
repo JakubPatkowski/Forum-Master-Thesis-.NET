@@ -1,0 +1,818 @@
+{
+ "bucket_s": 5,
+ "baseline_p95_ms": 15.6,
+ "faults": [
+  {
+   "fault": "pod-crash",
+   "at_epoch": 1792359002,
+   "detail": "backend-84b869c655-j96ht killed (grace 0, force)",
+   "baseline_p95_ms": 15.6,
+   "first_failure_epoch": null,
+   "failed_requests": 0,
+   "recovery_s": 18,
+   "max_p95_ms_after": 438.7
+  },
+  {
+   "fault": "db-restart",
+   "at_epoch": 1792359188,
+   "detail": "postgres-0 deleted (StatefulSet recreates it)",
+   "baseline_p95_ms": 15.6,
+   "first_failure_epoch": 1792359185,
+   "failed_requests": 4991,
+   "recovery_s": 82,
+   "max_p95_ms_after": 7499.2
+  }
+ ],
+ "buckets": [
+  {
+   "start_epoch": 1792358875,
+   "requests": 3,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 24.8
+  },
+  {
+   "start_epoch": 1792358880,
+   "requests": 26,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 7.9
+  },
+  {
+   "start_epoch": 1792358885,
+   "requests": 39,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.9
+  },
+  {
+   "start_epoch": 1792358890,
+   "requests": 58,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 11.9
+  },
+  {
+   "start_epoch": 1792358895,
+   "requests": 80,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.0
+  },
+  {
+   "start_epoch": 1792358900,
+   "requests": 88,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.8
+  },
+  {
+   "start_epoch": 1792358905,
+   "requests": 100,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 10.5
+  },
+  {
+   "start_epoch": 1792358910,
+   "requests": 115,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.7
+  },
+  {
+   "start_epoch": 1792358915,
+   "requests": 149,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 7.0
+  },
+  {
+   "start_epoch": 1792358920,
+   "requests": 147,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 19.7
+  },
+  {
+   "start_epoch": 1792358925,
+   "requests": 182,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 6.3
+  },
+  {
+   "start_epoch": 1792358930,
+   "requests": 209,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.4
+  },
+  {
+   "start_epoch": 1792358935,
+   "requests": 297,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 11.3
+  },
+  {
+   "start_epoch": 1792358940,
+   "requests": 384,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 9.1
+  },
+  {
+   "start_epoch": 1792358945,
+   "requests": 471,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 17.9
+  },
+  {
+   "start_epoch": 1792358950,
+   "requests": 576,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 15.8
+  },
+  {
+   "start_epoch": 1792358955,
+   "requests": 639,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 16.9
+  },
+  {
+   "start_epoch": 1792358960,
+   "requests": 727,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 17.5
+  },
+  {
+   "start_epoch": 1792358965,
+   "requests": 733,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 15.8
+  },
+  {
+   "start_epoch": 1792358970,
+   "requests": 746,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 21.4
+  },
+  {
+   "start_epoch": 1792358975,
+   "requests": 793,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 15.6
+  },
+  {
+   "start_epoch": 1792358980,
+   "requests": 792,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 17.0
+  },
+  {
+   "start_epoch": 1792358985,
+   "requests": 767,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 20.9
+  },
+  {
+   "start_epoch": 1792358990,
+   "requests": 795,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 18.8
+  },
+  {
+   "start_epoch": 1792358995,
+   "requests": 737,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 60.1
+  },
+  {
+   "start_epoch": 1792359000,
+   "requests": 574,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 40.0
+  },
+  {
+   "start_epoch": 1792359005,
+   "requests": 454,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 12.7
+  },
+  {
+   "start_epoch": 1792359010,
+   "requests": 537,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 16.4
+  },
+  {
+   "start_epoch": 1792359015,
+   "requests": 466,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 248.1
+  },
+  {
+   "start_epoch": 1792359020,
+   "requests": 515,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 21.0
+  },
+  {
+   "start_epoch": 1792359025,
+   "requests": 517,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 20.7
+  },
+  {
+   "start_epoch": 1792359030,
+   "requests": 515,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 22.1
+  },
+  {
+   "start_epoch": 1792359035,
+   "requests": 521,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 26.5
+  },
+  {
+   "start_epoch": 1792359040,
+   "requests": 520,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 25.2
+  },
+  {
+   "start_epoch": 1792359045,
+   "requests": 524,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 8.6
+  },
+  {
+   "start_epoch": 1792359050,
+   "requests": 505,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 21.4
+  },
+  {
+   "start_epoch": 1792359055,
+   "requests": 524,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 19.0
+  },
+  {
+   "start_epoch": 1792359060,
+   "requests": 649,
+   "failed": 13,
+   "failed_pct": 2.0,
+   "p95_ms": 22.9
+  },
+  {
+   "start_epoch": 1792359065,
+   "requests": 745,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 23.4
+  },
+  {
+   "start_epoch": 1792359070,
+   "requests": 769,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 25.4
+  },
+  {
+   "start_epoch": 1792359075,
+   "requests": 784,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 15.4
+  },
+  {
+   "start_epoch": 1792359080,
+   "requests": 841,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 23.1
+  },
+  {
+   "start_epoch": 1792359085,
+   "requests": 841,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 55.2
+  },
+  {
+   "start_epoch": 1792359090,
+   "requests": 1013,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 33.2
+  },
+  {
+   "start_epoch": 1792359095,
+   "requests": 954,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 132.6
+  },
+  {
+   "start_epoch": 1792359100,
+   "requests": 1082,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 139.2
+  },
+  {
+   "start_epoch": 1792359105,
+   "requests": 1066,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 394.9
+  },
+  {
+   "start_epoch": 1792359110,
+   "requests": 1322,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 165.7
+  },
+  {
+   "start_epoch": 1792359115,
+   "requests": 1114,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 438.7
+  },
+  {
+   "start_epoch": 1792359120,
+   "requests": 1192,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 228.7
+  },
+  {
+   "start_epoch": 1792359125,
+   "requests": 1317,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 137.9
+  },
+  {
+   "start_epoch": 1792359130,
+   "requests": 1419,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 131.8
+  },
+  {
+   "start_epoch": 1792359135,
+   "requests": 1379,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 79.4
+  },
+  {
+   "start_epoch": 1792359140,
+   "requests": 1443,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 62.4
+  },
+  {
+   "start_epoch": 1792359145,
+   "requests": 1068,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 275.1
+  },
+  {
+   "start_epoch": 1792359150,
+   "requests": 1203,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 329.5
+  },
+  {
+   "start_epoch": 1792359155,
+   "requests": 1373,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 92.7
+  },
+  {
+   "start_epoch": 1792359160,
+   "requests": 1248,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 218.4
+  },
+  {
+   "start_epoch": 1792359165,
+   "requests": 1067,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 455.4
+  },
+  {
+   "start_epoch": 1792359170,
+   "requests": 756,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 1667.7
+  },
+  {
+   "start_epoch": 1792359175,
+   "requests": 1072,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 621.2
+  },
+  {
+   "start_epoch": 1792359180,
+   "requests": 704,
+   "failed": 182,
+   "failed_pct": 25.85,
+   "p95_ms": 1461.6
+  },
+  {
+   "start_epoch": 1792359185,
+   "requests": 725,
+   "failed": 725,
+   "failed_pct": 100.0,
+   "p95_ms": 650.8
+  },
+  {
+   "start_epoch": 1792359190,
+   "requests": 748,
+   "failed": 748,
+   "failed_pct": 100.0,
+   "p95_ms": 469.3
+  },
+  {
+   "start_epoch": 1792359195,
+   "requests": 995,
+   "failed": 995,
+   "failed_pct": 100.0,
+   "p95_ms": 132.0
+  },
+  {
+   "start_epoch": 1792359200,
+   "requests": 821,
+   "failed": 821,
+   "failed_pct": 100.0,
+   "p95_ms": 447.8
+  },
+  {
+   "start_epoch": 1792359205,
+   "requests": 889,
+   "failed": 410,
+   "failed_pct": 46.12,
+   "p95_ms": 596.6
+  },
+  {
+   "start_epoch": 1792359210,
+   "requests": 971,
+   "failed": 971,
+   "failed_pct": 100.0,
+   "p95_ms": 31.2
+  },
+  {
+   "start_epoch": 1792359215,
+   "requests": 1211,
+   "failed": 321,
+   "failed_pct": 26.51,
+   "p95_ms": 289.9
+  },
+  {
+   "start_epoch": 1792359220,
+   "requests": 1228,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 159.2
+  },
+  {
+   "start_epoch": 1792359225,
+   "requests": 128,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 409.6
+  },
+  {
+   "start_epoch": 1792359230,
+   "requests": 704,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 7499.2
+  },
+  {
+   "start_epoch": 1792359235,
+   "requests": 873,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 877.8
+  },
+  {
+   "start_epoch": 1792359240,
+   "requests": 966,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 319.9
+  },
+  {
+   "start_epoch": 1792359245,
+   "requests": 1082,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 103.0
+  },
+  {
+   "start_epoch": 1792359250,
+   "requests": 866,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 277.2
+  },
+  {
+   "start_epoch": 1792359255,
+   "requests": 683,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 487.8
+  },
+  {
+   "start_epoch": 1792359260,
+   "requests": 626,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 372.9
+  },
+  {
+   "start_epoch": 1792359265,
+   "requests": 629,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 57.9
+  },
+  {
+   "start_epoch": 1792359270,
+   "requests": 527,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 26.7
+  },
+  {
+   "start_epoch": 1792359275,
+   "requests": 392,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 12.7
+  },
+  {
+   "start_epoch": 1792359280,
+   "requests": 250,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 18.1
+  },
+  {
+   "start_epoch": 1792359285,
+   "requests": 163,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 24.1
+  },
+  {
+   "start_epoch": 1792359290,
+   "requests": 12,
+   "failed": 0,
+   "failed_pct": 0.0,
+   "p95_ms": 22.3
+  }
+ ],
+ "ws_events": [
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359052,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359082,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359112,
+   "metric": "forum_ws_probes_lost"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359202,
+   "metric": "forum_ws_errors"
+  },
+  {
+   "at_epoch": 1792359203,
+   "metric": "forum_ws_errors"
+  }
+ ]
+}

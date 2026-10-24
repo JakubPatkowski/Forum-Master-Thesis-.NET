@@ -6,15 +6,23 @@ using Forum.SharedKernel.Results;
 
 namespace Forum.Modules.Content.Application.Threads;
 
-/// <summary>Full-text search over threads (tsvector + GIN, title weighted over body), ranked and keyset-paged.</summary>
+/// <summary>
+/// Full-text search over threads (tsvector + GIN, title weighted over body), ranked and keyset-paged. Only threads
+/// in categories the reader may open are searched (A-12).
+/// </summary>
 internal sealed record SearchThreadsQuery(string? Q, string? Cursor, int Limit)
     : IQuery<CursorPage<ThreadFeedItemResponse>>;
 
 internal sealed class SearchThreadsQueryHandler : IQueryHandler<SearchThreadsQuery, CursorPage<ThreadFeedItemResponse>>
 {
     private readonly IContentQueries _queries;
+    private readonly ContentReadAccess _readAccess;
 
-    public SearchThreadsQueryHandler(IContentQueries queries) => _queries = queries;
+    public SearchThreadsQueryHandler(IContentQueries queries, ContentReadAccess readAccess)
+    {
+        _queries = queries;
+        _readAccess = readAccess;
+    }
 
     public async Task<Result<CursorPage<ThreadFeedItemResponse>>> Handle(
         SearchThreadsQuery query, CancellationToken cancellationToken)
@@ -35,6 +43,8 @@ internal sealed class SearchThreadsQueryHandler : IQueryHandler<SearchThreadsQue
         }
 
         var limit = Math.Clamp(query.Limit, 1, GetThreadFeedQueryHandler.MaxLimit);
-        return Result.Success(await _queries.SearchThreadsAsync(query.Q.Trim(), cursor, limit, cancellationToken));
+        var readablePrivate = await _readAccess.ReadablePrivateCategoryIdsAsync(cancellationToken);
+        return Result.Success(
+            await _queries.SearchThreadsAsync(query.Q.Trim(), cursor, limit, readablePrivate, cancellationToken));
     }
 }

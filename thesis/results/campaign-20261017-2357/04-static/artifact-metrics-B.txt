@@ -1,0 +1,12 @@
+# B artifacts out of gomx:bench (/app/server, /app/static) — bytes raw / gzip -9 — 2026-10-18
+artifact_size_bytes{artifact="server",encoding="raw"} 39948450
+artifact_size_bytes{artifact="server",encoding="gzip"} 13167067
+artifact_size_bytes{artifact="styles.css",encoding="raw"} 211225
+artifact_size_bytes{artifact="styles.css",encoding="gzip"} 31472
+artifact_size_bytes{artifact="bridge-alpine.js",encoding="raw"} 62806
+artifact_size_bytes{artifact="bridge-alpine.js",encoding="gzip"} 21718
+artifact_size_bytes{artifact="bridge.js",encoding="raw"} 71629
+artifact_size_bytes{artifact="bridge.js",encoding="gzip"} 21421
+artifact_size_bytes{artifact="forum.js",encoding="raw"} 209100
+artifact_size_bytes{artifact="forum.js",encoding="gzip"} 70639
+web_assets_total_bytes{encoding="gzip"} 145250

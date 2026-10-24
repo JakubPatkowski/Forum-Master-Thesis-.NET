@@ -91,3 +91,12 @@
     position: static;
   }
 }
+
+/* Touch floor (coarse pointers / phone widths): "Log in to post →" measured 20.8 px tall. */
+@media (pointer: coarse), (max-width: 480px) {
+  .loginCta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+}

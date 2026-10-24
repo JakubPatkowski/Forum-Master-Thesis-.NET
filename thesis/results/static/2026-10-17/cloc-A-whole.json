@@ -1,0 +1,109 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.06",
+  "elapsed_seconds"    : 1.24780797958374,
+  "n_files"            : 986,
+  "n_lines"            : 101666,
+  "files_per_second"   : 790.185682518974,
+  "lines_per_second"   : 81475.677078067,
+  "report_file"        : "thesis/results/static/2026-10-17/cloc-A-whole.json"},
+"C#" :{
+  "nFiles": 593,
+  "blank": 6383,
+  "comment": 2459,
+  "code": 28916},
+"JSON" :{
+  "nFiles": 40,
+  "blank": 0,
+  "comment": 0,
+  "code": 21282},
+"TypeScript" :{
+  "nFiles": 124,
+  "blank": 1302,
+  "comment": 1062,
+  "code": 10633},
+"Markdown" :{
+  "nFiles": 47,
+  "blank": 2171,
+  "comment": 9,
+  "code": 9455},
+"CSS" :{
+  "nFiles": 55,
+  "blank": 872,
+  "comment": 129,
+  "code": 5197},
+"HTML" :{
+  "nFiles": 12,
+  "blank": 154,
+  "comment": 18,
+  "code": 3248},
+"JavaScript" :{
+  "nFiles": 7,
+  "blank": 117,
+  "comment": 177,
+  "code": 2466},
+"Bourne Shell" :{
+  "nFiles": 25,
+  "blank": 212,
+  "comment": 483,
+  "code": 1684},
+"YAML" :{
+  "nFiles": 43,
+  "blank": 29,
+  "comment": 385,
+  "code": 1066},
+"Rust" :{
+  "nFiles": 5,
+  "blank": 43,
+  "comment": 30,
+  "code": 333},
+"SVG" :{
+  "nFiles": 1,
+  "blank": 35,
+  "comment": 36,
+  "code": 281},
+"MSBuild script" :{
+  "nFiles": 18,
+  "blank": 0,
+  "comment": 11,
+  "code": 269},
+"Text" :{
+  "nFiles": 3,
+  "blank": 0,
+  "comment": 0,
+  "code": 225},
+"XML" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 19,
+  "code": 99},
+"make" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 8,
+  "code": 83},
+"INI" :{
+  "nFiles": 4,
+  "blank": 7,
+  "comment": 0,
+  "code": 49},
+"Dockerfile" :{
+  "nFiles": 3,
+  "blank": 3,
+  "comment": 64,
+  "code": 47},
+"Python" :{
+  "nFiles": 1,
+  "blank": 12,
+  "comment": 19,
+  "code": 36},
+"TOML" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 1,
+  "code": 20},
+"SUM": {
+  "blank": 11367,
+  "comment": 4910,
+  "code": 85389,
+  "nFiles": 986} }
