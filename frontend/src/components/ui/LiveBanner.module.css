@@ -37,3 +37,10 @@
 .action:hover {
   background: rgba(0, 217, 255, 0.12);
 }
+
+/* Touch floor (coarse pointers / phone widths): the banner action measured 33.6 px. */
+@media (pointer: coarse), (max-width: 480px) {
+  .action {
+    min-height: 40px;
+  }
+}

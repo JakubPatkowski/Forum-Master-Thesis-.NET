@@ -21,4 +21,8 @@ internal static class DbCommandExtensions
 
         command.Parameters.Add(parameter);
     }
+
+    /// <summary>Binds <c>@readable</c> — the private category ids the reader may open — as a Postgres text[].</summary>
+    public static void AddReadableCategories(this DbCommand command, IReadOnlyCollection<Ulid> categoryIds) =>
+        command.AddParameter("@readable", categoryIds.Select(static id => id.ToString()).ToArray());
 }

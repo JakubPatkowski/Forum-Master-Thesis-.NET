@@ -17,12 +17,22 @@ public static class ObservabilityExtensions
         // the fallback when the key is absent.
         var otlpEndpoint = builder.Configuration["Otlp:Endpoint"];
 
-        builder.Services.AddOpenTelemetry()
+        // Observability:TracingEnabled=false (env Observability__TracingEnabled) removes the tracer provider
+        // entirely — no ActivityListener, no Npgsql/ASP.NET spans, no OTLP batch exporter. The A/B benchmark
+        // runs with tracing OFF on both architectures (AB-ALIGNMENT-INSTRUCTIONS-A.md A-07): an empty
+        // Otlp:Endpoint is NOT "off" (the exporter would still run against the SDK default and fail silently),
+        // and the SDK samples 100% by default. Metrics are unaffected. Default: enabled.
+        var tracingEnabled = builder.Configuration.GetValue("Observability:TracingEnabled", true);
+
+        var otel = builder.Services.AddOpenTelemetry()
             .ConfigureResource(resource => resource
                 .AddService(builder.Environment.ApplicationName)
                 .AddAttributes([new KeyValuePair<string, object>(
-                    "deployment.environment", builder.Environment.EnvironmentName)]))
-            .WithTracing(tracing => tracing
+                    "deployment.environment", builder.Environment.EnvironmentName)]));
+
+        if (tracingEnabled)
+        {
+            otel.WithTracing(tracing => tracing
                 // Probe/scrape traffic (2 probes × N pods every ~10 s + Prometheus every 15 s) would drown Tempo
                 // in identical spans; the same paths are excluded from request logging in Program.cs.
                 .AddAspNetCoreInstrumentation(options => options.Filter = static context =>
@@ -41,8 +51,10 @@ public static class ObservabilityExtensions
                     {
                         options.Endpoint = new Uri(otlpEndpoint);
                     }
-                }))
-            .WithMetrics(metrics =>
+                }));
+        }
+
+        otel.WithMetrics(metrics =>
             {
                 metrics
                     .AddAspNetCoreInstrumentation()

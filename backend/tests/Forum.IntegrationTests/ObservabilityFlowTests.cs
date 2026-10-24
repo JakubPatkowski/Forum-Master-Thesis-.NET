@@ -104,6 +104,37 @@ public sealed class ObservabilityFlowTests : IClassFixture<ForumApiFactory>
         metrics.ShouldContain("errorType=\"NotFound\"");
     }
 
+    [SkippableFact]
+    public async Task Web_vitals_beacons_land_in_the_rum_histograms_and_garbage_is_dropped_silently()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+
+        // The beacon is anonymous and permissive: sendBeacon can't send application/json, so the endpoint
+        // reads the raw body — text/plain must work, and every outcome (including garbage) is a 204.
+        (await PostBeacon(client, """{"name":"LCP","value":2350,"rating":"good"}"""))
+            .StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await PostBeacon(client, """{"name":"CLS","value":0.04,"rating":"needs-improvement"}"""))
+            .StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await PostBeacon(client, """{"name":"BOGUS","value":1,"rating":"good"}"""))
+            .StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await PostBeacon(client, "not json at all")).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await PostBeacon(client, """{"name":"LCP","value":-5,"rating":"weird"}"""))
+            .StatusCode.ShouldBe(HttpStatusCode.NoContent);
+
+        var metrics = await client.GetStringAsync("/metrics");
+        metrics.ShouldContain("forum_web_vitals_duration_seconds");
+        metrics.ShouldContain("metric=\"LCP\"");
+        metrics.ShouldContain("rating=\"good\"");
+        metrics.ShouldContain("forum_web_vitals_cls");
+        metrics.ShouldContain("rating=\"needs-improvement\"");
+        metrics.ShouldNotContain("BOGUS", customMessage: "unknown metric names must never become label values");
+    }
+
+    private static Task<HttpResponseMessage> PostBeacon(HttpClient client, string body) =>
+        client.PostAsync("/api/telemetry/vitals", new StringContent(body)); // text/plain, like sendBeacon
+
     private static async Task<Session> RegisterAndLogin(HttpClient client, string username)
     {
         var email = $"{username}@example.com";

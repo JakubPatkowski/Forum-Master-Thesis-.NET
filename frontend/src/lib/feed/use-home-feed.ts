@@ -16,6 +16,7 @@ import { ApiError } from "@/lib/api/problem";
 import {
   createSource,
   drainMerged,
+  exhaustSource,
   ingestPage,
   isExhausted,
   type FeedSourceState,
@@ -68,10 +69,20 @@ export function useHomeFeed(categoryIds: string[] | undefined) {
           drained.blockedOn.map(async (categoryId) => {
             const source = sourcesRef.current.find((s) => s.categoryId === categoryId);
             const cursor = source?.started ? source.nextCursor : null;
-            return {
-              categoryId,
-              page: await contentApi.getThreadFeed(categoryId, cursor, PAGE_LIMIT),
-            };
+            try {
+              return {
+                categoryId,
+                page: await contentApi.getThreadFeed(categoryId, cursor, PAGE_LIMIT),
+              };
+            } catch (error) {
+              // A category the viewer may not read (private category, anonymous or
+              // non-member: 404 from the read gate, 403 for a signed-in non-member) is
+              // not an error of the home feed — it simply contributes nothing.
+              if (error instanceof ApiError && (error.status === 404 || error.status === 403)) {
+                return { categoryId, page: null };
+              }
+              throw error;
+            }
           }),
         );
         if (generation !== generationRef.current) return;
@@ -80,6 +91,14 @@ export function useHomeFeed(categoryIds: string[] | undefined) {
           const index = sourcesRef.current.findIndex((s) => s.categoryId === categoryId);
           const current = sourcesRef.current[index];
           if (!current) continue;
+          if (page === null) {
+            sourcesRef.current = [
+              ...sourcesRef.current.slice(0, index),
+              exhaustSource(current),
+              ...sourcesRef.current.slice(index + 1),
+            ];
+            continue;
+          }
           const { source, pinned } = ingestPage(current, page);
           sourcesRef.current = [
             ...sourcesRef.current.slice(0, index),

@@ -98,3 +98,13 @@
 .info .dot {
   background: var(--color-info);
 }
+
+/* Touch floor (coarse pointers / phone widths): the "×" measured ~14 px; the negative margins bleed
+   the 40×40 hit area into the toast's own padding instead of pushing the text column. */
+@media (pointer: coarse), (max-width: 480px) {
+  .close {
+    width: 40px;
+    height: 40px;
+    margin: -10px -12px -10px 0;
+  }
+}

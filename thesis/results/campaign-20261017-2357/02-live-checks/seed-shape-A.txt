@@ -1,0 +1,41 @@
+     slug     | visibility | live | pinned 
+--------------+------------+------+--------
+ bench-cat-01 | public     |  315 |      4
+ bench-cat-02 | public     |  341 |      3
+ bench-cat-03 | public     |  332 |      2
+ bench-cat-04 | public     |   77 |      1
+ bench-cat-05 | public     |   75 |      3
+ bench-cat-06 | public     |   59 |      1
+ bench-cat-07 | public     |   58 |      0
+ bench-cat-08 | public     |   60 |      1
+ bench-cat-09 | private    |   71 |      0
+ bench-cat-10 | private    |   65 |      1
+ bench-cat-11 | private    |   67 |      0
+ bench-cat-12 | private    |   63 |      0
+(12 rows)
+
+ public_live_threads | comments_mean | comments_median | comments_max 
+---------------------+---------------+-----------------+--------------
+                1317 |          5.73 |               4 |          236
+(1 row)
+
+ avg_body_chars 
+----------------
+           1914
+(1 row)
+
+ j6_hits_kubernetes 
+--------------------
+               1313
+(1 row)
+
+ users | threads | comments | reactions | deleted_threads | non_active_users 
+-------+---------+----------+-----------+-----------------+------------------
+   800 |    1600 |     9002 |     14999 |              17 |               20
+(1 row)
+
+ db_size 
+---------
+ 26 MB
+(1 row)
+

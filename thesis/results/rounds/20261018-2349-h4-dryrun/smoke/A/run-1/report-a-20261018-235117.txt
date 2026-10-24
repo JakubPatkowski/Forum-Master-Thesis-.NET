@@ -1,0 +1,45 @@
+
+target=a  profile=smoke  mix=v2  harness=h4-2026-10-18  base=https://forum.local  reads=anonymous
+http_reqs=1228  p95=8ms  p99=23ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                10    327    429    515    530    533
+categories           56      2      2      3      3      3
+feed                249      3      3      4      9     46
+thread              109      2      2      3      4      5
+comments            109      3      3      4      6      6
+reactions_batch     358      2      2      3      7     12
+search               59      5      6      8     10     10
+comment_create       39     10      6     24     40     50
+thread_create        14      7      6      8      8      8
+reaction_add         78      9      6     23     47     48
+reaction_remove       2     23     23     24     25     25
+file_initiate        14      6      4     19     20     20
+file_put             14      7      7      9     10     10
+file_commit          14      9     10     11     12     12
+file_attach          14      6      6      7      8      8
+dm_open               5      7      6     12     13     13
+dm_send              24      8      7     10     20     23
+probe_comment         8      5      5      6      6      6
+user_stats            8      3      3      3      3      3
+user_threads          8      2      2      3      3      3
+ticket                4      9      8     15     16     16
+setup                32      4      4      6      7      8
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           187   3.12      6     14     22
+J2           109   1.82      9     11     19
+J3            39   0.65      6     24     44
+J4            14   0.23    474    523    525
+J5            80   1.33      7     24     46
+J6            59   0.98      6      9     10
+J7             8   0.13      5      7      7
+J8             4   0.07      0      0      0
+J9            24   0.40      8     19     23
+nav           56   0.93      2      3      3
+
+ws: subscribed=4  notifications=74  errors=0
+ws receipt probes: sent=8  received=8  late=0  lost=0  unresolved=0  loss=0%  latency med=1846ms p95=1865ms max=1865ms  (write request start → matching push; A floor = outbox relay poll)
+
+all thresholds passed
+

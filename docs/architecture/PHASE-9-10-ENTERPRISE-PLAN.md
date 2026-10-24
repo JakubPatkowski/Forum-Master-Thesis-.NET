@@ -193,7 +193,7 @@ actual files, not assumed.** Later blocks reference gaps by ID (G1…G22).
 | Area | State |
 |---|---|
 | `Dockerfile` (root) | Multi-stage SDK→aspnet 10.0, non-root `appuser` uid 1000, `DOTNET_EnableDiagnostics=0`, port 8080. Solid baseline; hardening remains (G15). `.dockerignore` exists. |
-| `compose.yaml` | postgres:17 (healthcheck), rabbitmq:4-management, minio + named volumes. Local dev loop works (`make infra-up` / `make api`). |
+| `compose.yaml` | postgres:18 (healthcheck), rabbitmq:4-management, minio + named volumes. Local dev loop works (`make infra-up` / `make api`). |
 | `k8s/backend/` | deployment (runAsNonRoot, ro-rootfs, drop ALL, requests/limits, probes on `/health/{live,ready}`), hpa (CPU 70%, 1–3), pdb (minAvailable 1), service, configmap, migration-job. Style: single-line YAML maps, hand-rolled. **Keep this style for all new manifests.** |
 | `k8s/postgres/` | statefulset (fsGroup 999, PVC 2Gi, pg_isready probe), headless service, secret.example. No resources/securityContext (G2). |
 | `k8s/ingress/ingress.yaml` | nginx, host `forum.local`, `/api`→backend, `/`→frontend. No TLS (G13), no WS timeouts (G13), frontend Service doesn't exist yet (G4). |
@@ -215,7 +215,7 @@ Each gap says where it bites and which phase block fixes it.
 | **G5** | `MinioObjectStorage` presigns against the single `Storage:Endpoint`. In-cluster that is `minio:9000` → **presigned PUT/GET URLs are unreachable from the browser** (and the signature binds the host, so you can't just rewrite the URL). ADR 0008's entire upload flow is dead in k8s. | No uploads/avatars/attachments work in the cluster. | 9a (code: `Storage:PublicEndpoint` + second presign client) + 10b (ingress route + CORS) |
 | **G6** | Rate limiter partitions by `Connection.RemoteIpAddress`; no `UseForwardedHeaders`. Behind ingress-nginx every request arrives from the controller pod IP → **all users share one 100 req/min bucket**; the whole site 429s under trivial load. | Cluster unusable under >100 req/min total; benchmark invalid. | 9a |
 | **G7** | OTel gaps: `Npgsql.OpenTelemetry` is referenced in the csproj but `AddNpgsql()` is never called (no DB spans); no EF Core instrumentation; no custom domain metrics `Meter` anywhere (verified by grep); Serilog has no JSON formatter or Loki path configured; no exemplar wiring. | Dashboards required by §7 of the requirements (domain counters, outbox lag, WS connections) impossible; traces show HTTP spans with no DB detail. | 9a |
-| **G8** | Connection string sets no `Maximum Pool Size` → Npgsql default **100 per replica** (all five DbContexts share one pool — same connection string). HPA max 3 → worst case 300 connections vs Postgres 17 default `max_connections=100`. | Under scale-out: `53300 too_many_connections`, readiness flaps, benchmark collapses — exactly the failure the Python repo diagnosed. | 10b (math + config) |
+| **G8** | Connection string sets no `Maximum Pool Size` → Npgsql default **100 per replica** (all five DbContexts share one pool — same connection string). HPA max 3 → worst case 300 connections vs Postgres 18 default `max_connections=100`. | Under scale-out: `53300 too_many_connections`, readiness flaps, benchmark collapses — exactly the failure the Python repo diagnosed. | 10b (math + config) |
 | **G9** | `demo`/`stress` k6 profiles referenced by `run-load-test.sh`/Makefile but not implemented; smoke hits only `/health/ready`. | No benchmark scenarios exist; Phase 9's core deliverable missing. | 9c |
 | **G10** | `seed-test-data.sh` is `echo TODO`; no seed code in the backend (only the authz role/action seed migration). | No deterministic dataset → no fair A/B comparison. | 9b |
 | **G11** | `k8s/backend/configmap.yaml` points `Otlp__Endpoint` at `http://otel-collector:4317` — no such Service will exist (plan: export straight to Tempo). | Traces silently dropped in cluster. | 10b/10c |
@@ -1234,7 +1234,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: postgres
-          image: postgres:17
+          image: postgres:18
           # Benchmark-stable tuning; defaults are conservative. max_connections stays 100 — see pool math.
           args: ["-c", "shared_buffers=256MB", "-c", "effective_cache_size=512MB", "-c", "max_connections=100"]
           envFrom: [{ secretRef: { name: postgres-credentials } }]

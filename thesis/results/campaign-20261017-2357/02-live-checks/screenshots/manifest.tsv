@@ -1,0 +1,11 @@
+file	url	rc	seconds	bytes
+A-home.png	https://forum.local/	0	1	87400
+A-feed.png	https://forum.local/c/bench-cat-06	0	1	170917
+A-thread.png	https://forum.local/t/01KDY021004XKGMPA2XJZK3DPT	0	2	183173
+A-search.png	https://forum.local/search?q=kubernetes	0	1	160798
+A-profile.png	https://forum.local/u/01KDYYYSM0PH4QS1MMRNJ8796B	0	1	97085
+B-home.png	https://gomx.local/	0	0	384045
+B-feed.png	https://gomx.local/c/general	0	1	367832
+B-thread.png	https://gomx.local/thread/1	0	1	174900
+B-search.png	https://gomx.local/search?q=kubernetes	0	0	233743
+B-profile.png	https://gomx.local/u/34	0	1	121882

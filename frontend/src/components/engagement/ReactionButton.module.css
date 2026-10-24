@@ -33,3 +33,17 @@
   border-color: var(--color-accent-dark);
   background: var(--color-accent-subtle);
 }
+
+/* Touch floor (coarse pointers / phone widths): the borderless `sm` toggle on cards and comments
+   measured 19 px tall — grow the hit area to 40×40 CSS px; desktop density is unchanged. */
+@media (pointer: coarse), (max-width: 480px) {
+  .button {
+    min-height: 40px;
+    min-width: 40px;
+    justify-content: center;
+  }
+
+  .sm {
+    padding: 0 8px;
+  }
+}

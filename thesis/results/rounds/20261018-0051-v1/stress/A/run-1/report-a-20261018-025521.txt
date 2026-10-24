@@ -1,0 +1,34 @@
+
+target=a  profile=stress  mix=v1  harness=h3-2026-10-17  base=https://forum.local
+http_reqs=146807  p95=21ms  p99=67ms  failed=0.00%  (scenario 390s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200    117    102    140    518    755
+categories         5950      6      3     16     57   1637
+feed              31382      8      4     20     65   1624
+thread            16223      6      3     16     54   1549
+comments          16223      7      4     18     61    590
+reactions_batch   47605      5      3     14     46   1412
+search             8065     16     12     33     87   1562
+comment_create     8101     13      8     33     96   1716
+reaction_add       9542     16      9     39    121   1632
+reaction_remove     274     15     10     32    121    172
+user_stats         1525      7      4     18     59    143
+user_threads       1525      6      3     17     43     97
+ticket              160     26     19     73     89     97
+setup                32      4      4      5     16     20
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         24265  62.22     11     46    129
+J2         16223  41.60     12     47    139
+J3          8101  20.77      8     33     96
+J5          9816  25.17      9     39    122
+J6          8065  20.68     12     33     87
+J7          1525   3.91      8     34     91
+J8           120   0.31      0      0      0
+nav         5950  15.26      3     16     57
+
+ws: subscribed=160  notifications=129446  errors=0
+
+all thresholds passed
+

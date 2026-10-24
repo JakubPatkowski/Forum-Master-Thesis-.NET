@@ -1,0 +1,21 @@
+# A/B benchmark overlay for Architecture B (gomx), hosted on the A side so Day 0 does not depend on the B
+# repo carrying its own `deploy/k8s/bench/` yet (AB-ALIGNMENT-INSTRUCTIONS-B.md B-05 is the identical overlay
+# in Hubert's repo; scripts/gomx-bench-deploy.sh prefers his copy when it exists). The base is gomx's own
+# kustomization (../gomx/deploy/k8s): kustomize refuses absolute/outside-root bases and mangles that base when
+# referenced from here, so the deploy script PRE-RENDERS it into gomx-base.rendered.yaml (gitignored):
+#   kubectl kustomize ../gomx/deploy/k8s > k8s/gomx-bench/gomx-base.rendered.yaml && kubectl apply -k k8s/gomx-bench
+# Common Day-0 profile: app requests 250m/256Mi, limits 1000m/512Mi, FIXED replicas (1 for the seeding first boot,
+# scaled to 2 by the deploy script), no HPA; Postgres 18 with A's args + 250m/512Mi → 1000m/1Gi; tracing OFF,
+# in-app gzip OFF (ingress compresses both), auth limiter OFF (recorded), friend fan-out OFF, bench seed, TLS.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - gomx-base.rendered.yaml
+images:
+  - name: gomx
+    newTag: bench
+patches:
+  - path: app-patch.yaml
+  - path: hpa-delete.yaml
+  - path: postgres-patch.yaml
+  - path: ingress-patch.yaml

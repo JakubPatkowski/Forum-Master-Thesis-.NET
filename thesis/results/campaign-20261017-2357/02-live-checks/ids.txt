@@ -1,0 +1,33 @@
+# IDs for security-posture checks — 2026-10-18T00:05:06+02:00
+## A: one private-category thread id, one public thread id, one user id, category slugs
+private_thread=01KDY56TE07KFE00T6ZSDGW9GS cat=bench-cat-12
+public_thread=01KDY021004XKGMPA2XJZK3DPT cat=bench-cat-06 id=01KE8D2RM0R1FEQEKPENWN6VHX
+user=01KDYYYSM0PH4QS1MMRNJ8796B bench_user_0034
+cat bench-cat-01 public 01KDVH35M0EWK3APA3PQ7Y3D2J
+cat bench-cat-02 public 01KDY3FWM0QJPT7QQSEEYZVC35
+cat bench-cat-03 public 01KE0NWKM0E2536MBVE3Z4S1T3
+cat bench-cat-04 public 01KE389AM085PTTBS9ATNMQCVV
+cat bench-cat-05 public 01KE5TP1M0BMMMZNMCRACWKKWT
+cat bench-cat-06 public 01KE8D2RM0R1FEQEKPENWN6VHX
+cat bench-cat-07 public 01KEAZFFM0X88Y8JW1J312PMWY
+cat bench-cat-08 public 01KEDHW6M0MT7X7XWFVR8EFW46
+cat bench-cat-09 private 01KEG48XM0KA1CDMKZSTFWPGTJ
+cat bench-cat-10 private 01KEJPNMM064JS1YA06J954DC2
+cat bench-cat-11 private 01KEN92BM0JVH78SWXRC85CMRK
+cat bench-cat-12 private 01KEQVF2M0AAE852YKBPSGN18K
+## B: one private post id, one public post id, a user id, community slugs
+private_post=5 comm=bench12
+public_post=1 comm=general
+user=34 benchuser0034
+comm bench10 private 10
+comm bench11 private 11
+comm bench12 private 12
+comm bench7 public 7
+comm bench8 public 8
+comm bench9 private 9
+comm design public 4
+comm general public 1
+comm golang public 3
+comm help public 5
+comm random public 6
+comm showcase public 2

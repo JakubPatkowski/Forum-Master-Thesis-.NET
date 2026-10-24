@@ -32,6 +32,15 @@ export function createSource(categoryId: string): FeedSourceState {
   return { categoryId, buffer: [], nextCursor: null, hasMore: true, started: false };
 }
 
+/**
+ * Marks a source as finished without a page — used when its feed is not readable by the
+ * current viewer (404/403 from the private-category read gate). The merge then simply
+ * proceeds over the remaining sources; buffered items (if any) are still emitted.
+ */
+export function exhaustSource(source: FeedSourceState): FeedSourceState {
+  return { ...source, nextCursor: null, hasMore: false, started: true };
+}
+
 /** True while this source may still produce items (buffered or fetchable). */
 export function canProduce(source: FeedSourceState): boolean {
   return source.buffer.length > 0 || source.hasMore || !source.started;

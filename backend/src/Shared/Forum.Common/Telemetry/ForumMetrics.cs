@@ -44,6 +44,8 @@ public sealed class ForumMetrics
     private readonly Counter<long> _wsPushes;
     private readonly Counter<long> _apiRejections;
     private readonly Counter<long> _unhandledErrors;
+    private readonly Histogram<double> _webVitalDuration;
+    private readonly Histogram<double> _webVitalCls;
 
     /// <summary>Last loop-alive tick per hosted service, surfaced as an age gauge so a silently dead loop is visible.</summary>
     private readonly ConcurrentDictionary<string, DateTimeOffset> _hostedServiceTicks = new();
@@ -80,6 +82,22 @@ public sealed class ForumMetrics
         meter.CreateObservableGauge(
             "forum.hosted_service.tick_age", ObserveHostedServiceTickAges, unit: "s",
             description: "Seconds since each background loop last reported alive; a growing value means a dead loop");
+
+        // Real-user Core Web Vitals beaconed by the SPA (A-3) — field data complementing Lighthouse's lab
+        // numbers. Mirrors B's design (gomx web_vitals_duration_seconds / web_vitals_cls): the timing vitals
+        // (LCP, FCP, INP, TTFB) share one seconds histogram, unitless CLS gets its own; both carry the
+        // browser-assigned rating. Bucket boundaries are B's exact values so the histograms compare 1:1.
+        _webVitalDuration = meter.CreateHistogram<double>(
+            "forum.web_vitals.duration", unit: "s",
+            description: "Real-user Core Web Vitals timing metrics (LCP, FCP, INP, TTFB) reported by the browser",
+            advice: new InstrumentAdvice<double>
+            {
+                HistogramBucketBoundaries = [0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10],
+            });
+        _webVitalCls = meter.CreateHistogram<double>(
+            "forum.web_vitals.cls",
+            description: "Real-user Cumulative Layout Shift reported by the browser (unitless)",
+            advice: new InstrumentAdvice<double> { HistogramBucketBoundaries = [0.01, 0.05, 0.1, 0.15, 0.25, 0.5, 1] });
     }
 
     public void AuthAttempt(string outcome) =>
@@ -124,6 +142,27 @@ public sealed class ForumMetrics
     /// <summary>Counts an unhandled exception. <paramref name="category"/> must be one of the ErrorCategory consts.</summary>
     public void UnhandledError(string category) =>
         _unhandledErrors.Add(1, new KeyValuePair<string, object?>("category", category));
+
+    /// <summary>
+    /// Records a timing Core Web Vital (seconds). <paramref name="metric"/> must come from the endpoint's
+    /// closed allow-list (LCP|FCP|INP|TTFB); the rating is normalized here so the label set stays bounded.
+    /// </summary>
+    public void WebVitalDuration(string metric, string rating, double seconds) =>
+        _webVitalDuration.Record(
+            seconds,
+            new KeyValuePair<string, object?>("metric", metric),
+            new KeyValuePair<string, object?>("rating", NormalizeWebVitalRating(rating)));
+
+    /// <summary>Records a real-user CLS observation (unitless).</summary>
+    public void WebVitalCls(string rating, double value) =>
+        _webVitalCls.Record(value, new KeyValuePair<string, object?>("rating", NormalizeWebVitalRating(rating)));
+
+    /// <summary>Collapses the rating to the three values the web-vitals client emits; anything else is "unknown".</summary>
+    private static string NormalizeWebVitalRating(string rating) => rating switch
+    {
+        "good" or "needs-improvement" or "poor" => rating,
+        _ => "unknown",
+    };
 
     /// <summary>Marks a background loop alive. Call once per loop pass; Phase 10c alerts on the age gauge.</summary>
     public void HostedServiceTick(string service) => _hostedServiceTicks[service] = _time.GetUtcNow();

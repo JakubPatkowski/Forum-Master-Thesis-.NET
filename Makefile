@@ -5,8 +5,8 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-tls tunnels load bench pods logs urls \
-        mon-up mon-down mon-check
+        images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-tls tunnels load bench reload-bench security-scan sonar pods logs urls \
+        mon-up mon-down mon-check ab-round ab-report ab-chaos gomx-deploy bench-b load-b lighthouse lighthouse-cluster artifact-size
 
 help: ## Show this help
 	@awk 'BEGIN{FS=":.*##"; printf "\nforum-dotnet make targets:\n\n"} \
@@ -70,8 +70,32 @@ mon-check:   ## Assert all Prometheus targets UP + Loki ingesting + Tempo ready
 ## --- Ops -------------------------------------------------------------------
 load: ## Run a k6 load profile (make load ARGS=smoke|demo|stress)
 	@bash scripts/run-load-test.sh $(ARGS)
-bench: ## Full measured benchmark → thesis/results/A/ (make bench ARGS=demo|stress ["--repeats N"])
+bench: ## Full measured benchmark → thesis/results/A/ (make bench ARGS=demo|stress ["--repeats N"]; TARGET=b for gomx → thesis/results/B/)
 	@bash scripts/bench-run.sh $(ARGS)
+load-b: ## k6 profile against Architecture B in the shared cluster (make load-b ARGS=smoke|demo|stress)
+	@TARGET=b bash scripts/run-load-test.sh $(ARGS)
+bench-b: ## Measured benchmark of Architecture B → thesis/results/B/ (make bench-b ARGS="demo --repeats 3")
+	@TARGET=b bash scripts/bench-run.sh $(ARGS)
+gomx-deploy: ## Build + deploy gomx (bench overlay) into the shared minikube (make gomx-deploy ARGS=--reset-db|--fresh)
+	@bash scripts/gomx-bench-deploy.sh $(ARGS)
+ab-round: ## FULL A/B measurement round, unattended (make ab-round ARGS="--plan demo:5,stress:1,capacity:1 --label v1")
+	@bash scripts/ab-round.sh $(ARGS)
+ab-report: ## Re-generate REPORT.md + round-summary.json of a round archive (make ab-report ARGS=thesis/results/rounds/<dir>)
+	@python3 scripts/ab_report.py $(ARGS)
+ab-chaos: ## Fault-injection run under demo load, one target (make ab-chaos ARGS="--target a --fault both") → thesis/results/chaos/
+	@bash scripts/ab-chaos.sh $(ARGS)
+lighthouse-cluster: ## Lighthouse against the benchmark deployment (make lighthouse-cluster ARGS="--target a --preset mobile")
+	@bash scripts/lighthouse.sh --cluster $(ARGS)
+lighthouse: ## Lighthouse audit of the SPA (needs local infra + migrated, Development-seeded API) → .bench/lighthouse/
+	@bash scripts/lighthouse.sh
+artifact-size: ## First-load assets + image sizes → .bench/artifact-metrics.txt (needs frontend build + images)
+	@bash scripts/artifact-size.sh
+reload-bench: ## Dev-loop timings → .bench/reload-bench.json (paired with gomx `task reload-bench`; BENCH_RUNS=10)
+	@bash scripts/dev-loop-bench.sh
+security-scan: ## trivy fs scan, B-parity flags (make security-scan; scripts/security-scan.sh ../gomx for the paired run)
+	@bash scripts/security-scan.sh
+sonar: ## SonarQube analysis (needs SONAR_HOST_URL+SONAR_TOKEN; paired with gomx `task sonar`)
+	@bash scripts/sonar-scan.sh
 pods: ## Show cluster resources
 	@kubectl -n forum-dotnet get pods,svc,ingress,hpa
 logs: ## Tail backend logs

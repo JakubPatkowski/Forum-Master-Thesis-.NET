@@ -18,7 +18,9 @@ load_env
 require_cmd mkcert "single Go binary: https://github.com/FiloSottile/mkcert/releases -> ~/.local/bin/mkcert && chmod +x"
 
 TLS_DIR="$REPO_ROOT/k8s/ingress/tls"
-HOSTS=("$INGRESS_HOST" "minio.$INGRESS_HOST" "grafana.$INGRESS_HOST")
+# $GOMX_INGRESS_HOST (gomx.local) = Architecture B's ingress host in the shared A/B benchmark cluster —
+# one cert, one CA for both systems (AB-ALIGNMENT-INSTRUCTIONS-A.md A-04).
+HOSTS=("$INGRESS_HOST" "minio.$INGRESS_HOST" "grafana.$INGRESS_HOST" "$GOMX_INGRESS_HOST")
 mkdir -p "$TLS_DIR"
 
 # Install the CA into the WSL trust stores. Needs sudo for the system store; harmless if repeated.
@@ -44,6 +46,15 @@ if kubectl version >/dev/null 2>&1 && mk status >/dev/null 2>&1; then
   kc create secret tls forum-tls --cert="$TLS_DIR/tls.crt" --key="$TLS_DIR/tls.key" \
     --dry-run=client -o yaml | kubectl apply -f - >/dev/null
   ok "Secret forum-tls created/updated in namespace $K8S_NAMESPACE"
+  # B's namespace needs its own copy (Secrets are namespaced); only once that namespace exists
+  # (kubectl apply -k gomx/deploy/k8s/bench creates it) — re-run this script after deploying B.
+  if kubectl get namespace "$GOMX_NAMESPACE" >/dev/null 2>&1; then
+    kubectl -n "$GOMX_NAMESPACE" create secret tls gomx-tls --cert="$TLS_DIR/tls.crt" --key="$TLS_DIR/tls.key" \
+      --dry-run=client -o yaml | kubectl apply -f - >/dev/null
+    ok "Secret gomx-tls created/updated in namespace $GOMX_NAMESPACE"
+  else
+    info "Namespace $GOMX_NAMESPACE absent — gomx-tls is created when scripts/gomx-bench-deploy.sh runs."
+  fi
 else
   info "No running cluster — deploy.sh will create the secret from k8s/ingress/tls/ later."
 fi

@@ -1,0 +1,8 @@
+# Day 0 runs with FIXED replicas on both sides (autoscaler noise out of the first numbers). Later classes
+# re-enable an identical HPA (1–3 @ 70 %, A's behaviour block) on both.
+$patch: delete
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gomx
+  namespace: gomx

@@ -91,3 +91,36 @@
   border-top: 1px solid var(--color-border-default);
   background: var(--color-neutral-900);
 }
+
+/* Phone layout (≤ 720 px): tighter chrome so the dialog's content keeps its width on a 412 px phone. */
+@media (max-width: 720px) {
+  .layer {
+    padding: 12px;
+  }
+
+  .modal {
+    max-height: calc(100vh - 24px);
+  }
+
+  .header {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .body {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .footer {
+    padding: 12px 16px;
+  }
+}
+
+/* Touch floor (coarse pointers / phone widths): the Close button measured 34 px. */
+@media (pointer: coarse), (max-width: 480px) {
+  .close {
+    width: 40px;
+    height: 40px;
+  }
+}

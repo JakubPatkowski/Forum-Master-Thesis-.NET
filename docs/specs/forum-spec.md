@@ -1,6 +1,7 @@
 # Forum A/B Shared Functional Specification
 
-> **STATUS: DRAFT — pending Hubert's review and sign-off.**
+> **STATUS: DRAFT — pending Hubert's review and sign-off.** §9 (protocol) and §10 (decisions) rewritten 2026-10-24 to
+> the implemented harness h4 / mix v2; the rest of the document is unchanged since 2026-07-18.
 > Drafted 2026-07-18 by the A side from a read-only audit of both repositories
 > (`forum-dotnet` @ branch `27-feat-phase-11---social`; `gomx` @ `eeca387`). This document is
 > cited across `forum-dotnet` (CLAUDE.md, several ADRs) as "the authoritative shared A/B
@@ -182,49 +183,93 @@ match.
 - PostgreSQL 18, MinIO pinned versions; broker/redis per side.
 - Rate limiters set to documented benchmark values (recorded in meta.json) on both sides.
 
-## 9. Measurement protocol
+## 9. Measurement protocol (binding version: harness h4 / mix v2, 2026-10-24)
 
-### 9.1 Profiles
-smoke (sanity, 5 VU/60 s) · demo (ramp to 80 VU, HPA showcase) · stress (ramp to 150+ VU
-until p95 journey > 500 ms — the H2 ceiling). Same ramps both sides; ≥3 repeats exploratory,
-≥N (TBD with supervisor; target 10+) for hypothesis-tested tables; interleaved A,B,A,B; one
-discarded warm-up each.
+> Rewritten 2026-10-24 from the proposal of 2026-07-18 to the protocol that is actually implemented and was used
+> for the v1 round (`thesis/results/rounds/20261018-0051-v1/`) and that the v2 round uses. The single source of the
+> mechanics is `thesis/results/AB-COMPARISON-v1.md` §3–§6 (environment, dataset, harness, invariants F1–F8,
+> deviation register); this section pins what both authors agree to measure and how.
 
-### 9.2 Units & thresholds
-Journeys/sec (not raw RPS); p95/p99 per journey; error rate <1%; zero-429 guard; WS receipt
-latency from write-ack to client receipt (measurement point per side documented).
+### 9.1 Environment and run isolation
+One minikube cluster (profile `forum`; 6 CPUs / 10 GiB; calico, ingress-nginx, metrics-server), A in namespace
+`forum-dotnet`, B in `gomx`, one shared ingress with TLS for both hosts (`forum.local`, `gomx.local`) and gzip at
+the ingress for both. Runs are **sequential**: the idle architecture's app is scaled to 0. The **common profile**
+is applied and verified by `scripts/lib-bench.sh` (`ab_check_profile`) before every run and a drift aborts the run:
+2 fixed app replicas without HPA, requests 250m/256Mi, limits 1 CPU/512 MiB, probe timeouts 5 s; PostgreSQL
+`postgres:18` (18.4 Debian) with `shared_buffers=256MB effective_cache_size=512MB max_connections=100`,
+250m/512Mi → 1 CPU/1 GiB; pool 30 per replica; tracing OFF; rate limiters neutralized and recorded (any 429
+invalidates the run). B-only flags in its bench overlay: `GOMX_SEED=bench`, `GOMX_COMPRESS=0`,
+`GOMX_NOTIFY_FRIENDS_ON_POST=0`, `GOMX_DB_MAX_CONNS=30`, `GOMX_CARD_PREVIEW_CHARS=300` (list cards carry the same
+300-character excerpt A's cards carry), OAuth mock off. Only A's monitoring stack runs; B's ServiceMonitor is
+applied to it. k6 v2.1.0 runs on the WSL host outside the cluster; its CPU/RSS is sampled and reported.
 
-### 9.3 Mix (proposal, from A's 9c profile)
-J1 30% · J2 20% · J6 10% · J7 2% · J3 10% · J4 5% (of which 3% with upload) · J5 12% ·
-J9 3% · remainder navigation; think 0.3–0.7 s; WS scenario parallel (20 demo / 40 stress VU).
+### 9.2 Journeys and mix v2
+One k6 entrypoint (`load/k6/main.js`) with one adapter per side (`targets/a.js`, `targets/b.js`). A journey is one
+user-visible action: on A the SPA's API calls, on B one HTML round trip. Weights (closed and open profiles alike):
+J1 space feed 30 (30 % also page 2 by cursor) · J2 thread open 20 · J5 reaction toggle 12 · J6 search 11 ·
+J3 comment 10 · nav list spaces 8 · J9 direct message 4 · J4 thread with a photo 3 · J7 profile 2; J8 = a parallel
+WebSocket scenario (hold 120 s, subscribe one public space on A / cookie socket on B) with a **receipt probe** every
+30 s (own comment → time to the matching push; received / late > 15 s / lost). Selection rules are layout-independent
+and identical on both sides (space: 50 % one of the three largest public spaces, 50 % uniform; thread: uniform over
+the whole public corpus; search word: uniform over the shared 300-word Zipf bank; comment body = `seeded` + 18 bank
+words). Reads are anonymous (variant `--auth-reads` sends the session on every read); writes use one of 200 seeded
+users per VU, logged in during k6 setup (setup is outside every measured window). Think time 0.3–0.7 s in closed
+profiles. A's adapter has an opt-in `REAL_SPA=1` mode that issues the real browser's cold-cache call set per page
+(deviation D1); the default remains the idealized client and both are reported.
 
-### 9.4 Run artifacts
-Per run: k6 summary JSON, meta.json (git SHA, image digest, seed counts, limiter values, VM
-sizing, k6 version), infra samples (HPA/`kubectl top`), Prometheus query snapshots.
-Layout: `thesis/results/{A,B}/<stamp>-<profile>/…` (A's existing layout; B mirrors — B-6).
+### 9.3 Profiles
+`smoke` (5 VU × 60 s, gate) · `warmup` (10 VU × 60 s, ~6 % writes, discarded before every measured run) ·
+`demo` (0→10→40→80 VU over 7 min + 20 WS VUs; H1 at moderate load) · `stress` (50→100→150 VU over 6.5 min + 40 WS;
+H1 near saturation, informational thresholds) · `capacity` (open model: 25, 50, 100, 150, 200, 300, 400, 500
+journeys/s, 15 s ramp + 45 s hold each, ≤ 300 VUs + 20 WS; H2) · `soak` (40 VU × 60 min; stability) · `spike`
+(10↔150 VU twice; recovery p95 vs baseline). Knee (H2) = first step with journey p95 > 500 ms, failures > 1 % or
+achieved < 95 % of offered; the sustained throughput is the highest step before it.
 
-### 9.5 Non-load metrics
-- Lighthouse: 2 pages (feed, thread), 3 runs, same budgets file on both.
-- Dev-loop: 10 runs each of clean build / incremental build / test wall-clock /
-  edit→running-change / cold start, same machine, same day; B's `reload-bench` JSON schema.
-- Trivy (pinned version) + SonarQube (one server) same-day on both repos.
-- Dependency counts: direct from manifests; transitive from lockfile/module graph; rules
-  documented in the results tables.
-- Desktop: installer size + process-tree RSS/CPU during a scripted 5-minute session.
+### 9.4 Procedure, repeats, statistics
+Per measured run: scale the other side to 0 → reseed the target (Benchmark seed) + `ANALYZE` + fresh pods →
+verify the profile → warm-up → measured run → idle window 20–50 s after k6 exits (standing cost) → validity checks
+(k6 exit, pod restarts, 429s, failure rate, profile check) → cool-down. Repeats are interleaved **ABBA**. Minimum
+repeats: demo ≥ 10, stress ≥ 3, capacity ≥ 3 (N for hypothesis-tested tables agreed with the supervisor; 10 is the
+working value). The repeat is the experimental unit: mean ± 95 % CI, Welch's t, exact Mann-Whitney U, Cliff's δ and
+Holm-adjusted verdicts (`scripts/ab_stats.py`) in every generated `REPORT.md`; n < 3 → no verdict. Variants are
+separate, labelled rounds: `--auth-reads` (D3), `--hpa` (identical HPA 1–3 @ 70 % on both, start at 1), `--gc-variant`
+(A workstation GC, B `GOMEMLIMIT=384MiB`), `--relay-poll-ms 500` (A outbox relay; D14), `--real-spa` (D1).
+Resilience: `scripts/ab-chaos.sh` (pod crash / pod delete / DB restart under demo load, ≥ 3 repeats per fault per
+side; failed requests, recovery time, probe loss).
 
-## 10. Open questions (blocking sign-off)
+### 9.5 Units and thresholds
+Journeys/s over the scenario window (never raw RPS); per-journey median/p95/p99 in ms; failed requests < 1 %;
+zero 429; CPU-ms per journey per pod class (app, DB, bus, storage, ingress; total and marginal = minus the idle
+window) and MiB working set from Prometheus over the exact window; KiB received per journey on the wire (gzip +
+TLS); WebSocket subscriptions, pushes, errors, receipt latency (write start → push) and received/late/lost shares.
 
-- **OQ-1** Comment deletion semantics: tombstone (A) vs cascade (B) — accept as documented
-  difference, or align? (A-side view: accept; it doesn't touch measured journeys.)
-- **OQ-2** Karma formula: pin exact definition (net reactions on live content) or accept
-  near-equivalence.
-- **OQ-3** Anonymous WS viewers in B: confirm and document.
-- **OQ-4** B's field-length limits: verify actual enforced values.
-- **OQ-5** Shared VM/minikube budget with both monitoring stacks.
-- **OQ-6** HPA targets: unify (recommended: one common CPU target) or record-and-justify.
-- **OQ-7** Social seed volumes (§7 friendships/DMs) — proposal needs B's ack; A must also
-  extend its bench seed (currently 0 social rows — recorded as blocked-on-Hubert in
-  `POST-9C-ROADMAP.md` Decision 3; this spec is the unblocking vehicle).
+### 9.6 Non-load metrics (same instrument, same day, both sides)
+Lighthouse on the benchmark deployment through the ingress (`scripts/lighthouse.sh --cluster`), feed + thread,
+mobile (Moto G class, slow-4G, 4× CPU) and desktop presets, 3 runs, median; RUM Web Vitals beacons on both; browser
+E2E suites (A: Playwright desktop + Pixel 7 emulation; B: Playwright incl. mobile projects). Static: trivy (one
+pinned binary, filesystem mode), cloc (core vs whole), container image and first-load asset sizes, dependency counts
+(direct from manifests, transitive from lockfiles/module graph), SonarQube (one server, generated code excluded),
+dev-loop timings (10 runs each of clean build / incremental build / test wall clock / edit-to-running change, same
+machine, same day; A `make reload-bench`, B `task reload-bench`). CI wall clock is reported descriptively only.
+
+### 9.7 Run artifacts
+`thesis/results/rounds/<stamp>-<label>/`: `round.json` (plan, variants, validity), `round-summary.json` (per-repeat
+values), `stats.json`, `REPORT.md`, and per run the k6 summary, per-journey JSON, Prometheus window metrics
+(`resources.json`), samples, events, profile check and `meta-{A,B}.json` (image tags + digests, git SHA/branch/dirty,
+env, resources, Postgres image/args, seed counts before and after). Chaos runs: `thesis/results/chaos/`; Lighthouse:
+`thesis/results/lighthouse-cluster-<date>/`; static: `thesis/results/static/<date>/`.
+
+## 10. Decisions on the former open questions
+
+| # | Question | Decision (2026-10-24) |
+|---|---|---|
+| OQ-1 | Comment deletion: tombstone (A) vs cascade (B) | Accepted as a documented difference; not on any measured path. |
+| OQ-2 | Karma formula | Both = net reactions on the user's live content (A `user_stats_v` = Σ reaction value; B `AuthorStats` = up-votes + comment likes); accepted as equivalent. |
+| OQ-3 | Anonymous WebSocket viewers in B | Kept (B's public broadcast model, deviation D-7). Since 2026-10-24 B delivers private-community comments to active members only (`broadcastComment` gate), so no private content reaches an outsider or anonymous socket. |
+| OQ-4 | Field limits | Benchmark payloads stay far inside both systems' limits (titles < 100 chars, comment bodies ≈ 18 words, thread bodies 120–320 words, one 256×256 PNG ≈ 262 KB); A enforces title ≤ 200 / body ≤ 40 000 / comment ≤ 4 000 / upload ≤ 5 MiB, B bounds uploads at its media limit (images 5 MB) — the remaining differences are disclosed, not normalized. |
+| OQ-5 | Shared VM budget with monitoring | One minikube profile (6 CPUs / 10 GiB) with A's monitoring stack only; B's ServiceMonitor is applied to it. |
+| OQ-6 | HPA targets | Main profile: 2 fixed replicas, no HPA, both sides. Scaling class measured as the `--hpa` variant with the identical HPA (1–3 replicas @ 70 % CPU) on both. |
+| OQ-7 | Social seed volumes | Both Benchmark seeds carry 2 400 accepted friendships (ring + chords 1/7/40), 80 pending requests (offset 13) and 2 000 direct messages over the ring pairs (A since 2026-10-24). |
 
 ## Sign-off
 

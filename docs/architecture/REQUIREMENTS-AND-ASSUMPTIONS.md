@@ -213,7 +213,7 @@ isolated runs. See `../../../docs/architecture/PROPOZYCJA-UJEDNOLICENIA-A-B.md` 
 
 ## 9. Deployment & data
 
-- **PostgreSQL 17**, one database `forum_net`, **one schema per module**, one migration Job.
+- **PostgreSQL 18**, one database `forum_net`, **one schema per module**, one migration Job.
 - **Pooled DbContext** + tuned Npgsql pool so `replicas × pool ≤ max_connections`.
 - **MinIO** for blobs (direct upload), **RabbitMQ** for the bus, all on k8s (minikube) with HPA, PDB,
   NetworkPolicies, securityContext (non-root, read-only rootfs, drop caps). Secrets via k8s Secret /

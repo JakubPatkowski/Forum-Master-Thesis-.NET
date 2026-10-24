@@ -1,0 +1,30 @@
+
+target=b  profile=demo  mix=v1  harness=h3-2026-10-17  base=https://gomx.local
+http_reqs=41829  p95=56ms  p99=123ms  failed=0.00%  (scenario 420s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200     20     19     23     25     28
+communities        3043      6      3     20     64    163
+space_page        12347     13      9     37     84    215
+space_feed         3704     13      9     35     86    187
+thread             8447      9      4     33     79    329
+search             4189     56     41    142    275    679
+profile             784     10      4     44     80    172
+comment_create     4081     12      5     46    113    270
+vote               4962     12      4     52    130    305
+setup                72      7      7      9     10     10
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         12347  29.40     12     53    111
+J2          8447  20.11      5     33     80
+J3          4081   9.72      5     47    113
+J5          4962  11.81      5     53    130
+J6          4189   9.97     41    142    275
+J7           784   1.87      5     44     80
+J8            60   0.14      0      0      0
+nav         3043   7.25      3     20     64
+
+ws: subscribed=80  notifications=81605  errors=0
+
+all thresholds passed
+
