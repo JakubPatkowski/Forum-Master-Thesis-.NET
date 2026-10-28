@@ -160,12 +160,23 @@ export function setup(baseUrl, poolSize, loginStaggerMs) {
   }
   // J9 peers: the session's accepted friends (the Benchmark seed mirrors B's ring + chords, so every bench user has
   // ~6) — the same per-session discovery B does from its /messages inbox, one setup-tagged call per pool member.
+  // D17 fix: filter out blocked accounts (bench_user_0013 through bench_user_0032 in the Benchmark seed) so J9
+  // never targets an inactive user (which causes a 404 in OpenDirectConversation).
   // A's privacy default lets anyone message anyone, so a friendless account (Development seed) falls back to the
   // next pool member instead of skipping J9 — recorded as a warning, never silent.
   let fallbacks = 0;
   for (let i = 0; i < sessions.length; i++) {
     const res = listFriends(baseUrl, sessions[i].auth, SETUP);
-    const peers = res.status === 200 ? (res.json('items') || []).map((f) => f.userId).filter(Boolean) : [];
+    const peers = res.status === 200
+      ? (res.json('items') || [])
+          .filter((f) => {
+            if (f.username && /^bench_user_00(1[3-9]|2[0-9]|3[0-2])$/.test(f.username)) {
+              return false;
+            }
+            return Boolean(f.userId);
+          })
+          .map((f) => f.userId)
+      : [];
     if (peers.length === 0) {
       fallbacks++;
       peers.push(sessions[(i + 1) % sessions.length].userId);

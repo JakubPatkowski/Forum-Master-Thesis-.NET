@@ -63,8 +63,8 @@ const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
 // Set BOOSTED=0 to force cold multi-page document reloads.
 export const BOOSTED = __ENV.BOOSTED !== '0' && __ENV.BOOSTED !== 'false';
 const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || 256);
-const J4_POLL_INTERVAL_S = Number(__ENV.J4_POLL_INTERVAL_S || 1); // upload.ts polls every 1 s
-const J4_POLL_MAX = Number(__ENV.J4_POLL_MAX || 30);
+const J4_POLL_INTERVAL_S = Number(__ENV.J4_POLL_INTERVAL_S || 0.15); // upload.ts adaptive polling starts at 150 ms (D12 fix)
+const J4_POLL_MAX = Number(__ENV.J4_POLL_MAX || 40);
 
 export const ENDPOINTS = ['login', 'communities', 'space_page', 'space_feed', 'thread', 'search', 'profile',
   'comment_create', 'vote', 'upload', 'upload_poll', 'thread_create', 'dm_send', 'probe_comment', 'ws', 'setup'];
@@ -246,8 +246,9 @@ function uploadImage(baseUrl, session, png) {
     return res.json('id'); // synchronous fallback (no River/S3 staging) — not the k8s path
   }
   const uploadId = res.json('upload_id');
+  let pollInterval = J4_POLL_INTERVAL_S;
   for (let i = 0; i < J4_POLL_MAX; i++) {
-    sleep(J4_POLL_INTERVAL_S);
+    sleep(pollInterval);
     const poll = http.get(`${baseUrl}/uploads/${uploadId}/status`, {
       ...noJar(), redirects: 0, tags: { endpoint: 'upload_poll' }, headers: { ...BROWSER_HEADERS, Cookie: session.auth },
     });
@@ -262,6 +263,7 @@ function uploadImage(baseUrl, session, png) {
       track({ status: 599 }, 'upload_poll'); // processing failed server-side — recorded as a failed check
       return null;
     }
+    pollInterval = Math.min(pollInterval * 1.5, 1.0);
   }
   track({ status: 598 }, 'upload_poll'); // never completed within the poll budget
   return null;

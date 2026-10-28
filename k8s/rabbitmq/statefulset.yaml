@@ -25,8 +25,8 @@ spec:
             - { name: prometheus, containerPort: 15692 }
           # check_port_connectivity = all listeners accept TCP (broker actually usable); status is the
           # cheaper liveness signal. Both are slow-ish CLI calls — generous timeouts, long periods.
-          readinessProbe: { exec: { command: ["rabbitmq-diagnostics", "check_port_connectivity"] }, initialDelaySeconds: 20, periodSeconds: 15, timeoutSeconds: 10 }
-          livenessProbe:  { exec: { command: ["rabbitmq-diagnostics", "status"] }, initialDelaySeconds: 60, periodSeconds: 30, timeoutSeconds: 15 }
+          readinessProbe: { exec: { command: ["rabbitmq-diagnostics", "check_port_connectivity"] }, initialDelaySeconds: 20, periodSeconds: 15, timeoutSeconds: 15 }
+          livenessProbe:  { exec: { command: ["rabbitmq-diagnostics", "status"] }, initialDelaySeconds: 60, periodSeconds: 30, timeoutSeconds: 30 }
           resources:
             requests: { cpu: "100m", memory: "256Mi" }
             limits:   { cpu: "500m", memory: "512Mi" }

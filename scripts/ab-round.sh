@@ -300,7 +300,7 @@ run_one() {
   fi
   python3 - "$run_dir/run.json" "$t" "$profile" "$k" "$pos" "$rc" "$started" "$finished" "$before" "$after" \
     "$restarts_before" "$restarts_after" "$profile_ok" "$resources_ok" <<'PY'
-import glob, json, sys
+import glob, json, statistics, sys
 out, t, profile, k, pos, rc, started, finished, before, after, rb, ra, profile_ok, resources_ok = sys.argv[1:15]
 def counts(s):
     v = s.split()
@@ -349,6 +349,25 @@ if resources_ok != "true":
     reasons.append("no resources.json (Prometheus window read failed) — H1 data missing")
 if profile_ok != "true":
     reasons.append("common-profile check failed (--allow-mismatch)")
+# Generator sanity gate (§11.2): k6 mean CPU <= 1 core (100%), peak <= 2 cores (200%)
+sfiles = sorted(glob.glob(f"{out.rsplit('/', 1)[0]}/samples-*.json"))
+if sfiles:
+    try:
+        samples = json.load(open(sfiles[-1]))
+        pts = [(s.get("epoch"), s.get("k6_cpu_ticks"), s.get("clk_tck") or 100) for s in samples]
+        pts = [p for p in pts if p[0] is not None and p[1] is not None]
+        pct = []
+        for (e0, t0, hz), (e1, t1, _) in zip(pts, pts[1:]):
+            if e1 > e0 and t1 >= t0:
+                pct.append((t1 - t0) / hz / (e1 - e0) * 100)
+        if pct:
+            k6_mean, k6_max = statistics.mean(pct), max(pct)
+            if k6_mean > 100:
+                reasons.append(f"generator saturated: k6 mean CPU {k6_mean:.1f}% > 100% (1 core)")
+            elif k6_max > 200:
+                reasons.append(f"generator spike: k6 peak CPU {k6_max:.1f}% > 200% (2 cores)")
+    except Exception:
+        pass
 json.dump({"target": t, "profile": profile, "repeat": int(k), "position_in_pair": int(pos),
            "started_epoch": int(started), "finished_epoch": int(finished),
            "seed_before": sb, "seed_after": sa, "write_check": write_check,
