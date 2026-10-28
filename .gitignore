@@ -73,3 +73,5 @@ thesis/results/**/*.report.json
 thesis/results/**/02-live-checks/raw/
 thesis/results/**/logs-round-window/
 thesis/results/**/logs-before-round/
+thesis/results/Archive.zip
+thesis/results/rounds/LATEST
