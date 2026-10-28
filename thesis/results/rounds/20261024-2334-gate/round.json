@@ -1,0 +1,20 @@
+{
+  "label": "gate",
+  "plan": "smoke:1",
+  "started_epoch": 1792877698.5547178,
+  "cooldown_s": 60,
+  "reseed_each_run": true,
+  "warmup_each_run": true,
+  "replicas": 2,
+  "mix_version": "v2",
+  "harness_version": "h6-2026-10-24",
+  "order": "ABBA (odd repeat: A then B; even: B then A)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "real_spa": false,
+    "k6_env": []
+  }
+}

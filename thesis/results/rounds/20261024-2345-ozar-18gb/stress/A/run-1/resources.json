@@ -1,0 +1,153 @@
+{
+  "target": "a",
+  "namespace": "forum-dotnet",
+  "window": {
+    "start_ms": 1792885952285,
+    "end_ms": 1792886342285,
+    "scenario_s": 390,
+    "setup_s": 75.767
+  },
+  "window_s": 390,
+  "http_journeys": 61934,
+  "pods": {
+    "backend-74fd5478b8-66tzt": {
+      "class": "app",
+      "cpu_core_s": 170.723,
+      "mem_avg_mib": 186.8,
+      "mem_max_mib": 206.3
+    },
+    "backend-74fd5478b8-cm7j2": {
+      "class": "app",
+      "cpu_core_s": 166.221,
+      "mem_avg_mib": 195.2,
+      "mem_max_mib": 225.2
+    },
+    "frontend-7cd4ff68fb-txv62": {
+      "class": "frontend",
+      "cpu_core_s": 0.159,
+      "mem_avg_mib": 54.1,
+      "mem_max_mib": 54.2
+    },
+    "minio-0": {
+      "class": "storage",
+      "cpu_core_s": 17.608,
+      "mem_avg_mib": 313.7,
+      "mem_max_mib": 335.2
+    },
+    "postgres-0": {
+      "class": "db",
+      "cpu_core_s": 259.791,
+      "mem_avg_mib": 348.3,
+      "mem_max_mib": 431.5
+    },
+    "rabbitmq-0": {
+      "class": "bus",
+      "cpu_core_s": 75.622,
+      "mem_avg_mib": 183.7,
+      "mem_max_mib": 236.3
+    }
+  },
+  "classes": {
+    "app": {
+      "pods": 2,
+      "cpu_core_s": 336.944,
+      "mem_avg_mib": 382.0,
+      "mem_max_mib": 431.5,
+      "cpu_ms_per_journey": 5.4404,
+      "avg_cores": 0.864,
+      "idle_avg_cores": 0.0209,
+      "marginal_cpu_ms_per_journey": 5.3088
+    },
+    "frontend": {
+      "pods": 1,
+      "cpu_core_s": 0.159,
+      "mem_avg_mib": 54.1,
+      "mem_max_mib": 54.2,
+      "cpu_ms_per_journey": 0.0026,
+      "avg_cores": 0.0004,
+      "idle_avg_cores": 0.0003,
+      "marginal_cpu_ms_per_journey": 0.0007
+    },
+    "storage": {
+      "pods": 1,
+      "cpu_core_s": 17.608,
+      "mem_avg_mib": 313.7,
+      "mem_max_mib": 335.2,
+      "cpu_ms_per_journey": 0.2843,
+      "avg_cores": 0.0451,
+      "idle_avg_cores": 0.0004,
+      "marginal_cpu_ms_per_journey": 0.2818
+    },
+    "db": {
+      "pods": 1,
+      "cpu_core_s": 259.791,
+      "mem_avg_mib": 348.3,
+      "mem_max_mib": 431.5,
+      "cpu_ms_per_journey": 4.1946,
+      "avg_cores": 0.6661,
+      "idle_avg_cores": 0.0116,
+      "marginal_cpu_ms_per_journey": 4.1216
+    },
+    "bus": {
+      "pods": 1,
+      "cpu_core_s": 75.622,
+      "mem_avg_mib": 183.7,
+      "mem_max_mib": 236.3,
+      "cpu_ms_per_journey": 1.221,
+      "avg_cores": 0.1939,
+      "idle_avg_cores": 0.0497,
+      "marginal_cpu_ms_per_journey": 0.908
+    }
+  },
+  "namespace_total": {
+    "pods": 6,
+    "cpu_core_s": 690.124,
+    "mem_avg_mib": 1281.8,
+    "mem_max_mib": 1488.7,
+    "cpu_ms_per_journey": 11.1429,
+    "avg_cores": 1.7695,
+    "idle_avg_cores": 0.0829,
+    "marginal_cpu_ms_per_journey": 10.6209
+  },
+  "ingress_nginx": {
+    "cpu_core_s": 85.94,
+    "cpu_ms_per_journey": 1.3876
+  },
+  "node_busy_cores_avg": 12.237,
+  "idle": {
+    "start_ms": 1792886392000.0,
+    "end_ms": 1792886422000.0,
+    "window_s": 30,
+    "classes": {
+      "bus": {
+        "pods": 1,
+        "cpu_core_s": 1.49,
+        "avg_cores": 0.0497
+      },
+      "db": {
+        "pods": 1,
+        "cpu_core_s": 0.347,
+        "avg_cores": 0.0116
+      },
+      "storage": {
+        "pods": 1,
+        "cpu_core_s": 0.013,
+        "avg_cores": 0.0004
+      },
+      "frontend": {
+        "pods": 1,
+        "cpu_core_s": 0.01,
+        "avg_cores": 0.0003
+      },
+      "app": {
+        "pods": 2,
+        "cpu_core_s": 0.628,
+        "avg_cores": 0.0209
+      }
+    },
+    "namespace_avg_cores": 0.0829,
+    "ingress_nginx_avg_cores": 0.0016
+  },
+  "steps": null,
+  "queried_at": 1792886467.0050373
+}

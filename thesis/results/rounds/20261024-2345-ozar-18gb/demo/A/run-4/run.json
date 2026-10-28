@@ -1,0 +1,41 @@
+{
+  "target": "a",
+  "profile": "demo",
+  "repeat": 4,
+  "position_in_pair": 2,
+  "started_epoch": 1792883662,
+  "finished_epoch": 1792884189,
+  "seed_before": {
+    "users": 800,
+    "threads": 1604,
+    "comments": 9043,
+    "reactions": 15029,
+    "messages": 2012
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 2726,
+    "comments": 12974,
+    "reactions": 19159,
+    "messages": 3362
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 3931,
+      "new_rows": 3931
+    },
+    "threads": {
+      "accepted": 1122,
+      "new_rows": 1122
+    },
+    "messages": {
+      "accepted": 1350,
+      "new_rows": 1350
+    }
+  },
+  "checks_failed": 84,
+  "checks_failed_pct": 0.111,
+  "pod_restarts_during_run": [],
+  "valid": true,
+  "invalid_reasons": []
+}

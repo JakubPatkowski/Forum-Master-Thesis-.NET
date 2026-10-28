@@ -1,0 +1,97 @@
+{
+  "architecture": "A (React SPA + .NET 10 modular monolith)",
+  "target": "a",
+  "git_sha": "64cd5e2ad85af0004eb8fc17ff9174a0b9d44039",
+  "git_branch": "31-feat-phase-13---ab-benchmark",
+  "git_dirty": true,
+  "harness_git_sha": "64cd5e2ad85af0004eb8fc17ff9174a0b9d44039",
+  "harness_dirty": false,
+  "deployed_image": "forum-dotnet-api:git-64cd5e2",
+  "image_digest": "sha256:9249f703c7c54281a369ca68ce9e53a3b07bf84007381b4d711c79eb7bced332",
+  "replicas": 2,
+  "resources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "250m",
+      "memory": "256Mi"
+    }
+  },
+  "probes": {
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/health/live",
+        "port": 8080,
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 10,
+      "periodSeconds": 20,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    },
+    "readinessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/health/ready",
+        "port": 8080,
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 5,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    }
+  },
+  "env": {
+    "Observability__TracingEnabled": "false",
+    "RateLimiting__Global__PermitLimit": "1000000",
+    "RateLimiting__Auth__PermitLimit": "1000000"
+  },
+  "postgres": {
+    "image": "postgres:18",
+    "args": [
+      "-c",
+      "shared_buffers=256MB",
+      "-c",
+      "effective_cache_size=512MB",
+      "-c",
+      "max_connections=100"
+    ],
+    "resources": {
+      "limits": {
+        "cpu": "1",
+        "memory": "1Gi"
+      },
+      "requests": {
+        "cpu": "250m",
+        "memory": "512Mi"
+      }
+    }
+  },
+  "seed_counts": {
+    "users": 800,
+    "threads": 1600,
+    "comments": 9000,
+    "reactions": 15000,
+    "messages": 2000
+  },
+  "k6_version": "k6.bin v2.0.0 (commit/8c3be52cc1, go1.26.3, linux/amd64)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "real_spa": false,
+    "hpa_spec": []
+  },
+  "node": {
+    "kubectl_nodes": "forum   Ready   control-plane   45m   v1.35.1   192.168.49.2   <none>   Debian GNU/Linux 12 (bookworm)   7.2.9-arch1-1   containerd://2.2.1",
+    "allocatable": "{\"cpu\":\"16\",\"hugepages-1Gi\":\"0\",\"hugepages-2Mi\":\"0\",\"memory\":\"28403020Ki\",\"pods\":\"110\"}",
+    "wsl_kernel": "7.2.9-arch1-1",
+    "wsl_mem_mb": "27737",
+    "host_cpus": "16"
+  }
+}

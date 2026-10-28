@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 2/2 valid",
+  "plan": "smoke:1",
+  "current_run": "smoke/B/run-1",
+  "runs_done": 2,
+  "runs_total": 2,
+  "runs_valid": 2,
+  "round_dir": "/home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261024-2334-gate",
+  "pid": 171835,
+  "updated_epoch": 1792878323,
+  "heartbeat_epoch": 1792878323,
+  "updated": "2026-10-24 23:45:23"
+}
