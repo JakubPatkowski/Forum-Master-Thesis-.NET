@@ -194,6 +194,8 @@ def fig_cpu_by_layer(summary: dict, out: str) -> None:
     a, b = summary.get("demo/a"), summary.get("demo/b")
     if not a or not b:
         return
+    na, nb = a.get("runs", 5), b.get("runs", 5)
+    n_str = f"N = {na}" if na == nb else f"N = {na}/{nb}"
     keys = [
         ("app_cpu_ms_per_journey", "aplikacja"),
         ("db_cpu_ms_per_journey", "baza danych"),
@@ -215,7 +217,7 @@ def fig_cpu_by_layer(summary: dict, out: str) -> None:
     ax.set_xticks(list(x))
     ax.set_xticklabels([lbl for _, lbl in keys], rotation=25, ha="right")
     ax.set_ylabel("czas CPU na podróż [ms]")
-    ax.set_title("CPU na obsłużoną podróż według warstwy (demo, N = 5)")
+    ax.set_title(f"CPU na obsłużoną podróż według warstwy (demo, {n_str})")
     ax.legend()
     fig.tight_layout()
     save(
@@ -223,9 +225,9 @@ def fig_cpu_by_layer(summary: dict, out: str) -> None:
         out,
         "cpu-per-journey-by-layer-demo",
         "round-summary.json → summary.demo/{a,b}.resources.*_cpu_ms_per_journey",
-        "Czas CPU zużyty na jedną obsłużoną podróż [ms], osobno dla warstwy aplikacji, bazy danych, szyny komunikatów, "
-        "współdzielonego ingressu oraz łącznie dla całej przestrzeni nazw (całkowity i marginalny, po odjęciu kosztu spoczynku); "
-        "profil demo, średnia z 5 powtórzeń, słupki błędu = 95 % CI.",
+        f"Czas CPU zużyty na jedną obsłużoną podróż [ms], osobno dla warstwy aplikacji, bazy danych, szyny komunikatów, "
+        f"współdzielonego ingressu oraz łącznie dla całej przestrzeni nazw (całkowity i marginalny, po odjęciu kosztu spoczynku); "
+        f"profil demo, średnia z {n_str} powtórzeń, słupki błędu = 95 % CI.",
     )
 
     mkeys = [
@@ -245,7 +247,7 @@ def fig_cpu_by_layer(summary: dict, out: str) -> None:
     ax.set_xticks(list(x))
     ax.set_xticklabels([lbl for _, lbl in mkeys], rotation=20, ha="right")
     ax.set_ylabel("średnie zużycie pamięci (working set) [MiB]")
-    ax.set_title("Pamięć według warstwy (demo, N = 5)")
+    ax.set_title(f"Pamięć według warstwy (demo, {n_str})")
     ax.legend()
     fig.tight_layout()
     save(
@@ -298,8 +300,11 @@ def fig_repeats(summary: dict, stats: dict | None, out: str) -> None:
             ttl += f"   —   Welch p {fp(p['welch_p'])}, Mann-Whitney p {fp(p['mw_p'])}, δ Cliffa = {p['cliffs_delta']:+.2f}"
         ax.set_title(ttl, loc="left", fontsize=9.5)
         ax.grid(axis="y", visible=False)
+    na = len(rows[0][1]["values"]) if rows else a.get("runs", 5)
+    nb = len(rows[0][2]["values"]) if rows else b.get("runs", 5)
+    n_str = f"N = {na}" if na == nb else f"N = {na}/{nb}"
     fig.suptitle(
-        "Każde powtórzenie osobno (demo, N = 5 na stronę): A = niebieskie kółka, B = pomarańczowe kwadraty; kreska = średnia",
+        f"Każde powtórzenie osobno (demo, {n_str} na stronę): A = niebieskie kółka, B = pomarańczowe kwadraty; kreska = średnia",
         fontsize=10.5, x=0.02, ha="left",
     )
     fig.tight_layout()
