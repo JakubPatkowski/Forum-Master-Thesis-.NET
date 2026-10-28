@@ -6,6 +6,7 @@ set -euo pipefail
 # --- Paths -------------------------------------------------------------------
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$LIB_DIR/.." && pwd)"
+export PATH="$HOME/.local/bin:$PATH"
 
 # --- Pretty logging ----------------------------------------------------------
 if [[ -t 1 ]]; then

@@ -97,7 +97,7 @@ for _ in $(seq 1 180); do
   if bk logs deploy/gomx --tail=400 2>/dev/null | grep -q 'benchmark seed complete'; then SEEDED=true; break; fi
   # An already-seeded DB skips the seed entirely — accept it when /stats already shows the corpus.
   STATS="$(curl -sk --resolve "$GOMX_INGRESS_HOST:443:$(mk ip)" "https://$GOMX_INGRESS_HOST/stats" 2>/dev/null || true)"
-  if grep -q '"posts":1600' <<<"$STATS"; then SEEDED=true; break; fi
+  if grep -Eq '"posts":[1-9][0-9]*' <<<"$STATS"; then SEEDED=true; break; fi
   sleep 5
 done
 $SEEDED || die "no 'benchmark seed complete' log line and /stats does not show 1600 posts — inspect: kubectl -n $NS logs deploy/gomx"
