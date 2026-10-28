@@ -32,7 +32,7 @@ import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
 
-import { commentBody } from './lib/assets.js';
+import { commentBody, makePng } from './lib/assets.js';
 import * as targetA from './targets/a.js';
 import * as targetB from './targets/b.js';
 
@@ -427,7 +427,9 @@ export function setup() {
   if ((__ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true') && TARGET !== 'a') {
     console.warn('REAL_SPA only changes target a (B journeys are full pages already) — ignored and recorded as off.');
   }
-  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}${REAL_SPA ? ` [REAL_SPA batchPerHost=${REAL_SPA_BATCH_PER_HOST}]` : ''}`);
+  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}${REAL_SPA ? ` [REAL_SPA batchPerHost=${REAL_SPA_BATCH_PER_HOST}]` : ''}${TARGET === 'b' ? (target.BOOSTED ? ' [BOOSTED]' : ' [FULL_PAGE]') : ''}`);
+  // Pre-warm the J4 PNG template during setup outside the measured window
+  makePng(Number(__ENV.J4_IMAGE_PX || 256), Number(__ENV.J4_IMAGE_PX || 256), Math.random);
   // The measured window starts HERE: resources and journeys/s exclude the setup phase (200 logins = Argon2id
   // CPU on A vs PBKDF2 on B — Day-0 averaged it into both numbers).
   data.setupEndedAtMs = Date.now();
@@ -607,7 +609,7 @@ export function handleSummary(data) {
   const lines = [];
   const setupEndedAtMs = data.setup_data ? data.setup_data.setupEndedAtMs : null;
   lines.push(`\ntarget=${TARGET}  profile=${PROFILE}  mix=${MIX_VERSION}  harness=${HARNESS_VERSION}  base=${BASE_URL}` +
-    `${AUTH_READS ? '  reads=signed-in' : '  reads=anonymous'}${REAL_SPA ? '  client=real-spa(cold-cache)' : ''}`);
+    `${AUTH_READS ? '  reads=signed-in' : '  reads=anonymous'}${REAL_SPA ? '  client=real-spa(cold-cache)' : ''}${TARGET === 'b' ? (target.BOOSTED ? '  htmx=boosted' : '  htmx=full-page') : ''}`);
 
   const totals = data.metrics['http_req_duration{scenario:http}'] || data.metrics.http_req_duration;
   const failed = data.metrics['http_req_failed{scenario:http}'] || data.metrics.http_req_failed;
@@ -751,6 +753,7 @@ export function handleSummary(data) {
     target: TARGET, profile: PROFILE, mix_version: MIX_VERSION, harness_version: HARNESS_VERSION,
     variant: {
       auth_reads: AUTH_READS, real_spa: REAL_SPA, real_spa_batch_per_host: REAL_SPA ? REAL_SPA_BATCH_PER_HOST : null,
+      boosted: TARGET === 'b' ? Boolean(target.BOOSTED) : null,
       ws_probe_interval_ms: WS_PROBE ? WS_PROBE.intervalMs : null,
       ws_probe_timeout_ms: WS_PROBE ? WS_PROBE.timeoutMs : null, ws_hold_ms: HOLD_MS,
       j4_image_px: Number(__ENV.J4_IMAGE_PX || 256), soak_minutes: PROFILE === 'soak' ? SOAK_MINUTES : null,

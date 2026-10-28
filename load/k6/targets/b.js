@@ -55,6 +55,13 @@ export const DEFAULT_BASE_URL = 'https://gomx.local';
 export const SEARCH_WORDS = SHARED_WORDS;
 
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
+// BOOSTED (HTMX hx-boost navigation): When enabled (default: true for gomx), in-app page navigations
+// (J1, J2, J6, J7, nav) send 'HX-Request: true' and 'HX-Boosted: true'. Gomx responds with BoostedPage
+// (only <title> and <main id="page"> content), skipping the persistent outer shell (header, sidebar, modals)
+// and bypassing the withShell database queries (PostableCommunities, TotalUnreadDMs, UnreadCount).
+// This reflects idiomatic HTMX user navigation in the browser and matches Target A's mounted-shell assumption.
+// Set BOOSTED=0 to force cold multi-page document reloads.
+export const BOOSTED = __ENV.BOOSTED !== '0' && __ENV.BOOSTED !== 'false';
 const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || 256);
 const J4_POLL_INTERVAL_S = Number(__ENV.J4_POLL_INTERVAL_S || 1); // upload.ts polls every 1 s
 const J4_POLL_MAX = Number(__ENV.J4_POLL_MAX || 30);
@@ -87,11 +94,14 @@ export function postableSlug(userIndex) {
 /** A throwaway jar per request: nothing replayed in, received cookies discarded. */
 const noJar = () => ({ jar: new http.CookieJar() });
 
-/** Anonymous GET by default; under AUTH_READS the VU's session cookie rides along (signed-in page). */
-function get(baseUrl, path, endpoint, { keepBody = false, session = null } = {}) {
+/** Anonymous GET by default; under AUTH_READS the VU's session cookie rides along (signed-in page).
+ * When boosted is true (and BOOSTED is active), sends HX-Request: true and HX-Boosted: true to simulate
+ * in-app HTMX navigation (yielding BoostedPage, skipping the persistent shell and withShell queries). */
+function get(baseUrl, path, endpoint, { keepBody = false, session = null, boosted = false } = {}) {
   const auth = session && (AUTH_READS || endpoint === 'setup') ? { Cookie: session.auth } : {};
+  const boost = boosted && BOOSTED && endpoint !== 'setup' ? { 'HX-Request': 'true', 'HX-Boosted': 'true' } : {};
   return http.get(`${baseUrl}${path}`, {
-    ...noJar(), ...(keepBody ? {} : DISCARD), redirects: 0, tags: { endpoint }, headers: { ...BROWSER_HEADERS, ...auth },
+    ...noJar(), ...(keepBody ? {} : DISCARD), redirects: 0, tags: { endpoint }, headers: { ...BROWSER_HEADERS, ...auth, ...boost },
   });
 }
 
@@ -262,11 +272,11 @@ export const journeys = {
   J1(baseUrl, data, session, pick) {
     const space = pick.space(data);
     const follow = Math.random() < 0.3;
-    const first = get(baseUrl, `/c/${space.slug}`, 'space_page', { keepBody: follow, session });
+    const first = get(baseUrl, `/c/${space.slug}`, 'space_page', { keepBody: follow, session, boosted: true });
     if (track(first, 'space_page') && follow) {
       const m = first.body.match(SENTINEL);
       if (m) {
-        track(get(baseUrl, unescapeHtml(m[1]), 'space_feed', { session }), 'space_feed');
+        track(get(baseUrl, unescapeHtml(m[1]), 'space_feed', { session, boosted: true }), 'space_feed');
       }
     }
   },
@@ -274,7 +284,7 @@ export const journeys = {
   /** J2 — thread page (whole comment tree server-rendered). */
   J2(baseUrl, data, session, pick) {
     const { thread } = pick.thread(data);
-    track(get(baseUrl, `/thread/${thread.id}`, 'thread', { session }), 'thread');
+    track(get(baseUrl, `/thread/${thread.id}`, 'thread', { session, boosted: true }), 'thread');
   },
 
   /** J3 — top-level comment; 303 whose Location carries the new comment id. */
@@ -315,13 +325,13 @@ export const journeys = {
 
   /** J6 — search page. */
   J6(baseUrl, _data, session, pick) {
-    track(get(baseUrl, `/search?q=${encodeURIComponent(pick.word())}`, 'search', { session }), 'search');
+    track(get(baseUrl, `/search?q=${encodeURIComponent(pick.word())}`, 'search', { session, boosted: true }), 'search');
   },
 
   /** J7 — public profile of a thread author. */
   J7(baseUrl, data, session, pick) {
     const { thread } = pick.thread(data);
-    track(get(baseUrl, `/u/${thread.ownerId}`, 'profile', { session }), 'profile');
+    track(get(baseUrl, `/u/${thread.ownerId}`, 'profile', { session, boosted: true }), 'profile');
   },
 
   /**
@@ -342,7 +352,7 @@ export const journeys = {
 
   /** nav — list spaces. */
   nav(baseUrl, _data, session) {
-    track(get(baseUrl, '/communities', 'communities', { session }), 'communities');
+    track(get(baseUrl, '/communities', 'communities', { session, boosted: true }), 'communities');
   },
 };
 

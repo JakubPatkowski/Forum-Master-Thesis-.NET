@@ -151,10 +151,15 @@ timeout --kill-after=30 "$K6_TIMEOUT_S" k6 run --quiet ${K6_OUT:+--out "$K6_OUT"
   "${K6_EXTRA[@]}" \
   "$REPO_ROOT/load/k6/main.js" >"$RAW_OUT" &
 WRAP_PID=$!
-# The sampler wants k6's OWN pid (load-generator CPU/RSS), which is timeout's child.
+# The sampler wants k6's OWN pid (load-generator CPU/RSS), which is timeout's child (or grandchild via wrapper/k6.bin).
 K6_PID=""
 for _ in $(seq 1 50); do
   K6_PID="$(pgrep -P "$WRAP_PID" -x k6 2>/dev/null | head -1 || true)"
+  [[ -z "$K6_PID" ]] && K6_PID="$(pgrep -P "$WRAP_PID" -x k6.bin 2>/dev/null | head -1 || true)"
+  if [[ -z "$K6_PID" ]]; then
+    K6_PID="$(pgrep -P "$WRAP_PID" 2>/dev/null | xargs -r -n1 pgrep -P 2>/dev/null | head -1 || true)"
+  fi
+  [[ -z "$K6_PID" ]] && K6_PID="$(pgrep -x k6.bin 2>/dev/null | head -1 || true)"
   [[ -n "$K6_PID" ]] && break
   sleep 0.1
 done

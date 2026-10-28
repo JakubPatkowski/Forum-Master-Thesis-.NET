@@ -145,12 +145,16 @@ export function threadTitle(rng) {
   return `Load test: ${a} ${b} ${Math.floor(rng() * 1_000_000)}`;
 }
 
-// --- PNG generator for the J4 image arm (harness h4) -----------------------------------------------------------
-// A real W×H RGBA PNG with RANDOM pixels: the IDAT is a zlib stream of stored (uncompressed) deflate blocks, so no
+// --- PNG generator for the J4 image arm (harness h4/h6) -----------------------------------------------------------
+// A real W×H RGBA PNG: the IDAT is a zlib stream of stored (uncompressed) deflate blocks, so no
 // compression library is needed and the file weighs ≈ W×H×4 bytes — a small-photo-sized upload instead of the
 // 68-byte 1×1 (which B would also de-duplicate by SHA-256 after the first upload and skip the object store). Both
 // targets decode it for real: A's ImageProbe reads the IHDR, B's media worker decodes the whole image for its
-// thumbnail. CRC-32 per chunk and Adler-32 over the raw data are computed here.
+// thumbnail.
+//
+// Harness h6+: The heavy uncompressed pixel buffer is built once per VU (cached in runtime memory), and every
+// subsequent upload appends a unique tEXt chunk before IEND. This ensures a distinct SHA-256 digest on every upload
+// (avoiding server-side deduplication) while eliminating the ~600 ms k6 CPU burn in JavaScript per J4 journey.
 const CRC_TABLE = (() => {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
@@ -197,8 +201,10 @@ function pngChunk(type, data) {
   return out;
 }
 
-/** Returns { bytes: ArrayBuffer, size } — a valid RGBA PNG of width×height random pixels (xorshift32 seeded from rng). */
-export function makePng(width, height, rng) {
+let pngBaseCache = null;
+let uploadNonceSeq = 1;
+
+function buildBasePng(width, height, rng) {
   const stride = 1 + width * 4; // filter byte + RGBA
   const raw = new Uint8Array(stride * height);
   let x = (Math.floor(rng() * 0xffffffff) >>> 0) || 0x9e3779b9;
@@ -239,5 +245,44 @@ export function makePng(width, height, rng) {
     out.set(part, o);
     o += part.length;
   }
-  return { bytes: out.buffer, size };
+  return { width, height, bytes: out };
+}
+
+/**
+ * Returns { bytes: ArrayBuffer, size } — a valid RGBA PNG of width×height.
+ * Uses cached base image buffer and stamps a unique tEXt chunk per call for instant (<0.1 ms) generation.
+ */
+export function makePng(width, height, rng) {
+  if (!pngBaseCache || pngBaseCache.width !== width || pngBaseCache.height !== height) {
+    pngBaseCache = buildBasePng(width, height, rng);
+  }
+  const base = pngBaseCache.bytes;
+  const iendOffset = base.length - 12;
+
+  const seqStr = String(uploadNonceSeq++);
+  const randStr = String(Math.floor(rng() * 10000000));
+  const commentStr = `Comment\0bench-${seqStr}-${randStr}`;
+  const textBytes = new Uint8Array(commentStr.length);
+  for (let i = 0; i < commentStr.length; i++) {
+    textBytes[i] = commentStr.charCodeAt(i);
+  }
+
+  const typeAndData = new Uint8Array(4 + textBytes.length);
+  typeAndData[0] = 116; typeAndData[1] = 69; typeAndData[2] = 88; typeAndData[3] = 116; // "tEXt"
+  typeAndData.set(textBytes, 4);
+
+  const crc = crc32(typeAndData);
+  const chunkLen = 4 + 4 + textBytes.length + 4;
+  const chunk = new Uint8Array(chunkLen);
+  chunk.set(be32(textBytes.length), 0);
+  chunk[4] = 116; chunk[5] = 69; chunk[6] = 88; chunk[7] = 116;
+  chunk.set(textBytes, 8);
+  chunk.set(be32(crc), 8 + textBytes.length);
+
+  const out = new Uint8Array(base.length + chunkLen);
+  out.set(base.subarray(0, iendOffset), 0);
+  out.set(chunk, iendOffset);
+  out.set(base.subarray(iendOffset), iendOffset + chunkLen);
+
+  return { bytes: out.buffer, size: out.length };
 }

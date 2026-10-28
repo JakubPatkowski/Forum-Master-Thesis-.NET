@@ -40,6 +40,7 @@ import { track } from '../lib/track.js';
 export const NAME = 'a';
 export const DEFAULT_BASE_URL = 'https://forum.local';
 export const SEARCH_WORDS = SHARED_WORDS; // the word bank BOTH seeders draw from (identical list on B)
+export const BOOSTED = false;
 
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
 // Read journeys replay the real SPA pages' cold-cache waterfalls (deviation D1) — opt-in, see the `spa` section.
