@@ -1,0 +1,20 @@
+  ok    app replicas = 2 (want 2, fixed)
+  ok    no HorizontalPodAutoscaler in the namespace
+  ok    app requests {'cpu': '250m', 'memory': '256Mi'} (want cpu 250m, memory 256Mi)
+  ok    app limits {'cpu': '1', 'memory': '512Mi'} (want cpu 1, memory 512Mi)
+  ok    app livenessProbe.timeoutSeconds = 5 (want 5)
+  ok    app readinessProbe.timeoutSeconds = 5 (want 5)
+  ok    default GC policy (GOMEMLIMIT unset, found None)
+  ok    GOMX_SEED = bench (want bench)
+  ok    GOMX_AUTH_RATELIMIT = 0 (want 0)
+  ok    GOMX_COMPRESS = 0 (want 0)
+  ok    GOMX_NOTIFY_FRIENDS_ON_POST = 0 (want 0)
+  ok    GOMX_DB_MAX_CONNS = 30 (want 30)
+  ok    GOMX_CARD_PREVIEW_CHARS = 300 (want 300)
+  ok    tracing off (OTEL_EXPORTER_OTLP_ENDPOINT=None)
+  ok    postgres image = docker.io/library/postgres:18 (want postgres:18, Debian — same on both)
+  ok    postgres arg shared_buffers=256MB
+  ok    postgres arg effective_cache_size=512MB
+  ok    postgres arg max_connections=100
+  ok    postgres requests {'cpu': '250m', 'memory': '512Mi'} (want 250m/512Mi)
+  ok    postgres limits {'cpu': '1', 'memory': '1Gi'} (want 1/1Gi)

@@ -1,0 +1,286 @@
+{
+  "target": "a",
+  "namespace": "forum-dotnet",
+  "window": {
+    "start_ms": 1793255019649,
+    "end_ms": 1793255679649,
+    "scenario_s": 660,
+    "setup_s": 117.668
+  },
+  "window_s": 660,
+  "http_journeys": 130530,
+  "pods": {
+    "backend-579b58979f-pb2n8": {
+      "class": "app",
+      "cpu_core_s": 286.07,
+      "mem_avg_mib": 221.0,
+      "mem_max_mib": 268.5
+    },
+    "backend-579b58979f-qw97c": {
+      "class": "app",
+      "cpu_core_s": 285.635,
+      "mem_avg_mib": 200.1,
+      "mem_max_mib": 255.1
+    },
+    "frontend-7cd4ff68fb-txv62": {
+      "class": "frontend",
+      "cpu_core_s": 0.247,
+      "mem_avg_mib": 59.9,
+      "mem_max_mib": 60.1
+    },
+    "minio-0": {
+      "class": "storage",
+      "cpu_core_s": 23.649,
+      "mem_avg_mib": 371.8,
+      "mem_max_mib": 401.5
+    },
+    "postgres-0": {
+      "class": "db",
+      "cpu_core_s": 424.0,
+      "mem_avg_mib": 374.8,
+      "mem_max_mib": 509.7
+    },
+    "rabbitmq-0": {
+      "class": "bus",
+      "cpu_core_s": 86.043,
+      "mem_avg_mib": 168.6,
+      "mem_max_mib": 227.0
+    }
+  },
+  "classes": {
+    "app": {
+      "pods": 2,
+      "cpu_core_s": 571.705,
+      "mem_avg_mib": 421.1,
+      "mem_max_mib": 523.6,
+      "cpu_ms_per_journey": 4.3799,
+      "avg_cores": 0.8662,
+      "idle_avg_cores": 0.0436,
+      "marginal_cpu_ms_per_journey": 4.1594
+    },
+    "frontend": {
+      "pods": 1,
+      "cpu_core_s": 0.247,
+      "mem_avg_mib": 59.9,
+      "mem_max_mib": 60.1,
+      "cpu_ms_per_journey": 0.0019,
+      "avg_cores": 0.0004,
+      "idle_avg_cores": 0.0002,
+      "marginal_cpu_ms_per_journey": 0.0009
+    },
+    "storage": {
+      "pods": 1,
+      "cpu_core_s": 23.649,
+      "mem_avg_mib": 371.8,
+      "mem_max_mib": 401.5,
+      "cpu_ms_per_journey": 0.1812,
+      "avg_cores": 0.0358,
+      "idle_avg_cores": 0.0,
+      "marginal_cpu_ms_per_journey": 0.1812
+    },
+    "db": {
+      "pods": 1,
+      "cpu_core_s": 424.0,
+      "mem_avg_mib": 374.8,
+      "mem_max_mib": 509.7,
+      "cpu_ms_per_journey": 3.2483,
+      "avg_cores": 0.6424,
+      "idle_avg_cores": 0.0069,
+      "marginal_cpu_ms_per_journey": 3.2134
+    },
+    "bus": {
+      "pods": 1,
+      "cpu_core_s": 86.043,
+      "mem_avg_mib": 168.6,
+      "mem_max_mib": 227.0,
+      "cpu_ms_per_journey": 0.6592,
+      "avg_cores": 0.1304,
+      "idle_avg_cores": 0.0667,
+      "marginal_cpu_ms_per_journey": 0.3219
+    }
+  },
+  "namespace_total": {
+    "pods": 6,
+    "cpu_core_s": 1105.644,
+    "mem_avg_mib": 1396.2,
+    "mem_max_mib": 1721.9,
+    "cpu_ms_per_journey": 8.4704,
+    "avg_cores": 1.6752,
+    "idle_avg_cores": 0.1174,
+    "marginal_cpu_ms_per_journey": 7.8768
+  },
+  "ingress_nginx": {
+    "cpu_core_s": 142.575,
+    "cpu_ms_per_journey": 1.0923
+  },
+  "node_busy_cores_avg": 6.069,
+  "idle": {
+    "start_ms": 1793255730000.0,
+    "end_ms": 1793255760000.0,
+    "window_s": 30,
+    "classes": {
+      "bus": {
+        "pods": 1,
+        "cpu_core_s": 2.001,
+        "avg_cores": 0.0667
+      },
+      "db": {
+        "pods": 1,
+        "cpu_core_s": 0.206,
+        "avg_cores": 0.0069
+      },
+      "storage": {
+        "pods": 1,
+        "cpu_core_s": 0.0,
+        "avg_cores": 0.0
+      },
+      "frontend": {
+        "pods": 1,
+        "cpu_core_s": 0.006,
+        "avg_cores": 0.0002
+      },
+      "app": {
+        "pods": 2,
+        "cpu_core_s": 1.308,
+        "avg_cores": 0.0436
+      }
+    },
+    "namespace_avg_cores": 0.1174,
+    "ingress_nginx_avg_cores": 0.0023
+  },
+  "steps": [
+    {
+      "step": "c01",
+      "offered_jps": 25,
+      "vus": null,
+      "achieved_jps": 25,
+      "p95_ms": 19,
+      "failed_pct": 0,
+      "app_cores": 0.151,
+      "db_cores": 0.1,
+      "bus_cores": 0.085,
+      "ingress_cores": 0.023
+    },
+    {
+      "step": "c02",
+      "offered_jps": 50,
+      "vus": null,
+      "achieved_jps": 50,
+      "p95_ms": 15,
+      "failed_pct": 0,
+      "app_cores": 0.271,
+      "db_cores": 0.153,
+      "bus_cores": 0.104,
+      "ingress_cores": 0.055
+    },
+    {
+      "step": "c03",
+      "offered_jps": 100,
+      "vus": null,
+      "achieved_jps": 100,
+      "p95_ms": 13,
+      "failed_pct": 0,
+      "app_cores": 0.448,
+      "db_cores": 0.274,
+      "bus_cores": 0.053,
+      "ingress_cores": 0.102
+    },
+    {
+      "step": "c04",
+      "offered_jps": 150,
+      "vus": null,
+      "achieved_jps": 150,
+      "p95_ms": 12,
+      "failed_pct": 0,
+      "app_cores": 0.732,
+      "db_cores": 0.388,
+      "bus_cores": 0.147,
+      "ingress_cores": 0.151
+    },
+    {
+      "step": "c05",
+      "offered_jps": 200,
+      "vus": null,
+      "achieved_jps": 200,
+      "p95_ms": 18,
+      "failed_pct": 0,
+      "app_cores": 0.798,
+      "db_cores": 0.549,
+      "bus_cores": 0.025,
+      "ingress_cores": 0.207
+    },
+    {
+      "step": "c06",
+      "offered_jps": 250,
+      "vus": null,
+      "achieved_jps": 250,
+      "p95_ms": 27,
+      "failed_pct": 0,
+      "app_cores": 1.176,
+      "db_cores": 0.7,
+      "bus_cores": 0.144,
+      "ingress_cores": 0.129
+    },
+    {
+      "step": "c07",
+      "offered_jps": 300,
+      "vus": null,
+      "achieved_jps": 292.067,
+      "p95_ms": 934.7999999999993,
+      "failed_pct": 0,
+      "app_cores": 1.54,
+      "db_cores": 0.89,
+      "bus_cores": 0.123,
+      "ingress_cores": 0.324
+    },
+    {
+      "step": "c08",
+      "offered_jps": 350,
+      "vus": null,
+      "achieved_jps": 287.111,
+      "p95_ms": 2057.199999999999,
+      "failed_pct": 0,
+      "app_cores": 1.255,
+      "db_cores": 1.001,
+      "bus_cores": 0.177,
+      "ingress_cores": 0.328
+    },
+    {
+      "step": "c09",
+      "offered_jps": 400,
+      "vus": null,
+      "achieved_jps": 299.222,
+      "p95_ms": 2320.8499999999985,
+      "failed_pct": 0,
+      "app_cores": 1.183,
+      "db_cores": 0.999,
+      "bus_cores": 0.156,
+      "ingress_cores": 0.32
+    },
+    {
+      "step": "c10",
+      "offered_jps": 450,
+      "vus": null,
+      "achieved_jps": 293.311,
+      "p95_ms": 2421.399999999998,
+      "failed_pct": 0,
+      "app_cores": 1.064,
+      "db_cores": 0.998,
+      "bus_cores": 0.136,
+      "ingress_cores": 0.305
+    },
+    {
+      "step": "c11",
+      "offered_jps": 500,
+      "vus": null,
+      "achieved_jps": 284.022,
+      "p95_ms": 1890,
+      "failed_pct": 0,
+      "app_cores": 1.101,
+      "db_cores": 0.999,
+      "bus_cores": 0.133,
+      "ingress_cores": 0.303
+    }
+  ],
+  "queried_at": 1793255805.0398333
+}

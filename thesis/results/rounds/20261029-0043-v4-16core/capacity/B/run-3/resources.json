@@ -1,0 +1,265 @@
+{
+  "target": "b",
+  "namespace": "gomx",
+  "window": {
+    "start_ms": 1793257079595,
+    "end_ms": 1793257739595,
+    "scenario_s": 660,
+    "setup_s": 90.938
+  },
+  "window_s": 660,
+  "http_journeys": 90486,
+  "pods": {
+    "gomx-7658895cf9-7p9kg": {
+      "class": "app",
+      "cpu_core_s": 117.5,
+      "mem_avg_mib": 57.3,
+      "mem_max_mib": 86.0
+    },
+    "gomx-7658895cf9-qmltx": {
+      "class": "app",
+      "cpu_core_s": 119.732,
+      "mem_avg_mib": 54.9,
+      "mem_max_mib": 76.0
+    },
+    "minio-0": {
+      "class": "storage",
+      "cpu_core_s": 28.915,
+      "mem_avg_mib": 296.1,
+      "mem_max_mib": 311.9
+    },
+    "postgres-0": {
+      "class": "db",
+      "cpu_core_s": 455.569,
+      "mem_avg_mib": 388.7,
+      "mem_max_mib": 517.9
+    },
+    "redis-677c94c855-vkclr": {
+      "class": "bus",
+      "cpu_core_s": 7.971,
+      "mem_avg_mib": 9.6,
+      "mem_max_mib": 13.1
+    }
+  },
+  "classes": {
+    "app": {
+      "pods": 2,
+      "cpu_core_s": 237.232,
+      "mem_avg_mib": 112.2,
+      "mem_max_mib": 162.0,
+      "cpu_ms_per_journey": 2.6218,
+      "avg_cores": 0.3594,
+      "idle_avg_cores": 0.0031,
+      "marginal_cpu_ms_per_journey": 2.5991
+    },
+    "storage": {
+      "pods": 1,
+      "cpu_core_s": 28.915,
+      "mem_avg_mib": 296.1,
+      "mem_max_mib": 311.9,
+      "cpu_ms_per_journey": 0.3196,
+      "avg_cores": 0.0438,
+      "idle_avg_cores": 0.0193,
+      "marginal_cpu_ms_per_journey": 0.1788
+    },
+    "db": {
+      "pods": 1,
+      "cpu_core_s": 455.569,
+      "mem_avg_mib": 388.7,
+      "mem_max_mib": 517.9,
+      "cpu_ms_per_journey": 5.0347,
+      "avg_cores": 0.6903,
+      "idle_avg_cores": 0.0041,
+      "marginal_cpu_ms_per_journey": 5.0048
+    },
+    "bus": {
+      "pods": 1,
+      "cpu_core_s": 7.971,
+      "mem_avg_mib": 9.6,
+      "mem_max_mib": 13.1,
+      "cpu_ms_per_journey": 0.0881,
+      "avg_cores": 0.0121,
+      "idle_avg_cores": 0.0081,
+      "marginal_cpu_ms_per_journey": 0.029
+    }
+  },
+  "namespace_total": {
+    "pods": 5,
+    "cpu_core_s": 729.687,
+    "mem_avg_mib": 806.6,
+    "mem_max_mib": 1004.9,
+    "cpu_ms_per_journey": 8.0641,
+    "avg_cores": 1.1056,
+    "idle_avg_cores": 0.0346,
+    "marginal_cpu_ms_per_journey": 7.8117
+  },
+  "ingress_nginx": {
+    "cpu_core_s": 115.954,
+    "cpu_ms_per_journey": 1.2815
+  },
+  "node_busy_cores_avg": 4.198,
+  "idle": {
+    "start_ms": 1793257789000.0,
+    "end_ms": 1793257819000.0,
+    "window_s": 30,
+    "classes": {
+      "db": {
+        "pods": 1,
+        "cpu_core_s": 0.124,
+        "avg_cores": 0.0041
+      },
+      "storage": {
+        "pods": 1,
+        "cpu_core_s": 0.58,
+        "avg_cores": 0.0193
+      },
+      "bus": {
+        "pods": 1,
+        "cpu_core_s": 0.243,
+        "avg_cores": 0.0081
+      },
+      "app": {
+        "pods": 2,
+        "cpu_core_s": 0.092,
+        "avg_cores": 0.0031
+      }
+    },
+    "namespace_avg_cores": 0.0346,
+    "ingress_nginx_avg_cores": 0.0024
+  },
+  "steps": [
+    {
+      "step": "c01",
+      "offered_jps": 25,
+      "vus": null,
+      "achieved_jps": 25,
+      "p95_ms": 17,
+      "failed_pct": 0,
+      "app_cores": 0.075,
+      "db_cores": 0.065,
+      "bus_cores": 0.005,
+      "ingress_cores": 0.037
+    },
+    {
+      "step": "c02",
+      "offered_jps": 50,
+      "vus": null,
+      "achieved_jps": 50,
+      "p95_ms": 15,
+      "failed_pct": 0,
+      "app_cores": 0.136,
+      "db_cores": 0.109,
+      "bus_cores": 0.01,
+      "ingress_cores": 0.063
+    },
+    {
+      "step": "c03",
+      "offered_jps": 100,
+      "vus": null,
+      "achieved_jps": 100,
+      "p95_ms": 12,
+      "failed_pct": 0,
+      "app_cores": 0.236,
+      "db_cores": 0.216,
+      "bus_cores": 0.011,
+      "ingress_cores": 0.122
+    },
+    {
+      "step": "c04",
+      "offered_jps": 150,
+      "vus": null,
+      "achieved_jps": 150,
+      "p95_ms": 30,
+      "failed_pct": 0,
+      "app_cores": 0.34,
+      "db_cores": 0.472,
+      "bus_cores": 0.011,
+      "ingress_cores": 0.182
+    },
+    {
+      "step": "c05",
+      "offered_jps": 200,
+      "vus": null,
+      "achieved_jps": 179.378,
+      "p95_ms": 2787.75,
+      "failed_pct": 0,
+      "app_cores": 0.516,
+      "db_cores": 0.982,
+      "bus_cores": 0.015,
+      "ingress_cores": 0.258
+    },
+    {
+      "step": "c06",
+      "offered_jps": 250,
+      "vus": null,
+      "achieved_jps": 182.311,
+      "p95_ms": 3277.2999999999993,
+      "failed_pct": 0,
+      "app_cores": 0.479,
+      "db_cores": 0.999,
+      "bus_cores": 0.014,
+      "ingress_cores": 0.235
+    },
+    {
+      "step": "c07",
+      "offered_jps": 300,
+      "vus": null,
+      "achieved_jps": 186.711,
+      "p95_ms": 3077,
+      "failed_pct": 0,
+      "app_cores": 0.48,
+      "db_cores": 1.0,
+      "bus_cores": 0.014,
+      "ingress_cores": 0.222
+    },
+    {
+      "step": "c08",
+      "offered_jps": 350,
+      "vus": null,
+      "achieved_jps": 178.867,
+      "p95_ms": 3708.6499999999996,
+      "failed_pct": 0,
+      "app_cores": 0.473,
+      "db_cores": 0.998,
+      "bus_cores": 0.014,
+      "ingress_cores": 0.23
+    },
+    {
+      "step": "c09",
+      "offered_jps": 400,
+      "vus": null,
+      "achieved_jps": 167.511,
+      "p95_ms": 4410,
+      "failed_pct": 0,
+      "app_cores": 0.456,
+      "db_cores": 0.998,
+      "bus_cores": 0.013,
+      "ingress_cores": 0.154
+    },
+    {
+      "step": "c10",
+      "offered_jps": 450,
+      "vus": null,
+      "achieved_jps": 147.356,
+      "p95_ms": 5294,
+      "failed_pct": 0,
+      "app_cores": 0.389,
+      "db_cores": 0.998,
+      "bus_cores": 0.012,
+      "ingress_cores": 0.186
+    },
+    {
+      "step": "c11",
+      "offered_jps": 500,
+      "vus": null,
+      "achieved_jps": 148.289,
+      "p95_ms": 3691,
+      "failed_pct": 0,
+      "app_cores": 0.395,
+      "db_cores": 0.999,
+      "bus_cores": 0.013,
+      "ingress_cores": 0.189
+    }
+  ],
+  "queried_at": 1793257864.0417776
+}

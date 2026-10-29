@@ -1,0 +1,39 @@
+
+target=b  profile=stress  mix=v2  harness=h6-2026-10-24  base=https://gomx.local  reads=anonymous  htmx=boosted
+http_reqs=69450  p95=573ms  p99=1283ms  failed=0.00%  checks_failed=0 (0.00%)  (scenario 390s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max      ok  failed
+login               200     26     28     31     32     33       0       0
+communities        4751     29      3    119    187    480    4751       0
+space_page        17760     47      6    193    305    643   17760       0
+space_feed         5378     53      6    197    308    594    5378       0
+thread            11815     63      4    264    434    812   11815       0
+search             6366    419     44   1564   2072   2718    6366       0
+profile            1184     75      5    295    451    632    1184       0
+comment_create     5798    162     17    587    886   2117    5798       0
+vote               7070    196     14    701    977   2541    7070       0
+upload             1806    159     29    538    693    891    1806       0
+upload_poll        2414     54     30    189    342    547    2414       0
+thread_create      1806    144     13    560    782   1094    1806       0
+dm_send            2429    192     26    662    984   1313    2429       0
+probe_comment       400    269     50    906   1004   1098     400       0
+setup               273      4      3      6      7      8       0       0
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         17760  45.54     12    269    424
+J2         11815  30.29      4    264    434
+J3          5798  14.87     17    587    886
+J4          1806   4.63    417   1609   1944
+J5          7070  18.13     14    702    978
+J6          6366  16.32     44   1564   2072
+J7          1184   3.04      5    296    451
+J8           120   0.31      0      0      0
+J9          2429   6.23     26    662    984
+nav         4751  12.18      3    119    188
+core journeys (without J4): med=13ms  p95=635ms  p99=1358ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)
+
+ws: subscribed=160  notifications=320150  errors=0  early_close=0
+ws receipt probes: sent=400  received=400  late=0  lost=0  unresolved=0  loss=0%  latency med=68ms p95=915ms max=1108ms  (write request start → matching push; A floor = outbox relay poll)
+
+all thresholds passed
+

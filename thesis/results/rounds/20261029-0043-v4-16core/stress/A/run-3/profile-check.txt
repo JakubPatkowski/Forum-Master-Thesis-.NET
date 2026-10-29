@@ -1,0 +1,18 @@
+  ok    app replicas = 2 (want 2, fixed)
+  ok    no HorizontalPodAutoscaler in the namespace
+  ok    app requests {'cpu': '250m', 'memory': '256Mi'} (want cpu 250m, memory 256Mi)
+  ok    app limits {'cpu': '1', 'memory': '512Mi'} (want cpu 1, memory 512Mi)
+  ok    app livenessProbe.timeoutSeconds = 5 (want 5)
+  ok    app readinessProbe.timeoutSeconds = 5 (want 5)
+  ok    tracing off (Observability__TracingEnabled=false)
+  ok    RateLimiting__Global__PermitLimit = 1000000 (want >= 1000000, recorded)
+  ok    RateLimiting__Auth__PermitLimit = 1000000 (want >= 1000000, recorded)
+  ok    Npgsql pool: 'Maximum Pool Size=30' in CONNECTION_STRING
+  ok    default GC policy (DOTNET_gcServer unset, found None)
+  ok    outbox relay poll = appsettings default 5000 ms (override None absent)
+  ok    postgres image = postgres:18 (want postgres:18, Debian — same on both)
+  ok    postgres arg shared_buffers=256MB
+  ok    postgres arg effective_cache_size=512MB
+  ok    postgres arg max_connections=100
+  ok    postgres requests {'cpu': '250m', 'memory': '512Mi'} (want 250m/512Mi)
+  ok    postgres limits {'cpu': '1', 'memory': '1Gi'} (want 1/1Gi)
