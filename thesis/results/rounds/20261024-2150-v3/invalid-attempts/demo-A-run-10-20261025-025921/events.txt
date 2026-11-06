@@ -1,0 +1,81 @@
+LAST SEEN   TYPE      REASON              OBJECT                          MESSAGE
+60m         Normal    Scheduled           pod/db-seed-benchmark-m869v     Successfully assigned forum-dotnet/db-seed-benchmark-m869v to forum
+60m         Normal    SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-m869v
+59m         Normal    Started             pod/db-seed-benchmark-m869v     Container started
+59m         Normal    Pulled              pod/db-seed-benchmark-m869v     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+59m         Normal    Created             pod/db-seed-benchmark-m869v     Container created
+59m         Normal    Completed           job/db-seed-benchmark           Job completed
+59m         Normal    Scheduled           pod/backend-6f96487d4b-s6rwm    Successfully assigned forum-dotnet/backend-6f96487d4b-s6rwm to forum
+59m         Normal    SuccessfulCreate    replicaset/backend-6f96487d4b   Created pod: backend-6f96487d4b-s6rwm
+59m         Normal    ScalingReplicaSet   deployment/backend              Scaled up replica set backend-6f96487d4b from 0 to 2
+59m         Normal    Scheduled           pod/backend-6f96487d4b-4ntdg    Successfully assigned forum-dotnet/backend-6f96487d4b-4ntdg to forum
+59m         Normal    SuccessfulCreate    replicaset/backend-6f96487d4b   Created pod: backend-6f96487d4b-4ntdg
+59m         Normal    Started             pod/backend-6f96487d4b-4ntdg    Container started
+59m         Normal    Pulled              pod/backend-6f96487d4b-4ntdg    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+59m         Normal    Pulled              pod/backend-6f96487d4b-s6rwm    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+59m         Normal    Created             pod/backend-6f96487d4b-s6rwm    Container created
+59m         Normal    Started             pod/backend-6f96487d4b-s6rwm    Container started
+59m         Normal    Created             pod/backend-6f96487d4b-4ntdg    Container created
+47m         Normal    Scheduled           pod/db-seed-benchmark-kgh6g     Successfully assigned forum-dotnet/db-seed-benchmark-kgh6g to forum
+47m         Normal    Created             pod/db-seed-benchmark-kgh6g     Container created
+47m         Normal    Pulled              pod/db-seed-benchmark-kgh6g     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+47m         Normal    SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-kgh6g
+47m         Normal    Started             pod/db-seed-benchmark-kgh6g     Container started
+47m         Normal    Completed           job/db-seed-benchmark           Job completed
+47m         Normal    SuccessfulCreate    replicaset/backend-7c7fc6454f   Created pod: backend-7c7fc6454f-j6r24
+47m         Normal    Scheduled           pod/backend-7c7fc6454f-j6r24    Successfully assigned forum-dotnet/backend-7c7fc6454f-j6r24 to forum
+47m         Normal    Pulled              pod/backend-7c7fc6454f-j6r24    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+47m         Normal    Created             pod/backend-7c7fc6454f-j6r24    Container created
+47m         Normal    Started             pod/backend-7c7fc6454f-j6r24    Container started
+47m         Normal    ScalingReplicaSet   deployment/backend              Scaled up replica set backend-7c7fc6454f from 0 to 1
+47m         Normal    ScalingReplicaSet   deployment/backend              Scaled down replica set backend-6f96487d4b from 2 to 1
+47m         Normal    Scheduled           pod/backend-7c7fc6454f-s7hdk    Successfully assigned forum-dotnet/backend-7c7fc6454f-s7hdk to forum
+47m         Normal    SuccessfulDelete    replicaset/backend-6f96487d4b   Deleted pod: backend-6f96487d4b-s6rwm
+47m         Normal    ScalingReplicaSet   deployment/backend              Scaled up replica set backend-7c7fc6454f from 1 to 2
+47m         Normal    Killing             pod/backend-6f96487d4b-s6rwm    Stopping container backend
+47m         Normal    SuccessfulCreate    replicaset/backend-7c7fc6454f   Created pod: backend-7c7fc6454f-s7hdk
+47m         Normal    Created             pod/backend-7c7fc6454f-s7hdk    Container created
+47m         Normal    Pulled              pod/backend-7c7fc6454f-s7hdk    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+47m         Normal    Started             pod/backend-7c7fc6454f-s7hdk    Container started
+47m         Normal    SuccessfulDelete    replicaset/backend-6f96487d4b   Deleted pod: backend-6f96487d4b-4ntdg
+47m         Normal    ScalingReplicaSet   deployment/backend              Scaled down replica set backend-6f96487d4b from 1 to 0
+47m         Normal    Killing             pod/backend-6f96487d4b-4ntdg    Stopping container backend
+35m         Normal    SuccessfulDelete    replicaset/backend-7c7fc6454f   Deleted pod: backend-7c7fc6454f-j6r24
+35m         Normal    SuccessfulDelete    replicaset/backend-7c7fc6454f   Deleted pod: backend-7c7fc6454f-s7hdk
+35m         Normal    Killing             pod/backend-7c7fc6454f-j6r24    Stopping container backend
+35m         Normal    Killing             pod/backend-7c7fc6454f-s7hdk    Stopping container backend
+35m         Normal    ScalingReplicaSet   deployment/backend              Scaled down replica set backend-7c7fc6454f from 2 to 0
+10m         Normal    Pulled              pod/db-seed-benchmark-vlt68     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal    SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-vlt68
+10m         Normal    Scheduled           pod/db-seed-benchmark-vlt68     Successfully assigned forum-dotnet/db-seed-benchmark-vlt68 to forum
+10m         Normal    Created             pod/db-seed-benchmark-vlt68     Container created
+10m         Normal    Started             pod/db-seed-benchmark-vlt68     Container started
+10m         Normal    Completed           job/db-seed-benchmark           Job completed
+10m         Normal    NoPods              poddisruptionbudget/backend     No matching pods found
+10m         Normal    SuccessfulCreate    replicaset/backend-64b577b6b6   Created pod: backend-64b577b6b6-psmth
+10m         Normal    ScalingReplicaSet   deployment/backend              Scaled up replica set backend-64b577b6b6 from 0 to 2
+10m         Normal    Scheduled           pod/backend-64b577b6b6-762fp    Successfully assigned forum-dotnet/backend-64b577b6b6-762fp to forum
+10m         Normal    Scheduled           pod/backend-64b577b6b6-psmth    Successfully assigned forum-dotnet/backend-64b577b6b6-psmth to forum
+10m         Normal    SuccessfulCreate    replicaset/backend-64b577b6b6   Created pod: backend-64b577b6b6-762fp
+10m         Normal    Started             pod/backend-64b577b6b6-psmth    Container started
+10m         Normal    Pulled              pod/backend-64b577b6b6-762fp    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal    Created             pod/backend-64b577b6b6-762fp    Container created
+10m         Normal    Started             pod/backend-64b577b6b6-762fp    Container started
+10m         Normal    Pulled              pod/backend-64b577b6b6-psmth    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal    Created             pod/backend-64b577b6b6-psmth    Container created
+3m7s        Warning   Unhealthy           pod/postgres-0                  Liveness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+2m51s       Warning   Unhealthy           pod/rabbitmq-0                  Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 15s
+2m26s       Warning   Unhealthy           pod/backend-64b577b6b6-psmth    Readiness probe failed: Get "http://10.244.133.178:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m25s       Warning   Unhealthy           pod/backend-64b577b6b6-psmth    Liveness probe failed: Get "http://10.244.133.178:8080/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m25s       Warning   Unhealthy           pod/minio-0                     Liveness probe failed: Get "http://10.244.133.176:9000/minio/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m25s       Warning   Unhealthy           pod/frontend-9bb7b77ff-fk9vm    Liveness probe failed: Get "http://10.244.133.149:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m25s       Warning   Unhealthy           pod/postgres-0                  Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+2m25s       Warning   Unhealthy           pod/frontend-9bb7b77ff-fk9vm    Readiness probe failed: Get "http://10.244.133.149:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m21s       Warning   Unhealthy           pod/rabbitmq-0                  Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 10s
+112s        Normal    Killing             pod/rabbitmq-0                  Container rabbitmq failed liveness probe, will be restarted
+108s        Warning   Unhealthy           pod/minio-0                     Readiness probe failed: Get "http://10.244.133.176:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+92s         Normal    Pulled              pod/rabbitmq-0                  Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+91s         Normal    Created             pod/rabbitmq-0                  Container created
+89s         Normal    Started             pod/rabbitmq-0                  Container started
+68s         Warning   Unhealthy           pod/backend-64b577b6b6-psmth    Readiness probe failed: HTTP probe failed with statuscode: 503
+67s         Warning   Unhealthy           pod/backend-64b577b6b6-762fp    Readiness probe failed: HTTP probe failed with statuscode: 503

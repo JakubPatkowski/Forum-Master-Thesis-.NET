@@ -1,0 +1,612 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/part-of: gomx
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/warn: restricted
+  name: gomx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gomx-secrets
+  namespace: gomx
+stringData:
+  DATABASE_URL: postgres://gomx:gomx@postgres:5432/gomx?sslmode=disable
+  GOMX_S3_ACCESS_KEY: gomxadmin
+  GOMX_S3_BUCKET: gomx-media
+  GOMX_S3_ENDPOINT: minio:9000
+  GOMX_S3_SECRET_KEY: gomxsecret
+  GOMX_S3_USE_SSL: "false"
+  MINIO_ROOT_PASSWORD: gomxsecret
+  MINIO_ROOT_USER: gomxadmin
+  POSTGRES_DB: gomx
+  POSTGRES_PASSWORD: gomx
+  POSTGRES_USER: gomx
+  REDIS_ADDR: redis:6379
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gomx
+  name: gomx
+  namespace: gomx
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  - name: metrics
+    port: 9090
+    targetPort: metrics
+  selector:
+    app: gomx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: minio
+  name: minio
+  namespace: gomx
+spec:
+  ports:
+  - name: api
+    port: 9000
+    targetPort: 9000
+  - name: console
+    port: 9001
+    targetPort: 9001
+  selector:
+    app: minio
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: gomx
+spec:
+  clusterIP: None
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: gomx
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gomx
+  name: gomx
+  namespace: gomx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gomx
+  template:
+    metadata:
+      labels:
+        app: gomx
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - env:
+        - name: GOMX_SEED
+          value: bench
+        - name: GOMX_AUTH_RATELIMIT
+          value: "0"
+        - name: GOMX_BEACON_RATELIMIT
+          value: "0"
+        - name: GOMX_COMPRESS
+          value: "0"
+        - name: GOMX_NOTIFY_FRIENDS_ON_POST
+          value: "0"
+        - name: GOMX_CARD_PREVIEW_CHARS
+          value: "300"
+        - name: GOMX_DB_MAX_CONNS
+          value: "30"
+        - name: GOMX_SECURE_COOKIES
+          value: "1"
+        - name: GOMX_ALLOWED_ORIGINS
+          value: gomx.local
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: ""
+        - name: GOMX_ENV
+          value: benchmark
+        - name: GOMX_PORT
+          value: "8080"
+        - name: GOMX_METRICS_PORT
+          value: "9090"
+        - name: GOMX_LOG_FORMAT
+          value: json
+        - name: OTEL_SERVICE_NAME
+          value: gomx
+        envFrom:
+        - secretRef:
+            name: gomx-secrets
+        image: gomx:bench
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: gomx
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: metrics
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+        startupProbe:
+          failureThreshold: 90
+          httpGet:
+            path: /healthz
+            port: http
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - for target in "postgres 5432" "redis 6379" "minio 9000"; do set -- $target;
+          echo "waiting for $1:$2 ..."; until nc -w 2 "$1" "$2" </dev/null 2>/dev/null;
+          do sleep 2; done; echo "$1:$2 is up"; done
+        image: docker.io/library/busybox:1.36
+        name: wait-for-deps
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: gomx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --save
+        - ""
+        - --appendonly
+        - "no"
+        image: docker.io/library/redis:7-alpine
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        name: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 2
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: 250m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /data
+          name: data
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - emptyDir: {}
+        name: data
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+  namespace: gomx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  serviceName: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - server
+        - /data
+        - --console-address
+        - :9001
+        envFrom:
+        - secretRef:
+            name: gomx-secrets
+        image: docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: 9000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        name: minio
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 9001
+          name: console
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir: {}
+        name: tmp
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: gomx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - -c
+        - shared_buffers=256MB
+        - -c
+        - effective_cache_size=512MB
+        - -c
+        - max_connections=100
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        envFrom:
+        - secretRef:
+            name: gomx-secrets
+        image: docker.io/library/postgres:18
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - gomx
+            - -d
+            - gomx
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          timeoutSeconds: 5
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: postgres
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - gomx
+            - -d
+            - gomx
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: 250m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /var/run/postgresql
+          name: run-postgresql
+      securityContext:
+        fsGroup: 999
+        runAsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - emptyDir: {}
+        name: run-postgresql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: gomx
+  namespace: gomx
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: gomx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 6m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: gomx
+  namespace: gomx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: gomx.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: gomx
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - gomx.local
+    secretName: gomx-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gomx-app
+  namespace: gomx
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+    ports:
+    - port: 8080
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+    ports:
+    - port: 9090
+  podSelector:
+    matchLabels:
+      app: gomx
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-minio-from-app
+  namespace: gomx
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: gomx
+    ports:
+    - port: 9000
+  podSelector:
+    matchLabels:
+      app: minio
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres-from-app
+  namespace: gomx
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: gomx
+    ports:
+    - port: 5432
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redis-from-app
+  namespace: gomx
+spec:
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: gomx
+    ports:
+    - port: 6379
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: gomx
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress

@@ -1,0 +1,39 @@
+# IDs used by the live checks — 2026-10-24T21:32:10+02:00
+## A categories (slug visibility id)
+bench-cat-01 public 01KDVH35M0EWK3APA3PQ7Y3D2J
+bench-cat-02 public 01KDY3FWM0QJPT7QQSEEYZVC35
+bench-cat-03 public 01KE0NWKM0E2536MBVE3Z4S1T3
+bench-cat-04 public 01KE389AM085PTTBS9ATNMQCVV
+bench-cat-05 public 01KE5TP1M0BMMMZNMCRACWKKWT
+bench-cat-06 public 01KE8D2RM0R1FEQEKPENWN6VHX
+bench-cat-07 public 01KEAZFFM0X88Y8JW1J312PMWY
+bench-cat-08 public 01KEDHW6M0MT7X7XWFVR8EFW46
+bench-cat-09 private 01KEG48XM0KA1CDMKZSTFWPGTJ
+bench-cat-10 private 01KEJPNMM064JS1YA06J954DC2
+bench-cat-11 private 01KEN92BM0JVH78SWXRC85CMRK
+bench-cat-12 private 01KEQVF2M0AAE852YKBPSGN18K
+## A private thread (first live one)
+01KDY56TE07KFE00T6ZSDGW9GS bench-cat-12
+## A heaviest public thread (v1 used 01KDY021004XKGMPA2XJZK3DPT)
+01KDY021004XKGMPA2XJZK3DPT comments=234
+## A user bench_user_0034
+01KDYYYSM0PH4QS1MMRNJ8796B bench_user_0034
+## B communities (id slug visibility)
+1 general public
+2 showcase public
+3 golang public
+4 design public
+5 help public
+6 random public
+7 bench7 public
+8 bench8 public
+9 bench9 private
+10 bench10 private
+11 bench11 private
+12 bench12 private
+## B private post (first)
+5 bench12
+## B heaviest public post
+1 comments=225
+## B /thread/1 comments
+225

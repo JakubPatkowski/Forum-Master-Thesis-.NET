@@ -1,0 +1,26 @@
+# Search word bank (shared 300-word Zipf bank, load/k6/lib/assets.js SEARCH_WORDS; rank = index+1) — 2026-10-24T21:30:14+02:00
+# Expected (AB-START-HERE / CLAUDE.md, 'of 1 600'): rank 1 ≈ 1600, rank 50 ≈ 613, rank 100 ≈ 300, rank 300 ≈ 96–100; B within ±10 % of A.
+# SQL used:
+#  A all:        SELECT count(*) FROM forum_content.threads WHERE search_tsv @@ websearch_to_tsquery('simple','<w>')
+#  A live+public: … JOIN forum_content.categories c ON c.id=t.category_id WHERE NOT t.is_deleted AND c.visibility='public' AND t.search_tsv @@ …
+#  B all:        SELECT count(*) FROM posts WHERE title ILIKE '%<w>%' OR body ILIKE '%<w>%'
+#  B public:     … JOIN communities c ON c.id=p.community_id WHERE c.visibility='public' AND (p.title ILIKE … OR p.body ILIKE …)
+rank  word            A_all   A_live_pub    B_all   B_public    B/A_all
+1     abandon          1600         1317     1600       1337      1.000
+50    beacon            614          512      613        512      0.998
+100   cousin            331          279      295        237      0.891
+200   midnight          146          117      141        124      0.966
+300   zephyr             97           78       96         81      0.990
+
+## Whole bank (300 words; J6 draws its query uniformly from this list) — full table: search-bank-full.tsv
+total matches, all threads : A 110137  B 109353  B/A 0.9929
+total matches, public live (= anonymous J6 result sets): A 90656  B 91371  B/A 1.0079
+mean matches per query, public: A 302.2  B 304.6
+per-word |B/A - 1| (all): median 4.9 %, mean 6.6 %, max 35.7 %; words > 10 %: 71
+per-word |B/A - 1| (public): median 4.9 %, mean 7.2 %, max 41.9 %; words > 10 %: 87
+largest relative deviations (rank word A_all B_all): 221 peacock 143/92; 259 smoke 88/116; 294 wardrobe 109/76; 157 hamlet 174/225; 283 turnip 94/119; 288 verandah 83/104; 273 thistle 101/77; 211 olive 115/142
+Reading: both seeders draw each body's words from the same Zipf(1.2) bank with DIFFERENT pseudo-random generators
+(A SeedText.cs vs B seedbench.go splitmix64), so per-word counts agree statistically, not exactly; the counts are
+identical to the 2026-10-18 measurement (AB-TEST-GAPS-PROGRESS.md S4: cousin A 331 / B 295) — deterministic seeds.
+The rank-100 check word misses the prompt's ±10 % by 0.9 pp (B/A 0.891); what matters for J6 is the whole-bank
+agreement above.

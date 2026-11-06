@@ -7,9 +7,9 @@ hours before.
 
 | | |
 |---|---|
-| **Last updated** | 2026-10-24 evening — pre-measurement audit of the harness: **h6** (semantic failures count, core latency without J4, parallel J2/J7 on A, J4/J9 rules mirrored, finer capacity steps, per-step CPU, MW-primary statistics, median [IQR]) + orchestration hardening (status/heartbeat, `--resume`, timeouts, Prometheus re-forward, write-delta validity) + B fixes (reaction visibility gate, `/thread/0`, DM rejection marker) — `AB-COMPARISON-v1.md` §5.9; earlier the same day: comparability fixes implemented on BOTH trees (`AB-STATUS-AND-PLAN-2026-10-23.md` §0b lists them; `AB-COMPARISON-v1.md` §5.8 is the measurement-relevant summary); previous: 2026-10-23 status snapshot, 2026-10-18 first full campaign |
-| **State** | Both apps and the shared harness are **aligned (v1)** and **measured**: round `thesis/results/rounds/20261018-0051-v1/` (demo 5+5, stress 1+1, capacity 1+1 — 14/14 valid, 0 % failed, 0 × 429), functional gates green on both (A 248/0/0, B 378/0/25 + 81/0/0), live checks, static metrics (trivy/cloc/sizes/Lighthouse) — all archived with the exact patches + image digests under test. Results tables: `thesis/results/AB-COMPARISON-v1.md` §9; analysis, anomalies, threats and the v2 list: `thesis/results/campaign-20261017-2357/05-analysis/CAMPAIGN-REPORT.md`. |
-| **Next** | **2026-10-24 evening:** owner commits both trees and tags **`thesis-v3-a`/`thesis-v3-b`** (h6 + the B fixes; the v2 tags = the pre-audit state, never measured); the cluster is **stopped** → `minikube -p forum start`, rebuild both from the clean HEADs (`make mk-deploy ARGS=--seed-benchmark`, `make gomx-deploy ARGS=--reset-db`; the B overlay now sets `GOMX_CARD_PREVIEW_CHARS=300` and A's seed carries the social graph), verify bank + profile (`ab_check_profile` expects the new B env), smoke, then the **v2 round** (§8.1) plus the `--real-spa` round. Results chapter for the class on **2026-10-25** from round v1 (`thesis/figures/v1/`) or v2 |
+| **Last updated** | 2026-10-25 — **campaign v3** measured on the clean tags `thesis-v3-a` (`64cd5e2`) / `thesis-v3-b` (`46b342c`), harness h6: `thesis/results/campaign-20261024-2129/` (round `thesis/results/rounds/20261024-2150-v3/`); earlier: 2026-10-24 h6 audit (`AB-COMPARISON-v1.md` §5.9), 2026-10-24 comparability fixes (§5.8), 2026-10-18 first full campaign |
+| **State** | **v3 (2026-10-24/25): demo N = 10 per side valid** — H1 resources per journey are the new headline (B lower app CPU −14 %, DB −18 %, namespace −28 %; memory 412 vs 73 MiB; MW+Holm distinct) — `AB-COMPARISON-v1.md` §9b. **Latency and H2 of v3 are NOT usable:** the k6 load generator saturated the shared host (J4 synthesizes a 256×256 PNG per journey in k6's JS VM, ≈ 0.7 core-s each) → both capacity runs invalid, closed-model latencies contaminated. v1 (round `20261018-0051-v1`, §9) stays the latency/H2 reference. Functional gates green on fresh clones of both tags (A 259/0/0, B 388/0/25 + 81 + 1). |
+| **Next** | (1) owner commits the campaign archive + docs (no code changed tonight); (2) **fix the load generator before any latency/H2 round**: pre-generate the J4 PNG once per VU (vary a few bytes per upload so B cannot de-duplicate) or run with the existing knob `--k6-env J4_IMAGE_PX=64` (32 ms instead of 603 ms per image) as a labelled variant — then the deferred `--resume` to `demo:10,stress:3,capacity:3` (a changed harness requires a NEW round label); (3) variants/chaos/Lighthouse evenings (§8.1); (4) D17 fix (friends list / seed / adapter), Redis/RabbitMQ exec-probe timeouts as a deployment review item for both authors |
 | **Deadline context** | thesis-seminar class on **2026-10-25**: a results chapter (subsections, tables with units + in-text references, captioned figures) — skeleton in `AB-STATUS-AND-PLAN-2026-10-23.md` §7, data from round v1 (or v2 if it runs on 2026-10-23/24). Earlier: class 2026-10-18 — done |
 
 ---
@@ -106,6 +106,13 @@ rules, scenario-only measurement windows, reseed + fresh pods per run, ABBA orde
 | 2026-10-24 | B: hub queue 32 closed ~150 holders in stress/capacity; cancelled requests logged as 500 | queue 256 (close-on-full kept); 499 in `renderStatus` + `RequestLogger` + test |
 | 2026-10-24 | D1 had no measurement | `REAL_SPA=1` / `ab-round.sh --real-spa` replays the derived cold-cache waterfall (`load/k6/targets/README.md`); harness **h5-2026-10-24** |
 | 2026-10-24 | A mobile: signed-in TopNav 532 px on a 412 px phone, tap targets < 40 px; 13 fixable frontend CVEs | CSS fixes (Playwright 24/0/8, `test.fail` markers removed); next 15.5.28 + overrides (sharp/nanoid/postcss/source-map-js) |
+| **campaign v3 (2026-10-24/25)** | h6's J4 synthesizes a fresh 256×256 RGBA PNG per journey inside k6 (`makePng`, 603 ms / ≈ 0.7 core-s per image on the idle host) → k6 used up to 5.5 of the 8 shared cores (v1: < 1), node busy ≈ 5 cores, load average up to 14; closed-model latencies ≈ 10× v1 on both sides; capacity collapsed at 100–150 j/s on both (k6 ≈ 4 cores vs SUT ≈ 1 core at 100 j/s) | recorded (rule: no code changes during the campaign); fix before the next latency/H2 round: pre-generated PNG per VU or `--k6-env J4_IMAGE_PX=64` as a labelled variant |
+| campaign v3 | exec probes of infrastructure pods fail at peak node load: B Redis (`redis-cli ping`, 1 s) restarted in B demo run 5 and during an A run, A RabbitMQ (`rabbitmq-diagnostics status`, 15 s) in A demo run 10, capacity: A Postgres (`pg_isready`, 5 s) + RabbitMQ, B Redis; during Phase 4 test suites the counters climbed further (RabbitMQ 16 → 25, Redis 15 → 33) | runs with a restart are invalid by design → redone with `--resume`; deployment review item (probe timeouts / CPU requests of Redis 50m and RabbitMQ 100m) |
+| campaign v3 | **D17**: A's bench social graph links 26 of the login pool's 1 200 friend pairs to A-only blocked accounts → ≈ 6 % of A's J9 journeys end in 404 (A failed checks 0.12 %) | recorded in the deviation register; fix options in §6.2 D17 |
+| campaign v3 | A's realtime ticket is single-use **per replica** (one ticket opened 2 sockets with 2 replicas: `101 101 401 401`) | documented Phase 7 design (in-process redeemed-jti cache, 30-s TTL); v1's single replay hit the same replica |
+| campaign v3 | D2 closed for content (300-char excerpts both sides) but the wire gap only halved (feed page gzip B/A 7.9× → 3.6×): B's card markup ≈ 6.4 KB raw vs A's ≈ 0.7 KB JSON per card | paradigm (D-1), recorded |
+| campaign v3 | B's private-comment WebSocket gate verified live (anonymous / non-member sockets 0 frames, member 1) | thesis-v3-b fix confirmed |
+| campaign v3 | `scripts/thesis_figures.py` hard-codes "N = 5" in three figure titles; A build shows 32 NU1903 warnings (SSH.NET 2024.1.0 via Testcontainers, test projects only) | figures rendered with a patched scratch copy (patch archived in the campaign's `05-analysis/`); dependency bump owed |
 
 ### 4.3 What remains different (documented, not leveled)
 D1 (default adapter; `--real-spa` variant since 2026-10-24) A's adapter is an idealized SPA client (fewer calls than the real SPA, no client cache) → A's server cost is a
@@ -310,6 +317,16 @@ Keep `make tunnels` and Grafana browsing off during a round. Re-run only the fai
 26b. Run the gomx CI replay container as root with `git config --global --add safe.directory /src`, or `check-generated-go.sh` fails on the mounted repo's ownership.
 26. `~/.cache/gomx-gocache` is root-owned (written by a root container) — run the Go CI replay as root in the container, or use a
     fresh cache; uid-1000 runs fail with `permission denied` in seconds.
+27. **Load generator CPU (h6):** J4's per-journey PNG synthesis in k6 costs ≈ 0.7 core-s per 256-px image; at demo/capacity rates k6
+    takes 4–5.5 of the 8 host cores the cluster also needs — watch `samples-*.json` k6_cpu_ticks / REPORT "Load generator"; anything
+    above ~1 core invalidates latency and capacity numbers.
+28. Never run test suites (dotnet Testcontainers, `go test -race ./...`, bun installs) in parallel with each other or with cluster
+    work on this host: swap thrash (load 65–160) and cascading exec-probe restarts in the cluster (RabbitMQ/Redis/Postgres).
+29. Daylight-saving change (last Sunday of October, 03:00 CEST → 02:00 CET): round logs switch timezone mid-night; trust the
+    epoch fields in run.json/round.json.
+30. Loki (SingleBinary, emptyDir): `| json` parsers over hours of logs stall; export with line filters (`|~ "\"@l\":\"Error\""`) in
+    1-hour chunks, smaller windows for overload periods.
+31. `curl -i` does not flush a WebSocket 101's headers when no frame arrives before `--max-time` — use `curl -v` and grep `^< HTTP`.
 
 ## 8. From v1 to a full comparison
 

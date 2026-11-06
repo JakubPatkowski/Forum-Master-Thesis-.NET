@@ -1,0 +1,3004 @@
+{
+ "campaign": "campaign-20261024-2129",
+ "generated": "2026-10-25T03:14:09+0100",
+ "round_archive": "thesis/results/rounds/20261024-2150-v3/",
+ "gate_archive": "thesis/results/rounds/20261024-2137-v3-gate/",
+ "figures": "thesis/figures/v3/",
+ "artifact_count": 499,
+ "artifacts": [
+  {
+   "path": "00-preflight/00-mk-up.log",
+   "bytes": 2145,
+   "modified": "2026-10-24T21:29:00+0200",
+   "description": "make mk-up output (cluster restart)"
+  },
+  {
+   "path": "00-preflight/00-mon-check.log",
+   "bytes": 397,
+   "modified": "2026-10-24T21:29:00+0200",
+   "description": "make mon-check output (Prometheus targets, Loki, Tempo)"
+  },
+  {
+   "path": "00-preflight/01-deploy-A.log",
+   "bytes": 15399,
+   "modified": "2026-10-24T21:29:00+0200",
+   "description": "make mk-deploy ARGS=--seed-benchmark (A, clean tag git-64cd5e2) incl. git status before"
+  },
+  {
+   "path": "00-preflight/02-deploy-B.log",
+   "bytes": 21107,
+   "modified": "2026-10-24T21:29:00+0200",
+   "description": "make gomx-deploy ARGS=--reset-db (B, gomx:bench-46b342c) incl. git status before"
+  },
+  {
+   "path": "00-preflight/A-git-status.txt",
+   "bytes": 1126,
+   "modified": "2026-10-24T21:29:01+0200",
+   "description": "A repo state: status, HEAD, describe (thesis-v3-a), log"
+  },
+  {
+   "path": "00-preflight/B-bench-overlay-checks.txt",
+   "bytes": 455,
+   "modified": "2026-10-24T21:29:04+0200",
+   "description": "B bench overlay rendered by kubectl kustomize + checks (no HPA, pool 30, preview 300)"
+  },
+  {
+   "path": "00-preflight/B-bench-overlay.rendered.yaml",
+   "bytes": 12852,
+   "modified": "2026-10-24T21:29:04+0200",
+   "description": "B bench overlay rendered by kubectl kustomize + checks (no HPA, pool 30, preview 300)"
+  },
+  {
+   "path": "00-preflight/B-git-status.txt",
+   "bytes": 1052,
+   "modified": "2026-10-24T21:29:01+0200",
+   "description": "B repo state: status, HEAD, describe (thesis-v3-b), log"
+  },
+  {
+   "path": "00-preflight/ab_check_profile.txt",
+   "bytes": 2403,
+   "modified": "2026-10-24T21:30:13+0200",
+   "description": "Common profile applied + verified on both (38/38 ok)"
+  },
+  {
+   "path": "00-preflight/harness-version.txt",
+   "bytes": 206,
+   "modified": "2026-10-24T21:29:01+0200",
+   "description": "MIX_VERSION / HARNESS_VERSION of load/k6/main.js + k6 version"
+  },
+  {
+   "path": "00-preflight/images-and-provenance.txt",
+   "bytes": 6657,
+   "modified": "2026-10-24T21:29:56+0200",
+   "description": "Deployed images + digests, EF migrations, Postgres versions, B /stats, BuildKit-cache note"
+  },
+  {
+   "path": "00-preflight/rule4-clean-build-proof.txt",
+   "bytes": 550,
+   "modified": "2026-10-24T21:29:01+0200",
+   "description": "Clean-build proof (porcelain outside thesis/results, diff --quiet, describe --exact-match)"
+  },
+  {
+   "path": "00-preflight/search-bank-full.tsv",
+   "bytes": 11613,
+   "modified": "2026-10-24T21:31:22+0200",
+   "description": "Per-word match counts for all 300 bank words, A vs B (all / public)"
+  },
+  {
+   "path": "00-preflight/search-bank.txt",
+   "bytes": 2368,
+   "modified": "2026-10-24T21:31:22+0200",
+   "description": "Zipf search bank live check (ranks 1/50/100/200/300) + whole-bank agreement, SQL used"
+  },
+  {
+   "path": "00-preflight/seed-counts.txt",
+   "bytes": 208,
+   "modified": "2026-10-24T21:30:14+0200",
+   "description": "ab_seed_counts on both (800 1600 9000 15000 2000)"
+  },
+  {
+   "path": "01-functional/A/build.log",
+   "bytes": 32026,
+   "modified": "2026-10-25T02:16:53+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/clone.log",
+   "bytes": 580,
+   "modified": "2026-10-25T02:15:10+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/describe.log",
+   "bytes": 69,
+   "modified": "2026-10-25T02:15:12+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/dotnet-info.log",
+   "bytes": 9,
+   "modified": "2026-10-25T02:15:13+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-build.log",
+   "bytes": 1594,
+   "modified": "2026-10-25T02:31:28+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-ci.log",
+   "bytes": 356,
+   "modified": "2026-10-25T02:29:29+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-lint.log",
+   "bytes": 357,
+   "modified": "2026-10-25T02:29:46+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-test.log",
+   "bytes": 1329,
+   "modified": "2026-10-25T02:29:51+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-typecheck.log",
+   "bytes": 50,
+   "modified": "2026-10-25T02:29:29+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/fe-vitest-junit.xml",
+   "bytes": 19484,
+   "modified": "2026-10-25T02:29:51+0100",
+   "description": "A frontend vitest JUnit report"
+  },
+  {
+   "path": "01-functional/A/format.log",
+   "bytes": 123,
+   "modified": "2026-10-25T02:26:26+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/test.log",
+   "bytes": 4650,
+   "modified": "2026-10-25T02:25:51+0100",
+   "description": "A functional step log (fresh clone of thesis-v3-a)"
+  },
+  {
+   "path": "01-functional/A/timings.txt",
+   "bytes": 688,
+   "modified": "2026-10-25T02:31:28+0100",
+   "description": "A functional steps: rc + duration"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_20_net10.0.trx",
+   "bytes": 67265,
+   "modified": "2026-10-25T02:17:22+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0.trx",
+   "bytes": 41240,
+   "modified": "2026-10-25T02:17:22+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[1].trx",
+   "bytes": 42013,
+   "modified": "2026-10-25T02:17:22+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[2].trx",
+   "bytes": 40414,
+   "modified": "2026-10-25T02:17:22+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[3].trx",
+   "bytes": 94682,
+   "modified": "2026-10-25T02:17:31+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[4].trx",
+   "bytes": 4564,
+   "modified": "2026-10-25T02:17:31+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[5].trx",
+   "bytes": 55961,
+   "modified": "2026-10-25T02:19:47+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-25_02_20_35_net10.0.trx",
+   "bytes": 21148252,
+   "modified": "2026-10-25T02:25:51+0100",
+   "description": "A dotnet test TRX result file (one per test project)"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/clone.log",
+   "bytes": 580,
+   "modified": "2026-10-25T02:15:09+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/describe.log",
+   "bytes": 69,
+   "modified": "2026-10-25T02:15:10+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/ensure-templbook-embed.log",
+   "bytes": 225,
+   "modified": "2026-10-25T02:15:18+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/go-version.log",
+   "bytes": 48,
+   "modified": "2026-10-25T02:15:14+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/lint-check-generated.log",
+   "bytes": 1492,
+   "modified": "2026-10-25T02:21:43+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B-attempt1-aborted/timings.txt",
+   "bytes": 273,
+   "modified": "2026-10-25T02:15:19+0100",
+   "description": "Aborted first B CI replay (host swap-thrash), kept for transparency"
+  },
+  {
+   "path": "01-functional/B/clone.log",
+   "bytes": 580,
+   "modified": "2026-10-25T02:32:23+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/coverage-postgres.out",
+   "bytes": 28216,
+   "modified": "2026-10-25T02:41:11+0100",
+   "description": "B coverage profile"
+  },
+  {
+   "path": "01-functional/B/coverage.out",
+   "bytes": 1216476,
+   "modified": "2026-10-25T02:40:36+0100",
+   "description": "B coverage profile"
+  },
+  {
+   "path": "01-functional/B/describe.log",
+   "bytes": 69,
+   "modified": "2026-10-25T02:32:23+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/ensure-templbook-embed.log",
+   "bytes": 225,
+   "modified": "2026-10-25T02:32:28+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/go-test-counts.txt",
+   "bytes": 163,
+   "modified": "2026-10-25T02:48:24+0100",
+   "description": "B pass/fail/skip counts per lane"
+  },
+  {
+   "path": "01-functional/B/go-version.log",
+   "bytes": 48,
+   "modified": "2026-10-25T02:32:26+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-check-generated.log",
+   "bytes": 412,
+   "modified": "2026-10-25T02:32:30+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-gofmt.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:32:32+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-golangci-attempt1-network-timeout.log",
+   "bytes": 258,
+   "modified": "2026-10-25T02:34:57+0100",
+   "description": "B golangci-lint first attempt (failed on proxy.golang.org TLS timeout \u2014 environment)"
+  },
+  {
+   "path": "01-functional/B/lint-golangci.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:49:03+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-templ-fmt.log",
+   "bytes": 76,
+   "modified": "2026-10-25T02:32:32+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-ts.log",
+   "bytes": 1261,
+   "modified": "2026-10-25T02:48:12+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/lint-vet.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:32:33+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/test-go-postgres.jsonl",
+   "bytes": 163568,
+   "modified": "2026-10-25T02:41:11+0100",
+   "description": "B go test -json event stream"
+  },
+  {
+   "path": "01-functional/B/test-go-postgres.log",
+   "bytes": 34,
+   "modified": "2026-10-25T02:41:11+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/test-go-redis.jsonl",
+   "bytes": 1088,
+   "modified": "2026-10-25T02:41:51+0100",
+   "description": "B go test -json event stream"
+  },
+  {
+   "path": "01-functional/B/test-go-redis.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:41:11+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/test-go.jsonl",
+   "bytes": 388703,
+   "modified": "2026-10-25T02:40:36+0100",
+   "description": "B go test -json event stream"
+  },
+  {
+   "path": "01-functional/B/test-go.log",
+   "bytes": 197,
+   "modified": "2026-10-25T02:40:33+0100",
+   "description": "B CI-replay step log (fresh clone of thesis-v3-b, docker)"
+  },
+  {
+   "path": "01-functional/B/timings.txt",
+   "bytes": 1096,
+   "modified": "2026-10-25T02:52:06+0100",
+   "description": "B CI replay steps: rc + duration (golangci-lint rerun appended)"
+  },
+  {
+   "path": "01-functional/functional-summary.json",
+   "bytes": 6894,
+   "modified": "2026-10-25T02:52:26+0100",
+   "description": "Functional gates summary (A TRX counts, B go test counts, steps, verdicts)"
+  },
+  {
+   "path": "02-live-checks/SUMMARY.md",
+   "bytes": 12166,
+   "modified": "2026-10-24T21:39:06+0200",
+   "description": "Live checks summary: endpoint table, posture, card sizes v1 vs v3, findings"
+  },
+  {
+   "path": "02-live-checks/b-ws-private-gate/b-ws-private-gate.js",
+   "bytes": 4007,
+   "modified": "2026-10-24T21:34:42+0200",
+   "description": "B private-comment WebSocket gate live test (k6 script, log, result PASS)"
+  },
+  {
+   "path": "02-live-checks/b-ws-private-gate/k6.log",
+   "bytes": 552,
+   "modified": "2026-10-24T21:34:59+0200",
+   "description": "B private-comment WebSocket gate live test (k6 script, log, result PASS)"
+  },
+  {
+   "path": "02-live-checks/b-ws-private-gate/result.json",
+   "bytes": 382,
+   "modified": "2026-10-24T21:34:59+0200",
+   "description": "B private-comment WebSocket gate live test (k6 script, log, result PASS)"
+  },
+  {
+   "path": "02-live-checks/endpoints.tsv",
+   "bytes": 10509,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Every h6 endpoint on both sides: status, gzip/raw bytes, encoding, ms"
+  },
+  {
+   "path": "02-live-checks/health.txt",
+   "bytes": 316,
+   "modified": "2026-10-24T21:32:37+0200",
+   "description": "TLS / health / limiter + runtime env evidence"
+  },
+  {
+   "path": "02-live-checks/ids.txt",
+   "bytes": 1262,
+   "modified": "2026-10-24T21:32:12+0200",
+   "description": "IDs used by the live checks (deterministic seeds)"
+  },
+  {
+   "path": "02-live-checks/limiter-and-runtime-env.txt",
+   "bytes": 1136,
+   "modified": "2026-10-24T21:32:38+0200",
+   "description": "TLS / health / limiter + runtime env evidence"
+  },
+  {
+   "path": "02-live-checks/live-checks.log",
+   "bytes": 2929,
+   "modified": "2026-10-24T21:34:20+0200",
+   "description": "Live checks log incl. WS re-check and ticket replay matrix"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-backend-59fccc875b-4l72v.log",
+   "bytes": 19048,
+   "modified": "2026-10-24T21:35:12+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-backend-59fccc875b-fl727.log",
+   "bytes": 317832,
+   "modified": "2026-10-24T21:35:12+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-events.txt",
+   "bytes": 27031,
+   "modified": "2026-10-24T21:35:14+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-frontend-9bb7b77ff-fk9vm.log",
+   "bytes": 141,
+   "modified": "2026-10-24T21:35:12+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-minio-0.log",
+   "bytes": 330,
+   "modified": "2026-10-24T21:35:13+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-minio-create-bucket-tpjl5.log",
+   "bytes": 71,
+   "modified": "2026-10-24T21:35:13+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-postgres-0.log",
+   "bytes": 1930,
+   "modified": "2026-10-24T21:35:13+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/A-rabbitmq-0.log",
+   "bytes": 19646,
+   "modified": "2026-10-24T21:35:14+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-events.txt",
+   "bytes": 16647,
+   "modified": "2026-10-24T21:35:16+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-gomx-5bc6f46dc7-5hzh4.log",
+   "bytes": 8154,
+   "modified": "2026-10-24T21:35:14+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-gomx-5bc6f46dc7-chd6g.log",
+   "bytes": 6463,
+   "modified": "2026-10-24T21:35:15+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-minio-0.log",
+   "bytes": 330,
+   "modified": "2026-10-24T21:35:15+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-postgres-0.log",
+   "bytes": 2194,
+   "modified": "2026-10-24T21:35:15+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/B-redis-75c79bffcf-dnqb2.log",
+   "bytes": 488,
+   "modified": "2026-10-24T21:35:15+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/logs-before-round/SUMMARY.txt",
+   "bytes": 3551,
+   "modified": "2026-10-24T21:35:16+0200",
+   "description": "Pod logs + events before the round"
+  },
+  {
+   "path": "02-live-checks/prometheus-targets.txt",
+   "bytes": 1106,
+   "modified": "2026-10-24T21:35:57+0200",
+   "description": "Prometheus scrape targets (19/19 UP)"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-batch.body",
+   "bytes": 1483,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-batch.body.gz",
+   "bytes": 489,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-batch.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-batch.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p1.body",
+   "bytes": 14264,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p1.body.gz",
+   "bytes": 3775,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p1.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p1.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p2.body",
+   "bytes": 14265,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p2.body.gz",
+   "bytes": 3826,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p2.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J1-feed-p2.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-batch.body",
+   "bytes": 7401,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-batch.body.gz",
+   "bytes": 1954,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-batch.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-batch.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-comments.body",
+   "bytes": 101084,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-comments.body.gz",
+   "bytes": 23375,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-comments.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-comments.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-thread.body",
+   "bytes": 1720,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-thread.body.gz",
+   "bytes": 782,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-thread.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J2-thread.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J3-comment.body",
+   "bytes": 42,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J3-comment.headers",
+   "bytes": 350,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-attach.body",
+   "bytes": 0,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-attach.headers",
+   "bytes": 235,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-commit.body",
+   "bytes": 128,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-commit.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-initiate.body",
+   "bytes": 486,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-initiate.headers",
+   "bytes": 331,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-put.headers",
+   "bytes": 468,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-thread.body",
+   "bytes": 41,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J4-thread.headers",
+   "bytes": 341,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J5-like.body",
+   "bytes": 99,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J5-like.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J5-unlike.body",
+   "bytes": 100,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J5-unlike.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-abandon.body",
+   "bytes": 14277,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-abandon.body.gz",
+   "bytes": 3987,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-abandon.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-abandon.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-zephyr.body",
+   "bytes": 14277,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-zephyr.body.gz",
+   "bytes": 4042,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-zephyr.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J6-search-zephyr.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-stats.body",
+   "bytes": 144,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-stats.body.gz",
+   "bytes": 144,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-stats.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-stats.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-threads.body",
+   "bytes": 753,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-threads.body.gz",
+   "bytes": 456,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-threads.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J7-threads.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:15+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J8-ticket.body",
+   "bytes": 289,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J8-ticket.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-friends.body",
+   "bytes": 453,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-friends.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-open.body",
+   "bytes": 73,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-open.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-send.body",
+   "bytes": 115,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-J9-send.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:19+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-login.headers",
+   "bytes": 515,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-login.json",
+   "bytes": 449,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-login.status",
+   "bytes": 3,
+   "modified": "2026-10-24T21:32:18+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-nav.body",
+   "bytes": 2113,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-nav.body.gz",
+   "bytes": 604,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-nav.headers",
+   "bytes": 329,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-nav.headers.raw",
+   "bytes": 305,
+   "modified": "2026-10-24T21:32:14+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-health-ready.body",
+   "bytes": 13678,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-health-ready.body.gz",
+   "bytes": 3123,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-health-ready.headers",
+   "bytes": 431,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-health-ready.headers.raw",
+   "bytes": 453,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-metrics.body",
+   "bytes": 13678,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-metrics.body.gz",
+   "bytes": 3123,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-metrics.headers",
+   "bytes": 431,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-metrics.headers.raw",
+   "bytes": 453,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-category-slug.body",
+   "bytes": 274,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-category-slug.body.gz",
+   "bytes": 232,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-category-slug.headers",
+   "bytes": 322,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-category-slug.headers.raw",
+   "bytes": 298,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-comments.body",
+   "bytes": 270,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-comments.body.gz",
+   "bytes": 228,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-comments.headers",
+   "bytes": 322,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-comments.headers.raw",
+   "bytes": 298,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-feed.body",
+   "bytes": 274,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-feed.body.gz",
+   "bytes": 231,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-feed.headers",
+   "bytes": 322,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-feed.headers.raw",
+   "bytes": 298,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-thread.body",
+   "bytes": 270,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-thread.body.gz",
+   "bytes": 229,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-thread.headers",
+   "bytes": 322,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-sec-private-thread.headers.raw",
+   "bytes": 298,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-spa-home.body",
+   "bytes": 16589,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-spa-home.body.gz",
+   "bytes": 3740,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-spa-home.headers",
+   "bytes": 393,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-spa-home.headers.raw",
+   "bytes": 415,
+   "modified": "2026-10-24T21:32:16+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-ws-replay.txt",
+   "bytes": 3672,
+   "modified": "2026-10-24T21:33:52+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/A-ws.txt",
+   "bytes": 3672,
+   "modified": "2026-10-24T21:33:49+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-feed-p2.body",
+   "bytes": 126660,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-feed-p2.body.gz",
+   "bytes": 10614,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-feed-p2.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-feed-p2.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-space.body",
+   "bytes": 144048,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-space.body.gz",
+   "bytes": 15435,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-space.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J1-space.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J2-thread.body",
+   "bytes": 742812,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J2-thread.body.gz",
+   "bytes": 50525,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J2-thread.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J2-thread.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J3-comment.body",
+   "bytes": 0,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J3-comment.headers",
+   "bytes": 775,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J4-poll.body",
+   "bytes": 213,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J4-post.body",
+   "bytes": 0,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J4-post.headers",
+   "bytes": 763,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J4-upload.body",
+   "bytes": 75,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J4-upload.headers",
+   "bytes": 677,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J5-vote-1.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J5-vote.body",
+   "bytes": 569,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J5-vote.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-abandon.body",
+   "bytes": 142422,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-abandon.body.gz",
+   "bytes": 15234,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-abandon.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-abandon.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-zephyr.body",
+   "bytes": 141399,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-zephyr.body.gz",
+   "bytes": 15041,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-zephyr.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J6-search-zephyr.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J7-profile.body",
+   "bytes": 25619,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J7-profile.body.gz",
+   "bytes": 5855,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J7-profile.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J7-profile.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J9-dm.body",
+   "bytes": 0,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-J9-dm.headers",
+   "bytes": 668,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-healthz.body",
+   "bytes": 2,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-healthz.body.gz",
+   "bytes": 2,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-healthz.headers",
+   "bytes": 609,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-healthz.headers.raw",
+   "bytes": 609,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-login.headers",
+   "bytes": 789,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-login.status",
+   "bytes": 3,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-messages.html",
+   "bytes": 23347,
+   "modified": "2026-10-24T21:32:27+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-metrics.body",
+   "bytes": 12621,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-metrics.body.gz",
+   "bytes": 3840,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-metrics.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-metrics.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-nav.body",
+   "bytes": 20906,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-nav.body.gz",
+   "bytes": 4668,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-nav.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-nav.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-readyz.body",
+   "bytes": 2,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-readyz.body.gz",
+   "bytes": 2,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-readyz.headers",
+   "bytes": 609,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-readyz.headers.raw",
+   "bytes": 609,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-oauth.body",
+   "bytes": 57,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-oauth.body.gz",
+   "bytes": 57,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-oauth.headers",
+   "bytes": 727,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-oauth.headers.raw",
+   "bytes": 727,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-space.body",
+   "bytes": 12621,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-space.body.gz",
+   "bytes": 3840,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-space.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-space.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-thread.body",
+   "bytes": 12621,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-thread.body.gz",
+   "bytes": 3840,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-thread.headers",
+   "bytes": 712,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-sec-private-thread.headers.raw",
+   "bytes": 688,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-stats.body",
+   "bytes": 67,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-stats.body.gz",
+   "bytes": 67,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-stats.headers",
+   "bytes": 677,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-stats.headers.raw",
+   "bytes": 677,
+   "modified": "2026-10-24T21:32:26+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-ws-anon.txt",
+   "bytes": 3751,
+   "modified": "2026-10-24T21:33:58+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/raw/B-ws.txt",
+   "bytes": 3981,
+   "modified": "2026-10-24T21:33:55+0200",
+   "description": "Raw headers/bodies of the live checks"
+  },
+  {
+   "path": "02-live-checks/seed-shape-A.txt",
+   "bytes": 1389,
+   "modified": "2026-10-24T21:35:16+0200",
+   "description": "Seed shape SQL (AB-START-HERE \u00a75.1) after the deploys"
+  },
+  {
+   "path": "02-live-checks/seed-shape-B.txt",
+   "bytes": 1269,
+   "modified": "2026-10-24T21:35:17+0200",
+   "description": "Seed shape SQL (AB-START-HERE \u00a75.1) after the deploys"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/A-postgres.log",
+   "bytes": 261643,
+   "modified": "2026-10-25T02:30:55+0100",
+   "description": "Raw Postgres log_statement=all window"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/B-postgres.log",
+   "bytes": 861901,
+   "modified": "2026-10-25T02:30:57+0100",
+   "description": "Raw Postgres log_statement=all window"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-backend-5d5b44f66b-6qdgh.log",
+   "bytes": 4859,
+   "modified": "2026-10-25T02:25:56+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-backend-5d5b44f66b-97fhw.log",
+   "bytes": 56364,
+   "modified": "2026-10-25T02:26:13+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-events.txt",
+   "bytes": 11783,
+   "modified": "2026-10-25T02:26:17+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-frontend-9bb7b77ff-fk9vm.log",
+   "bytes": 141,
+   "modified": "2026-10-25T02:26:13+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-minio-0.log",
+   "bytes": 371,
+   "modified": "2026-10-25T02:26:15+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-minio-create-bucket-tpjl5.log",
+   "bytes": 71,
+   "modified": "2026-10-25T02:26:15+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-postgres-0.log",
+   "bytes": 2768,
+   "modified": "2026-10-25T02:26:16+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/A-rabbitmq-0.log",
+   "bytes": 23098,
+   "modified": "2026-10-25T02:26:16+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-events.txt",
+   "bytes": 16107,
+   "modified": "2026-10-25T02:26:18+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-gomx-5bc6f46dc7-fhrx4.log",
+   "bytes": 1485,
+   "modified": "2026-10-25T02:26:17+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-gomx-5bc6f46dc7-p9t5g.log",
+   "bytes": 1403,
+   "modified": "2026-10-25T02:26:17+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-minio-0.log",
+   "bytes": 330,
+   "modified": "2026-10-25T02:26:18+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-postgres-0.log",
+   "bytes": 10024,
+   "modified": "2026-10-25T02:26:18+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/B-redis-75c79bffcf-dnqb2.log",
+   "bytes": 488,
+   "modified": "2026-10-25T02:26:18+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/logs-before-round/SUMMARY.txt",
+   "bytes": 4436,
+   "modified": "2026-10-25T02:26:19+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/prometheus-targets.txt",
+   "bytes": 239,
+   "modified": "2026-10-25T02:25:55+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/seed-shape-A.txt",
+   "bytes": 1389,
+   "modified": "2026-10-25T02:26:19+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/pristine-extra/seed-shape-B.txt",
+   "bytes": 1269,
+   "modified": "2026-10-25T02:26:19+0100",
+   "description": "Seed shape / targets / logs after the pristine reseed"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/reseed.log",
+   "bytes": 140,
+   "modified": "2026-10-25T02:25:53+0100",
+   "description": "Pristine reseed before the SQL counts"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/run.log",
+   "bytes": 303,
+   "modified": "2026-10-25T02:30:57+0100",
+   "description": "SQL window run log (log_statement on/off verified)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/sql-classify.py",
+   "bytes": 4985,
+   "modified": "2026-10-25T02:42:28+0100",
+   "description": "Script used for the SQL counts (copy)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/sql-per-journey.sh",
+   "bytes": 11589,
+   "modified": "2026-10-25T02:42:28+0100",
+   "description": "Script used for the SQL counts (copy)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/summary-classified.json",
+   "bytes": 13991,
+   "modified": "2026-10-25T02:42:51+0100",
+   "description": "SQL statements per journey, connection-aware classification (authoritative)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/summary-classified.txt",
+   "bytes": 11974,
+   "modified": "2026-10-25T02:42:51+0100",
+   "description": "SQL statements per journey, connection-aware classification (authoritative)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/summary.json",
+   "bytes": 32161,
+   "modified": "2026-10-25T02:30:57+0100",
+   "description": "First-pass SQL classification (superseded by summary-classified)"
+  },
+  {
+   "path": "02-live-checks/sql-per-journey/summary.txt",
+   "bytes": 29375,
+   "modified": "2026-10-25T02:30:57+0100",
+   "description": "First-pass SQL classification (superseded by summary-classified)"
+  },
+  {
+   "path": "02-live-checks/tls.txt",
+   "bytes": 775,
+   "modified": "2026-10-24T21:32:33+0200",
+   "description": "TLS / health / limiter + runtime env evidence"
+  },
+  {
+   "path": "03-round/REPORT-20261024-2150-v3.md",
+   "bytes": 15235,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Generated round report (copy of the round archive's REPORT.md)"
+  },
+  {
+   "path": "03-round/ab-status-after-resume.txt",
+   "bytes": 1529,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "make ab-status output after the round / after the resume"
+  },
+  {
+   "path": "03-round/ab-status-after-round.txt",
+   "bytes": 1610,
+   "modified": "2026-10-25T02:35:24+0200",
+   "description": "make ab-status output after the round / after the resume"
+  },
+  {
+   "path": "03-round/events-all-namespaces-after-round.txt",
+   "bytes": 62348,
+   "modified": "2026-10-25T02:46:09+0200",
+   "description": "kubectl get events -A right after the round"
+  },
+  {
+   "path": "03-round/gate-stdout.log",
+   "bytes": 10453,
+   "modified": "2026-10-24T21:47:53+0200",
+   "description": "Gate round stdout (smoke:1 --label v3-gate)"
+  },
+  {
+   "path": "03-round/logs-round-window/A-499.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:27:32+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/A-5xx.log",
+   "bytes": 1202310,
+   "modified": "2026-10-25T02:27:32+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/A-backend-errors-warnings.log",
+   "bytes": 6624830,
+   "modified": "2026-10-25T02:40:39+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/A-backend-slow-requests-gt1s.log",
+   "bytes": 5075496,
+   "modified": "2026-10-25T02:27:29+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/A-other-pods-errors.log",
+   "bytes": 5582,
+   "modified": "2026-10-25T02:27:35+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/B-499.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:28:02+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/B-5xx.log",
+   "bytes": 0,
+   "modified": "2026-10-25T02:28:00+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/B-gomx-errors-warnings.log",
+   "bytes": 1712707,
+   "modified": "2026-10-25T02:27:40+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/B-gomx-slow-requests-gt1s.log",
+   "bytes": 5850584,
+   "modified": "2026-10-25T02:28:00+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/B-other-pods-errors.log",
+   "bytes": 2338,
+   "modified": "2026-10-25T02:28:10+0100",
+   "description": "Loki lines for the round window (errors/warnings, slow requests, 5xx, 499)"
+  },
+  {
+   "path": "03-round/logs-round-window/summary.json",
+   "bytes": 5684,
+   "modified": "2026-10-25T02:40:39+0100",
+   "description": "Loki export summary (line counts, top messages, recovered chunk)"
+  },
+  {
+   "path": "03-round/meta-A.json",
+   "bytes": 2577,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Environment record per side (image, digest, env, seed); .resume-* = state at the resume"
+  },
+  {
+   "path": "03-round/meta-A.resume-20261025-0246.json",
+   "bytes": 2578,
+   "modified": "2026-10-25T02:15:09+0100",
+   "description": "Environment record per side (image, digest, env, seed); .resume-* = state at the resume"
+  },
+  {
+   "path": "03-round/meta-B.json",
+   "bytes": 3778,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Environment record per side (image, digest, env, seed); .resume-* = state at the resume"
+  },
+  {
+   "path": "03-round/meta-B.resume-20261025-0246.json",
+   "bytes": 3779,
+   "modified": "2026-10-25T02:15:09+0100",
+   "description": "Environment record per side (image, digest, env, seed); .resume-* = state at the resume"
+  },
+  {
+   "path": "03-round/pods-after-round.txt",
+   "bytes": 5749,
+   "modified": "2026-10-25T02:46:09+0200",
+   "description": "kubectl get pods -A right after the round"
+  },
+  {
+   "path": "03-round/prometheus-round-window.json",
+   "bytes": 7333546,
+   "modified": "2026-10-25T02:35:29+0200",
+   "description": "Prometheus query_range export of the whole round window (102 queries, step 15 s)"
+  },
+  {
+   "path": "03-round/round-stdout-resume.log",
+   "bytes": 12166,
+   "modified": "2026-10-25T02:11:43+0100",
+   "description": "Resume stdout (--plan demo:10)"
+  },
+  {
+   "path": "03-round/round-stdout.log",
+   "bytes": 105928,
+   "modified": "2026-10-25T02:33:36+0200",
+   "description": "Measured round stdout (demo:10,capacity:1 --label v3)"
+  },
+  {
+   "path": "03-round/round-summary-20261024-2150-v3.json",
+   "bytes": 126384,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Round summary JSON (per-profile aggregates, per-repeat values)"
+  },
+  {
+   "path": "03-round/round.json",
+   "bytes": 541,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Round metadata / final status / statistics (copies)"
+  },
+  {
+   "path": "03-round/stats.json",
+   "bytes": 21454,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Round metadata / final status / statistics (copies)"
+  },
+  {
+   "path": "03-round/status.json",
+   "bytes": 391,
+   "modified": "2026-10-25T02:14:53+0100",
+   "description": "Round metadata / final status / statistics (copies)"
+  },
+  {
+   "path": "04-static/STATIC-SUMMARY.md",
+   "bytes": 7046,
+   "modified": "2026-10-25T03:11:48+0100",
+   "description": "Static metrics summary (trivy, cloc, sizes, deps, Lighthouse) vs 2026-10-18"
+  },
+  {
+   "path": "04-static/artifact-metrics-A.txt",
+   "bytes": 785,
+   "modified": "2026-10-25T02:59:01+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/artifact-metrics-B.txt",
+   "bytes": 914,
+   "modified": "2026-10-25T03:00:11+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/artifact-size-A.log",
+   "bytes": 1170,
+   "modified": "2026-10-25T02:59:01+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/artifact-size-B.log",
+   "bytes": 146,
+   "modified": "2026-10-25T02:59:09+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/cloc-A-core.json",
+   "bytes": 1413,
+   "modified": "2026-10-25T02:58:46+0100",
+   "description": "cloc JSON (whole / core scope)"
+  },
+  {
+   "path": "04-static/cloc-A-core.log",
+   "bytes": 838,
+   "modified": "2026-10-25T02:58:46+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/cloc-A-whole.json",
+   "bytes": 1971,
+   "modified": "2026-10-25T02:58:45+0100",
+   "description": "cloc JSON (whole / core scope)"
+  },
+  {
+   "path": "04-static/cloc-A-whole.log",
+   "bytes": 1277,
+   "modified": "2026-10-25T02:58:45+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/cloc-B-core.json",
+   "bytes": 1567,
+   "modified": "2026-10-25T02:58:50+0100",
+   "description": "cloc JSON (whole / core scope)"
+  },
+  {
+   "path": "04-static/cloc-B-core.log",
+   "bytes": 438,
+   "modified": "2026-10-25T02:58:50+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/cloc-B-whole.json",
+   "bytes": 2093,
+   "modified": "2026-10-25T02:58:48+0100",
+   "description": "cloc JSON (whole / core scope)"
+  },
+  {
+   "path": "04-static/cloc-B-whole.log",
+   "bytes": 839,
+   "modified": "2026-10-25T02:58:48+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/cloc-version.txt",
+   "bytes": 5,
+   "modified": "2026-10-25T02:52:50+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/dependency-counts.err",
+   "bytes": 0,
+   "modified": "2026-10-25T02:59:09+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/dependency-counts.json",
+   "bytes": 328,
+   "modified": "2026-10-25T02:59:09+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/image-sizes.txt",
+   "bytes": 309,
+   "modified": "2026-10-25T02:58:55+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/lighthouse/comparison-v3-vs-20261018.md",
+   "bytes": 1393,
+   "modified": "2026-10-25T03:10:16+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-a-desktop.log",
+   "bytes": 1689,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-a-mobile.log",
+   "bytes": 3727,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-b-desktop.log",
+   "bytes": 1423,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-b-mobile.log",
+   "bytes": 2251,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/assertion-results.json",
+   "bytes": 945,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893949190.html",
+   "bytes": 848687,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893949190.json",
+   "bytes": 774822,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893974867.html",
+   "bytes": 708884,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893974867.json",
+   "bytes": 635359,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893988237.html",
+   "bytes": 858511,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792893988237.json",
+   "bytes": 784660,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894001525.html",
+   "bytes": 801436,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894001525.json",
+   "bytes": 718559,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894014199.html",
+   "bytes": 801863,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894014199.json",
+   "bytes": 719603,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894027283.html",
+   "bytes": 801829,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/.lighthouseci/lhr-1792894027283.json",
+   "bytes": 719333,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_05_37.report.html",
+   "bytes": 848687,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_05_37.report.json",
+   "bytes": 661517,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_05_52.report.html",
+   "bytes": 708884,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_05_52.report.json",
+   "bytes": 521714,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_06_18.report.html",
+   "bytes": 858511,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-c_bench_cat_01-2026_10_25_02_06_18.report.json",
+   "bytes": 671341,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_31.report.html",
+   "bytes": 801436,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_31.report.json",
+   "bytes": 614286,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_44.report.html",
+   "bytes": 801863,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_44.report.json",
+   "bytes": 614713,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_57.report.html",
+   "bytes": 801829,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_06_57.report.json",
+   "bytes": 614679,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/lighthouserc.json",
+   "bytes": 1581,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-desktop/manifest.json",
+   "bytes": 3228,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/assertion-results.json",
+   "bytes": 3939,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893859425.html",
+   "bytes": 708545,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893859425.json",
+   "bytes": 637214,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893874591.html",
+   "bytes": 754468,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893874591.json",
+   "bytes": 682299,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893888412.html",
+   "bytes": 753692,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893888412.json",
+   "bytes": 681116,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893902892.html",
+   "bytes": 645405,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893902892.json",
+   "bytes": 562014,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893915810.html",
+   "bytes": 798516,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893915810.json",
+   "bytes": 717217,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893928588.html",
+   "bytes": 798309,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/.lighthouseci/lhr-1792893928588.json",
+   "bytes": 716902,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_03_51.report.html",
+   "bytes": 708545,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_03_51.report.json",
+   "bytes": 521375,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_04_23.report.html",
+   "bytes": 754468,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_04_23.report.json",
+   "bytes": 567298,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_04_37.report.html",
+   "bytes": 753692,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-c_bench_cat_01-2026_10_25_02_04_37.report.json",
+   "bytes": 566532,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_04_51.report.html",
+   "bytes": 645405,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_04_51.report.json",
+   "bytes": 458245,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_05_06.report.html",
+   "bytes": 798516,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_05_06.report.json",
+   "bytes": 611346,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_05_19.report.html",
+   "bytes": 798309,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/forum_local-t_01KFYC00007TDG7BV19C58VB6T-2026_10_25_02_05_19.report.json",
+   "bytes": 611139,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/lighthouserc.json",
+   "bytes": 1551,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-a-mobile/manifest.json",
+   "bytes": 3234,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/assertion-results.json",
+   "bytes": 609,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894134831.html",
+   "bytes": 1011372,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894134831.json",
+   "bytes": 935365,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894150978.html",
+   "bytes": 1012333,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894150978.json",
+   "bytes": 937131,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894165122.html",
+   "bytes": 1010731,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894165122.json",
+   "bytes": 934319,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894178287.html",
+   "bytes": 743319,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894178287.json",
+   "bytes": 643745,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894191523.html",
+   "bytes": 743318,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894191523.json",
+   "bytes": 643694,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894204703.html",
+   "bytes": 743307,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/.lighthouseci/lhr-1792894204703.json",
+   "bytes": 643783,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_08_43.report.html",
+   "bytes": 1011372,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_08_43.report.json",
+   "bytes": 824032,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_08_58.report.html",
+   "bytes": 1012333,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_08_58.report.json",
+   "bytes": 824993,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_09_14.report.html",
+   "bytes": 1010731,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-c_bench7-2026_10_25_02_09_14.report.json",
+   "bytes": 823391,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_28.report.html",
+   "bytes": 743319,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_28.report.json",
+   "bytes": 556099,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_41.report.html",
+   "bytes": 743318,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_41.report.json",
+   "bytes": 556098,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_54.report.html",
+   "bytes": 743307,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/gomx_local-thread_1181-2026_10_25_02_09_54.report.json",
+   "bytes": 556087,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/lighthouserc.json",
+   "bytes": 1581,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-desktop/manifest.json",
+   "bytes": 2985,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/assertion-results.json",
+   "bytes": 1812,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894046651.html",
+   "bytes": 768239,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894046651.json",
+   "bytes": 694513,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894061664.html",
+   "bytes": 766717,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894061664.json",
+   "bytes": 691924,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894075715.html",
+   "bytes": 766891,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894075715.json",
+   "bytes": 692148,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894088752.html",
+   "bytes": 879424,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894088752.json",
+   "bytes": 781648,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894102058.html",
+   "bytes": 879510,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894102058.json",
+   "bytes": 781634,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894115271.html",
+   "bytes": 878845,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/.lighthouseci/lhr-1792894115271.json",
+   "bytes": 780501,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_15.report.html",
+   "bytes": 768239,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_15.report.json",
+   "bytes": 580904,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_30.report.html",
+   "bytes": 766717,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_30.report.json",
+   "bytes": 579382,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_44.report.html",
+   "bytes": 766891,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-c_bench7-2026_10_25_02_07_44.report.json",
+   "bytes": 579556,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_07_58.report.html",
+   "bytes": 879424,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_07_58.report.json",
+   "bytes": 692209,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_08_11.report.html",
+   "bytes": 879510,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_08_11.report.json",
+   "bytes": 692295,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_08_25.report.html",
+   "bytes": 878845,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/gomx_local-thread_1181-2026_10_25_02_08_25.report.json",
+   "bytes": 691630,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/lighthouserc.json",
+   "bytes": 1551,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-cluster-b-mobile/manifest.json",
+   "bytes": 2991,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-metrics-cluster-a-desktop.txt",
+   "bytes": 1898,
+   "modified": "2026-10-25T03:07:10+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-metrics-cluster-a-mobile.txt",
+   "bytes": 1881,
+   "modified": "2026-10-25T03:05:31+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-metrics-cluster-b-desktop.txt",
+   "bytes": 1622,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/lighthouse-metrics-cluster-b-mobile.txt",
+   "bytes": 1629,
+   "modified": "2026-10-25T03:08:38+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/lighthouse/timings.txt",
+   "bytes": 455,
+   "modified": "2026-10-25T03:10:07+0100",
+   "description": "Lighthouse on the cluster (A/B \u00d7 mobile/desktop): reports, metrics, logs"
+  },
+  {
+   "path": "04-static/screenshots/A-feed-mobile.png",
+   "bytes": 45980,
+   "modified": "2026-10-25T03:10:42+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/A-feed.png",
+   "bytes": 212275,
+   "modified": "2026-10-25T03:10:35+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/A-home.png",
+   "bytes": 230334,
+   "modified": "2026-10-25T03:10:34+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/A-profile.png",
+   "bytes": 93401,
+   "modified": "2026-10-25T03:10:39+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/A-search.png",
+   "bytes": 204880,
+   "modified": "2026-10-25T03:10:38+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/A-thread.png",
+   "bytes": 168270,
+   "modified": "2026-10-25T03:10:37+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-feed-mobile.png",
+   "bytes": 61358,
+   "modified": "2026-10-25T03:10:42+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-feed.png",
+   "bytes": 261513,
+   "modified": "2026-10-25T03:10:40+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-home.png",
+   "bytes": 271602,
+   "modified": "2026-10-25T03:10:39+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-profile.png",
+   "bytes": 79837,
+   "modified": "2026-10-25T03:10:41+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-search.png",
+   "bytes": 218342,
+   "modified": "2026-10-25T03:10:41+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/B-thread.png",
+   "bytes": 160594,
+   "modified": "2026-10-25T03:10:40+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/screenshots/manifest.tsv",
+   "bytes": 704,
+   "modified": "2026-10-25T03:10:42+0100",
+   "description": "Screenshots of both apps on the Benchmark data (chrome-headless-shell)"
+  },
+  {
+   "path": "04-static/static-summary.json",
+   "bytes": 9771,
+   "modified": "2026-10-25T03:01:26+0100",
+   "description": "Static metrics machine-readable (+ v1 reference values)"
+  },
+  {
+   "path": "04-static/timings.txt",
+   "bytes": 742,
+   "modified": "2026-10-25T02:59:09+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-A.log",
+   "bytes": 151631,
+   "modified": "2026-10-25T02:57:29+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-B.log",
+   "bytes": 22624,
+   "modified": "2026-10-25T02:57:41+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-image-A-api.json",
+   "bytes": 58814,
+   "modified": "2026-10-25T02:57:48+0100",
+   "description": "trivy JSON report"
+  },
+  {
+   "path": "04-static/trivy-image-A-api.log",
+   "bytes": 2198,
+   "modified": "2026-10-25T02:57:48+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-image-A-web.json",
+   "bytes": 52162,
+   "modified": "2026-10-25T02:58:40+0100",
+   "description": "trivy JSON report"
+  },
+  {
+   "path": "04-static/trivy-image-A-web.log",
+   "bytes": 1017,
+   "modified": "2026-10-25T02:58:40+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-image-B.json",
+   "bytes": 43315,
+   "modified": "2026-10-25T02:58:42+0100",
+   "description": "trivy JSON report"
+  },
+  {
+   "path": "04-static/trivy-image-B.log",
+   "bytes": 911,
+   "modified": "2026-10-25T02:58:42+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "04-static/trivy-report-A.json",
+   "bytes": 449864,
+   "modified": "2026-10-25T02:57:29+0100",
+   "description": "trivy JSON report"
+  },
+  {
+   "path": "04-static/trivy-report-B.json",
+   "bytes": 407278,
+   "modified": "2026-10-25T02:57:41+0100",
+   "description": "trivy JSON report"
+  },
+  {
+   "path": "04-static/trivy-version.txt",
+   "bytes": 360,
+   "modified": "2026-10-25T02:52:42+0100",
+   "description": "Static-metrics raw output / log"
+  },
+  {
+   "path": "05-analysis/ARTICLE-RESULTS-DIGEST.md",
+   "bytes": 12335,
+   "modified": "2026-10-25T03:11:58+0100",
+   "description": "Citation-ready digest for the article (tables, figures, key findings, caveats)"
+  },
+  {
+   "path": "05-analysis/CAMPAIGN-REPORT.md",
+   "bytes": 33487,
+   "modified": "2026-10-25T03:11:58+0100",
+   "description": "Campaign report: validity, H1/H2/H3, SQL per journey, findings, threats, next steps"
+  },
+  {
+   "path": "05-analysis/capacity-k6-vs-sut-cores.txt",
+   "bytes": 2851,
+   "modified": "2026-10-25T02:24:06+0100",
+   "description": "Capacity per step: offered/achieved, core p95, k6 cores vs SUT cores (evidence of host saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/k6-128.log",
+   "bytes": 426,
+   "modified": "2026-10-25T02:14:30+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/k6-256.log",
+   "bytes": 430,
+   "modified": "2026-10-25T02:14:29+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/k6-32.log",
+   "bytes": 351,
+   "modified": "2026-10-25T02:14:32+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/k6-64.log",
+   "bytes": 431,
+   "modified": "2026-10-25T02:14:32+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/makepng-bench.js",
+   "bytes": 893,
+   "modified": "2026-10-25T02:13:57+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/results.txt",
+   "bytes": 695,
+   "modified": "2026-10-25T02:14:32+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/time-128.txt",
+   "bytes": 76,
+   "modified": "2026-10-25T02:14:30+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/time-256.txt",
+   "bytes": 76,
+   "modified": "2026-10-25T02:14:29+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/time-32.txt",
+   "bytes": 74,
+   "modified": "2026-10-25T02:14:32+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/k6-makepng-bench/time-64.txt",
+   "bytes": 75,
+   "modified": "2026-10-25T02:14:32+0100",
+   "description": "k6 micro-benchmark of the J4 synthetic PNG (root cause of the load-generator saturation)"
+  },
+  {
+   "path": "05-analysis/per-endpoint-demo.txt",
+   "bytes": 4559,
+   "modified": "2026-10-25T02:23:12+0100",
+   "description": "Per-endpoint latency + accepted/failed counts, demo mean of 10 runs per side"
+  },
+  {
+   "path": "05-analysis/thesis_figures-N-label-fix.patch",
+   "bytes": 2619,
+   "modified": "2026-10-25T02:19:02+0100",
+   "description": "Patch for the hard-coded 'N = 5' figure titles (applied to a scratch copy only)"
+  },
+  {
+   "path": "PROGRESS.md",
+   "bytes": 24245,
+   "modified": "2026-10-25T03:13:59+0100",
+   "description": "Resumable step log: what ran, commands, start/end, results, raw-output paths (append-only; CEST \u2192 CET switch noted)"
+  },
+  {
+   "path": "index.json",
+   "bytes": 105943,
+   "modified": "2026-10-25T03:12:22+0100",
+   "description": "This index"
+  }
+ ]
+}

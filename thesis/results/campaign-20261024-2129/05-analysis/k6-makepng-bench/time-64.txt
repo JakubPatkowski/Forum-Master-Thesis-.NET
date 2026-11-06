@@ -1,0 +1,1 @@
+px=64 n=40 wall_s=1.50 user_s=1.57 sys_s=0.13 maxrss_kb=42932 cpu_pct=112%

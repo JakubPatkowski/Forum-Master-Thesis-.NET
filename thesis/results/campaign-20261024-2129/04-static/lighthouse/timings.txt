@@ -1,0 +1,6 @@
+start 2026-10-25T03:03:40+01:00 load: 2.56 24.27 45.76
+lighthouse-a-mobile rc=0 duration_s=111 end=2026-10-25T03:05:31+01:00 load: 3.50 18.48 41.29
+lighthouse-a-desktop rc=0 duration_s=99 end=2026-10-25T03:07:10+01:00 load: 3.78 14.54 37.56
+lighthouse-b-mobile rc=0 duration_s=88 end=2026-10-25T03:08:38+01:00 load: 1.97 11.30 34.40
+lighthouse-b-desktop rc=0 duration_s=89 end=2026-10-25T03:10:07+01:00 load: 5.16 9.64 31.65
+end 2026-10-25T03:10:07+01:00

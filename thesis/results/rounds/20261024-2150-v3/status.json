@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 20/20 valid",
+  "plan": "demo:10",
+  "current_run": "demo/A/run-10",
+  "runs_done": 20,
+  "runs_total": 20,
+  "runs_valid": 20,
+  "round_dir": "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3",
+  "pid": 1146718,
+  "updated_epoch": 1792890703,
+  "heartbeat_epoch": 1792890703,
+  "updated": "2026-10-25 02:11:43"
+}

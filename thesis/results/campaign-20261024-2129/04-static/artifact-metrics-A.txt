@@ -1,0 +1,13 @@
+# HELP artifact_size_bytes Size of a build artifact in bytes (raw; plus gzip for web assets).
+# TYPE artifact_size_bytes gauge
+artifact_size_bytes{artifact="first_load_js",encoding="raw"} 645789
+artifact_size_bytes{artifact="first_load_js",encoding="gzip"} 195311
+artifact_size_bytes{artifact="first_load_css",encoding="raw"} 73038
+artifact_size_bytes{artifact="first_load_css",encoding="gzip"} 16582
+# HELP web_assets_total_bytes Total gzip size of the CSS+JS the browser downloads.
+# TYPE web_assets_total_bytes gauge
+web_assets_total_bytes{encoding="gzip"} 211893
+# HELP container_image_size_bytes Size of the built container image in bytes.
+# TYPE container_image_size_bytes gauge
+container_image_size_bytes{image="api"} 178863581
+container_image_size_bytes{image="web"} 248770086

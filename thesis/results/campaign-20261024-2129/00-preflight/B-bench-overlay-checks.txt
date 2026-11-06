@@ -1,0 +1,11 @@
+# kubectl kustomize ../gomx/deploy/k8s/bench — checks — 2026-10-24T21:29:04+02:00
+HorizontalPodAutoscaler objects: 0
+pool_max_conns occurrences: 0
+GOMX_DB_MAX_CONNS: value: "30"
+GOMX_CARD_PREVIEW_CHARS: value: "300"
+GOMX_SEED: value: bench
+GOMX_COMPRESS: value: "0"
+GOMX_AUTH_RATELIMIT: value: "0"
+GOMX_NOTIFY_FRIENDS_ON_POST: value: "0"
+postgres image: image: docker.io/library/postgres:18 
+replicas: replicas: 2 replicas: 1 replicas: 1 replicas: 1 

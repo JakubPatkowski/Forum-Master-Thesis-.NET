@@ -1,0 +1,82 @@
+# Deployed images — 2026-10-24T21:29:01+02:00
+## A pods (name image imageID startedAt)
+backend-59fccc875b-fl727	forum-dotnet-api:git-64cd5e2	docker://sha256:2f1cde2136e431a4a8553906e12c26718b8bcea42b0d82a4811ba6df91203b2e	2026-10-24T19:18:47Z
+frontend-9bb7b77ff-fk9vm	forum-dotnet-web:git-64cd5e2	docker://sha256:3056a4628a1af1c8ddb726a840053a4c4194158d1a8c3271a2694e928f2b26da	2026-10-24T19:19:13Z
+minio-0	minio/minio:RELEASE.2025-09-07T16-13-09Z	docker-pullable://minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e	2026-10-16T23:51:40Z
+minio-create-bucket-tpjl5	minio/mc:RELEASE.2025-08-13T08-35-41Z	docker-pullable://minio/mc@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727	2026-10-24T19:18:16Z
+postgres-0	postgres:18	docker-pullable://postgres@sha256:3a82e1f56c8f0f5616a11103ac3d47e632c3938698946a7ad26da0df1334744a	2026-10-18T21:33:08Z
+rabbitmq-0	rabbitmq:4-management	docker-pullable://rabbitmq@sha256:c1e33461287f4c53049ce525575f0df77b2a00a88e2593776afbb6c1489bdb81	2026-10-16T23:51:40Z
+## B pods
+gomx-5bc6f46dc7-5hzh4	gomx:bench	docker://sha256:345b7cba1319fe2084e68597789e8f8b7992ecdb0ce21acd7c0e2ff8593f1461	2026-10-24T19:27:41Z
+gomx-5bc6f46dc7-chd6g	gomx:bench	docker://sha256:345b7cba1319fe2084e68597789e8f8b7992ecdb0ce21acd7c0e2ff8593f1461	2026-10-24T19:28:32Z
+minio-0	docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z	docker-pullable://minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e	2026-10-17T19:39:02Z
+postgres-0	docker.io/library/postgres:18	docker-pullable://postgres@sha256:3a82e1f56c8f0f5616a11103ac3d47e632c3938698946a7ad26da0df1334744a	2026-10-18T21:45:09Z
+redis-75c79bffcf-dnqb2	docker.io/library/redis:7-alpine	docker-pullable://redis@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499	2026-10-17T19:39:02Z
+## image metadata (minikube docker daemon — both deploys build INSIDE minikube, not on the host docker)
+[forum-dotnet-api:git-64cd5e2] sha256:2f1cde2136e431a4a8553906e12c26718b8bcea42b0d82a4811ba6df91203b2e tags=[forum-dotnet-api:git-64cd5e2] created=2026-10-24T18:22:06.953482359Z size=178863581
+[forum-dotnet-web:git-64cd5e2] sha256:3056a4628a1af1c8ddb726a840053a4c4194158d1a8c3271a2694e928f2b26da tags=[forum-dotnet-web:git-64cd5e2] created=2026-10-24T19:18:11.72987447Z size=248770086
+[gomx:bench] sha256:345b7cba1319fe2084e68597789e8f8b7992ecdb0ce21acd7c0e2ff8593f1461 tags=[gomx:bench gomx:bench-46b342c] created=2026-10-24T19:27:35.893686898Z size=41202352
+[gomx:bench-46b342c] sha256:345b7cba1319fe2084e68597789e8f8b7992ecdb0ce21acd7c0e2ff8593f1461 tags=[gomx:bench gomx:bench-46b342c] created=2026-10-24T19:27:35.893686898Z size=41202352
+## any -dirty images present in the node (informational; older builds)
+gomx:bench 345b7cba1319 About a minute ago
+gomx:bench-46b342c 345b7cba1319 About a minute ago
+forum-dotnet-web:git-64cd5e2 3056a4628a1a 10 minutes ago
+forum-dotnet-api:git-64cd5e2 2f1cde2136e4 About an hour ago
+forum-dotnet-web:git-57f63d0-dirty 0235f264d226 5 days ago
+forum-dotnet-api:git-57f63d0-dirty 0ae7febda3e3 5 days ago
+gomx:bench-f03d46a-dirty 732048399118 5 days ago
+gomx:bench-e13f18f-dirty 6ae14817e2aa 7 days ago
+forum-dotnet-api:git-ee0faee-dirty e19a73c1719f 7 days ago
+forum-dotnet-web:git-ee0faee-dirty e8eb15c3dbad 7 days ago
+gomx:bench-8b23bc1 00b7762b9ca5 7 days ago
+forum-dotnet-web:git-3755e57-dirty 07b01db47f3f 3 months ago
+forum-dotnet-api:git-3755e57-dirty f5e2a9d5f6a6 3 months ago
+forum-dotnet-api:git-e49536d-dirty f5e2a9d5f6a6 3 months ago
+forum-dotnet-web:git-5db7bdc-dirty 3dc518914d15 3 months ago
+forum-dotnet-web:git-9d708ae 3dc518914d15 3 months ago
+forum-dotnet-web:git-9d708ae-dirty 3dc518914d15 3 months ago
+forum-dotnet-web:git-e49536d-dirty 3dc518914d15 3 months ago
+forum-dotnet-api:git-5db7bdc-dirty 7753414b8dfe 3 months ago
+forum-dotnet-api:git-9d708ae 7753414b8dfe 3 months ago
+## host docker images built 2026-10-24 ~21:00 by the previous session (NOT used by the deploys)
+[forum-dotnet-api:git-64cd5e2] sha256:c920ad40e341fad1d012519aa8eb4407fb71d91d38ec6762b455483fb0d65c71 created=2026-10-24T20:25:05.889297607+02:00
+[forum-dotnet-web:git-64cd5e2] sha256:f3065aa9905a71b740cbe0577373d4b5444a41e47c9247f5740a872393f45d1b created=2026-10-24T20:26:59.71571227+02:00
+[gomx:bench-46b342c] sha256:fee0f3188948c7fbeadb59bec90c95448c88949d42db8c5a080f877c8ab8eba9 created=2026-10-24T20:31:37.286614081+02:00
+## B /stats
+{"comments":9000,"connections":0,"posts":1600,"version":"46b342c"}
+
+## A EF migrations history (public.__EFMigrationsHistory, snake_case columns)
+20260627171444_InitialIdentity|10.0.2
+20260627171607_AddAuthzSchema|10.0.2
+20260701211425_InitialContent|10.0.2
+20260701211545_AddFtsAndViews|10.0.2
+20260702221537_InitialFiles|10.0.2
+20260704122932_InitialEngagement|10.0.2
+20260704122937_AddEngagementCountersAndViews|10.0.2
+20260704220933_AddMessagingInbox|10.0.2
+20260704220950_AddMessagingInbox|10.0.2
+20260704220959_AddMessagingInbox|10.0.2
+20260704221010_AddMessagingInbox|10.0.2
+20260717034208_InitialSocial|10.0.2
+20260717034245_AddSocialViews|10.0.2
+20261017211738_AddOwnerActivityIndexes|10.0.2
+20261024001000_AddFeedExcerpt|10.0.2
+20261024002000_OptimizeEffectiveMask|10.0.2
+## A v3-relevant SQL objects
+forum_authz.effective_mask
+forum_authz.has_permission
+forum_content.thread_excerpt
+## Postgres versions
+A: PostgreSQL 18.4 (Debian 18.4-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+B: PostgreSQL 18.4 (Debian 18.4-1.pgdg13+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+## Postgres images (statefulsets)
+A: postgres:18  B: docker.io/library/postgres:18
+
+## NOTE (operator, 21:31) — why forum-dotnet-api:git-64cd5e2 shows created=2026-10-24T18:22:06Z (20:22 CEST, before this deploy)
+A previous session started `make mk-deploy` at ~20:16 CEST on the SAME clean commit 64cd5e2 (committed 20:09:43 CEST) and was
+terminated after the API publish step (its log: /tmp/claude-1000/…/8a70181d-…/scratchpad/deploy-a.log, last line
+"make: *** [Makefile:48: mk-deploy] Terminated"); the layers stayed in BuildKit's cache inside minikube's docker. Tonight's
+build (01-deploy-A.log lines 6-77) reports every API build step as CACHED and writes the content-addressed image
+sha256:2f1cde21… — identical inputs (clean tree at 64cd5e2) → identical image; the config's `created` field is the first
+build's. The web image (sha256:3056a462…, created 19:18:11Z = 21:18 CEST) was built tonight. The host-docker images of
+~20:25 CEST (c920ad40…, f3065aa9…, gomx fee0f318…) were NOT used: both deploy scripts build inside minikube's docker daemon.

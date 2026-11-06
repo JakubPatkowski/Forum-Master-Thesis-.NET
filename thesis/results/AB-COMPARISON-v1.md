@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | v1 — first *aligned* version (2026-10-17, harness `h3-2026-10-17`). Methodology, environment, dataset and harness: final for v1. Results: §9, filled from the first v1 round (`thesis/results/rounds/<stamp>-v1/REPORT.md`, generated). |
+| **Status** | v1 — first *aligned* version (2026-10-17, harness `h3-2026-10-17`). Methodology, environment, dataset and harness: final for v1. Results: §9, filled from the first v1 round (`thesis/results/rounds/<stamp>-v1/REPORT.md`, generated). **v3 results (2026-10-24/25, harness h6, tags `thesis-v3-a`/`thesis-v3-b`): §9b** — demo N = 10 per side valid; latency and capacity invalidated by load-generator saturation (§9b.1). |
 | **Authors** | Jakub Patkowski (A), Hubert Ożarowski (B); supervisor Dr inż. Kamil Żyła |
 | **A** | `forum-dotnet` branch `31-feat-phase-13---ab-benchmark` (PR #30) @ `8b6a001` (everything through the 2026-10-18 test-gap closure) + the 2026-10-24 working-tree edits (§5.8: card excerpt, ACL hot path, social seed, tag race, REAL_SPA variant, mobile fixes, CVE bumps) |
 | **B** | `gomx` branch `feature/master-thesis` @ `5c569f7` (Hubert's B-01…B-14 + the alignment commits `4b43557`, `f03d46a`, `5c569f7`) + the 2026-10-24 working-tree edits (§5.8: card preview, private-comment gate, 499, hub queue — for Hubert's review) |
@@ -298,6 +298,7 @@ category scope after the private-category check), `CreatePost` zero-id guard, DM
 | D14 | A's realtime push is relayed from the transactional outbox by a poller (`Messaging:PollIntervalMilliseconds` = 5 000 in the cluster); B publishes to Redis inside the request | A's receipt latency floor is seconds, B's milliseconds (J8 probes) — the price of at-least-once delivery; A's relay is also part of its idle cost. **Measurement caveat (h6):** the probe write runs inside the k6 socket's event loop, so a frame B publishes *before* writing its 303 is timestamped only after the POST returns — B's receipt figure is bounded below by its own comment round-trip (≈ the POST time) and is an upper bound of the true push latency; A's seconds-scale floor is unaffected | measured in h4; `--relay-poll-ms` records a tuned variant |
 | D15 | J4 work differs beyond the upload path: A's thread create also inserts an attachment row (`file_attachments`) and, until h5, 1–3 tag upserts into a per-journey random "hot" space; B posts into the user's fixed membership space with no tags | A's J4 wrote more rows and landed in different feeds | **h6:** A's J4 is untagged (tags are an A-only feature outside the shared core) and posts into the VU's per-user public space (B's `postableSlug` rule mirrored); the attachment row stays (presigned-upload design, D-9) |
 | D16 | J9 work differs: A's send checks the conversation, the sender's seat, participants, blocks and privacy, then writes the message, the seat update and an outbox row; B's send checks friendship and the recipient, inserts the message, renders the bubble for both locales, publishes twice to Redis and writes an unread notification. Until h5 A messaged ONE fixed peer per VU while B picked a random friend of ~6 | per-send cost differs by design; the peer rule made A's conversation row hotter | **h6:** both pick a random seeded friend (A lists friends once per session like B's `/messages`), one conversation per (user, friend) pair; the remaining difference is each side's messaging design, measured |
+| D17 | (found 2026-10-24, campaign v3) A's Benchmark social graph (`BenchSocialGraph`, the gomx ring + chords over all 800 users) gives 26 of the 1 200 friend pairs of the harness login pool (`bench_user_0034…0233`) a friend in A's blocked band (`bench_user_0013…0032`, an A-only seed property); A's friends list shows them, the h6 adapter picks a random friend, and A's open-direct answers 404 (non-active accounts are socially invisible); the failed pair is not cached, so it is retried | ≈ 6 % of A's J9 journeys (demo: 75 failed vs 395 ok `dm_open` per run) do a cheap 404 instead of a DM write; A failed checks 0.12 % of requests vs B 0 % | recorded, not fixed (version under test); fix options: exclude non-active users from the friends list, or seed friendships only among active users, or skip blocked peers in the adapter |
 | D-10 | Argon2id (A) vs PBKDF2 (B) at login | setup only — excluded from every window | — |
 | D-13 | 1 visible CPU per pod on both (.NET `ProcessorCount` = 1, Go `GOMAXPROCS` = 1) | symmetric | — |
 | D-15 | A's `frontend` pod (SPA shell server) idles during the load runs | counted in A's namespace totals, not in "app" | reported separately |
@@ -607,6 +608,171 @@ Load generator (k6 on the same host): max CPU A 127 % / B 101 % of one core, max
 | c08 | 500 | 404.5 | 1658 | 0.00 | 203.8 | 3507 | 0.00 |
 
 **Sustained throughput** (highest step before the knee: p95 > 500 ms, failures > 1 % or achieved < 95 % of offered): A 300 j/s, B 200 j/s. Knees: A [{'step': 'c07', 'offered_jps': 400, 'reason': 'p95>500ms'}], B [{'step': 'c06', 'offered_jps': 300, 'reason': 'p95>500ms'}].
+
+
+## 9b. Results — round v3 (2026-10-24/25, harness h6, tags `thesis-v3-a` / `thesis-v3-b`)
+
+> Tables copied verbatim from `thesis/results/rounds/20261024-2150-v3/REPORT.md` (generated by `scripts/ab_report.py` after the
+> resume on 2026-10-25 02:11 CET; re-run `make ab-report ARGS=thesis/results/rounds/20261024-2150-v3`). Versions: A `thesis-v3-a`
+> = `64cd5e2` (`forum-dotnet-api:git-64cd5e2` sha256 `2f1cde21…`, web `3056a462…`), B `thesis-v3-b` = `46b342c`
+> (`gomx:bench-46b342c` sha256 `345b7cba…`) — clean tags, provenance in `thesis/results/campaign-20261024-2129/00-preflight/`.
+> Plan `demo:10,capacity:1`, ABBA, reseed + fresh pods + warm-up before every run. **Demo 10 + 10 valid** (two demo runs that
+> lost an infrastructure pod — B Redis, A RabbitMQ — were redone with `--resume`; the invalid attempts are archived);
+> **capacity A and B INVALID** (pod restarts under host overload) and not redone. Statistics: mean ± 95 % CI, median [IQR];
+> verdicts = exact Mann-Whitney U + Holm (primary), Welch + Holm (cross-check), Cliff's δ. Full analysis:
+> `thesis/results/campaign-20261024-2129/05-analysis/CAMPAIGN-REPORT.md`; article digest: `…/05-analysis/ARTICLE-RESULTS-DIGEST.md`.
+
+### 9b.1 Validity of this round — read before any number
+- **Load generator saturated the shared host.** k6 used up to 5.3 / 5.5 cores (A / B runs; v1: 0.44 / 0.74), node busy
+  5.0 / 4.8 of 8 cores (v1 2.97 / 2.93). Cause: J4 synthesizes a 256×256 RGBA PNG per journey in k6's JS VM (`makePng`,
+  ≈ 0.6 s / 0.7 core-s per image, measured on the idle host — campaign `05-analysis/k6-makepng-bench/`); J4 had weight 0 in v1.
+  → **closed-model latencies and journeys/s below are those of a saturated machine** (core p95 386 / 274 ms vs v1 19 / 61 ms)
+  and are not H1 latency results; **cgroup CPU per journey, memory, bytes per journey and the semantic checks remain valid**
+  (contention may inflate CPU per journey modestly on both sides).
+- **H2 not measured in v3:** both capacity runs collapsed at 100–150 offered journeys/s while k6 used ≈ 4 cores and each SUT
+  ≈ 1 core (app + DB); A's Postgres + RabbitMQ and B's Redis were restarted by failing exec probes. v1 §9.4 remains the only H2 data.
+- **D17 (new):** ≈ 6 % of A's J9 journeys hit a blocked friend (A-only seed band) and fail with 404 — A's failed checks 0.12 %.
+- J4 journey times include ≈ 0.94 s of k6-side PNG synthesis on BOTH sides (equal); the per-endpoint rows are the server work.
+
+### 9b.2 H1 — demo (closed model; 10 repeats per side) — profile `demo` — A: 10 valid run(s), B: 10
+
+#### Throughput, errors, overall latency
+| metric | A | B | B/A | 95 % CIs | A median [IQR] | B median [IQR] |
+|---|---|---|---|---|---|---|
+| HTTP journeys / s (scenario window) | 72.56 ± 3.20 | 74.39 ± 2.23 | 1.03× | overlap | 72.16 [71.17–74.55] | 73.17 [72.05–77.35] |
+| journey latency median (ms) — core, without J4 | 26.4 ± 3.8 | 19.8 ± 3.4 | 0.75× | overlap | 28.0 [20.8–30.5] | 22.0 [15.2–23.8] |
+| journey latency p95 (ms) — core, without J4 | 386.1 ± 84.3 | 274.3 ± 61.1 | 0.71× | overlap | 377.0 [350.0–419.1] | 307.0 [198.0–329.0] |
+| journey latency median (ms) — all journeys | 28.2 ± 4.1 | 20.8 ± 3.8 | 0.74× | overlap | 30.0 [22.5–32.5] | 23.0 [15.5–24.8] |
+| journey latency p95 (ms) — all journeys incl. J4 | 590.0 ± 122.4 | 421.6 ± 92.0 | 0.71× | overlap | 590.0 [517.8–663.8] | 444.1 [312.2–514.2] |
+| HTTP request p95 (ms) | 227.2 ± 46.5 | 255.4 ± 56.7 | 1.12× | overlap | 221.1 [210.4–241.4] | 286.0 [185.2–308.1] |
+| HTTP requests per run | 62645 ± 2788 | 36610 ± 1055 | 0.58× | distinct | 62558 [61520–64285] | 36032 [35520–37990] |
+| KiB received per journey (wire: gzip + TLS) | 3.27 ± 0.01 | 10.24 ± 0.03 | 3.13× | distinct | 3.28 [3.26–3.28] | 10.23 [10.21–10.26] |
+| failed requests (%, status ≥ 400) | 0.12 ± 0.01 | 0.00 ± 0.00 | 0.00× | distinct | 0.12 [0.11–0.14] | 0.00 [0.00–0.00] |
+| failed checks (%, incl. rejections answered with a 3xx) | 0.12 ± 0.01 | 0.00 ± 0.00 | 0.00× | distinct | 0.12 [0.11–0.14] | 0.00 [0.00–0.00] |
+
+Closed-model profiles fix the offered load (VUs × think time), so journeys/s is near-equal by design; the comparison lives in latency and in the resources each architecture spends on the same work.
+
+#### Per-journey latency (ms)
+| journey | stat | A | B | B/A | 95 % CIs |
+|---|---|---|---|---|---|
+| J1 space feed | med | 32.5 ± 4.8 | 23.6 ± 3.2 | 0.73× | distinct |
+|  | p95 | 414.4 ± 75.7 | 269.4 ± 62.2 | 0.65× | distinct |
+|  | p99 | 978.2 ± 366.8 | 546.0 ± 110.6 | 0.56× | overlap |
+| J2 thread open | med | 24.4 ± 3.9 | 10.1 ± 2.0 | 0.41× | distinct |
+|  | p95 | 345.1 ± 64.1 | 196.4 ± 46.1 | 0.57× | distinct |
+|  | p99 | 878.9 ± 450.3 | 410.3 ± 85.2 | 0.47× | overlap |
+| J3 comment create | med | 26.3 ± 4.7 | 19.0 ± 4.7 | 0.72× | overlap |
+|  | p95 | 472.0 ± 155.3 | 319.1 ± 64.6 | 0.68× | overlap |
+|  | p99 | 1180.6 ± 590.9 | 616.7 ± 141.6 | 0.52× | overlap |
+| J5 reaction toggle | med | 32.3 ± 5.6 | 16.4 ± 4.1 | 0.51× | distinct |
+|  | p95 | 518.3 ± 155.9 | 338.1 ± 72.9 | 0.65× | overlap |
+|  | p99 | 1315.2 ± 828.2 | 758.6 ± 318.5 | 0.58× | overlap |
+| J6 search | med | 23.6 ± 3.2 | 43.5 ± 6.1 | 1.84× | distinct |
+|  | p95 | 248.0 ± 47.6 | 353.3 ± 76.4 | 1.42× | overlap |
+|  | p99 | 606.9 ± 272.5 | 641.6 ± 119.9 | 1.06× | overlap |
+| J7 profile | med | 14.8 ± 2.6 | 10.4 ± 2.1 | 0.70× | overlap |
+|  | p95 | 203.7 ± 42.3 | 203.2 ± 50.3 | 1.00× | overlap |
+|  | p99 | 458.6 ± 143.7 | 431.6 ± 101.1 | 0.94× | overlap |
+| nav list spaces | med | 7.7 ± 1.6 | 7.2 ± 1.5 | 0.94× | overlap |
+|  | p95 | 160.2 ± 31.7 | 142.3 ± 32.5 | 0.89× | overlap |
+|  | p99 | 441.6 ± 167.5 | 314.5 ± 65.9 | 0.71× | overlap |
+| J4 thread create | med | 1061.7 ± 94.8 | 2038.7 ± 128.1 | 1.92× | distinct |
+|  | p95 | 3949.6 ± 1429.2 | 3150.7 ± 299.7 | 0.80× | overlap |
+|  | p99 | 7184.5 ± 3201.3 | 4751.0 ± 1949.5 | 0.66× | overlap |
+| J9 DM | med | 42.2 ± 7.2 | 22.6 ± 5.2 | 0.53× | distinct |
+|  | p95 | 634.7 ± 201.8 | 349.8 ± 77.8 | 0.55× | distinct |
+|  | p99 | 1488.1 ± 778.8 | 678.5 ± 132.9 | 0.46× | overlap |
+
+#### Resources over the scenario window (H1)
+| metric | A | B | B/A | 95 % CIs | A median [IQR] | B median [IQR] |
+|---|---|---|---|---|---|---|
+| app CPU per journey (ms) | 5.824 ± 0.242 | 4.995 ± 0.242 | 0.86× | distinct | 5.866 [5.627–5.980] | 5.178 [4.716–5.239] |
+| app MARGINAL CPU per journey (ms, idle cost removed) | 5.648 ± 0.273 | 4.901 ± 0.248 | 0.87× | distinct | 5.685 [5.398–5.815] | 5.080 [4.609–5.143] |
+| app idle cores (no traffic, all replicas) | 0.013 ± 0.003 | 0.007 ± 0.001 | 0.55× | distinct | 0.015 [0.008–0.017] | 0.007 [0.007–0.008] |
+| app avg cores | 0.422 ± 0.013 | 0.371 ± 0.008 | 0.88× | distinct | 0.421 [0.407–0.430] | 0.373 [0.364–0.377] |
+| app memory avg (MiB, all replicas) | 412 ± 6 | 73 ± 4 | 0.18× | distinct | 413 [406–419] | 73 [70–77] |
+| app memory max (MiB, all replicas) | 439 ± 6 | 103 ± 8 | 0.23× | distinct | 436 [432–446] | 103 [96–111] |
+| DB CPU per journey (ms) | 4.733 ± 0.336 | 3.895 ± 0.276 | 0.82× | distinct | 4.759 [4.623–4.822] | 3.854 [3.635–4.229] |
+| DB idle cores (no traffic) | 0.012 ± 0.006 | 0.014 ± 0.014 | 1.20× | overlap | 0.011 [0.008–0.013] | 0.008 [0.008–0.010] |
+| DB memory avg (MiB) | 278 ± 12 | 297 ± 9 | 1.07× | overlap | 278 [264–292] | 298 [287–300] |
+| bus CPU per journey (ms) — A RabbitMQ / B Redis | 2.326 ± 0.208 | 0.219 ± 0.020 | 0.09× | distinct | 2.336 [2.267–2.382] | 0.228 [0.192–0.232] |
+| bus idle cores (no traffic) | 0.094 ± 0.045 | 0.009 ± 0.007 | 0.10× | distinct | 0.103 [0.064–0.119] | 0.010 [0.002–0.011] |
+| bus memory avg (MiB) | 156 ± 11 | 14 ± 1 | 0.09× | distinct | 153 [147–163] | 13 [13–14] |
+| A frontend pod memory avg (MiB) | 45 ± 2 | – | – |  | 46 [45–46] | – |
+| WHOLE namespace CPU per journey (ms) | 13.464 ± 0.923 | 9.728 ± 0.548 | 0.72× | distinct | 13.557 [13.083–13.710] | 9.974 [8.988–10.383] |
+| WHOLE namespace MARGINAL CPU per journey (ms) | 11.779 ± 0.933 | 9.260 ± 0.642 | 0.79× | distinct | 11.714 [10.881–11.867] | 9.615 [8.662–9.895] |
+| WHOLE namespace idle cores (no traffic) | 0.121 ± 0.044 | 0.035 ± 0.021 | 0.29× | distinct | 0.129 [0.101–0.142] | 0.026 [0.023–0.027] |
+| WHOLE namespace memory avg (MiB) | 1268 ± 55 | 793 ± 36 | 0.63× | distinct | 1280 [1189–1337] | 803 [784–817] |
+| ingress-nginx CPU per journey (ms, shared edge) | 2.131 ± 0.272 | 2.677 ± 0.124 | 1.26× | distinct | 2.030 [1.956–2.222] | 2.727 [2.519–2.811] |
+| node busy cores avg (context) | 5.01 ± 0.21 | 4.81 ± 0.20 | 0.96× | overlap | 5.04 [4.73–5.22] | 4.83 [4.60–5.06] |
+
+#### WebSocket holds (J8) — semantics differ (A: per-view subscription; B: broadcast to every socket)
+| metric | A | B |
+|---|---|---|
+| subscribed | 80 ± 0 | 80 ± 0 |
+| notifications | 27766 ± 1884 | 85613 ± 1962 |
+| errors | 0 ± 0 | 0 ± 0 |
+| holds closed early by the server (< hold − 2 s) | 0 ± 0 | 0 ± 0 |
+| receipt probes sent (comment → own push) | 220 ± 0 | 220 ± 0 |
+| receipt probes received | 220 ± 0 | 220 ± 0 |
+| probe loss (%, never pushed within the hold) | 0.00 ± 0.00 | 0.00 ± 0.00 |
+| probe late (%, pushed after the timeout) | 0.00 ± 0.00 | 0.00 ± 0.00 |
+| receipt latency median (ms) | 2344 ± 519 | 40 ± 7 |
+| receipt latency p95 (ms) | 5816 ± 1452 | 403 ± 165 |
+| receipt latency max (ms) | 6229 ± 1704 | 707 ± 265 |
+
+Load generator (k6 on the same host): max CPU A 529 % / B 549 % of one core, max RSS A 1144 MiB / B 951 MiB.
+
+
+### 9b.3 Statistical tests (demo, n = 10 vs 10)
+#### `demo` — headline metrics (n = 10 vs 10; Holm over 18 tests)
+| metric | A mean | B mean | B−A | MW exact p | MW Holm p | Cliff's δ | Welch p | Welch Holm p | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| journey latency median (ms, core = without J4) | 26.400 | 19.800 | -25.0 % | 0.035 | 0.116 | -0.56 | 0.009 | 0.046 | raw-only |
+| journey latency p95 (ms, core = without J4) | 386.150 | 274.265 | -29.0 % | 0.015 | 0.088 | -0.64 | 0.027 | 0.095 | raw-only |
+| journey latency median (ms, all journeys) | 28.200 | 20.800 | -26.2 % | 0.029 | 0.116 | -0.57 | 0.008 | 0.046 | raw-only |
+| journey latency p95 (ms, all journeys) | 590.020 | 421.575 | -28.5 % | 0.023 | 0.116 | -0.60 | 0.024 | 0.095 | raw-only |
+| HTTP request p95 (ms) | 227.225 | 255.432 | +12.4 % | 0.393 | 0.786 | 0.24 | 0.396 | 0.792 | no difference detected |
+| KiB received per journey | 3.273 | 10.241 | +212.9 % | <0.001 | <0.001 | 1.00 | <0.001 | <0.001 | distinct |
+| app CPU per journey (ms) | 5.824 | 4.996 | -14.2 % | <0.001 | 0.004 | -0.88 | <0.001 | <0.001 | distinct |
+| app MARGINAL CPU per journey (ms) | 5.648 | 4.901 | -13.2 % | <0.001 | 0.004 | -0.88 | <0.001 | 0.002 | distinct |
+| app memory avg (MiB) | 411.770 | 72.980 | -82.3 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| DB CPU per journey (ms) | 4.733 | 3.895 | -17.7 % | <0.001 | 0.007 | -0.84 | <0.001 | 0.004 | distinct |
+| bus CPU per journey (ms) | 2.326 | 0.219 | -90.6 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| WHOLE namespace CPU per journey (ms) | 13.464 | 9.728 | -27.7 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| WHOLE namespace MARGINAL CPU per journey (ms) | 11.779 | 9.260 | -21.4 % | <0.001 | <0.001 | -0.98 | <0.001 | 0.001 | distinct |
+| WHOLE namespace idle cores | 0.121 | 0.035 | -71.2 % | 0.003 | 0.020 | -0.76 | 0.002 | 0.012 | distinct |
+| WHOLE namespace memory avg (MiB) | 1267.530 | 792.810 | -37.5 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| ingress-nginx CPU per journey (ms) | 2.131 | 2.677 | +25.7 % | 0.002 | 0.012 | 0.80 | 0.001 | 0.010 | distinct |
+| WS receipt latency p95 (ms) | 5815.770 | 403.455 | -93.1 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| WS probe loss (%) | 0.000 | 0.000 | – | 1.000 | 1.000 | 0.00 | 1.000 | 1.000 | no difference detected |
+
+#### `demo` — per-journey latency (n = 10 vs 10; Holm over 18 tests)
+| metric | A mean | B mean | B−A | MW exact p | MW Holm p | Cliff's δ | Welch p | Welch Holm p | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| J1 median (ms) | 32.500 | 23.600 | -27.4 % | 0.019 | 0.148 | -0.62 | 0.003 | 0.038 | raw-only |
+| J1 p95 (ms) | 414.415 | 269.420 | -35.0 % | 0.004 | 0.047 | -0.74 | 0.004 | 0.041 | distinct |
+| J2 median (ms) | 24.400 | 10.100 | -58.6 % | <0.001 | <0.001 | -1.00 | <0.001 | <0.001 | distinct |
+| J2 p95 (ms) | 345.120 | 196.450 | -43.1 % | <0.001 | 0.006 | -0.86 | <0.001 | 0.007 | distinct |
+| J3 median (ms) | 26.300 | 19.000 | -27.8 % | 0.015 | 0.147 | -0.63 | 0.023 | 0.159 | raw-only |
+| J3 p95 (ms) | 471.980 | 319.070 | -32.4 % | 0.035 | 0.177 | -0.56 | 0.062 | 0.311 | raw-only |
+| J4 median (ms) | 1061.650 | 2038.650 | +92.0 % | <0.001 | <0.001 | 1.00 | <0.001 | <0.001 | distinct |
+| J4 p95 (ms) | 3949.565 | 3150.730 | -20.2 % | 0.529 | 1.000 | -0.18 | 0.245 | 0.979 | no difference detected |
+| J5 median (ms) | 32.300 | 16.400 | -49.2 % | <0.001 | 0.002 | -0.91 | <0.001 | 0.001 | distinct |
+| J5 p95 (ms) | 518.260 | 338.085 | -34.8 % | 0.015 | 0.147 | -0.64 | 0.034 | 0.207 | raw-only |
+| J6 median (ms) | 23.600 | 43.500 | +84.3 % | <0.001 | <0.001 | 1.00 | <0.001 | <0.001 | distinct |
+| J6 p95 (ms) | 248.050 | 353.290 | +42.4 % | 0.023 | 0.163 | 0.60 | 0.018 | 0.147 | raw-only |
+| J7 median (ms) | 14.800 | 10.400 | -29.7 % | 0.029 | 0.173 | -0.57 | 0.008 | 0.083 | raw-only |
+| J7 p95 (ms) | 203.680 | 203.185 | -0.2 % | 0.912 | 1.000 | 0.04 | 0.987 | 1.000 | no difference detected |
+| J9 median (ms) | 42.250 | 22.550 | -46.6 % | <0.001 | <0.001 | -0.95 | <0.001 | 0.002 | distinct |
+| J9 p95 (ms) | 634.680 | 349.810 | -44.9 % | 0.005 | 0.057 | -0.72 | 0.012 | 0.107 | raw-only |
+| nav median (ms) | 7.700 | 7.200 | -6.5 % | 0.631 | 1.000 | -0.14 | 0.619 | 1.000 | no difference detected |
+| nav p95 (ms) | 160.195 | 142.290 | -11.2 % | 0.684 | 1.000 | -0.11 | 0.385 | 1.000 | no difference detected |
+
+
+### 9b.4 Capacity — INVALID (see 9b.1)
+Knees as reported for the record: A c04 @ 150 j/s (sustained 100), B c03 @ 100 j/s (sustained 50); 117 865 / 119 696 dropped
+iterations; per-step k6 vs SUT cores: campaign `05-analysis/capacity-k6-vs-sut-cores.txt`. Not an architecture property.
 
 
 ## 10. Runbook — the first v1 round (new session)

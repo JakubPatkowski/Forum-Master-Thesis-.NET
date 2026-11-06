@@ -1,0 +1,13 @@
+file	url	rc	seconds	bytes
+A-home.png	https://forum.local/	0	1	230334
+A-feed.png	https://forum.local/c/bench-cat-06	0	1	212275
+A-thread.png	https://forum.local/t/01KDY021004XKGMPA2XJZK3DPT	0	2	168270
+A-search.png	https://forum.local/search?q=beacon	0	1	204880
+A-profile.png	https://forum.local/u/01KDYYYSM0PH4QS1MMRNJ8796B	0	1	93401
+B-home.png	https://gomx.local/	0	0	271602
+B-feed.png	https://gomx.local/c/general	0	1	261513
+B-thread.png	https://gomx.local/thread/1	0	0	160594
+B-search.png	https://gomx.local/search?q=beacon	0	1	218342
+B-profile.png	https://gomx.local/u/34	0	0	79837
+A-feed-mobile.png	https://forum.local/c/bench-cat-06	0	1	45980
+B-feed-mobile.png	https://gomx.local/c/general	0	0	61358

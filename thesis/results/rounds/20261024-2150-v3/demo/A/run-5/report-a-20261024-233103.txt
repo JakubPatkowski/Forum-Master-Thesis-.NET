@@ -1,0 +1,46 @@
+
+target=a  profile=demo  mix=v2  harness=h6-2026-10-24  base=https://forum.local  reads=anonymous
+http_reqs=54214  p95=368ms  p99=1743ms  failed=0.14%  checks_failed=75 (0.14%)  (scenario 420s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max      ok  failed
+login               200    125    117    149    336    493       0       0
+categories         2097     83     11    254    953  12024    2097       0
+feed              10219     92     18    286   1103  12469   10219       0
+thread             5296     80     11    251   1187   8182    5296       0
+comments           5296     98     17    293   1368   7647    5296       0
+reactions_batch   15515     48      8    170    515   7579   15515       0
+search             2908    130     28    364   1615  12199    2908       0
+comment_create     2717    219     37    926   2826  12587    2717       0
+thread_create       763    159     25    574   2378  10213     763       0
+reaction_add       3181    288     45   1027   4534  12908    3181       0
+reaction_remove      48    147     51    537   1372   2074      48       0
+file_initiate       763    261     26    981   4879  12470     763       0
+file_put            763    412     33   2611   5185   7410     763       0
+file_commit         763    254     45   1157   4378   6939     763       0
+file_attach         763    123     22    452   1766   6972     763       0
+dm_open             447    197     25    823   3329   9949     372      75
+dm_send             959    235     55    971   2144  12484     959       0
+probe_comment       220    527     36   4257   5119   5453     220       0
+user_stats          492     61     14    222    751   2310     492       0
+user_threads        492     57     12    223    617   1363     492       0
+ticket               80    319     31   1425   1535   1538      80       0
+setup               232      7      6     14     18     30       0       0
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1          7910  18.83     41    619   2324
+J2          5296  12.61     33    514   2597
+J3          2717   6.47     38    927   2827
+J4           763   1.82   1129   8681  14553
+J5          3229   7.69     46   1021   4480
+J6          2908   6.92     28    365   1616
+J7           492   1.17     19    322    829
+J8            60   0.14      0      0      0
+J9          1034   2.46     64   1287   4300
+nav         2097   4.99     11    254    954
+core journeys (without J4): med=34ms  p95=644ms  p99=2803ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)
+
+ws: subscribed=80  notifications=23532  errors=0  early_close=0
+ws receipt probes: sent=220  received=220  late=0  lost=0  unresolved=0  loss=0%  latency med=1403ms p95=9862ms max=11242ms  (write request start → matching push; A floor = outbox relay poll)
+
+all thresholds passed
+

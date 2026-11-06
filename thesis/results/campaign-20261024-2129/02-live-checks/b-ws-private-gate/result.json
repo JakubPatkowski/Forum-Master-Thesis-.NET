@@ -1,0 +1,20 @@
+{
+  "marker": "zzgate1792870499422",
+  "sockets_opened": 3,
+  "anon": {
+    "frames": 1,
+    "private_comment_frames": 0,
+    "public_comment_frames": 1
+  },
+  "nonmember": {
+    "frames": 3,
+    "private_comment_frames": 0,
+    "public_comment_frames": 1
+  },
+  "member": {
+    "frames": 4,
+    "private_comment_frames": 1,
+    "public_comment_frames": 1
+  },
+  "verdict": "PASS"
+}

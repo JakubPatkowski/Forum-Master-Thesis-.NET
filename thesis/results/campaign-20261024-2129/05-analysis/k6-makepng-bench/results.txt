@@ -1,0 +1,9 @@
+{"px":256,"n":10,"total_ms":6033,"ms_per_png":603.3,"avg_png_bytes":262488}
+px=256 n=10 wall_s=6.26 user_s=7.04 sys_s=0.45 maxrss_kb=46456 cpu_pct=119%
+{"px":128,"n":10,"total_ms":1208,"ms_per_png":120.8,"avg_png_bytes":65737}
+px=128 n=10 wall_s=1.53 user_s=1.54 sys_s=0.04 maxrss_kb=44360 cpu_pct=103%
+{"px":64,"n":40,"total_ms":1282,"ms_per_png":32.05,"avg_png_bytes":16516}
+px=64 n=40 wall_s=1.50 user_s=1.57 sys_s=0.13 maxrss_kb=42932 cpu_pct=112%
+{"px":32,"n":40,"total_ms":329,"ms_per_png":8.225,"avg_png_bytes":4196}
+px=32 n=40 wall_s=0.54 user_s=0.44 sys_s=0.03 maxrss_kb=42580 cpu_pct=88%
+# host: 8 vCPU, idle (no round running), k6 k6 v2.1.0 (commit/83a87a41e2, go1.26.4, linux/amd64)

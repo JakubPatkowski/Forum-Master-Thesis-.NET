@@ -1,0 +1,173 @@
+LAST SEEN   TYPE      REASON                         OBJECT                       MESSAGE
+115m        Normal    SandboxChanged                 pod/minio-0                  Pod sandbox changed, it will be killed and re-created.
+115m        Normal    SandboxChanged                 pod/postgres-0               Pod sandbox changed, it will be killed and re-created.
+115m        Normal    SandboxChanged                 pod/gomx-6f6975749b-p4kkd    Pod sandbox changed, it will be killed and re-created.
+115m        Normal    SandboxChanged                 pod/gomx-6f6975749b-wcrms    Pod sandbox changed, it will be killed and re-created.
+115m        Normal    Pulled                         pod/minio-0                  Container image "docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+115m        Normal    SandboxChanged                 pod/redis-75c79bffcf-dnqb2   Pod sandbox changed, it will be killed and re-created.
+115m        Normal    Created                        pod/minio-0                  Container created
+115m        Normal    Started                        pod/minio-0                  Container started
+115m        Normal    Created                        pod/gomx-6f6975749b-p4kkd    Container created
+115m        Normal    Pulled                         pod/gomx-6f6975749b-p4kkd    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+115m        Normal    Pulled                         pod/postgres-0               Container image "docker.io/library/postgres:18" already present on machine and can be accessed by the pod
+115m        Normal    Created                        pod/postgres-0               Container created
+115m        Normal    Pulled                         pod/gomx-6f6975749b-wcrms    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+115m        Normal    Started                        pod/gomx-6f6975749b-p4kkd    Container started
+115m        Normal    Created                        pod/gomx-6f6975749b-wcrms    Container created
+115m        Normal    Started                        pod/gomx-6f6975749b-wcrms    Container started
+115m        Normal    Started                        pod/postgres-0               Container started
+114m        Normal    Pulled                         pod/gomx-6f6975749b-p4kkd    Container image "gomx:bench" already present on machine and can be accessed by the pod
+114m        Normal    Created                        pod/gomx-6f6975749b-p4kkd    Container created
+114m        Normal    Started                        pod/gomx-6f6975749b-p4kkd    Container started
+114m        Normal    Pulled                         pod/gomx-6f6975749b-wcrms    Container image "gomx:bench" already present on machine and can be accessed by the pod
+114m        Normal    Created                        pod/gomx-6f6975749b-wcrms    Container created
+114m        Normal    Started                        pod/gomx-6f6975749b-wcrms    Container started
+114m        Normal    Sync                           ingress/gomx                 Scheduled for sync
+112m        Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Liveness probe failed: command timed out: "redis-cli ping" timed out after 1s
+112m        Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Readiness probe failed: OCI runtime exec failed: exec failed: cannot exec in a stopped container
+112m        Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (5c09be6586de51370611814469b7ec9343ec08e303a38cd915d265e41fe76354)
+109m        Warning   Unhealthy                      pod/minio-0                  Readiness probe failed: Get "http://10.244.133.178:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+105m        Normal    Killing                        pod/redis-75c79bffcf-dnqb2   Container redis failed liveness probe, will be restarted
+105m        Normal    Started                        pod/redis-75c79bffcf-dnqb2   Container started
+105m        Normal    Created                        pod/redis-75c79bffcf-dnqb2   Container created
+105m        Normal    Pulled                         pod/redis-75c79bffcf-dnqb2   Container image "docker.io/library/redis:7-alpine" already present on machine and can be accessed by the pod
+104m        Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Readiness probe failed: command timed out: "redis-cli ping" timed out after 1s
+102m        Warning   Unhealthy                      pod/postgres-0               Liveness probe failed: command timed out: "pg_isready -U gomx -d gomx" timed out after 5s
+102m        Warning   Unhealthy                      pod/postgres-0               Readiness probe failed: command timed out: "pg_isready -U gomx -d gomx" timed out after 5s
+60m         Normal    SandboxChanged                 pod/redis-75c79bffcf-dnqb2   Pod sandbox changed, it will be killed and re-created.
+60m         Warning   FailedCreatePodSandBox         pod/gomx-6f6975749b-wcrms    Failed to create pod sandbox: rpc error: code = Unknown desc = [failed to set up sandbox container "00d06caf6a0b78f36ac96daba18e101218778d1586cd7ad70a604ec779d0245c" network for pod "gomx-6f6975749b-wcrms": networkPlugin cni failed to set up pod "gomx-6f6975749b-wcrms_gomx" network: plugin type="calico" failed (add): error creating calico client: host must be a URL or a host:port pair: "https://[10.96.0.1]:443", failed to clean up sandbox container "00d06caf6a0b78f36ac96daba18e101218778d1586cd7ad70a604ec779d0245c" network for pod "gomx-6f6975749b-wcrms": networkPlugin cni failed to teardown pod "gomx-6f6975749b-wcrms_gomx" network: plugin type="calico" failed (delete): host must be a URL or a host:port pair: "https://[10.96.0.1]:443"]
+60m         Warning   FailedCreatePodSandBox         pod/postgres-0               Failed to create pod sandbox: rpc error: code = Unknown desc = [failed to set up sandbox container "c934551f6c174e908d981c11ae47caae4a08c24e665971191eaa259639f87b54" network for pod "postgres-0": networkPlugin cni failed to set up pod "postgres-0_gomx" network: plugin type="calico" failed (add): error creating calico client: host must be a URL or a host:port pair: "https://[10.96.0.1]:443", failed to clean up sandbox container "c934551f6c174e908d981c11ae47caae4a08c24e665971191eaa259639f87b54" network for pod "postgres-0": networkPlugin cni failed to teardown pod "postgres-0_gomx" network: plugin type="calico" failed (delete): host must be a URL or a host:port pair: "https://[10.96.0.1]:443"]
+60m         Normal    SandboxChanged                 pod/minio-0                  Pod sandbox changed, it will be killed and re-created.
+60m         Normal    Created                        pod/minio-0                  Container created
+60m         Normal    Pulled                         pod/minio-0                  Container image "docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+60m         Normal    Started                        pod/minio-0                  Container started
+60m         Normal    SandboxChanged                 pod/gomx-6f6975749b-p4kkd    Pod sandbox changed, it will be killed and re-created.
+60m         Normal    SandboxChanged                 pod/postgres-0               Pod sandbox changed, it will be killed and re-created.
+60m         Normal    Pulled                         pod/gomx-6f6975749b-p4kkd    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+60m         Normal    Started                        pod/gomx-6f6975749b-p4kkd    Container started
+60m         Normal    Created                        pod/gomx-6f6975749b-p4kkd    Container created
+59m         Warning   Unhealthy                      pod/minio-0                  Liveness probe failed: Get "http://10.244.133.146:9000/minio/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+59m         Normal    Pulled                         pod/postgres-0               Container image "docker.io/library/postgres:18" already present on machine and can be accessed by the pod
+59m         Warning   FailedCreatePodSandBox         pod/gomx-6f6975749b-wcrms    Failed to create pod sandbox: rpc error: code = Unknown desc = failed to set up sandbox container "23abd1b73ea9dc6a3f1e33db9de0762de85cc4af9e5022e1fecfa17c319d35e1" network for pod "gomx-6f6975749b-wcrms": networkPlugin cni failed to set up pod "gomx-6f6975749b-wcrms_gomx" network: plugin type="calico" failed (add): error getting ClusterInformation: Get "https://10.96.0.1:443/apis/crd.projectcalico.org/v1/clusterinformations/default": dial tcp 10.96.0.1:443: i/o timeout
+59m         Normal    Started                        pod/postgres-0               Container started
+59m         Normal    Created                        pod/postgres-0               Container created
+59m         Normal    SandboxChanged                 pod/gomx-6f6975749b-wcrms    Pod sandbox changed, it will be killed and re-created.
+59m         Normal    Created                        pod/gomx-6f6975749b-wcrms    Container created
+59m         Normal    Pulled                         pod/gomx-6f6975749b-wcrms    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+59m         Normal    Started                        pod/gomx-6f6975749b-wcrms    Container started
+59m         Normal    Started                        pod/gomx-6f6975749b-p4kkd    Container started
+59m         Normal    Created                        pod/gomx-6f6975749b-p4kkd    Container created
+59m         Normal    Pulled                         pod/gomx-6f6975749b-p4kkd    Container image "gomx:bench" already present on machine and can be accessed by the pod
+59m         Normal    Started                        pod/gomx-6f6975749b-wcrms    Container started
+59m         Normal    Created                        pod/gomx-6f6975749b-wcrms    Container created
+59m         Normal    Pulled                         pod/gomx-6f6975749b-wcrms    Container image "gomx:bench" already present on machine and can be accessed by the pod
+58m         Normal    Sync                           ingress/gomx                 Scheduled for sync
+49m         Warning   Unhealthy                      pod/minio-0                  Readiness probe failed: Get "http://10.244.133.146:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+49m         Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Liveness probe failed: command timed out: "redis-cli ping" timed out after 1s
+48m         Normal    Killing                        pod/redis-75c79bffcf-dnqb2   Container redis failed liveness probe, will be restarted
+47m         Normal    Pulled                         pod/redis-75c79bffcf-dnqb2   Container image "docker.io/library/redis:7-alpine" already present on machine and can be accessed by the pod
+47m         Normal    Created                        pod/redis-75c79bffcf-dnqb2   Container created
+47m         Normal    Started                        pod/redis-75c79bffcf-dnqb2   Container started
+46m         Warning   Unhealthy                      pod/postgres-0               Readiness probe failed: command timed out: "pg_isready -U gomx -d gomx" timed out after 5s
+46m         Warning   Unhealthy                      pod/postgres-0               Liveness probe failed: command timed out: "pg_isready -U gomx -d gomx" timed out after 5s
+46m         Warning   FailedToUpdateEndpointSlices   service/redis                Error updating Endpoint Slices for Service gomx/redis: failed to update redis-kzhxc EndpointSlice for Service gomx/redis: etcdserver: request timed out
+46m         Warning   Unhealthy                      pod/gomx-6f6975749b-wcrms    Readiness probe failed: HTTP probe failed with statuscode: 503
+45m         Normal    Killing                        pod/gomx-6f6975749b-p4kkd    Stopping container gomx
+45m         Normal    Killing                        pod/gomx-6f6975749b-wcrms    Stopping container gomx
+45m         Normal    SuccessfulDelete               replicaset/gomx-6f6975749b   Deleted pod: gomx-6f6975749b-p4kkd
+45m         Normal    SuccessfulDelete               replicaset/gomx-6f6975749b   Deleted pod: gomx-6f6975749b-wcrms
+45m         Normal    ScalingReplicaSet              deployment/gomx              Scaled down replica set gomx-6f6975749b from 2 to 0
+45m         Warning   Unhealthy                      pod/gomx-6f6975749b-wcrms    Readiness probe failed: Get "http://10.244.133.155:8080/readyz": dial tcp 10.244.133.155:8080: connect: invalid argument
+45m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-5hzh4
+45m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-7hhbb    Successfully assigned gomx/gomx-5bc6f46dc7-7hhbb to forum
+45m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-7hhbb
+45m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-5hzh4    Successfully assigned gomx/gomx-5bc6f46dc7-5hzh4 to forum
+45m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-7hhbb
+45m         Normal    Pulled                         pod/gomx-5bc6f46dc7-7hhbb    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+45m         Normal    Created                        pod/gomx-5bc6f46dc7-7hhbb    Container created
+45m         Normal    Created                        pod/gomx-5bc6f46dc7-5hzh4    Container created
+45m         Normal    ScalingReplicaSet              deployment/gomx              Scaled down replica set gomx-5bc6f46dc7 from 2 to 1
+45m         Normal    Pulled                         pod/gomx-5bc6f46dc7-5hzh4    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+45m         Normal    Started                        pod/gomx-5bc6f46dc7-7hhbb    Container started
+45m         Normal    Started                        pod/gomx-5bc6f46dc7-5hzh4    Container started
+45m         Normal    Started                        pod/gomx-5bc6f46dc7-5hzh4    Container started
+45m         Normal    Created                        pod/gomx-5bc6f46dc7-5hzh4    Container created
+45m         Normal    Pulled                         pod/gomx-5bc6f46dc7-5hzh4    Container image "gomx:bench" already present on machine and can be accessed by the pod
+45m         Warning   Unhealthy                      pod/gomx-5bc6f46dc7-5hzh4    Startup probe failed: Get "http://10.244.133.158:8080/healthz": dial tcp 10.244.133.158:8080: connect: connection refused
+44m         Normal    ScalingReplicaSet              deployment/gomx              Scaled up replica set gomx-5bc6f46dc7 from 1 to 2
+44m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-chd6g
+44m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-chd6g    Successfully assigned gomx/gomx-5bc6f46dc7-chd6g to forum
+44m         Normal    Created                        pod/gomx-5bc6f46dc7-chd6g    Container created
+44m         Normal    Pulled                         pod/gomx-5bc6f46dc7-chd6g    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+44m         Normal    Started                        pod/gomx-5bc6f46dc7-chd6g    Container started
+44m         Normal    Created                        pod/gomx-5bc6f46dc7-chd6g    Container created
+44m         Normal    Pulled                         pod/gomx-5bc6f46dc7-chd6g    Container image "gomx:bench" already present on machine and can be accessed by the pod
+44m         Normal    Started                        pod/gomx-5bc6f46dc7-chd6g    Container started
+35m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-5hzh4
+35m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-chd6g
+35m         Normal    Killing                        pod/gomx-5bc6f46dc7-5hzh4    Stopping container gomx
+35m         Normal    Killing                        pod/gomx-5bc6f46dc7-chd6g    Stopping container gomx
+30m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-2wlrp
+30m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-2wlrp    Successfully assigned gomx/gomx-5bc6f46dc7-2wlrp to forum
+30m         Normal    Pulled                         pod/gomx-5bc6f46dc7-2wlrp    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+30m         Normal    Started                        pod/gomx-5bc6f46dc7-2wlrp    Container started
+30m         Normal    Created                        pod/gomx-5bc6f46dc7-2wlrp    Container created
+30m         Normal    Created                        pod/gomx-5bc6f46dc7-2wlrp    Container created
+30m         Normal    Pulled                         pod/gomx-5bc6f46dc7-2wlrp    Container image "gomx:bench" already present on machine and can be accessed by the pod
+30m         Normal    Started                        pod/gomx-5bc6f46dc7-2wlrp    Container started
+30m         Warning   Unhealthy                      pod/gomx-5bc6f46dc7-2wlrp    Startup probe failed: Get "http://10.244.133.167:8080/healthz": dial tcp 10.244.133.167:8080: connect: connection refused
+30m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-2wlrp
+30m         Normal    Killing                        pod/gomx-5bc6f46dc7-2wlrp    Stopping container gomx
+29m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-c7pz2    Successfully assigned gomx/gomx-5bc6f46dc7-c7pz2 to forum
+29m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-vd5q6    Successfully assigned gomx/gomx-5bc6f46dc7-vd5q6 to forum
+29m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-vd5q6
+29m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-c7pz2
+29m         Normal    Started                        pod/gomx-5bc6f46dc7-vd5q6    Container started
+29m         Normal    Created                        pod/gomx-5bc6f46dc7-vd5q6    Container created
+29m         Normal    Created                        pod/gomx-5bc6f46dc7-c7pz2    Container created
+29m         Normal    Started                        pod/gomx-5bc6f46dc7-c7pz2    Container started
+29m         Normal    Pulled                         pod/gomx-5bc6f46dc7-c7pz2    Container image "gomx:bench" already present on machine and can be accessed by the pod
+29m         Normal    Pulled                         pod/gomx-5bc6f46dc7-c7pz2    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+29m         Normal    Pulled                         pod/gomx-5bc6f46dc7-vd5q6    Container image "gomx:bench" already present on machine and can be accessed by the pod
+29m         Normal    Created                        pod/gomx-5bc6f46dc7-vd5q6    Container created
+29m         Normal    Pulled                         pod/gomx-5bc6f46dc7-vd5q6    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+29m         Normal    Started                        pod/gomx-5bc6f46dc7-c7pz2    Container started
+29m         Normal    Created                        pod/gomx-5bc6f46dc7-c7pz2    Container created
+29m         Normal    Started                        pod/gomx-5bc6f46dc7-vd5q6    Container started
+23m         Normal    Killing                        pod/gomx-5bc6f46dc7-c7pz2    Stopping container gomx
+23m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-vd5q6
+23m         Normal    ScalingReplicaSet              deployment/gomx              Scaled down replica set gomx-5bc6f46dc7 from 2 to 0
+23m         Normal    Killing                        pod/gomx-5bc6f46dc7-vd5q6    Stopping container gomx
+23m         Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-c7pz2
+10m         Normal    ScalingReplicaSet              deployment/gomx              Scaled up replica set gomx-5bc6f46dc7 from 0 to 1
+10m         Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-f2t8n
+10m         Normal    Pulled                         pod/gomx-5bc6f46dc7-f2t8n    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+10m         Normal    Scheduled                      pod/gomx-5bc6f46dc7-f2t8n    Successfully assigned gomx/gomx-5bc6f46dc7-f2t8n to forum
+10m         Normal    Pulled                         pod/gomx-5bc6f46dc7-f2t8n    Container image "gomx:bench" already present on machine and can be accessed by the pod
+10m         Normal    Created                        pod/gomx-5bc6f46dc7-f2t8n    Container created
+10m         Normal    Started                        pod/gomx-5bc6f46dc7-f2t8n    Container started
+10m         Normal    Created                        pod/gomx-5bc6f46dc7-f2t8n    Container created
+10m         Normal    Started                        pod/gomx-5bc6f46dc7-f2t8n    Container started
+9m59s       Warning   Unhealthy                      pod/gomx-5bc6f46dc7-f2t8n    Startup probe failed: Get "http://10.244.133.186:8080/healthz": dial tcp 10.244.133.186:8080: connect: connection refused
+9m48s       Normal    ScalingReplicaSet              deployment/gomx              Scaled down replica set gomx-5bc6f46dc7 from 1 to 0
+9m48s       Normal    SuccessfulDelete               replicaset/gomx-5bc6f46dc7   Deleted pod: gomx-5bc6f46dc7-f2t8n
+9m47s       Normal    Killing                        pod/gomx-5bc6f46dc7-f2t8n    Stopping container gomx
+9m46s       Normal    NoPods                         poddisruptionbudget/gomx     No matching pods found
+9m45s       Normal    ScalingReplicaSet              deployment/gomx              Scaled up replica set gomx-5bc6f46dc7 from 0 to 2
+9m45s       Normal    Scheduled                      pod/gomx-5bc6f46dc7-ktljk    Successfully assigned gomx/gomx-5bc6f46dc7-ktljk to forum
+9m45s       Normal    Scheduled                      pod/gomx-5bc6f46dc7-tsjvr    Successfully assigned gomx/gomx-5bc6f46dc7-tsjvr to forum
+9m45s       Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-tsjvr
+9m45s       Normal    SuccessfulCreate               replicaset/gomx-5bc6f46dc7   Created pod: gomx-5bc6f46dc7-ktljk
+9m44s       Normal    Started                        pod/gomx-5bc6f46dc7-tsjvr    Container started
+9m44s       Normal    Pulled                         pod/gomx-5bc6f46dc7-ktljk    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m44s       Normal    Created                        pod/gomx-5bc6f46dc7-ktljk    Container created
+9m44s       Normal    Started                        pod/gomx-5bc6f46dc7-ktljk    Container started
+9m44s       Normal    Pulled                         pod/gomx-5bc6f46dc7-ktljk    Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m44s       Normal    Created                        pod/gomx-5bc6f46dc7-ktljk    Container created
+9m44s       Normal    Started                        pod/gomx-5bc6f46dc7-ktljk    Container started
+9m44s       Normal    Pulled                         pod/gomx-5bc6f46dc7-tsjvr    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m44s       Normal    Created                        pod/gomx-5bc6f46dc7-tsjvr    Container created
+9m44s       Normal    Started                        pod/gomx-5bc6f46dc7-tsjvr    Container started
+9m44s       Normal    Pulled                         pod/gomx-5bc6f46dc7-tsjvr    Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m44s       Normal    Created                        pod/gomx-5bc6f46dc7-tsjvr    Container created
+2m59s       Warning   Unhealthy                      pod/redis-75c79bffcf-dnqb2   Readiness probe failed: command timed out: "redis-cli ping" timed out after 1s

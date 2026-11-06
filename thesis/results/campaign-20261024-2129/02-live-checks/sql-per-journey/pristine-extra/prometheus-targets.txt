@@ -1,0 +1,4 @@
+  File "<string>", line 6
+    print(f"TOTAL {len(rows)} UP {sum(1 for r in rows if r[3]==\"up\")}")
+                                                                        ^
+SyntaxError: f-string expression part cannot include a backslash

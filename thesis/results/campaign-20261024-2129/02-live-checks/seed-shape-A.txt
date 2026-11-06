@@ -1,0 +1,47 @@
+# Seed shape A (AB-START-HERE §5.1 SQL) — 2026-10-24T21:35:16+02:00
+     slug     | visibility | live | pinned 
+--------------+------------+------+--------
+ bench-cat-01 | public     |  316 |      4
+ bench-cat-02 | public     |  341 |      3
+ bench-cat-03 | public     |  332 |      2
+ bench-cat-04 | public     |   77 |      1
+ bench-cat-05 | public     |   75 |      3
+ bench-cat-06 | public     |   59 |      1
+ bench-cat-07 | public     |   58 |      0
+ bench-cat-08 | public     |   60 |      1
+ bench-cat-09 | private    |   71 |      0
+ bench-cat-10 | private    |   65 |      1
+ bench-cat-11 | private    |   67 |      0
+ bench-cat-12 | private    |   63 |      0
+(12 rows)
+
+ public_live_threads | comments_mean | comments_median | comments_max 
+---------------------+---------------+-----------------+--------------
+                1318 |          5.72 |               4 |          235
+(1 row)
+
+ avg_body_chars 
+----------------
+           1718
+(1 row)
+
+ private_threads 
+-----------------
+             268
+(1 row)
+
+ thread_likes | comment_likes 
+--------------+---------------
+        11219 |          3780
+(1 row)
+
+ friendships_accepted | friendships_pending | conversations | messages 
+----------------------+---------------------+---------------+----------
+                 2400 |                  80 |           801 |     2001
+(1 row)
+
+ db_size 
+---------
+ 34 MB
+(1 row)
+

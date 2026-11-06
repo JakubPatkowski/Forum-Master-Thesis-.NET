@@ -1,0 +1,34 @@
+
+target=b  profile=warmup  mix=v2  harness=h6-2026-10-24  base=https://gomx.local  reads=anonymous
+http_reqs=1354  p95=18ms  p99=39ms  failed=0.00%  checks_failed=0 (0.00%)  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max      ok  failed
+login                 2     26     26     30     30     30       0       0
+communities         109      3      2      4      5      5     109       0
+space_page          427      7      7      9     19     50     427       0
+space_feed          120      7      6      8     10     24     120       0
+thread              300      4      3      5      8     51     300       0
+search              173     15     12     33     37     42     173       0
+profile              51      4      4      5      6      6      51       0
+comment_create       23      6      5      7     35     43      23       0
+vote                 34     13      5     44     59     60      34       0
+upload               10     53     38    110    124    127      10       0
+upload_poll          10      2      2      2      2      2      10       0
+thread_create        10      6      5     12     15     16      10       0
+dm_send              11     14      6     44     57     60      11       0
+setup                74      6      6     10     10     10       0       0
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           427   7.12      8     20     27
+J2           300   5.00      4      5      8
+J3            23   0.38      5      8     35
+J4            10   0.17   1480   1536   1540
+J5            34   0.57      6     45     60
+J6           173   2.88     12     33     38
+J7            51   0.85      4      6      7
+J9            11   0.18      7     49     65
+nav          109   1.82      3      4      6
+core journeys (without J4): med=6ms  p95=21ms  p99=38ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)
+
+all thresholds passed
+

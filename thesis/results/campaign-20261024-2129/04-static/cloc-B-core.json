@@ -1,0 +1,84 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.10",
+  "elapsed_seconds"    : 0.228488922119141,
+  "n_files"            : 298,
+  "n_lines"            : 39624,
+  "files_per_second"   : 1304.22077900396,
+  "lines_per_second"   : 173417.597809573,
+  "report_file"        : "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/campaign-20261024-2129/04-static/cloc-B-core.json"},
+"Go" :{
+  "nFiles": 152,
+  "blank": 2437,
+  "comment": 2901,
+  "code": 18885},
+"TypeScript" :{
+  "nFiles": 31,
+  "blank": 369,
+  "comment": 645,
+  "code": 2846},
+"Templ" :{
+  "nFiles": 21,
+  "blank": 139,
+  "comment": 176,
+  "code": 2646},
+"TOML" :{
+  "nFiles": 2,
+  "blank": 722,
+  "comment": 40,
+  "code": 1393},
+"SQL" :{
+  "nFiles": 22,
+  "blank": 225,
+  "comment": 395,
+  "code": 1163},
+"Markdown" :{
+  "nFiles": 29,
+  "blank": 419,
+  "comment": 0,
+  "code": 1147},
+"YAML" :{
+  "nFiles": 5,
+  "blank": 104,
+  "comment": 224,
+  "code": 970},
+"CSS" :{
+  "nFiles": 10,
+  "blank": 114,
+  "comment": 61,
+  "code": 777},
+"JSON" :{
+  "nFiles": 16,
+  "blank": 24,
+  "comment": 0,
+  "code": 622},
+"XML" :{
+  "nFiles": 6,
+  "blank": 0,
+  "comment": 0,
+  "code": 42},
+"Properties" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 12,
+  "code": 40},
+"Bourne Shell" :{
+  "nFiles": 1,
+  "blank": 9,
+  "comment": 10,
+  "code": 23},
+"INI" :{
+  "nFiles": 1,
+  "blank": 4,
+  "comment": 0,
+  "code": 14},
+"Dockerfile" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 11,
+  "code": 7},
+"SUM": {
+  "blank": 4574,
+  "comment": 4475,
+  "code": 30575,
+  "nFiles": 298} }

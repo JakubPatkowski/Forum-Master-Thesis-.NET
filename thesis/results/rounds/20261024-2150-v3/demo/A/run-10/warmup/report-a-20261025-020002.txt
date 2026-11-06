@@ -1,0 +1,39 @@
+
+target=a  profile=warmup  mix=v2  harness=h6-2026-10-24  base=https://forum.local  reads=anonymous
+http_reqs=2604  p95=18ms  p99=105ms  failed=0.04%  checks_failed=1 (0.04%)  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max      ok  failed
+login                 2    958    958    990    993    994       0       0
+categories           88      4      3      6     32     33      88       0
+feed                596     10      7     15     84    140     596       0
+thread              290      7      3      8    116    237     290       0
+comments            290      7      5     10     31    305     290       0
+reactions_batch     886      6      3      7     76    239     886       0
+search              163     12     11     16     33    170     163       0
+comment_create       34     32     14    104    278    329      34       0
+thread_create        13     23     10     80     84     85      13       0
+reaction_add         40     19     13     41     91     97      40       0
+file_initiate        13     25     18     67    107    118      13       0
+file_put             13     18     17     39     51     53      13       0
+file_commit          13     47     14    210    251    261      13       0
+file_attach          13     21     11     70     71     72      13       0
+dm_open               8     27     10     88    109    114       7       1
+dm_send               8     49     19    157    186    193       8       0
+user_stats           50      5      4      9     13     13      50       0
+user_threads         50      5      4      8     11     12      50       0
+setup                34     21     15     59     63     64       0       0
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           458   7.63     13     35    261
+J2           290   4.83      9     22    139
+J3            34   0.57     14    104    288
+J4            13   0.22    606   1015   1046
+J5            40   0.67     13     40     91
+J6           163   2.72     11     17     33
+J7            50   0.83      5     10     14
+J9             9   0.15     24    236    294
+nav           88   1.47      4      6     32
+core journeys (without J4): med=11ms  p95=32ms  p99=172ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)
+
+all thresholds passed
+

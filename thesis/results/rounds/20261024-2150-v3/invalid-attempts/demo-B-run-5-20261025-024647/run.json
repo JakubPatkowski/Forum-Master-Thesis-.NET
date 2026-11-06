@@ -1,0 +1,45 @@
+{
+  "target": "b",
+  "profile": "demo",
+  "repeat": 5,
+  "position_in_pair": 2,
+  "started_epoch": 1792878261,
+  "finished_epoch": 1792878770,
+  "seed_before": {
+    "users": 800,
+    "threads": 1608,
+    "comments": 9040,
+    "reactions": 15025,
+    "messages": 2011
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 2403,
+    "comments": 12018,
+    "reactions": 18053,
+    "messages": 3109
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 2978,
+      "new_rows": 2978
+    },
+    "threads": {
+      "accepted": 795,
+      "new_rows": 795
+    },
+    "messages": {
+      "accepted": 1098,
+      "new_rows": 1098
+    }
+  },
+  "checks_failed": 0,
+  "checks_failed_pct": 0,
+  "pod_restarts_during_run": [
+    "redis-75c79bffcf-dnqb2"
+  ],
+  "valid": false,
+  "invalid_reasons": [
+    "pod restarts during the run: ['redis-75c79bffcf-dnqb2']"
+  ]
+}

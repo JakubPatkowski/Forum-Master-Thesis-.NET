@@ -1,0 +1,61 @@
+# Per-endpoint request latency (k6 http_req_duration{endpoint:<tag>}, ms) and accepted/failed operations, demo profile,
+# mean over the 10 valid runs per side. Sources: thesis/results/rounds/20261024-2150-v3/demo/<side>/run-*/summary-*.json
+# (latency trends) and journeys-*.json endpoints.<tag>.{ok,failed} (lib/track.js outcomes). Under host contention (k6 ≈ 4–5.5
+# cores, see CAMPAIGN-REPORT §3) the absolute latencies are inflated on both sides; ratios between endpoints stay informative.
+
+## A (10 runs)
+endpoint           count/run      med      p95      p99   ok/run failed/run
+attachments                0      0.0      0.0      0.0      nan        nan
+avatar                     0      0.0      0.0      0.0      nan        nan
+categories              2433      7.6    159.7    434.7     2433        0.0
+category_by_slug           0      0.0      0.0      0.0      nan        nan
+category_icon              0      0.0      0.0      0.0      nan        nan
+comment_create          3054     25.7    471.0   1179.6     3054        0.0
+comments                6090     12.8    209.8    536.9     6090        0.0
+dm_open                  470     17.1    356.0    996.8      395       75.4
+dm_send                 1147     35.2    530.1   1111.9     1147        0.0
+feed                   11855     14.2    203.9    493.0    11855        0.0
+file_attach              920     19.4    280.1    754.7      920        0.0
+file_commit              920     32.8    464.2   1258.5      920        0.0
+file_initiate            920     19.3    410.8   1365.4      920        0.0
+file_put                 920     26.7    872.7   2240.0      920        0.0
+login                    200    113.1    249.9    598.8      nan        nan
+probe_comment            220     28.8   1076.1   1282.0      220        0.0
+reaction_add            3562     31.6    514.6   1316.6     3562        0.0
+reaction_get               0      0.0      0.0      0.0      nan        nan
+reaction_remove           73     47.7    586.2   1150.9       73        0.0
+reactions_batch        17945      6.3    121.9    291.4    17945        0.0
+related_search             0      0.0      0.0      0.0      nan        nan
+search                  3381     23.4    247.7    606.5     3381        0.0
+setup                    232      5.2     12.2     15.6      nan        nan
+social_blocks              0      0.0      0.0      0.0      nan        nan
+social_convos              0      0.0      0.0      0.0      nan        nan
+social_friends             0      0.0      0.0      0.0      nan        nan
+social_requests            0      0.0      0.0      0.0      nan        nan
+social_unread              0      0.0      0.0      0.0      nan        nan
+thread                  6090      8.8    163.6    454.6     6090        0.0
+thread_create            920     19.5    330.3    843.9      920        0.0
+thread_icon                0      0.0      0.0      0.0      nan        nan
+ticket                    80     25.8    477.1    554.0       80        0.0
+user_comments              0      0.0      0.0      0.0      nan        nan
+user_stats               606     10.2    158.2    393.8      606        0.0
+user_threads             606     10.4    168.6    375.4      606        0.0
+
+## B (10 runs)
+endpoint           count/run      med      p95      p99   ok/run failed/run
+comment_create          3136     18.5    318.3    616.1     3136        0.0
+communities             2502      6.8    142.0    312.3     2502        0.0
+dm_send                 1268     21.8    347.7    678.2     1268        0.0
+login                    200     20.3     40.5     49.7      nan        nan
+probe_comment            220     31.6    371.0    538.1      220        0.1
+profile                  627     10.1    202.7    431.0      627        0.0
+search                  3415     43.1    352.5    641.4     3415        0.0
+setup                    273      4.4      8.4     10.7      nan        nan
+space_feed              2812     14.0    181.1    367.7     2812        0.0
+space_page              9368     15.1    208.1    416.3     9368        0.0
+thread                  6252      9.8    196.0    409.9     6252        0.0
+thread_create            928     20.5    266.7    523.7      928        0.0
+upload                   928     67.9    502.0   1792.9      928        0.0
+upload_poll              935      5.9    160.1    343.3      935        0.0
+vote                    3746     16.0    337.6    757.9     3746        0.0
+ws                         0      0.0      0.0      0.0      nan        nan
