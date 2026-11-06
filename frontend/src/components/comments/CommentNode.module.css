@@ -117,3 +117,26 @@
   margin-top: 8px;
   justify-content: flex-end;
 }
+
+/* Touch floor (coarse pointers / phone widths): REPLY / EDIT / DELETE measured 17.6 px tall. The
+   row grows to 40 px; the negative margins bleed the extra hit area into the card's own padding so
+   the visible rhythm stays close to the desktop layout. */
+@media (pointer: coarse), (max-width: 480px) {
+  .body {
+    margin-bottom: 2px;
+  }
+
+  .actions {
+    gap: 4px;
+    margin: 0 0 -8px -8px;
+  }
+
+  .action,
+  .maxDepth {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    min-width: 40px;
+    padding: 0 8px;
+  }
+}

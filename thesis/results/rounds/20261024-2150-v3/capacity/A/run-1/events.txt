@@ -1,0 +1,89 @@
+LAST SEEN   TYPE      REASON                   OBJECT                          MESSAGE
+53m         Normal    ScalingReplicaSet        deployment/backend              Scaled down replica set backend-7c7fc6454f from 2 to 0
+53m         Normal    Killing                  pod/backend-7c7fc6454f-j6r24    Stopping container backend
+53m         Normal    Killing                  pod/backend-7c7fc6454f-s7hdk    Stopping container backend
+53m         Normal    SuccessfulDelete         replicaset/backend-7c7fc6454f   Deleted pod: backend-7c7fc6454f-j6r24
+53m         Normal    SuccessfulDelete         replicaset/backend-7c7fc6454f   Deleted pod: backend-7c7fc6454f-s7hdk
+27m         Normal    Pulled                   pod/db-seed-benchmark-vlt68     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+27m         Normal    Scheduled                pod/db-seed-benchmark-vlt68     Successfully assigned forum-dotnet/db-seed-benchmark-vlt68 to forum
+27m         Normal    SuccessfulCreate         job/db-seed-benchmark           Created pod: db-seed-benchmark-vlt68
+27m         Normal    Started                  pod/db-seed-benchmark-vlt68     Container started
+27m         Normal    Created                  pod/db-seed-benchmark-vlt68     Container created
+27m         Normal    Completed                job/db-seed-benchmark           Job completed
+27m         Normal    NoPods                   poddisruptionbudget/backend     No matching pods found
+27m         Normal    Scheduled                pod/backend-64b577b6b6-762fp    Successfully assigned forum-dotnet/backend-64b577b6b6-762fp to forum
+27m         Normal    Scheduled                pod/backend-64b577b6b6-psmth    Successfully assigned forum-dotnet/backend-64b577b6b6-psmth to forum
+27m         Normal    ScalingReplicaSet        deployment/backend              Scaled up replica set backend-64b577b6b6 from 0 to 2
+27m         Normal    SuccessfulCreate         replicaset/backend-64b577b6b6   Created pod: backend-64b577b6b6-psmth
+27m         Normal    SuccessfulCreate         replicaset/backend-64b577b6b6   Created pod: backend-64b577b6b6-762fp
+27m         Normal    Started                  pod/backend-64b577b6b6-762fp    Container started
+27m         Normal    Created                  pod/backend-64b577b6b6-762fp    Container created
+27m         Normal    Pulled                   pod/backend-64b577b6b6-762fp    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+27m         Normal    Started                  pod/backend-64b577b6b6-psmth    Container started
+27m         Normal    Created                  pod/backend-64b577b6b6-psmth    Container created
+27m         Normal    Pulled                   pod/backend-64b577b6b6-psmth    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+19m         Warning   Unhealthy                pod/backend-64b577b6b6-psmth    Readiness probe failed: Get "http://10.244.133.178:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+19m         Warning   Unhealthy                pod/backend-64b577b6b6-psmth    Liveness probe failed: Get "http://10.244.133.178:8080/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+18m         Warning   Unhealthy                pod/backend-64b577b6b6-psmth    Readiness probe failed: HTTP probe failed with statuscode: 503
+18m         Warning   Unhealthy                pod/backend-64b577b6b6-762fp    Readiness probe failed: HTTP probe failed with statuscode: 503
+15m         Normal    SuccessfulCreate         job/db-seed-benchmark           Created pod: db-seed-benchmark-r6prw
+15m         Normal    Scheduled                pod/db-seed-benchmark-r6prw     Successfully assigned forum-dotnet/db-seed-benchmark-r6prw to forum
+15m         Normal    Created                  pod/db-seed-benchmark-r6prw     Container created
+15m         Normal    Started                  pod/db-seed-benchmark-r6prw     Container started
+15m         Normal    Pulled                   pod/db-seed-benchmark-r6prw     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+15m         Normal    Completed                job/db-seed-benchmark           Job completed
+15m         Normal    ScalingReplicaSet        deployment/backend              Scaled up replica set backend-68549cd9d7 from 0 to 1
+15m         Normal    Started                  pod/backend-68549cd9d7-kdv8p    Container started
+15m         Normal    Created                  pod/backend-68549cd9d7-kdv8p    Container created
+15m         Normal    SuccessfulCreate         replicaset/backend-68549cd9d7   Created pod: backend-68549cd9d7-kdv8p
+15m         Normal    Pulled                   pod/backend-68549cd9d7-kdv8p    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+15m         Normal    Scheduled                pod/backend-68549cd9d7-kdv8p    Successfully assigned forum-dotnet/backend-68549cd9d7-kdv8p to forum
+15m         Normal    ScalingReplicaSet        deployment/backend              Scaled down replica set backend-64b577b6b6 from 2 to 1
+15m         Normal    SuccessfulDelete         replicaset/backend-64b577b6b6   Deleted pod: backend-64b577b6b6-762fp
+15m         Normal    Killing                  pod/backend-64b577b6b6-762fp    Stopping container backend
+15m         Normal    Scheduled                pod/backend-68549cd9d7-2lzhr    Successfully assigned forum-dotnet/backend-68549cd9d7-2lzhr to forum
+15m         Normal    ScalingReplicaSet        deployment/backend              Scaled up replica set backend-68549cd9d7 from 1 to 2
+15m         Normal    SuccessfulCreate         replicaset/backend-68549cd9d7   Created pod: backend-68549cd9d7-2lzhr
+15m         Normal    Pulled                   pod/backend-68549cd9d7-2lzhr    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+15m         Normal    Created                  pod/backend-68549cd9d7-2lzhr    Container created
+15m         Normal    Started                  pod/backend-68549cd9d7-2lzhr    Container started
+15m         Normal    Killing                  pod/backend-64b577b6b6-psmth    Stopping container backend
+15m         Normal    SuccessfulDelete         replicaset/backend-64b577b6b6   Deleted pod: backend-64b577b6b6-psmth
+15m         Normal    ScalingReplicaSet        deployment/backend              Scaled down replica set backend-64b577b6b6 from 1 to 0
+8m5s        Warning   Unhealthy                pod/rabbitmq-0                  Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 15s
+4m46s       Warning   Unhealthy                pod/backend-68549cd9d7-2lzhr    Readiness probe failed: Get "http://10.244.133.184:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+4m27s       Warning   Unhealthy                pod/backend-68549cd9d7-kdv8p    Liveness probe failed: Get "http://10.244.133.165:8080/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+4m21s       Warning   Unhealthy                pod/backend-68549cd9d7-2lzhr    Liveness probe failed: Get "http://10.244.133.184:8080/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+4m18s       Warning   Unhealthy                pod/backend-68549cd9d7-2lzhr    Readiness probe failed: HTTP probe failed with statuscode: 503
+4m          Warning   Unhealthy                pod/postgres-0                  Liveness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+3m59s       Warning   Unhealthy                pod/postgres-0                  Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+3m50s       Warning   Unhealthy                pod/backend-68549cd9d7-kdv8p    Readiness probe failed: Get "http://10.244.133.165:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+3m40s       Normal    Killing                  pod/rabbitmq-0                  Container rabbitmq failed liveness probe, will be restarted
+3m32s       Normal    Killing                  pod/postgres-0                  Container postgres failed liveness probe, will be restarted
+3m25s       Warning   Unhealthy                pod/backend-68549cd9d7-kdv8p    Readiness probe failed: HTTP probe failed with statuscode: 503
+3m24s       Warning   NodeNotReady             pod/postgres-0                  Node is not ready
+2m58s       Warning   Unhealthy                pod/frontend-9bb7b77ff-fk9vm    Liveness probe failed: Get "http://10.244.133.149:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2m57s       Warning   FailedToUpdateEndpoint   endpoints/frontend              Failed to update endpoint forum-dotnet/frontend: Operation cannot be fulfilled on endpoints "frontend": the object has been modified; please apply your changes to the latest version and try again
+2m57s       Warning   FailedToUpdateEndpoint   endpoints/frontend              Failed to update endpoint forum-dotnet/frontend: etcdserver: request timed out
+2m51s       Normal    TaintManagerEviction     pod/frontend-9bb7b77ff-fk9vm    Cancelling deletion of Pod forum-dotnet/frontend-9bb7b77ff-fk9vm
+2m51s       Normal    TaintManagerEviction     pod/rabbitmq-0                  Cancelling deletion of Pod forum-dotnet/rabbitmq-0
+2m51s       Normal    TaintManagerEviction     pod/backend-68549cd9d7-2lzhr    Cancelling deletion of Pod forum-dotnet/backend-68549cd9d7-2lzhr
+2m51s       Normal    TaintManagerEviction     pod/minio-0                     Cancelling deletion of Pod forum-dotnet/minio-0
+2m51s       Normal    TaintManagerEviction     pod/minio-create-bucket-tpjl5   Cancelling deletion of Pod forum-dotnet/minio-create-bucket-tpjl5
+2m51s       Normal    TaintManagerEviction     pod/postgres-0                  Cancelling deletion of Pod forum-dotnet/postgres-0
+2m51s       Normal    TaintManagerEviction     pod/backend-68549cd9d7-kdv8p    Cancelling deletion of Pod forum-dotnet/backend-68549cd9d7-kdv8p
+2m49s       Normal    Pulled                   pod/rabbitmq-0                  Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+2m33s       Normal    Created                  pod/rabbitmq-0                  Container created
+2m23s       Normal    Pulled                   pod/postgres-0                  Container image "postgres:18" already present on machine and can be accessed by the pod
+2m22s       Normal    Started                  pod/rabbitmq-0                  Container started
+2m18s       Normal    Created                  pod/postgres-0                  Container created
+102s        Normal    Sync                     ingress/minio                   Scheduled for sync
+102s        Normal    Sync                     ingress/forum                   Scheduled for sync
+102s        Normal    Started                  pod/postgres-0                  Container started
+77s         Warning   Unhealthy                pod/rabbitmq-0                  Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 10s
+74s         Warning   FailedSync               pod/postgres-0                  error determining status: rpc error: code = Unknown desc = Error response from daemon: No such container: 7c9ffd2b703e9a068e85b471513a55d7b91631687a24ddcc9d50760f2e2b4738
+48s         Warning   Unhealthy                pod/frontend-9bb7b77ff-fk9vm    Readiness probe failed: Get "http://10.244.133.149:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+17s         Warning   Unhealthy                pod/minio-0                     Liveness probe failed: Get "http://10.244.133.176:9000/minio/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+14s         Warning   Unhealthy                pod/minio-0                     Readiness probe failed: Get "http://10.244.133.176:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+1s          Warning   NodeNotReady             pod/frontend-9bb7b77ff-fk9vm    Node is not ready
+0s          Warning   NodeNotReady             pod/minio-0                     Node is not ready

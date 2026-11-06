@@ -1,0 +1,637 @@
+== A: 1539 logged statements; marks found: 24
+  nav (A categories | B /communities)                                    foreground=  1  background= 43 {'Npgsql pooled-connection reset (D9)': 12, 'tx control (BEGIN/COMMIT/ROLLBACK)': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · SELECT c.id, c.created_by, c.created_on_utc, c.deleted_by, c.deleted_on_utc, c.description, c.icon_file_id, c.is_deleted, c.last_modified_by, c.last_m
+  J1 page 1 (A feed + batch | B /c/general)                              foreground= 20  background= 51 {'postgres-exporter (monitoring)': 8, 'Npgsql pooled-connection reset (D9)': 12, 'tx control (BEGIN/COMMIT/ROLLBACK)': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · 
+      · SELECT
+      · 
+      · SELECT
+      · 
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · SELECT
+      · SELECT
+      · SELECT c.id, c.owner_id, c.visibility = 'private'
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+  J2 heaviest thread (A detail‖tree + batch | B /thread/1)               foreground=  8  background= 43 {'Npgsql pooled-connection reset (D9)': 12, 'tx control (BEGIN/COMMIT/ROLLBACK)': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · SELECT c0.id, c0.owner_id, c0.visibility = 'private'
+      · SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,
+      · SELECT id, thread_id, parent_id, path, depth, body, is_deleted,
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+  J2 typical thread, 4 comments                                          foreground=  8  background= 39 {'Npgsql pooled-connection reset (D9)': 11, 'tx control (BEGIN/COMMIT/ROLLBACK)': 18, 'outbox relay poll': 9, 'health check SELECT 1': 1}
+      · SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,
+      · SELECT c0.id, c0.owner_id, c0.visibility = 'private'
+      · DISCARD ALL
+      · SELECT id, thread_id, parent_id, path, depth, body, is_deleted,
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+      · DISCARD ALL
+      · DISCARD ALL
+  J6 search 'beacon' (rank 50)                                           foreground=  3  background= 41 {'Npgsql pooled-connection reset (D9)': 10, 'tx control (BEGIN/COMMIT/ROLLBACK)': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · DISCARD ALL
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+      · DISCARD ALL
+  J7 profile (A stats‖threads | B /u/34)                                 foreground= 20  background= 70 {'tx control (BEGIN/COMMIT/ROLLBACK)': 30, 'outbox relay poll': 15, 'Npgsql pooled-connection reset (D9)': 16, 'postgres-exporter (monitoring)': 8, 'health check SELECT 1': 1}
+      · DISCARD ALL
+      · DISCARD ALL
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · 
+      · SELECT user_id, username, display_name, thread_count, comment_count, karma
+      · 
+      · SELECT
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · SELECT
+      · SELECT
+      · 
+      · SELECT
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+      · SELECT
+  J3 comment create (+relay window)                                      foreground= 62  background=524 {'Npgsql pooled-connection reset (D9)': 123, 'health check SELECT 1': 13, 'tx control (BEGIN/COMMIT/ROLLBACK)': 244, 'outbox relay poll': 123, 'postgres-exporter (monitoring)': 21}
+      · SELECT t.id, t.body, t.category_id, t.created_by, t.created_on_utc, t.deleted_by, t.deleted_on_utc, t.is_deleted, t.is_pinned, t.last_modified_by, t.l
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · INSERT INTO forum_content.comments (id, body, created_by, created_on_utc, deleted_by, deleted_on_utc, depth, is_deleted, last_modified_by, last_modifi
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · 
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+      · DISCARD ALL
+      · DISCARD ALL
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · 
+      · SELECT
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · SELECT
+      · 
+      · SELECT
+      · 
+      · SELECT
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · DISCARD ALL
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · SELECT
+      · SELECT
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · 
+      · SELECT
+  J5 reaction add / vote                                                 foreground=  7  background= 48 {'Npgsql pooled-connection reset (D9)': 14, 'tx control (BEGIN/COMMIT/ROLLBACK)': 22, 'outbox relay poll': 11, 'health check SELECT 1': 1}
+      · DISCARD ALL
+      · SELECT t.category_id, c.owner_id, c.visibility, t.id
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · SELECT r.user_id, r.target_type, r.target_id, r.reaction_type, r.created_on_utc, r.value
+      · INSERT INTO forum_engagement.reactions (reaction_type, target_id, target_type, user_id, created_on_utc, value)
+      · SELECT
+      · DISCARD ALL
+  J5 reaction remove / vote back                                         foreground= 26  background=101 {'Npgsql pooled-connection reset (D9)': 26, 'tx control (BEGIN/COMMIT/ROLLBACK)': 42, 'outbox relay poll': 23, 'health check SELECT 1': 2, 'postgres-exporter (monitoring)': 8}
+      · DISCARD ALL
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+      · SELECT t.category_id, c.owner_id, c.visibility, t.id
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · ;
+      · SELECT version();
+      · SELECT r.user_id, r.target_type, r.target_id, r.reaction_type, r.created_on_utc, r.value
+      · SELECT version();
+      · 
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT
+      · 
+      · DELETE FROM forum_engagement.reactions
+      · SELECT
+      · 
+      · SELECT
+      · SELECT
+      · 
+      · 
+      · SELECT
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+  J4 thread + photo (A presign/commit/thread/attach | B upload/poll/post) foreground= 10  background= 18 {'Npgsql pooled-connection reset (D9)': 11, 'tx control (BEGIN/COMMIT/ROLLBACK)': 4, 'outbox relay poll': 2, 'health check SELECT 1': 1}
+      · INSERT INTO forum_files.files (id, bucket, committed_on_utc, content_type, created_by, created_on_utc, height, last_modified_by, last_modified_on_utc,
+      · SELECT f1.id, f1.bucket, f1.committed_on_utc, f1.content_type, f1.created_by, f1.created_on_utc, f1.height, f1.last_modified_by, f1.last_modified_on_u
+      · UPDATE forum_files.files SET committed_on_utc = $1, height = $2, last_modified_by = $3, last_modified_on_utc = $4, status = $5, width = $6
+      · SELECT c.id, c.created_by, c.created_on_utc, c.deleted_by, c.deleted_on_utc, c.description, c.icon_file_id, c.is_deleted, c.last_modified_by, c.last_m
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · INSERT INTO forum_content.threads (id, body, category_id, created_by, created_on_utc, deleted_by, deleted_on_utc, is_deleted, is_pinned, last_modified
+      · SELECT f1.id, f1.bucket, f1.committed_on_utc, f1.content_type, f1.created_by, f1.created_on_utc, f1.height, f1.last_modified_by, f1.last_modified_on_u
+      · SELECT t.id, t.body, t.category_id, t.created_by, t.created_on_utc, t.deleted_by, t.deleted_on_utc, t.is_deleted, t.is_pinned, t.last_modified_by, t.l
+      · SELECT count(*)::int
+      · INSERT INTO forum_files.file_attachments (file_id, target_id, target_type, created_on_utc)
+  J9 DM (A open+send | B send)                                           foreground= 14  background= 18 {'Npgsql pooled-connection reset (D9)': 12, 'health check SELECT 1': 1, 'tx control (BEGIN/COMMIT/ROLLBACK)': 4, 'outbox relay poll': 1}
+      · SELECT 1 FROM forum_identity.users WHERE id = $1 AND status = 'active' LIMIT 1
+      · SELECT EXISTS (
+      · SELECT u.user_id, u.friend_requests, u.group_invites, u.messages, u.show_online_status
+      · SELECT c.id, c.created_by, c.created_on_utc, c.direct_key, c.last_modified_by, c.last_modified_on_utc, c.type
+      · INSERT INTO forum_social.conversations (id, created_by, created_on_utc, direct_key, last_modified_by, last_modified_on_utc, type)
+      · INSERT INTO forum_social.conversation_participants (conversation_id, user_id, is_muted, joined_on_utc, last_read_on_utc, left_on_utc)
+      · INSERT INTO forum_social.conversation_participants (conversation_id, user_id, is_muted, joined_on_utc, last_read_on_utc, left_on_utc)
+      · SELECT c.id, c.created_by, c.created_on_utc, c.direct_key, c.last_modified_by, c.last_modified_on_utc, c.type
+      · SELECT c.conversation_id, c.user_id, c.is_muted, c.joined_on_utc, c.last_read_on_utc, c.left_on_utc
+      · SELECT c.conversation_id, c.user_id, c.is_muted, c.joined_on_utc, c.last_read_on_utc, c.left_on_utc
+      · SELECT EXISTS (
+      · SELECT u.user_id, u.friend_requests, u.group_invites, u.messages, u.show_online_status
+      · UPDATE forum_social.conversation_participants SET last_read_on_utc = $1
+      · INSERT INTO forum_social.messages (id, body, conversation_id, created_by, created_on_utc, deleted_by, deleted_on_utc, edited_on_utc, is_deleted, last_
+  idle 20 s (no traffic)                                                 foreground= 32  background= 44 {'Npgsql pooled-connection reset (D9)': 18, 'health check SELECT 1': 10, 'postgres-exporter (monitoring)': 16}
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+      · 
+      · 
+      · SELECT
+      · 
+      · 
+      · SELECT
+      · 
+      · ;
+      · SELECT version();
+      · SELECT version();
+      · SELECT
+      · 
+      · SELECT
+      · 
+      · 
+      · 
+      · SELECT
+      · SELECT
+      · 
+      · SELECT
+      · SELECT
+      · SELECT
+      · SELECT pg_roles.rolname, pg_roles.rolconnlimit FROM pg_roles
+== B: 1082 logged statements; marks found: 24
+  nav (A categories | B /communities)                                    foreground= 15  background= 14 {'pgx pool ping': 10, 'tx control (begin/commit/rollback)': 4}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: ListCommunities :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+  J1 page 1 (A feed + batch | B /c/general)                              foreground= 13  background= 11 {'pgx pool ping': 9, 'tx control (begin/commit/rollback)': 2}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListCommunityPostsCursorNewest :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J2 heaviest thread (A detail‖tree + batch | B /thread/1)               foreground= 17  background= 12 {'tx control (begin/commit/rollback)': 4, 'pgx pool ping': 8}
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListComments :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J2 typical thread, 4 comments                                          foreground= 15  background= 10 {'tx control (begin/commit/rollback)': 4, 'pgx pool ping': 6}
+      · -- name: LeaderAttemptReelect :one
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListComments :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J6 search 'beacon' (rank 50)                                           foreground= 10  background=  9 {'pgx pool ping': 9}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: SearchPostsPaged :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J7 profile (A stats‖threads | B /u/34)                                 foreground= 19  background= 15 {'pgx pool ping': 11, 'tx control (begin/commit/rollback)': 4}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: GetUserByID :one
+      · -- name: AuthorStats :one
+      · -- name: PostsByAuthor :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J3 comment create (+relay window)                                      foreground=129  background=155 {'pgx pool ping': 107, 'tx control (begin/commit/rollback)': 48}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: CreateComment :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetStuck :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetStuck :many
+      · -- name: LeaderResign :execrows
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetStuck :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: QueueDeleteExpired :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetStuck :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+  J5 reaction add / vote                                                 foreground= 22  background= 13 {'pgx pool ping': 7, 'tx control (begin/commit/rollback)': 6}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobSchedule :many
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetPostBaseVotesForUpdate :one
+      · -- name: GetPostVoteDir :one
+      · -- name: UpsertPostVote :exec
+      · -- name: SumPostVotes :one
+      · -- name: GetPostVoteDir :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J5 reaction remove / vote back                                         foreground= 23  background= 20 {'pgx pool ping': 14, 'tx control (begin/commit/rollback)': 6}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetPostBaseVotesForUpdate :one
+      · -- name: GetPostVoteDir :one
+      · -- name: DeletePostVote :exec
+      · -- name: SumPostVotes :one
+      · -- name: GetPostVoteDir :one
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+  J4 thread + photo (A presign/commit/thread/attach | B upload/poll/post) foreground= 37  background= 15 {'tx control (begin/commit/rollback)': 8, 'pgx pool ping': 7}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetUserByToken :one
+      · -- name: CreateMediaUpload :one
+      · -- name: JobInsertFastMany :many
+      · -- name: PGNotifyMany :exec
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: GetUserByToken :one
+      · -- name: GetMediaUpload :one
+      · -- name: UpdateMediaUpload :exec
+      · -- name: JobSetStateIfRunningMany :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetStuck :many
+      · -- name: GetUserByToken :one
+      · -- name: GetMediaUpload :one
+      · -- name: GetUserByToken :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetMembership :one
+      · -- name: CreatePost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+  J9 DM (A open+send | B send)                                           foreground= 18  background= 13 {'pgx pool ping': 9, 'tx control (begin/commit/rollback)': 4}
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: GetUserByToken :one
+      · -- name: AreFriends :one
+      · -- name: GetUserByID :one
+      · -- name: InsertDirectMessage :one
+      · -- name: CountUnreadFromPeer :one
+      · -- name: ListUnreadDMCounts :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+  idle 20 s (no traffic)                                                 foreground= 82  background= 90 {'pgx pool ping': 62, 'tx control (begin/commit/rollback)': 28}
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetStuck :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderAttemptReelect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: JobSchedule :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: JobSchedule :many
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: LeaderResign :execrows
+      · -- name: LeaderDeleteExpired :execrows
+      · -- name: LeaderAttemptElect :one
+      · -- name: JobGetAvailable :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobDeleteBefore :execresult
+      · -- name: JobGetStuck :many
+      · -- name: JobGetAvailable :many
+      · -- name: JobSchedule :many
+      · -- name: QueueDeleteExpired :many
+      · -- name: JobGetAvailable :many

@@ -1,0 +1,8 @@
+NAME                        READY   STATUS      RESTARTS      AGE     IP               NODE    NOMINATED NODE   READINESS GATES
+backend-84b869c655-8fwxb    1/1     Running     0             5m21s   10.244.133.141   forum   <none>           <none>
+backend-84b869c655-mq2m9    1/1     Running     0             9m10s   10.244.133.138   forum   <none>           <none>
+frontend-5c595dfd86-522bz   1/1     Running     0             15m     10.244.133.169   forum   <none>           <none>
+minio-0                     1/1     Running     2 (74m ago)   45h     10.244.133.163   forum   <none>           <none>
+minio-create-bucket-rjztz   0/1     Completed   0             16m     10.244.133.191   forum   <none>           <none>
+postgres-0                  1/1     Running     0             2m15s   10.244.133.181   forum   <none>           <none>
+rabbitmq-0                  1/1     Running     9 (70m ago)   45h     10.244.133.150   forum   <none>           <none>

@@ -299,8 +299,10 @@ export function TopNav() {
           <WsStatusPill />
           {isAuthenticated && currentUser ? (
             <>
+              {/* The label collapses to "+" at phone widths (visually hidden, still the
+                  accessible name "+ New thread" — see TopNav.module.css). */}
               <Button size="sm" onClick={() => openCreate()}>
-                + New thread
+                +<span className={styles.newThreadLabel}> New thread</span>
               </Button>
               <SocialNavLinks />
               <ActivityBell />

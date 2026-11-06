@@ -140,3 +140,14 @@
   letter-spacing: 0.12em;
   color: var(--color-text-tertiary);
 }
+
+/* Touch floor (coarse pointers / phone widths): the inline "Register" / "Log in" switch links
+   measured 20.8 px tall. */
+@media (pointer: coarse), (max-width: 480px) {
+  .switchLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 6px;
+  }
+}

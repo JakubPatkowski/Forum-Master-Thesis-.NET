@@ -1,0 +1,12 @@
+[
+ {
+  "fault": "pod-crash",
+  "at_epoch": 1792359726,
+  "detail": "gomx-6f6975749b-6c2jq killed (grace 0, force)"
+ },
+ {
+  "fault": "db-restart",
+  "at_epoch": 1792359909,
+  "detail": "postgres-0 deleted (StatefulSet recreates it)"
+ }
+]

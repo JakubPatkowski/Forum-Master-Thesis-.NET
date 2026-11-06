@@ -1,0 +1,46 @@
+{
+  "target": "a",
+  "profile": "capacity",
+  "repeat": 1,
+  "position_in_pair": 1,
+  "started_epoch": 1792886404,
+  "finished_epoch": 1792887238,
+  "seed_before": {
+    "users": 800,
+    "threads": 1613,
+    "comments": 9032,
+    "reactions": 15034,
+    "messages": 2012
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 2079,
+    "comments": 10777,
+    "reactions": 16930,
+    "messages": 2627
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 1725,
+      "new_rows": 1745
+    },
+    "threads": {
+      "accepted": 466,
+      "new_rows": 466
+    },
+    "messages": {
+      "accepted": 615,
+      "new_rows": 615
+    }
+  },
+  "checks_failed": 34977,
+  "checks_failed_pct": 51.449,
+  "pod_restarts_during_run": [
+    "postgres-0",
+    "rabbitmq-0"
+  ],
+  "valid": false,
+  "invalid_reasons": [
+    "pod restarts during the run: ['postgres-0', 'rabbitmq-0']"
+  ]
+}

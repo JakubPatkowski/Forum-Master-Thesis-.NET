@@ -107,20 +107,10 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
         var slugs = command.TagSlugs.Select(static slug => slug.Trim()).Distinct(StringComparer.Ordinal).ToArray();
         if (slugs.Length > 0)
         {
-            var existing = await _tags.GetBySlugsAsync(slugs, cancellationToken);
-            var tagIds = new List<Ulid>(slugs.Length);
-            foreach (var slug in slugs)
-            {
-                var tag = existing.FirstOrDefault(tag => tag.Slug == slug);
-                if (tag is null)
-                {
-                    tag = Tag.Create(slug, slug);
-                    _tags.Add(tag);
-                }
-
-                tagIds.Add(tag.Id);
-            }
-
+            // Race-safe get-or-create (ON CONFLICT DO NOTHING in the repository): concurrent threads sharing a brand-new
+            // slug all succeed instead of the loser failing on the unique index.
+            var tags = await _tags.GetOrCreateAsync(slugs, cancellationToken);
+            var tagIds = slugs.Select(slug => tags.First(tag => tag.Slug == slug).Id).ToList();
             _threads.AttachTags(thread.Id, tagIds);
         }
 

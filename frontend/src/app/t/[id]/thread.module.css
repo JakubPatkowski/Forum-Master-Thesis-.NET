@@ -419,3 +419,32 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Touch floor (coarse pointers / phone widths): breadcrumb links measured 17.6 px tall, EDIT /
+   DELETE 33.6 px. The breadcrumb row grows to 40 px; its negative margins bleed the extra hit area
+   into the surrounding gaps so the text stays exactly where the desktop layout puts it. */
+@media (pointer: coarse), (max-width: 480px) {
+  .breadcrumbs {
+    gap: 4px;
+    margin: -11px 0 -11px -8px;
+  }
+
+  .crumb,
+  .crumbCurrent {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 8px;
+  }
+
+  .categoryLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .editButton,
+  .deleteButton {
+    min-height: 40px;
+  }
+}

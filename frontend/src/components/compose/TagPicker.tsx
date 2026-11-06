@@ -9,7 +9,6 @@
 
 import { useState, type KeyboardEvent } from "react";
 
-import { Badge } from "@/components/ui/Badge";
 import { TagChip } from "@/components/ui/TagChip";
 import { useTagSuggestions } from "@/lib/hooks/use-tag-suggestions";
 
@@ -116,12 +115,6 @@ export function TagPicker({
           <div className={styles.dropdown}>
             <div className={styles.dropdownHeader}>
               <span className={styles.dropdownLabel}>EXISTING TAGS</span>
-              <Badge
-                tone="warning"
-                title="Requires GET /api/content/tags?query= — proposed endpoint, mock data"
-              >
-                SOON
-              </Badge>
             </div>
             {suggestions.map((suggestion, index) => (
               <button

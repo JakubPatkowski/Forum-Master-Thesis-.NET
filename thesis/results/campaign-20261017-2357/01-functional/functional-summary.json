@@ -1,0 +1,251 @@
+{
+  "generated": "2026-10-18T00:15+02:00",
+  "A": {
+    "backend": {
+      "projects": [
+        {
+          "project": "Forum.Modules.Social.Tests.dll",
+          "outcome": "Completed",
+          "total": 25,
+          "passed": 25,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:50.0190827+02:00",
+          "finish": "2026-10-18T00:01:53.3333266+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_52_net10.0.trx"
+        },
+        {
+          "project": "Forum.Modules.Content.Tests.dll",
+          "outcome": "Completed",
+          "total": 26,
+          "passed": 26,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:49.4520235+02:00",
+          "finish": "2026-10-18T00:01:53.1918671+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0.trx"
+        },
+        {
+          "project": "Forum.Modules.Files.Tests.dll",
+          "outcome": "Completed",
+          "total": 42,
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:49.9060460+02:00",
+          "finish": "2026-10-18T00:01:53.4394834+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[1].trx"
+        },
+        {
+          "project": "Forum.Modules.Engagement.Tests.dll",
+          "outcome": "Completed",
+          "total": 24,
+          "passed": 24,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:50.0087998+02:00",
+          "finish": "2026-10-18T00:01:53.4680530+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[2].trx"
+        },
+        {
+          "project": "Forum.Api.Tests.dll",
+          "outcome": "Completed",
+          "total": 53,
+          "passed": 53,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:48.9480170+02:00",
+          "finish": "2026-10-18T00:01:54.6797124+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[3].trx"
+        },
+        {
+          "project": "Forum.Modules.Identity.Tests.dll",
+          "outcome": "Completed",
+          "total": 30,
+          "passed": 30,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:49.7455307+02:00",
+          "finish": "2026-10-18T00:02:10.3389387+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[4].trx"
+        },
+        {
+          "project": "Forum.ArchitectureTests.dll",
+          "outcome": "Completed",
+          "total": 2,
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:49.5950908+02:00",
+          "finish": "2026-10-18T00:01:54.6690567+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_01_54_net10.0.trx"
+        },
+        {
+          "project": "Forum.IntegrationTests.dll",
+          "outcome": "Completed",
+          "total": 46,
+          "passed": 46,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-18T00:01:50.0545417+02:00",
+          "finish": "2026-10-18T00:06:32.3717900+02:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-18_00_02_22_net10.0.trx"
+        }
+      ],
+      "totals": {
+        "passed": 248,
+        "failed": 0,
+        "skipped": 0,
+        "total": 248
+      },
+      "build": {
+        "rc": 0,
+        "duration_s": 9,
+        "warnings": 0,
+        "errors": 0
+      },
+      "test_run": {
+        "rc": 0,
+        "duration_s": 287
+      },
+      "format_verify": {
+        "rc": 0,
+        "duration_s": 42
+      }
+    },
+    "frontend": {
+      "typecheck": {
+        "rc": 0,
+        "duration_s": 3
+      },
+      "lint": {
+        "rc": 0,
+        "duration_s": 4
+      },
+      "test": {
+        "rc": 0,
+        "duration_s": 4,
+        "total": 69,
+        "failed": 0,
+        "skipped": 0,
+        "passed": 69,
+        "junit": "fe-vitest-junit.xml"
+      },
+      "build": {
+        "rc": 0,
+        "duration_s": 44
+      }
+    },
+    "verdict": "PASS"
+  },
+  "B": {
+    "ci_jobs": {
+      "lint:go": {
+        "check-generated-go": {
+          "rc": 0,
+          "duration_s": 6
+        },
+        "templ-fmt": {
+          "rc": 0,
+          "duration_s": 1
+        },
+        "gofmt": {
+          "rc": 0,
+          "duration_s": 3
+        },
+        "vet": {
+          "rc": 0,
+          "duration_s": 3
+        },
+        "golangci-lint@v1.64.5": {
+          "rc": 0,
+          "duration_s": 15
+        }
+      },
+      "lint:ts": {
+        "rc": 0,
+        "duration_s": 148,
+        "detail": "bun 1.3.14-alpine: bun install --frozen-lockfile (909 packages), check-generated-ts (twmerge cache up-to-date), eslint, tsc --noEmit, prettier --check: all clean"
+      },
+      "test:go": {
+        "rc": 0,
+        "duration_s": 65,
+        "passed": 378,
+        "failed": 0,
+        "skipped": 25,
+        "packages_ok": 71,
+        "packages_failed": 0,
+        "packages_without_tests": 1,
+        "skipped_tests": [
+          "TestBusBroadcastFanout",
+          "TestConformance/Ping",
+          "TestConformance/Accounts",
+          "TestConformance/Sessions",
+          "TestConformance/AccountSettings",
+          "TestConformance/OAuth",
+          "TestConformance/PostsAndComments",
+          "TestConformance/Reactions",
+          "TestConformance/Moderation",
+          "TestConformance/Communities",
+          "TestConformance/Feed",
+          "TestConformance/FeedSortAndPaging",
+          "TestConformance/Search",
+          "TestConformance/Profile",
+          "TestConformance/Friends",
+          "TestConformance/Notifications",
+          "TestConformance/DirectMessages",
+          "TestConformance/DMReadState",
+          "TestConformance/DMEditDelete",
+          "TestConformance/ReferencedBlobs",
+          "TestPostgresStore_Integration",
+          "TestSeedIfEmpty_Concurrent",
+          "TestMergeTailwindClasses_UsesTwMerge",
+          "TestS3RoundTrip",
+          "TestS3StreamsLargeVideo"
+        ],
+        "coverage_total_pct": 30.5,
+        "env": "no DATABASE_URL / REDIS_ADDR (fast lane) \u2192 adapter + redisbus tests skip by design"
+      },
+      "test:go:postgres": {
+        "rc": 0,
+        "duration_s": 12,
+        "passed": 81,
+        "failed": 0,
+        "skipped": 0,
+        "packages_ok": 1,
+        "packages_failed": 0,
+        "packages_without_tests": 0,
+        "skipped_tests": [],
+        "coverage_pct": 72.6,
+        "env": "postgres:18-alpine service as in CI"
+      },
+      "test:go:redis": {
+        "rc": 0,
+        "duration_s": 3,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "packages_ok": 1,
+        "packages_failed": 0,
+        "packages_without_tests": 0,
+        "skipped_tests": [],
+        "env": "redis:7-alpine service as in CI"
+      }
+    },
+    "toolchain": {
+      "image": "golang:1.26-alpine (go1.26.9)",
+      "go.mod": "go 1.26.1 (no toolchain line)",
+      "GOTOOLCHAIN": "local",
+      "note": "no toolchain download needed in the CI image; the 'Go 1.26.1 toolchain download' pipeline-failure candidate does not reproduce"
+    },
+    "not_run": {
+      "e2e:playwright": "full-lane job: needs the prebaked Playwright 1.58.2 + bun image (ci/e2e.Dockerfile \u2192 GitLab registry), build:sidecar + build:assets artifacts and the demo seed \u2014 not replayable here tonight (image not available locally; multi-GB pull/build)",
+      "lighthouse (CI job)": "same image dependency; B Lighthouse is measured in Phase 4 with the shared scripts instead",
+      "verify:container / package:container": "docker build -f ContainerFile.dev \u2014 the same build produced gomx:bench on 2026-10-17 23:25 from this working tree (scripts/gomx-bench-deploy.sh), so it is known green",
+      "security:govulncheck, security:trivy-fs, sonarqube": "security lane: trivy fs runs in Phase 4 under the shared scan-day protocol; govulncheck/sonar not replayed"
+    },
+    "first_attempt_note": "The first pass ran the Go steps as uid 1000 and failed with 'permission denied' on ~/.cache/gomx-gocache (root-owned by an earlier root-run container) \u2014 an environment artefact, not a code failure; the rerun as root in the container (same commands) is the recorded result. lint:ts, check-generated, gofmt and templ fmt passed in the first pass already.",
+    "verdict": "PASS"
+  },
+  "provenance": "versions under test: 00-preflight/ (A 57f63d0 + working tree, B f03d46a + working tree)"
+}

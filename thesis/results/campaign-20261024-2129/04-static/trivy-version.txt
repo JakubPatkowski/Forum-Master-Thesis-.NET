@@ -1,0 +1,9 @@
+Version: 0.72.0
+Vulnerability DB:
+  Version: 2
+  UpdatedAt: 2026-10-18 00:43:37.96251718 +0000 UTC
+  NextUpdate: 2026-10-19 00:43:37.96251693 +0000 UTC
+  DownloadedAt: 2026-10-18 01:45:13.865089349 +0000 UTC
+Check Bundle:
+  Digest: sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058
+  DownloadedAt: 2026-10-18 01:45:14.552081997 +0000 UTC

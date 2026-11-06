@@ -10,14 +10,20 @@ internal sealed record GetThreadQuery(Ulid ThreadId) : IQuery<ThreadDetailRespon
 internal sealed class GetThreadQueryHandler : IQueryHandler<GetThreadQuery, ThreadDetailResponse>
 {
     private readonly IContentQueries _queries;
+    private readonly ContentReadAccess _readAccess;
 
-    public GetThreadQueryHandler(IContentQueries queries) => _queries = queries;
+    public GetThreadQueryHandler(IContentQueries queries, ContentReadAccess readAccess)
+    {
+        _queries = queries;
+        _readAccess = readAccess;
+    }
 
     public async Task<Result<ThreadDetailResponse>> Handle(GetThreadQuery query, CancellationToken cancellationToken)
     {
+        // A thread in a private category the reader cannot open is a 404, never a 403 (A-12).
         var thread = await _queries.GetThreadAsync(query.ThreadId, cancellationToken);
-        return thread is null
+        return thread is null || !await _readAccess.CanReadAsync(thread.Category, cancellationToken)
             ? Result.Failure<ThreadDetailResponse>(ThreadErrors.NotFound)
-            : Result.Success(thread);
+            : Result.Success(thread.Detail);
     }
 }

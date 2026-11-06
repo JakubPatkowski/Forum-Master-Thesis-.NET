@@ -66,3 +66,17 @@
   flex-direction: column;
   gap: 10px;
 }
+
+/* Touch floor (coarse pointers / phone widths): the anonymous "Log in to join the discussion" link
+   measured 17 px tall; the box keeps its height by trading padding for link height. */
+@media (pointer: coarse), (max-width: 480px) {
+  .anonNote {
+    padding: 4px 16px;
+  }
+
+  .anonNote a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+}

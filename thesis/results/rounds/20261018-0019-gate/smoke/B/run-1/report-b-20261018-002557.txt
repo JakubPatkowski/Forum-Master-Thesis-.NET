@@ -1,0 +1,27 @@
+
+target=b  profile=smoke  mix=v1  harness=h3-2026-10-17  base=https://gomx.local
+http_reqs=738  p95=29ms  p99=33ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                10     21     21     23     24     24
+communities          46      3      3      4      4      5
+space_page          208      7      7      9     11     13
+space_feed           64      7      6      9     19     27
+thread              126      4      3      5      7     11
+search               57     30     30     36     38     38
+profile              12      3      3      4      4      4
+comment_create       61      5      4     11     13     13
+vote                 82      5      3      8     20     21
+setup                72      6      6      8      8      9
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           208   3.47      8     20     25
+J2           126   2.10      4      6     11
+J3            61   1.02      4     11     13
+J5            82   1.37      4      9     20
+J6            57   0.95     30     36     39
+J7            12   0.20      3      4      4
+nav           46   0.77      3      4      5
+
+all thresholds passed
+

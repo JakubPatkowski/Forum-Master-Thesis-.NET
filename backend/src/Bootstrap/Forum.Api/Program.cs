@@ -105,6 +105,7 @@ app.UseAuthorization();
 app.MapForumHealthChecks();
 app.MapPrometheusScrapingEndpoint();      // GET /metrics
 app.MapForumRealtime();                    // POST /api/realtime/ticket + GET /api/realtime/ws
+app.MapForumTelemetry();                   // POST /api/telemetry/vitals (RUM Web Vitals beacon, A-3)
 app.MapModules(modules);                   // each module maps its own endpoints
 
 await app.RunWithStartupTasksAsync();

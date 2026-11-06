@@ -1,0 +1,962 @@
+[
+ {
+  "ts": "2026-10-17T00:29:05Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:10Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:16Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:21Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:32Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 16,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:43Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:48Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:54Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:29:59Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:04Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:10Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:15Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:21Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:31Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 180,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:30:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:30:42Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:30:47Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:30:53Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:30:58Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:04Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:09Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:14Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:20Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:25Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:31Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 236,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:36Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:42Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:47Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:53Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:31:58Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:04Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:09Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:15Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:20Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:31Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 89,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:42Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:48Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:53Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:32:59Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:04Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:10Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:15Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:21Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:32Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 348,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:43Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:49Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:33:54Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:00Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:05Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:11Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:16Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:22Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:27Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:33Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 352,
+  "backend_mem_mib": 454
+ },
+ {
+  "ts": "2026-10-17T00:34:39Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:34:44Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:34:50Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:34:56Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:01Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:07Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:12Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:18Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:24Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:30Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 544,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:35:35Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:35:41Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:35:47Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:35:52Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:35:58Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:03Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:09Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:15Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:20Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:31Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 709,
+  "backend_mem_mib": 455
+ },
+ {
+  "ts": "2026-10-17T00:36:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:36:43Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:36:48Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:36:54Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:36:59Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:05Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:10Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:15Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:21Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:26Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:32Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 679,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:37Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 203,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:42Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 203,
+  "backend_mem_mib": 456
+ },
+ {
+  "ts": "2026-10-17T00:37:48Z",
+  "target": "a",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 2,
+  "backend_cpu_millicores": 203,
+  "backend_mem_mib": 456
+ }
+]

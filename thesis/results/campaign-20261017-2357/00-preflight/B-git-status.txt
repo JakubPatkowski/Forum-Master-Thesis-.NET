@@ -1,0 +1,11 @@
+# B (gomx) — 2026-10-17T23:57:57+02:00
+## feature/master-thesis...origin/feature/master-thesis
+ M app/forum/web/handlers_community.go
+ M app/forum/web/handlers_community_test.go
+ M app/forum/web/web_test.go
+
+f03d46a4febbb6119050839d6fd871c152846ef8 2026-10-17 22:36:23 +0200 feat(bench): place bench posts like Architecture A and run the bench DB on Debian postgres:18
+4b435579756f1e32a066b326e2a1b7286c70538b 2026-10-17 22:36:23 +0200 fix(bench): set pgxpool MaxConns from GOMX_DB_MAX_CONNS instead of a pool_max_conns DSN param
+e13f18ff2ef734a181ba87faa2d13913644274e3 2026-10-17 12:36:45 +0200 style(bench): satisfy gocritic nestingReduce and httpNoBody rules
+8470235248eb931f5afb5ed50564b5256bc651af 2026-10-17 12:19:07 +0200 feat(bench): complete P1/P2 A/B benchmark alignment (B-07 to B-14)
+664101ec2e8978c1ad600d91a3c4037092e94088 2026-10-17 11:50:22 +0200 feat(bench): align gomx for master thesis A/B benchmark (B-01 to B-05)

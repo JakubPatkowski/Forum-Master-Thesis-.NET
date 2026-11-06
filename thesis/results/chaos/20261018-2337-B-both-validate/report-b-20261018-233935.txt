@@ -1,0 +1,38 @@
+
+target=b  profile=demo  mix=v2  harness=h4-2026-10-18  base=https://gomx.local  reads=anonymous
+http_reqs=36143  p95=189ms  p99=561ms  failed=6.67%  (scenario 420s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                50     20     18     34     35     35
+communities        2431     25      4    102    301   1554
+space_page         9597     59     10    158    432  60001
+space_feed         2615     32     10    140    308    681
+thread             6297     51      5    127    417  60001
+search             3411     78     26    218    482  60001
+profile             613     33      6    152    410   1093
+comment_create     3120     78      8    234    957  60000
+vote               3822     75      7    268    770  60001
+upload              918    147     42    569   1875   2612
+upload_poll         851    174      3    140    327  60001
+thread_create       827     58     12    211    680   5023
+dm_send            1248     62     10    298    746   1809
+probe_comment       220     38     23    127    160    190
+setup               123      5      6      8     11     11
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1          9597  22.85     16    208    564
+J2          6297  14.99      6    129    417
+J3          3120   7.43      9    234    957
+J4           918   2.19   1746   3161   5678
+J5          3822   9.10      8    269    770
+J6          3411   8.12     26    218    482
+J7           613   1.46      7    152    411
+J8            60   0.14      0      0      0
+J9          1248   2.97     11    298    747
+nav         2431   5.79      4    102    300
+
+ws: subscribed=80  notifications=68003  errors=20
+ws receipt probes: sent=200  received=173  lost=27  unresolved=0  loss=13.5%  latency med=27ms p95=173ms max=216ms  (write request start → matching push; A floor = outbox relay poll)
+
+THRESHOLDS BREACHED: http_req_failed{scenario:http}
+

@@ -339,6 +339,25 @@ sum(kestrel_upgraded_connections{job="backend"})   # upgraded (WebSocket)
 ```
 
 
+### RUM Web Vitals (browser field data, A-3 — forum_web_vitals_*; buckets identical to B's web_vitals_*)
+
+**Real-user Web Vitals p75 (LCP/FCP/INP/TTFB seconds; CLS unitless)** (timeseries)
+
+```promql
+histogram_quantile(0.75, sum by (le, metric) (rate(forum_web_vitals_duration_seconds_bucket[15m])))
+```
+
+```promql
+histogram_quantile(0.75, sum by (le) (rate(forum_web_vitals_cls_bucket[15m])))   # CLS p75 (unitless)
+```
+
+**Vitals by browser rating** (timeseries)
+
+```promql
+sum by (rating) (rate(forum_web_vitals_duration_seconds_count[15m]))
+```
+
+
 ## Forum / Errors & Problems  (`errors-and-problems.json`, uid `forum-errors`)
 
 

@@ -1,0 +1,2209 @@
+{
+  "campaign": "campaign-20261017-2357",
+  "generated": "2026-10-18T04:05:08+0200",
+  "artifact_count": 367,
+  "artifacts": [
+    {
+      "path": "PROGRESS.md",
+      "bytes": 19386,
+      "modified": "2026-10-18T04:05:08+0200",
+      "description": "Resumable step log: what ran, commands, start/end, results, raw-output paths (append-only)"
+    },
+    {
+      "path": "index.json",
+      "bytes": 77898,
+      "modified": "2026-10-18T04:04:53+0200",
+      "description": "This index"
+    },
+    {
+      "path": "00-preflight/A-git-status.txt",
+      "bytes": 1944,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "A repo: git status -sb + log -5 at campaign start"
+    },
+    {
+      "path": "00-preflight/A-untracked.txt",
+      "bytes": 399,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "A: untracked paths included in the patch"
+    },
+    {
+      "path": "00-preflight/A-working-tree.patch",
+      "bytes": 95606,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "A: full uncommitted diff vs HEAD 57f63d0 incl. untracked files (the version under test)"
+    },
+    {
+      "path": "00-preflight/B-git-status.txt",
+      "bytes": 937,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "B repo (gomx): git status -sb + log -5"
+    },
+    {
+      "path": "00-preflight/B-working-tree.patch",
+      "bytes": 4473,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "B: uncommitted diff vs HEAD f03d46a (handlers_community.go + 2 test files)"
+    },
+    {
+      "path": "00-preflight/ab_check_profile.txt",
+      "bytes": 2076,
+      "modified": "2026-10-18T00:03:28+0200",
+      "description": "Common-profile verification of both live deployments (34 checks)"
+    },
+    {
+      "path": "00-preflight/harness-version.txt",
+      "bytes": 209,
+      "modified": "2026-10-17T23:57:57+0200",
+      "description": "k6 harness MIX_VERSION / HARNESS_VERSION lines from load/k6/main.js"
+    },
+    {
+      "path": "00-preflight/images-and-provenance.txt",
+      "bytes": 4577,
+      "modified": "2026-10-18T00:03:26+0200",
+      "description": "Deployed image tags/digests/build times, B /stats, A EF migration history, owner indexes, source mtimes"
+    },
+    {
+      "path": "01-functional/functional-summary.json",
+      "bytes": 8422,
+      "modified": "2026-10-18T00:14:07+0200",
+      "description": "Machine-readable pass/fail/skip + durations + coverage for A and B"
+    },
+    {
+      "path": "01-functional/A/build.log",
+      "bytes": 6036,
+      "modified": "2026-10-18T00:01:45+0200",
+      "description": "A dotnet build output"
+    },
+    {
+      "path": "01-functional/A/fe-build.log",
+      "bytes": 1433,
+      "modified": "2026-10-18T00:08:09+0200",
+      "description": "A frontend next build output"
+    },
+    {
+      "path": "01-functional/A/fe-lint.log",
+      "bytes": 309,
+      "modified": "2026-10-18T00:07:21+0200",
+      "description": "A frontend next lint"
+    },
+    {
+      "path": "01-functional/A/fe-test.log",
+      "bytes": 1199,
+      "modified": "2026-10-18T00:07:25+0200",
+      "description": "A frontend vitest run (console)"
+    },
+    {
+      "path": "01-functional/A/fe-typecheck.log",
+      "bytes": 50,
+      "modified": "2026-10-18T00:07:14+0200",
+      "description": "A frontend tsc --noEmit"
+    },
+    {
+      "path": "01-functional/A/fe-vitest-junit.xml",
+      "bytes": 18879,
+      "modified": "2026-10-18T00:07:25+0200",
+      "description": "A frontend vitest JUnit report (69 tests)"
+    },
+    {
+      "path": "01-functional/A/format.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:06:32+0200",
+      "description": "A dotnet format --verify-no-changes output"
+    },
+    {
+      "path": "01-functional/A/test.log",
+      "bytes": 4090,
+      "modified": "2026-10-18T00:06:32+0200",
+      "description": "A dotnet test console output (248 tests)"
+    },
+    {
+      "path": "01-functional/A/timings.txt",
+      "bytes": 458,
+      "modified": "2026-10-18T00:08:09+0200",
+      "description": "A step rc + durations"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_52_net10.0.trx",
+      "bytes": 37740,
+      "modified": "2026-10-18T00:01:53+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0.trx",
+      "bytes": 38373,
+      "modified": "2026-10-18T00:01:53+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[1].trx",
+      "bytes": 61385,
+      "modified": "2026-10-18T00:01:53+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[2].trx",
+      "bytes": 37054,
+      "modified": "2026-10-18T00:01:53+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[3].trx",
+      "bytes": 77818,
+      "modified": "2026-10-18T00:01:54+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_53_net10.0[4].trx",
+      "bytes": 46748,
+      "modified": "2026-10-18T00:02:10+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_01_54_net10.0.trx",
+      "bytes": 4284,
+      "modified": "2026-10-18T00:01:54+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/A/trx/_LAPTOP-TEKLEEVL_2026-10-18_00_02_22_net10.0.trx",
+      "bytes": 6319167,
+      "modified": "2026-10-18T00:06:32+0200",
+      "description": "A dotnet test TRX result file (one per test project)"
+    },
+    {
+      "path": "01-functional/B/coverage-postgres.out",
+      "bytes": 28216,
+      "modified": "2026-10-18T00:10:38+0200",
+      "description": "B postgres-lane coverage profile"
+    },
+    {
+      "path": "01-functional/B/coverage.out",
+      "bytes": 1220534,
+      "modified": "2026-10-18T00:10:25+0200",
+      "description": "B test:go coverage profile"
+    },
+    {
+      "path": "01-functional/B/ensure-templbook-embed.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:03:54+0200",
+      "description": "B embed-stub preparation"
+    },
+    {
+      "path": "01-functional/B/git-status-after-rerun.txt",
+      "bytes": 112,
+      "modified": "2026-10-18T00:10:41+0200",
+      "description": "B working-tree snapshot before/after the gates (unchanged)"
+    },
+    {
+      "path": "01-functional/B/git-status-after.txt",
+      "bytes": 112,
+      "modified": "2026-10-18T00:06:54+0200",
+      "description": "B working-tree snapshot before/after the gates (unchanged)"
+    },
+    {
+      "path": "01-functional/B/git-status-before-rerun.txt",
+      "bytes": 112,
+      "modified": "2026-10-18T00:09:03+0200",
+      "description": "B working-tree snapshot before/after the gates (unchanged)"
+    },
+    {
+      "path": "01-functional/B/git-status-before.txt",
+      "bytes": 112,
+      "modified": "2026-10-18T00:03:29+0200",
+      "description": "B working-tree snapshot before/after the gates (unchanged)"
+    },
+    {
+      "path": "01-functional/B/git-status-diff.txt",
+      "bytes": 0,
+      "modified": "2026-10-18T00:06:54+0200",
+      "description": "B working-tree snapshot before/after the gates (unchanged)"
+    },
+    {
+      "path": "01-functional/B/go-version.log",
+      "bytes": 48,
+      "modified": "2026-10-18T00:03:55+0200",
+      "description": "Go toolchain in the CI image vs go.mod"
+    },
+    {
+      "path": "01-functional/B/image-build.log",
+      "bytes": 144,
+      "modified": "2026-10-18T00:03:53+0200",
+      "description": "B CI helper image builds (golang + bun alpine)"
+    },
+    {
+      "path": "01-functional/B/lint-check-generated.log",
+      "bytes": 412,
+      "modified": "2026-10-18T00:04:01+0200",
+      "description": "B lint:go \u2014 check-generated-go.sh (sqlc/templ/story imports/i18n up to date)"
+    },
+    {
+      "path": "01-functional/B/lint-gofmt.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:04:03+0200",
+      "description": "B lint:go \u2014 gofmt-check.sh"
+    },
+    {
+      "path": "01-functional/B/lint-golangci.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:09:06+0200",
+      "description": "B lint:go \u2014 golangci-lint v1.64.5"
+    },
+    {
+      "path": "01-functional/B/lint-templ-fmt.log",
+      "bytes": 76,
+      "modified": "2026-10-18T00:04:03+0200",
+      "description": "B lint:go \u2014 templ fmt -fail"
+    },
+    {
+      "path": "01-functional/B/lint-ts.log",
+      "bytes": 1261,
+      "modified": "2026-10-18T00:06:50+0200",
+      "description": "B lint:ts \u2014 bun install, check-generated-ts, eslint, tsc, prettier"
+    },
+    {
+      "path": "01-functional/B/lint-vet.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:09:03+0200",
+      "description": "B lint:go \u2014 go vet (rerun as root; first pass = cache permission error)"
+    },
+    {
+      "path": "01-functional/B/root-owned-files-created.txt",
+      "bytes": 0,
+      "modified": "2026-10-18T00:10:41+0200",
+      "description": "Files the root-run container created in the B tree (expected empty)"
+    },
+    {
+      "path": "01-functional/B/test-go-postgres.jsonl",
+      "bytes": 163530,
+      "modified": "2026-10-18T00:10:38+0200",
+      "description": "B test:go:postgres \u2014 adapter tests against postgres:18-alpine (81 pass)"
+    },
+    {
+      "path": "01-functional/B/test-go-postgres.log",
+      "bytes": 34,
+      "modified": "2026-10-18T00:10:38+0200",
+      "description": "B test:go:postgres console"
+    },
+    {
+      "path": "01-functional/B/test-go-redis.jsonl",
+      "bytes": 1087,
+      "modified": "2026-10-18T00:10:40+0200",
+      "description": "B test:go:redis \u2014 bus fan-out test (1 pass)"
+    },
+    {
+      "path": "01-functional/B/test-go-redis.log",
+      "bytes": 0,
+      "modified": "2026-10-18T00:10:38+0200",
+      "description": "B test:go:redis console"
+    },
+    {
+      "path": "01-functional/B/test-go.jsonl",
+      "bytes": 373658,
+      "modified": "2026-10-18T00:10:25+0200",
+      "description": "B test:go \u2014 go test -race -json ./... (378 pass / 25 skip)"
+    },
+    {
+      "path": "01-functional/B/test-go.log",
+      "bytes": 198,
+      "modified": "2026-10-18T00:10:26+0200",
+      "description": "B test:go console (coverage total line)"
+    },
+    {
+      "path": "01-functional/B/timings.txt",
+      "bytes": 1209,
+      "modified": "2026-10-18T00:10:43+0200",
+      "description": "B step rc + durations (first pass + rerun)"
+    },
+    {
+      "path": "02-live-checks/SUMMARY.md",
+      "bytes": 14233,
+      "modified": "2026-10-18T00:20:17+0200",
+      "description": "Phase 2 summary: endpoint table, posture, SQL-per-journey, screenshots"
+    },
+    {
+      "path": "02-live-checks/endpoints.tsv",
+      "bytes": 7770,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Every harness endpoint on both sides: status, gzip/raw bytes, encoding, single-shot ms"
+    },
+    {
+      "path": "02-live-checks/health.txt",
+      "bytes": 316,
+      "modified": "2026-10-18T00:14:06+0200",
+      "description": "Cluster-internal health probes of both apps"
+    },
+    {
+      "path": "02-live-checks/ids.txt",
+      "bytes": 1377,
+      "modified": "2026-10-18T00:05:12+0200",
+      "description": "Ids/slugs used by the checks (private/public thread, user, categories)"
+    },
+    {
+      "path": "02-live-checks/limiter-and-runtime-env.txt",
+      "bytes": 407,
+      "modified": "2026-10-18T00:14:06+0200",
+      "description": "Live Deployment env: limiters, tracing, runtime knobs"
+    },
+    {
+      "path": "02-live-checks/live-checks.log",
+      "bytes": 981,
+      "modified": "2026-10-18T00:14:07+0200",
+      "description": "Login/WS/security-posture lines"
+    },
+    {
+      "path": "02-live-checks/prometheus-targets.txt",
+      "bytes": 1104,
+      "modified": "2026-10-18T00:04:38+0200",
+      "description": "Prometheus active targets (19/19 UP)"
+    },
+    {
+      "path": "02-live-checks/reseed-before-live-checks.log",
+      "bytes": 173,
+      "modified": "2026-10-18T00:12:54+0200",
+      "description": "Reseed log (both sides \u2192 800/1600/9000/15000)"
+    },
+    {
+      "path": "02-live-checks/seed-shape-A.txt",
+      "bytes": 1244,
+      "modified": "2026-10-18T00:14:07+0200",
+      "description": "A seed-shape SQL after the pristine reseed"
+    },
+    {
+      "path": "02-live-checks/seed-shape-B.txt",
+      "bytes": 1123,
+      "modified": "2026-10-18T00:14:07+0200",
+      "description": "B seed-shape SQL after the pristine reseed"
+    },
+    {
+      "path": "02-live-checks/tls.txt",
+      "bytes": 771,
+      "modified": "2026-10-18T00:14:03+0200",
+      "description": "TLS version/cipher/ALPN/cert for both hosts"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-backend-7df457d95-dk8wl.log",
+      "bytes": 3845,
+      "modified": "2026-10-18T00:04:49+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-backend-7df457d95-lq9nq.log",
+      "bytes": 3845,
+      "modified": "2026-10-18T00:04:51+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-events.txt",
+      "bytes": 17112,
+      "modified": "2026-10-18T00:05:06+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-frontend-699995d6f7-nzdmt.log",
+      "bytes": 327,
+      "modified": "2026-10-18T00:05:00+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-minio-0.log",
+      "bytes": 800,
+      "modified": "2026-10-18T00:05:02+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-minio-create-bucket-jn7zq.log",
+      "bytes": 133,
+      "modified": "2026-10-18T00:05:03+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-postgres-0.log",
+      "bytes": 8498,
+      "modified": "2026-10-18T00:05:03+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/A-rabbitmq-0.log",
+      "bytes": 32502,
+      "modified": "2026-10-18T00:05:03+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-events.txt",
+      "bytes": 9633,
+      "modified": "2026-10-18T00:05:06+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-gomx-6f6975749b-b8nnz.log",
+      "bytes": 245306,
+      "modified": "2026-10-18T00:05:04+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-gomx-6f6975749b-scnxn.log",
+      "bytes": 268146,
+      "modified": "2026-10-18T00:05:04+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-minio-0.log",
+      "bytes": 840,
+      "modified": "2026-10-18T00:05:05+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-postgres-0.log",
+      "bytes": 18926,
+      "modified": "2026-10-18T00:05:05+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/logs-before-round/B-redis-75c79bffcf-dnqb2.log",
+      "bytes": 705,
+      "modified": "2026-10-18T00:05:05+0200",
+      "description": "Pod logs + events of both namespaces before the round"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-batch.body",
+      "bytes": 1483,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-batch.body.gz",
+      "bytes": 489,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-batch.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-batch.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p1.body",
+      "bytes": 8004,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p1.body.gz",
+      "bytes": 1565,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p1.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p1.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p2.body",
+      "bytes": 8005,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p2.body.gz",
+      "bytes": 1527,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p2.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J1-feed-p2.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-batch.body",
+      "bytes": 7401,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-batch.body.gz",
+      "bytes": 1954,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-batch.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-batch.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-comments.body",
+      "bytes": 103509,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-comments.body.gz",
+      "bytes": 22829,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-comments.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-comments.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-thread.body",
+      "bytes": 1837,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-thread.body.gz",
+      "bytes": 772,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-thread.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J2-thread.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J3-comment.body",
+      "bytes": 42,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J3-comment.body.gz",
+      "bytes": 42,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J3-comment.headers",
+      "bytes": 350,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J3-comment.headers.raw",
+      "bytes": 350,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-like.body",
+      "bytes": 74,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-like.body.gz",
+      "bytes": 99,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-like.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-like.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-unlike.body",
+      "bytes": 75,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-unlike.body.gz",
+      "bytes": 100,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-unlike.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J5-unlike.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J6-search.body",
+      "bytes": 8016,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J6-search.body.gz",
+      "bytes": 1804,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J6-search.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J6-search.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-stats.body",
+      "bytes": 144,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-stats.body.gz",
+      "bytes": 144,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-stats.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-stats.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-threads.body",
+      "bytes": 440,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-threads.body.gz",
+      "bytes": 322,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-threads.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J7-threads.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:51+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J8-ticket.body",
+      "bytes": 324,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J8-ticket.body.gz",
+      "bytes": 289,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J8-ticket.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-J8-ticket.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-login.body",
+      "bytes": 446,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-login.headers",
+      "bytes": 491,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-nav.body",
+      "bytes": 3177,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-nav.body.gz",
+      "bytes": 824,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-nav.headers",
+      "bytes": 329,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-nav.headers.raw",
+      "bytes": 305,
+      "modified": "2026-10-18T00:13:50+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-private-thread-ids.txt",
+      "bytes": 7236,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-health-ready.body",
+      "bytes": 13678,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-health-ready.body.gz",
+      "bytes": 3128,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-health-ready.headers",
+      "bytes": 431,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-health-ready.headers.raw",
+      "bytes": 453,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-metrics.body",
+      "bytes": 13678,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-metrics.body.gz",
+      "bytes": 3128,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-metrics.headers",
+      "bytes": 431,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-metrics.headers.raw",
+      "bytes": 453,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-comments.body",
+      "bytes": 270,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-comments.body.gz",
+      "bytes": 228,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-comments.headers",
+      "bytes": 322,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-comments.headers.raw",
+      "bytes": 298,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-feed.body",
+      "bytes": 274,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-feed.body.gz",
+      "bytes": 229,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-feed.headers",
+      "bytes": 322,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-feed.headers.raw",
+      "bytes": 298,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-thread.body",
+      "bytes": 270,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-thread.body.gz",
+      "bytes": 228,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-thread.headers",
+      "bytes": 322,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-sec-private-thread.headers.raw",
+      "bytes": 298,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-spa-home.body",
+      "bytes": 16589,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-spa-home.body.gz",
+      "bytes": 3747,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-spa-home.headers",
+      "bytes": 393,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-spa-home.headers.raw",
+      "bytes": 415,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-ws-replay.headers",
+      "bytes": 292,
+      "modified": "2026-10-18T00:13:55+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/A-ws.headers",
+      "bytes": 349,
+      "modified": "2026-10-18T00:13:52+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-feed-p2.body",
+      "bytes": 160668,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-feed-p2.body.gz",
+      "bytes": 11337,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-feed-p2.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-feed-p2.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-space.body",
+      "bytes": 174116,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-space.body.gz",
+      "bytes": 16205,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-space.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J1-space.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J2-thread.body",
+      "bytes": 745261,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J2-thread.body.gz",
+      "bytes": 45038,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J2-thread.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J2-thread.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J3-comment.body",
+      "bytes": 0,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J3-comment.body.gz",
+      "bytes": 0,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J3-comment.headers",
+      "bytes": 775,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J3-comment.headers.raw",
+      "bytes": 775,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J5-vote.body",
+      "bytes": 1489,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J5-vote.body.gz",
+      "bytes": 534,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J5-vote.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J5-vote.headers.raw",
+      "bytes": 710,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J6-search.body",
+      "bytes": 173285,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J6-search.body.gz",
+      "bytes": 14752,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J6-search.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J6-search.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J7-profile.body",
+      "bytes": 20746,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J7-profile.body.gz",
+      "bytes": 5622,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J7-profile.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-J7-profile.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-healthz.body",
+      "bytes": 2,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-healthz.body.gz",
+      "bytes": 2,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-healthz.headers",
+      "bytes": 609,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-healthz.headers.raw",
+      "bytes": 609,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-login.body",
+      "bytes": 0,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-login.headers",
+      "bytes": 789,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-metrics.body",
+      "bytes": 12621,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-metrics.body.gz",
+      "bytes": 3841,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-metrics.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-metrics.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-nav.body",
+      "bytes": 20906,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-nav.body.gz",
+      "bytes": 4666,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-nav.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-nav.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-readyz.body",
+      "bytes": 2,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-readyz.body.gz",
+      "bytes": 2,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-readyz.headers",
+      "bytes": 609,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-readyz.headers.raw",
+      "bytes": 609,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-oauth.body",
+      "bytes": 57,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-oauth.body.gz",
+      "bytes": 57,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-oauth.headers",
+      "bytes": 727,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-oauth.headers.raw",
+      "bytes": 727,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-space.body",
+      "bytes": 12621,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-space.body.gz",
+      "bytes": 3841,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-space.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-space.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-thread.body",
+      "bytes": 12621,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-thread.body.gz",
+      "bytes": 3841,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-thread.headers",
+      "bytes": 712,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-sec-private-thread.headers.raw",
+      "bytes": 688,
+      "modified": "2026-10-18T00:13:56+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-stats.body",
+      "bytes": 73,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-stats.body.gz",
+      "bytes": 73,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-stats.headers",
+      "bytes": 677,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-stats.headers.raw",
+      "bytes": 677,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-ws-anon.headers",
+      "bytes": 739,
+      "modified": "2026-10-18T00:14:00+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/raw/B-ws.headers",
+      "bytes": 739,
+      "modified": "2026-10-18T00:13:57+0200",
+      "description": "Raw response headers/bodies of the live checks"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-feed.err",
+      "bytes": 626,
+      "modified": "2026-10-18T00:14:46+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-feed.png",
+      "bytes": 170917,
+      "modified": "2026-10-18T00:14:46+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-home.err",
+      "bytes": 286,
+      "modified": "2026-10-18T00:14:45+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-home.png",
+      "bytes": 87400,
+      "modified": "2026-10-18T00:14:45+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-profile.err",
+      "bytes": 642,
+      "modified": "2026-10-18T00:14:50+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-profile.png",
+      "bytes": 97085,
+      "modified": "2026-10-18T00:14:50+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-search.err",
+      "bytes": 633,
+      "modified": "2026-10-18T00:14:49+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-search.png",
+      "bytes": 160798,
+      "modified": "2026-10-18T00:14:49+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-thread.err",
+      "bytes": 1348,
+      "modified": "2026-10-18T00:14:48+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/A-thread.png",
+      "bytes": 183173,
+      "modified": "2026-10-18T00:14:48+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-feed.err",
+      "bytes": 639,
+      "modified": "2026-10-18T00:14:51+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-feed.png",
+      "bytes": 367832,
+      "modified": "2026-10-18T00:14:51+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-home.err",
+      "bytes": 630,
+      "modified": "2026-10-18T00:14:50+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-home.png",
+      "bytes": 384045,
+      "modified": "2026-10-18T00:14:50+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-profile.err",
+      "bytes": 637,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-profile.png",
+      "bytes": 121882,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-search.err",
+      "bytes": 651,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-search.png",
+      "bytes": 233743,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-thread.err",
+      "bytes": 640,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "chrome-headless-shell stderr for the screenshot"
+    },
+    {
+      "path": "02-live-checks/screenshots/B-thread.png",
+      "bytes": 174900,
+      "modified": "2026-10-18T00:14:52+0200",
+      "description": "Page screenshot on the Benchmark dataset (1366\u00d72200)"
+    },
+    {
+      "path": "02-live-checks/screenshots/manifest.tsv",
+      "bytes": 592,
+      "modified": "2026-10-18T00:14:53+0200",
+      "description": "Screenshot manifest (file, url, rc, seconds, bytes)"
+    },
+    {
+      "path": "02-live-checks/sql-per-journey/A-postgres.log",
+      "bytes": 132393,
+      "modified": "2026-10-18T00:17:53+0200",
+      "description": "A Postgres statement log of the window (raw)"
+    },
+    {
+      "path": "02-live-checks/sql-per-journey/B-postgres.log",
+      "bytes": 387035,
+      "modified": "2026-10-18T00:17:54+0200",
+      "description": "B Postgres statement log of the window (raw)"
+    },
+    {
+      "path": "02-live-checks/sql-per-journey/run.log",
+      "bytes": 197,
+      "modified": "2026-10-18T00:17:57+0200",
+      "description": "log_statement toggling + verification (reset to none)"
+    },
+    {
+      "path": "02-live-checks/sql-per-journey/summary.json",
+      "bytes": 8466,
+      "modified": "2026-10-18T00:18:56+0200",
+      "description": "Same, machine-readable"
+    },
+    {
+      "path": "02-live-checks/sql-per-journey/summary.txt",
+      "bytes": 6988,
+      "modified": "2026-10-18T00:18:56+0200",
+      "description": "SQL statements per journey window (foreground vs background), both DBs"
+    },
+    {
+      "path": "03-round/REPORT-20261018-0051-v1.md",
+      "bytes": 14225,
+      "modified": "2026-10-18T03:44:56+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/capacity-per-step-cpu.json",
+      "bytes": 3254,
+      "modified": "2026-10-18T03:55:44+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/gate-stdout.log",
+      "bytes": 7552,
+      "modified": "2026-10-18T00:28:50+0200",
+      "description": "stdout of the gate round (smoke:1)"
+    },
+    {
+      "path": "03-round/meta-A.json",
+      "bytes": 2402,
+      "modified": "2026-10-18T03:44:56+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/meta-B.json",
+      "bytes": 3558,
+      "modified": "2026-10-18T03:44:56+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/round-stdout-ABORTED-0029.log",
+      "bytes": 5355,
+      "modified": "2026-10-18T00:49:40+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/round-stdout.log",
+      "bytes": 43308,
+      "modified": "2026-10-18T03:43:03+0200",
+      "description": "stdout of the measured round"
+    },
+    {
+      "path": "03-round/round-summary-20261018-0051-v1.json",
+      "bytes": 147263,
+      "modified": "2026-10-18T03:44:56+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/round.json",
+      "bytes": 308,
+      "modified": "2026-10-18T03:44:56+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/A-backend-errors-warnings.log",
+      "bytes": 24544,
+      "modified": "2026-10-18T03:45:21+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/A-backend-slow-requests-gt1s.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:25+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/A-other-pods-errors.log",
+      "bytes": 840,
+      "modified": "2026-10-18T03:45:25+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/A-slow-requests-gt1s.log",
+      "bytes": 1560563,
+      "modified": "2026-10-18T03:47:36+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/B-5xx.log",
+      "bytes": 500,
+      "modified": "2026-10-18T03:49:27+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/B-gomx-errors-warnings.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:26+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/B-gomx-slow-requests-gt1s.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:27+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/B-other-pods-errors.log",
+      "bytes": 868,
+      "modified": "2026-10-18T03:45:27+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/B-slow-requests-gt1s.log",
+      "bytes": 1206825,
+      "modified": "2026-10-18T03:47:38+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-backend-785b6987cf-kx5rr.log",
+      "bytes": 3845,
+      "modified": "2026-10-18T03:45:31+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-backend-785b6987cf-mjgln.log",
+      "bytes": 3845,
+      "modified": "2026-10-18T03:45:31+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-frontend-699995d6f7-nzdmt.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:31+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-minio-0.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:31+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-minio-create-bucket-jn7zq.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:31+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-postgres-0.log",
+      "bytes": 8122,
+      "modified": "2026-10-18T03:45:32+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-forum-dotnet-rabbitmq-0.log",
+      "bytes": 9751,
+      "modified": "2026-10-18T03:45:32+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-gomx-gomx-6f6975749b-8w56p.log",
+      "bytes": 9153289,
+      "modified": "2026-10-18T03:45:35+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-gomx-gomx-6f6975749b-ngs5q.log",
+      "bytes": 9146077,
+      "modified": "2026-10-18T03:45:36+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-gomx-minio-0.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:36+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-gomx-postgres-0.log",
+      "bytes": 12410,
+      "modified": "2026-10-18T03:45:37+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/current-pods-gomx-redis-75c79bffcf-dnqb2.log",
+      "bytes": 0,
+      "modified": "2026-10-18T03:45:37+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/events-forum-dotnet-after-round.txt",
+      "bytes": 7282,
+      "modified": "2026-10-18T03:45:32+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/events-gomx-after-round.txt",
+      "bytes": 8126,
+      "modified": "2026-10-18T03:45:37+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "03-round/logs-round-window/summary.json",
+      "bytes": 5764,
+      "modified": "2026-10-18T03:47:47+0200",
+      "description": "Measured-round material (see PROGRESS.md for the round archive path)"
+    },
+    {
+      "path": "04-static/STATIC-SUMMARY.md",
+      "bytes": 6670,
+      "modified": "2026-10-18T04:04:38+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/artifact-metrics-A.txt",
+      "bytes": 685,
+      "modified": "2026-10-18T03:45:49+0200",
+      "description": "A first-load JS/CSS raw+gzip (OpenMetrics)"
+    },
+    {
+      "path": "04-static/artifact-metrics-B.txt",
+      "bytes": 796,
+      "modified": "2026-10-18T04:02:22+0200",
+      "description": "B server binary + static bundles raw+gzip"
+    },
+    {
+      "path": "04-static/artifact-size-A.log",
+      "bytes": 1292,
+      "modified": "2026-10-18T03:45:49+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/cloc-A-core.json",
+      "bytes": 1412,
+      "modified": "2026-10-18T03:50:19+0200",
+      "description": "cloc 2.06 (whole repo / core scope) for A and B"
+    },
+    {
+      "path": "04-static/cloc-A-core.log",
+      "bytes": 838,
+      "modified": "2026-10-18T03:50:19+0200",
+      "description": "cloc console output"
+    },
+    {
+      "path": "04-static/cloc-A-whole.json",
+      "bytes": 1964,
+      "modified": "2026-10-18T03:50:17+0200",
+      "description": "cloc 2.06 (whole repo / core scope) for A and B"
+    },
+    {
+      "path": "04-static/cloc-A-whole.log",
+      "bytes": 1033,
+      "modified": "2026-10-18T03:50:17+0200",
+      "description": "cloc console output"
+    },
+    {
+      "path": "04-static/cloc-B-core.json",
+      "bytes": 1567,
+      "modified": "2026-10-18T03:50:24+0200",
+      "description": "cloc 2.06 (whole repo / core scope) for A and B"
+    },
+    {
+      "path": "04-static/cloc-B-core.log",
+      "bytes": 438,
+      "modified": "2026-10-18T03:50:24+0200",
+      "description": "cloc console output"
+    },
+    {
+      "path": "04-static/cloc-B-whole.json",
+      "bytes": 2093,
+      "modified": "2026-10-18T03:50:22+0200",
+      "description": "cloc 2.06 (whole repo / core scope) for A and B"
+    },
+    {
+      "path": "04-static/cloc-B-whole.log",
+      "bytes": 839,
+      "modified": "2026-10-18T03:50:22+0200",
+      "description": "cloc console output"
+    },
+    {
+      "path": "04-static/cloc-version.txt",
+      "bytes": 5,
+      "modified": "2026-10-18T03:50:14+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/dependency-counts.json",
+      "bytes": 375,
+      "modified": "2026-10-18T03:45:50+0200",
+      "description": "Dependency counts A (NuGet/npm) and B (Go modules/bun)"
+    },
+    {
+      "path": "04-static/image-sizes.txt",
+      "bytes": 301,
+      "modified": "2026-10-18T03:45:49+0200",
+      "description": "Deployed container image sizes (minikube daemon)"
+    },
+    {
+      "path": "04-static/lighthouse-A-api-rerun.log",
+      "bytes": 407567,
+      "modified": "2026-10-18T04:02:59+0200",
+      "description": "Lighthouse console output"
+    },
+    {
+      "path": "04-static/lighthouse-A-api.log",
+      "bytes": 7381,
+      "modified": "2026-10-18T03:48:21+0200",
+      "description": "Lighthouse console output"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1.log",
+      "bytes": 37081,
+      "modified": "2026-10-18T03:50:30+0200",
+      "description": "Lighthouse console output"
+    },
+    {
+      "path": "04-static/lighthouse-A-rerun.log",
+      "bytes": 4246,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse console output"
+    },
+    {
+      "path": "04-static/lighthouse-B.log",
+      "bytes": 538,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse console output"
+    },
+    {
+      "path": "04-static/lighthouse-metrics-A-attempt1-old-compose-api.txt",
+      "bytes": 1780,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-metrics-A.txt",
+      "bytes": 1781,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A scores + web vitals (OpenMetrics)"
+    },
+    {
+      "path": "04-static/lighthouse-metrics-B.txt",
+      "bytes": 1521,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B scores + web vitals (OpenMetrics)"
+    },
+    {
+      "path": "04-static/static-summary.json",
+      "bytes": 16825,
+      "modified": "2026-10-18T04:04:38+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/timings.txt",
+      "bytes": 749,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Phase 4 step rc + durations"
+    },
+    {
+      "path": "04-static/trivy-A.log",
+      "bytes": 76357,
+      "modified": "2026-10-18T03:45:34+0200",
+      "description": "trivy console output"
+    },
+    {
+      "path": "04-static/trivy-B.log",
+      "bytes": 22624,
+      "modified": "2026-10-18T03:45:44+0200",
+      "description": "trivy console output"
+    },
+    {
+      "path": "04-static/trivy-report-A.json",
+      "bytes": 482815,
+      "modified": "2026-10-18T03:45:25+0200",
+      "description": "trivy 0.72.0 fs scan of A (vuln,secret,misconfig; HIGH/CRITICAL; --ignore-unfixed)"
+    },
+    {
+      "path": "04-static/trivy-report-B.json",
+      "bytes": 407246,
+      "modified": "2026-10-18T03:45:41+0200",
+      "description": "trivy 0.72.0 fs scan of B (same flags)"
+    },
+    {
+      "path": "04-static/trivy-version.txt",
+      "bytes": 360,
+      "modified": "2026-10-18T03:45:44+0200",
+      "description": "trivy version used"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/bridge-alpine.js",
+      "bytes": 62806,
+      "modified": "2026-10-17T01:37:42+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/bridge.js",
+      "bytes": 71629,
+      "modified": "2026-10-17T01:37:42+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/favicon.ico",
+      "bytes": 7238,
+      "modified": "2026-10-17T01:37:34+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/forum.js",
+      "bytes": 209100,
+      "modified": "2026-10-17T01:37:42+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/index.html",
+      "bytes": 1456,
+      "modified": "2026-10-16T16:09:08+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/styles.css",
+      "bytes": 211225,
+      "modified": "2026-10-17T01:37:42+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/files/roboto-latin-400-normal.woff",
+      "bytes": 21060,
+      "modified": "2026-10-17T01:37:34+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/gomx-artifacts/static/files/roboto-latin-400-normal.woff2",
+      "bytes": 21884,
+      "modified": "2026-10-17T01:37:34+0200",
+      "description": "B static bundles extracted from gomx:bench (binary removed)"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_01_38.report.html",
+      "bytes": 654540,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_01_38.report.json",
+      "bytes": 467385,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_01_52.report.html",
+      "bytes": 654721,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_01_52.report.json",
+      "bytes": 467566,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_02_04.report.html",
+      "bytes": 655581,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost--2026_10_18_02_02_04.report.json",
+      "bytes": 468426,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_17.report.html",
+      "bytes": 797984,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_17.report.json",
+      "bytes": 610814,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_30.report.html",
+      "bytes": 818802,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_30.report.json",
+      "bytes": 631632,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_42.report.html",
+      "bytes": 497156,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_02_02_42.report.json",
+      "bytes": 310021,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A/manifest.json",
+      "bytes": 2892,
+      "modified": "2026-10-18T04:02:55+0200",
+      "description": "Lighthouse A HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_11.report.html",
+      "bytes": 661504,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_11.report.json",
+      "bytes": 474344,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_25.report.html",
+      "bytes": 660179,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_25.report.json",
+      "bytes": 473019,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_38.report.html",
+      "bytes": 660509,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost--2026_10_18_01_49_38.report.json",
+      "bytes": 473349,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_49_50.report.html",
+      "bytes": 810008,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_49_50.report.json",
+      "bytes": 622838,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_50_04.report.html",
+      "bytes": 497102,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_50_04.report.json",
+      "bytes": 309967,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_50_17.report.html",
+      "bytes": 798622,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/localhost-t_01KYFSQ3WXKQNGYCVG1DAQ4TC6-2026_10_18_01_50_17.report.json",
+      "bytes": 611452,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-A-attempt1-old-compose-api/manifest.json",
+      "bytes": 2892,
+      "modified": "2026-10-18T03:50:34+0200",
+      "description": "Phase 4 static-metrics material"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_00.report.html",
+      "bytes": 751719,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_00.report.json",
+      "bytes": 564509,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_21.report.html",
+      "bytes": 751471,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_21.report.json",
+      "bytes": 564261,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_39.report.html",
+      "bytes": 750802,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost--2026_10_18_01_46_39.report.json",
+      "bytes": 563597,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_46_58.report.html",
+      "bytes": 664552,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_46_58.report.json",
+      "bytes": 477367,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_47_13.report.html",
+      "bytes": 664493,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_47_13.report.json",
+      "bytes": 477308,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_47_28.report.html",
+      "bytes": 665166,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/localhost-thread_1-2026_10_18_01_47_28.report.json",
+      "bytes": 477981,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "04-static/lighthouse-B/manifest.json",
+      "bytes": 2595,
+      "modified": "2026-10-18T03:47:43+0200",
+      "description": "Lighthouse B HTML/JSON reports"
+    },
+    {
+      "path": "05-analysis/A-frontend-home-feed-fix.patch",
+      "bytes": 3316,
+      "modified": "2026-10-18T03:48:56+0200",
+      "description": "Analysis material"
+    },
+    {
+      "path": "05-analysis/A-home-after-fix-local.png",
+      "bytes": 99343,
+      "modified": "2026-10-18T04:02:58+0200",
+      "description": "Analysis material"
+    },
+    {
+      "path": "05-analysis/CAMPAIGN-REPORT.md",
+      "bytes": 26373,
+      "modified": "2026-10-18T04:04:38+0200",
+      "description": "The campaign report: results, A-vs-B tables, deviations, anomalies, threats, v2 list"
+    },
+    {
+      "path": "05-analysis/verify-fix-api.log",
+      "bytes": 7381,
+      "modified": "2026-10-18T03:52:55+0200",
+      "description": "Analysis material"
+    },
+    {
+      "path": "05-analysis/verify-fix-next.log",
+      "bytes": 267,
+      "modified": "2026-10-18T04:02:56+0200",
+      "description": "Analysis material"
+    }
+  ]
+}

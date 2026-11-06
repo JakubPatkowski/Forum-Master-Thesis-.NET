@@ -100,3 +100,11 @@
   color: var(--color-error);
   margin-top: 6px;
 }
+
+/* Touch floor (coarse pointers / phone widths): suggestion rows measured 37 px. */
+@media (pointer: coarse), (max-width: 480px) {
+  .option,
+  .optionActive {
+    min-height: 40px;
+  }
+}

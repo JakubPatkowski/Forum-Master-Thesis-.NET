@@ -162,11 +162,16 @@ kubectl apply \
   -f "$REPO_ROOT/k8s/backend/hpa.yaml" \
   -f "$REPO_ROOT/k8s/backend/pdb.yaml"
 apply_with_tag "$REPO_ROOT/k8s/backend/deployment.yaml"
+# A '-dirty' tag is NOT unique per build: rebuilding with the same HEAD reuses the tag, `kubectl apply` sees an
+# unchanged manifest and the pods keep the OLD image bytes (found live twice — 10d and the A/B alignment). Force a
+# rollout so a dirty rebuild is always what runs (clean git-<sha> tags change per commit and roll on their own).
+[[ "$IMAGE_TAG" == *-dirty ]] && kc rollout restart deployment/backend >/dev/null
 kc rollout status deployment/backend --timeout=300s
 
 step "Frontend"
 kubectl apply -f "$REPO_ROOT/k8s/frontend/service.yaml"
 apply_with_tag "$REPO_ROOT/k8s/frontend/deployment.yaml"
+[[ "$IMAGE_TAG" == *-dirty ]] && kc rollout restart deployment/frontend >/dev/null
 kc rollout status deployment/frontend --timeout=180s
 
 step "Ingress (app + minio presign host)"

@@ -1,0 +1,17 @@
+{
+  "A": {
+    "nuget_central_versions": 42,
+    "nuget_referenced_in_src": 24,
+    "npm_dependencies": 9,
+    "npm_devDependencies": 14,
+    "npm_lock_packages_total": 665
+  },
+  "B": {
+    "go_require_direct": 29,
+    "go_require_indirect": 105,
+    "go_sum_modules": 227,
+    "bun_dependencies": 9,
+    "bun_devDependencies": 27,
+    "bun_lock_packages_total": 1320
+  }
+}

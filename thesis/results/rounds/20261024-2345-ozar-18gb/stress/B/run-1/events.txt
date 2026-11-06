@@ -1,0 +1,68 @@
+LAST SEEN   TYPE      REASON              OBJECT                       MESSAGE
+59m         Normal    Killing             pod/gomx-779946bfc9-8tj4c    Stopping container gomx
+59m         Normal    Killing             pod/gomx-779946bfc9-2tjzv    Stopping container gomx
+59m         Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-2tjzv
+59m         Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-8tj4c
+34m         Normal    Scheduled           pod/gomx-779946bfc9-cgdxl    Successfully assigned gomx/gomx-779946bfc9-cgdxl to forum
+34m         Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-cgdxl
+34m         Normal    Created             pod/gomx-779946bfc9-cgdxl    Container created
+34m         Normal    Pulled              pod/gomx-779946bfc9-cgdxl    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+34m         Normal    Started             pod/gomx-779946bfc9-cgdxl    Container started
+34m         Normal    Started             pod/gomx-779946bfc9-cgdxl    Container started
+34m         Normal    Pulled              pod/gomx-779946bfc9-cgdxl    Container image "gomx:bench" already present on machine and can be accessed by the pod
+34m         Normal    Created             pod/gomx-779946bfc9-cgdxl    Container created
+33m         Warning   Unhealthy           pod/gomx-779946bfc9-cgdxl    Startup probe failed: Get "http://10.244.133.174:8080/healthz": dial tcp 10.244.133.174:8080: connect: connection refused
+33m         Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-cgdxl
+33m         Normal    Killing             pod/gomx-779946bfc9-cgdxl    Stopping container gomx
+33m         Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-4cg8z
+33m         Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-qsjqk
+33m         Normal    Started             pod/gomx-779946bfc9-4cg8z    Container started
+33m         Normal    Scheduled           pod/gomx-779946bfc9-qsjqk    Successfully assigned gomx/gomx-779946bfc9-qsjqk to forum
+33m         Normal    Created             pod/gomx-779946bfc9-4cg8z    Container created
+33m         Normal    Pulled              pod/gomx-779946bfc9-4cg8z    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+33m         Normal    Scheduled           pod/gomx-779946bfc9-4cg8z    Successfully assigned gomx/gomx-779946bfc9-4cg8z to forum
+33m         Normal    Started             pod/gomx-779946bfc9-qsjqk    Container started
+33m         Normal    Created             pod/gomx-779946bfc9-qsjqk    Container created
+33m         Normal    Pulled              pod/gomx-779946bfc9-qsjqk    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+33m         Normal    Started             pod/gomx-779946bfc9-qsjqk    Container started
+33m         Normal    Pulled              pod/gomx-779946bfc9-qsjqk    Container image "gomx:bench" already present on machine and can be accessed by the pod
+33m         Normal    Pulled              pod/gomx-779946bfc9-4cg8z    Container image "gomx:bench" already present on machine and can be accessed by the pod
+33m         Normal    Created             pod/gomx-779946bfc9-4cg8z    Container created
+33m         Normal    Started             pod/gomx-779946bfc9-4cg8z    Container started
+33m         Normal    Created             pod/gomx-779946bfc9-qsjqk    Container created
+22m         Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-qsjqk
+22m         Normal    ScalingReplicaSet   deployment/gomx              Scaled down replica set gomx-779946bfc9 from 2 to 0
+22m         Normal    Killing             pod/gomx-779946bfc9-qsjqk    Stopping container gomx
+22m         Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-4cg8z
+22m         Normal    Killing             pod/gomx-779946bfc9-4cg8z    Stopping container gomx
+10m         Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-dhq9d
+10m         Normal    Scheduled           pod/gomx-779946bfc9-dhq9d    Successfully assigned gomx/gomx-779946bfc9-dhq9d to forum
+10m         Normal    ScalingReplicaSet   deployment/gomx              Scaled up replica set gomx-779946bfc9 from 0 to 1
+10m         Normal    Started             pod/gomx-779946bfc9-dhq9d    Container started
+10m         Normal    Created             pod/gomx-779946bfc9-dhq9d    Container created
+10m         Normal    Pulled              pod/gomx-779946bfc9-dhq9d    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+10m         Normal    Created             pod/gomx-779946bfc9-dhq9d    Container created
+10m         Normal    Pulled              pod/gomx-779946bfc9-dhq9d    Container image "gomx:bench" already present on machine and can be accessed by the pod
+10m         Normal    Started             pod/gomx-779946bfc9-dhq9d    Container started
+9m25s       Warning   Unhealthy           pod/gomx-779946bfc9-dhq9d    Startup probe failed: Get "http://10.244.133.160:8080/healthz": dial tcp 10.244.133.160:8080: connect: connection refused
+9m15s       Normal    ScalingReplicaSet   deployment/gomx              Scaled down replica set gomx-779946bfc9 from 1 to 0
+9m15s       Normal    SuccessfulDelete    replicaset/gomx-779946bfc9   Deleted pod: gomx-779946bfc9-dhq9d
+9m14s       Normal    Killing             pod/gomx-779946bfc9-dhq9d    Stopping container gomx
+9m13s       Normal    NoPods              poddisruptionbudget/gomx     No matching pods found
+9m12s       Normal    Created             pod/gomx-779946bfc9-cgqq4    Container created
+9m12s       Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-gxkx8
+9m12s       Normal    Pulled              pod/gomx-779946bfc9-cgqq4    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m12s       Normal    Started             pod/gomx-779946bfc9-cgqq4    Container started
+9m12s       Normal    Scheduled           pod/gomx-779946bfc9-gxkx8    Successfully assigned gomx/gomx-779946bfc9-gxkx8 to forum
+9m12s       Normal    Scheduled           pod/gomx-779946bfc9-cgqq4    Successfully assigned gomx/gomx-779946bfc9-cgqq4 to forum
+9m12s       Normal    Pulled              pod/gomx-779946bfc9-gxkx8    Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m12s       Normal    Created             pod/gomx-779946bfc9-gxkx8    Container created
+9m12s       Normal    Started             pod/gomx-779946bfc9-gxkx8    Container started
+9m12s       Normal    ScalingReplicaSet   deployment/gomx              Scaled up replica set gomx-779946bfc9 from 0 to 2
+9m12s       Normal    SuccessfulCreate    replicaset/gomx-779946bfc9   Created pod: gomx-779946bfc9-cgqq4
+9m11s       Normal    Created             pod/gomx-779946bfc9-cgqq4    Container created
+9m11s       Normal    Pulled              pod/gomx-779946bfc9-gxkx8    Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m11s       Normal    Created             pod/gomx-779946bfc9-gxkx8    Container created
+9m11s       Normal    Started             pod/gomx-779946bfc9-gxkx8    Container started
+9m11s       Normal    Started             pod/gomx-779946bfc9-cgqq4    Container started
+9m11s       Normal    Pulled              pod/gomx-779946bfc9-cgqq4    Container image "gomx:bench" already present on machine and can be accessed by the pod

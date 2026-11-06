@@ -1,0 +1,269 @@
+{
+  "generated": "2026-10-25 (CET)",
+  "version_under_test": {
+    "A": "thesis-v3-a = 64cd5e2 (fresh clone)",
+    "B": "thesis-v3-b = 46b342c (fresh clone)"
+  },
+  "A": {
+    "backend": {
+      "build": {
+        "warnings": 32,
+        "errors": 0,
+        "warning_kinds": "NU1903 SSH.NET 2024.1.0 (2 HIGH advisories, transitive via Testcontainers, test projects only)"
+      },
+      "tests_total": {
+        "total": 259,
+        "passed": 259,
+        "failed": 0,
+        "skipped": 0
+      },
+      "projects": [
+        {
+          "project": "Forum.Modules.Files.Tests.dll",
+          "outcome": "Completed",
+          "total": 42,
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.0166504+01:00",
+          "finish": "2026-10-25T02:17:21.9407934+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_20_net10.0.trx"
+        },
+        {
+          "project": "Forum.Modules.Social.Tests.dll",
+          "outcome": "Completed",
+          "total": 25,
+          "passed": 25,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.6986660+01:00",
+          "finish": "2026-10-25T02:17:22.0784235+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0.trx"
+        },
+        {
+          "project": "Forum.Modules.Content.Tests.dll",
+          "outcome": "Completed",
+          "total": 26,
+          "passed": 26,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.1738496+01:00",
+          "finish": "2026-10-25T02:17:22.1739278+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[1].trx"
+        },
+        {
+          "project": "Forum.Modules.Engagement.Tests.dll",
+          "outcome": "Completed",
+          "total": 24,
+          "passed": 24,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.0670404+01:00",
+          "finish": "2026-10-25T02:17:22.3300530+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[2].trx"
+        },
+        {
+          "project": "Forum.Api.Tests.dll",
+          "outcome": "Completed",
+          "total": 59,
+          "passed": 59,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:13.9569187+01:00",
+          "finish": "2026-10-25T02:17:31.1712080+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[3].trx"
+        },
+        {
+          "project": "Forum.ArchitectureTests.dll",
+          "outcome": "Completed",
+          "total": 2,
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.1417330+01:00",
+          "finish": "2026-10-25T02:17:31.6226423+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[4].trx"
+        },
+        {
+          "project": "Forum.Modules.Identity.Tests.dll",
+          "outcome": "Completed",
+          "total": 33,
+          "passed": 33,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.3717041+01:00",
+          "finish": "2026-10-25T02:19:47.7454520+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_17_21_net10.0[5].trx"
+        },
+        {
+          "project": "Forum.IntegrationTests.dll",
+          "outcome": "Completed",
+          "total": 48,
+          "passed": 48,
+          "failed": 0,
+          "skipped": 0,
+          "start": "2026-10-25T02:17:14.1276627+01:00",
+          "finish": "2026-10-25T02:25:50.9537091+01:00",
+          "trx": "_LAPTOP-TEKLEEVL_2026-10-25_02_20_35_net10.0.trx"
+        }
+      ],
+      "format_verify_no_changes": {
+        "rc": 0,
+        "duration_s": 75
+      }
+    },
+    "frontend": {
+      "vitest_passed": 71,
+      "steps": {
+        "fe-ci": {
+          "rc": 0,
+          "duration_s": 141
+        },
+        "fe-typecheck": {
+          "rc": 0,
+          "duration_s": 12
+        },
+        "fe-lint": {
+          "rc": 0,
+          "duration_s": 5
+        },
+        "fe-test": {
+          "rc": 0,
+          "duration_s": 5
+        },
+        "fe-build": {
+          "rc": 0,
+          "duration_s": 97
+        }
+      }
+    },
+    "steps": {
+      "clone": {
+        "rc": 0,
+        "duration_s": 3
+      },
+      "describe": {
+        "rc": 0,
+        "duration_s": 0
+      },
+      "dotnet-info": {
+        "rc": 0,
+        "duration_s": 1
+      },
+      "build": {
+        "rc": 0,
+        "duration_s": 100
+      },
+      "test": {
+        "rc": 0,
+        "duration_s": 540
+      },
+      "format": {
+        "rc": 0,
+        "duration_s": 75
+      },
+      "fe-ci": {
+        "rc": 0,
+        "duration_s": 141
+      },
+      "fe-typecheck": {
+        "rc": 0,
+        "duration_s": 12
+      },
+      "fe-lint": {
+        "rc": 0,
+        "duration_s": 5
+      },
+      "fe-test": {
+        "rc": 0,
+        "duration_s": 5
+      },
+      "fe-build": {
+        "rc": 0,
+        "duration_s": 97
+      }
+    },
+    "verdict": "PASS"
+  },
+  "B": {
+    "steps": {
+      "clone": {
+        "rc": 0,
+        "duration_s": 0
+      },
+      "describe": {
+        "rc": 0,
+        "duration_s": 0
+      },
+      "go-version": {
+        "rc": 0,
+        "duration_s": 3
+      },
+      "ensure-templbook-embed": {
+        "rc": 0,
+        "duration_s": 1
+      },
+      "lint-check-generated": {
+        "rc": 0,
+        "duration_s": 2
+      },
+      "lint-templ-fmt": {
+        "rc": 0,
+        "duration_s": 1
+      },
+      "lint-gofmt": {
+        "rc": 0,
+        "duration_s": 1
+      },
+      "lint-vet": {
+        "rc": 0,
+        "duration_s": 130
+      },
+      "lint-golangci": {
+        "rc": 0,
+        "duration_s": 183
+      },
+      "test-go": {
+        "rc": 0,
+        "duration_s": 339
+      },
+      "test-go-postgres": {
+        "rc": 0,
+        "duration_s": 34
+      },
+      "test-go-redis": {
+        "rc": 0,
+        "duration_s": 40
+      },
+      "lint-ts": {
+        "rc": 0,
+        "duration_s": 390
+      }
+    },
+    "go_test_race": {
+      "pass": 388,
+      "fail": 0,
+      "skip": 25
+    },
+    "postgres_lane": {
+      "pass": 81,
+      "fail": 0,
+      "skip": 0
+    },
+    "redis_lane": {
+      "pass": 1,
+      "fail": 0,
+      "skip": 0
+    },
+    "coverage_pct": {
+      "fast_lane": "30.8",
+      "postgres_lane": "72.6"
+    },
+    "notes": [
+      "golangci-lint first attempt failed on 'proxy.golang.org: TLS handshake timeout' while the host was overloaded (log kept as lint-golangci-attempt1-network-timeout.log); the rerun is clean (rc 0)",
+      "first B attempt aborted at 02:21 CET because the host was swap-thrashing (01-functional/B-attempt1-aborted/), rerun 02:32\u201302:52",
+      "skipped 25 in the fast lane = Postgres-adapter + Redis-bus tests that skip without DATABASE_URL/REDIS_ADDR, exactly as in the GitLab fast lane; they run in the two service lanes"
+    ],
+    "verdict": "PASS"
+  }
+}

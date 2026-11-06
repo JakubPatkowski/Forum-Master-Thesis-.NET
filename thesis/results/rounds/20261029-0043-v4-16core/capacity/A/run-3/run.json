@@ -1,0 +1,43 @@
+{
+  "target": "a",
+  "profile": "capacity",
+  "repeat": 3,
+  "position_in_pair": 1,
+  "started_epoch": 1793255911,
+  "finished_epoch": 1793256719,
+  "seed_before": {
+    "users": 800,
+    "threads": 1611,
+    "comments": 9037,
+    "reactions": 15032,
+    "messages": 2009
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 5744,
+    "comments": 22571,
+    "reactions": 29763,
+    "messages": 7215
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 13534,
+      "new_rows": 13534
+    },
+    "threads": {
+      "accepted": 4133,
+      "new_rows": 4133
+    },
+    "messages": {
+      "accepted": 5206,
+      "new_rows": 5206
+    }
+  },
+  "checks_failed": 0,
+  "checks_failed_pct": 0,
+  "pod_restarts_during_run": [],
+  "valid": false,
+  "invalid_reasons": [
+    "generator spike: k6 peak CPU 485.6% > 200% (2 cores)"
+  ]
+}

@@ -1,0 +1,22 @@
+# git state of /home/ubuntuwsl/projects/forum-dotnet — 2026-10-24T21:29:01+02:00
+## status -sb
+## 31-feat-phase-13---ab-benchmark...origin/31-feat-phase-13---ab-benchmark
+?? thesis/results/campaign-20261024-2129/
+## status --porcelain (must be empty)
+?? thesis/results/campaign-20261024-2129/
+(end)
+## HEAD
+64cd5e2ad85af0004eb8fc17ff9174a0b9d44039
+## describe --tags --exact-match
+thesis-v3-a
+## tags pointing at HEAD
+thesis-v3-a
+## log -5
+64cd5e2 2026-10-24 20:09:43 +0200 Jakub Patkowski feat(bench): harness h6, round hardening (status/resume/timeouts), MW-primary stats
+e838b3f 2026-10-24 14:14:54 +0200 Jakub Patkowski feat: A/B v2 alignment (feed excerpts, ACL fast path, bench social seed, real-SPA harness h5)
+8b6a001 2026-10-23 22:19:26 +0200 Jakub Patkowski chore: revert local Claude Code permissions in settings.json
+0f1a1c2 2026-10-23 22:12:27 +0200 Jakub Patkowski docs: A/B campaign, h4 test-gap closure and benchmark results
+9fc38be 2026-10-23 22:12:26 +0200 Jakub Patkowski feat: A/B harness h4, Playwright E2E suite and Content read-gate fixes
+## remote tracking
+origin/31-feat-phase-13---ab-benchmark
+0	0

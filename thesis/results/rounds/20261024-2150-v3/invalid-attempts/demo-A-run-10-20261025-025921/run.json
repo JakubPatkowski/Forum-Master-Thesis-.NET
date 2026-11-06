@@ -1,0 +1,45 @@
+{
+  "target": "a",
+  "profile": "demo",
+  "repeat": 10,
+  "position_in_pair": 2,
+  "started_epoch": 1792885662,
+  "finished_epoch": 1792886193,
+  "seed_before": {
+    "users": 800,
+    "threads": 1610,
+    "comments": 9037,
+    "reactions": 15038,
+    "messages": 2010
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 2347,
+    "comments": 11792,
+    "reactions": 17899,
+    "messages": 3012
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 2755,
+      "new_rows": 2755
+    },
+    "threads": {
+      "accepted": 737,
+      "new_rows": 737
+    },
+    "messages": {
+      "accepted": 1002,
+      "new_rows": 1002
+    }
+  },
+  "checks_failed": 455,
+  "checks_failed_pct": 0.869,
+  "pod_restarts_during_run": [
+    "rabbitmq-0"
+  ],
+  "valid": false,
+  "invalid_reasons": [
+    "pod restarts during the run: ['rabbitmq-0']"
+  ]
+}

@@ -1,0 +1,20 @@
+# git state of /home/ubuntuwsl/projects/gomx — 2026-10-24T21:29:01+02:00
+## status -sb
+## feature/master-thesis...origin/feature/master-thesis
+## status --porcelain (must be empty)
+(end)
+## HEAD
+46b342c38592c107d00e0f8219a593831b66ae72
+## describe --tags --exact-match
+thesis-v3-b
+## tags pointing at HEAD
+thesis-v3-b
+## log -5
+46b342c 2026-10-24 20:10:31 +0200 Jakub Patkowski fix(bench): reaction visibility gate, CreatePost zero-id guard, DM rejection marker
+a457114 2026-10-24 14:15:12 +0200 Jakub Patkowski feat(bench): card previews, private comment broadcast fix and WS slow-consumer hardening
+5c569f7 2026-10-23 22:28:29 +0200 Jakub Patkowski feat(bench): Zipf search bank and anonymous membership fix
+f03d46a 2026-10-17 22:36:23 +0200 Jakub Patkowski feat(bench): place bench posts like Architecture A and run the bench DB on Debian postgres:18
+4b43557 2026-10-17 22:36:23 +0200 Jakub Patkowski fix(bench): set pgxpool MaxConns from GOMX_DB_MAX_CONNS instead of a pool_max_conns DSN param
+## remote tracking
+origin/feature/master-thesis
+0	0

@@ -1,0 +1,72 @@
+LAST SEEN   TYPE     REASON              OBJECT                          MESSAGE
+61m         Normal   Scheduled           pod/db-seed-benchmark-rffmz     Successfully assigned forum-dotnet/db-seed-benchmark-rffmz to forum
+61m         Normal   Pulled              pod/db-seed-benchmark-rffmz     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+61m         Normal   Created             pod/db-seed-benchmark-rffmz     Container created
+61m         Normal   Started             pod/db-seed-benchmark-rffmz     Container started
+61m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-rffmz
+61m         Normal   Completed           job/db-seed-benchmark           Job completed
+61m         Normal   SuccessfulCreate    replicaset/backend-866f7b674f   Created pod: backend-866f7b674f-cxtsd
+61m         Normal   Created             pod/backend-866f7b674f-cxtsd    Container created
+61m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-866f7b674f from 0 to 1
+61m         Normal   Pulled              pod/backend-866f7b674f-cxtsd    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+61m         Normal   Scheduled           pod/backend-866f7b674f-cxtsd    Successfully assigned forum-dotnet/backend-866f7b674f-cxtsd to forum
+61m         Normal   Started             pod/backend-866f7b674f-cxtsd    Container started
+60m         Normal   Scheduled           pod/backend-866f7b674f-ssgfd    Successfully assigned forum-dotnet/backend-866f7b674f-ssgfd to forum
+60m         Normal   SuccessfulDelete    replicaset/backend-5ff9d688f8   Deleted pod: backend-5ff9d688f8-ff4wn
+60m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-5ff9d688f8 from 2 to 1
+60m         Normal   Killing             pod/backend-5ff9d688f8-ff4wn    Stopping container backend
+60m         Normal   Pulled              pod/backend-866f7b674f-ssgfd    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+60m         Normal   Created             pod/backend-866f7b674f-ssgfd    Container created
+60m         Normal   Started             pod/backend-866f7b674f-ssgfd    Container started
+60m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-866f7b674f from 1 to 2
+60m         Normal   SuccessfulCreate    replicaset/backend-866f7b674f   Created pod: backend-866f7b674f-ssgfd
+60m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-5ff9d688f8 from 1 to 0
+60m         Normal   Killing             pod/backend-5ff9d688f8-5vgsn    Stopping container backend
+60m         Normal   SuccessfulDelete    replicaset/backend-5ff9d688f8   Deleted pod: backend-5ff9d688f8-5vgsn
+47m         Normal   SuccessfulDelete    replicaset/backend-866f7b674f   Deleted pod: backend-866f7b674f-ssgfd
+47m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-866f7b674f from 2 to 0
+47m         Normal   Killing             pod/backend-866f7b674f-cxtsd    Stopping container backend
+47m         Normal   Killing             pod/backend-866f7b674f-ssgfd    Stopping container backend
+47m         Normal   SuccessfulDelete    replicaset/backend-866f7b674f   Deleted pod: backend-866f7b674f-cxtsd
+22m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-jrccd
+22m         Normal   Scheduled           pod/db-seed-benchmark-jrccd     Successfully assigned forum-dotnet/db-seed-benchmark-jrccd to forum
+22m         Normal   Pulled              pod/db-seed-benchmark-jrccd     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+22m         Normal   Created             pod/db-seed-benchmark-jrccd     Container created
+22m         Normal   Started             pod/db-seed-benchmark-jrccd     Container started
+22m         Normal   NoPods              poddisruptionbudget/backend     No matching pods found
+22m         Normal   Completed           job/db-seed-benchmark           Job completed
+22m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-b68fbbbd5 from 0 to 2
+22m         Normal   Scheduled           pod/backend-b68fbbbd5-s4nxd     Successfully assigned forum-dotnet/backend-b68fbbbd5-s4nxd to forum
+22m         Normal   Scheduled           pod/backend-b68fbbbd5-l9mwt     Successfully assigned forum-dotnet/backend-b68fbbbd5-l9mwt to forum
+22m         Normal   SuccessfulCreate    replicaset/backend-b68fbbbd5    Created pod: backend-b68fbbbd5-s4nxd
+22m         Normal   SuccessfulCreate    replicaset/backend-b68fbbbd5    Created pod: backend-b68fbbbd5-l9mwt
+22m         Normal   Pulled              pod/backend-b68fbbbd5-s4nxd     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+22m         Normal   Started             pod/backend-b68fbbbd5-s4nxd     Container started
+22m         Normal   Created             pod/backend-b68fbbbd5-s4nxd     Container created
+22m         Normal   Pulled              pod/backend-b68fbbbd5-l9mwt     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+22m         Normal   Created             pod/backend-b68fbbbd5-l9mwt     Container created
+22m         Normal   Started             pod/backend-b68fbbbd5-l9mwt     Container started
+10m         Normal   Scheduled           pod/db-seed-benchmark-7hqbg     Successfully assigned forum-dotnet/db-seed-benchmark-7hqbg to forum
+10m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-7hqbg
+10m         Normal   Started             pod/db-seed-benchmark-7hqbg     Container started
+10m         Normal   Created             pod/db-seed-benchmark-7hqbg     Container created
+10m         Normal   Pulled              pod/db-seed-benchmark-7hqbg     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal   Completed           job/db-seed-benchmark           Job completed
+10m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-84d6f76c4f from 0 to 1
+10m         Normal   Scheduled           pod/backend-84d6f76c4f-db7gx    Successfully assigned forum-dotnet/backend-84d6f76c4f-db7gx to forum
+10m         Normal   SuccessfulCreate    replicaset/backend-84d6f76c4f   Created pod: backend-84d6f76c4f-db7gx
+10m         Normal   Created             pod/backend-84d6f76c4f-db7gx    Container created
+10m         Normal   Pulled              pod/backend-84d6f76c4f-db7gx    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal   Started             pod/backend-84d6f76c4f-db7gx    Container started
+10m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-84d6f76c4f from 1 to 2
+10m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-b68fbbbd5 from 2 to 1
+10m         Normal   SuccessfulDelete    replicaset/backend-b68fbbbd5    Deleted pod: backend-b68fbbbd5-s4nxd
+10m         Normal   Killing             pod/backend-b68fbbbd5-s4nxd     Stopping container backend
+10m         Normal   SuccessfulCreate    replicaset/backend-84d6f76c4f   Created pod: backend-84d6f76c4f-lq8cd
+10m         Normal   Scheduled           pod/backend-84d6f76c4f-lq8cd    Successfully assigned forum-dotnet/backend-84d6f76c4f-lq8cd to forum
+10m         Normal   Pulled              pod/backend-84d6f76c4f-lq8cd    Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+10m         Normal   Started             pod/backend-84d6f76c4f-lq8cd    Container started
+10m         Normal   Created             pod/backend-84d6f76c4f-lq8cd    Container created
+9m51s       Normal   Killing             pod/backend-b68fbbbd5-l9mwt     Stopping container backend
+9m51s       Normal   SuccessfulDelete    replicaset/backend-b68fbbbd5    Deleted pod: backend-b68fbbbd5-l9mwt
+9m51s       Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-b68fbbbd5 from 1 to 0

@@ -1,0 +1,27 @@
+
+target=b  profile=warmup  mix=v1  harness=h3-2026-10-17  base=https://gomx.local
+http_reqs=1402  p95=31ms  p99=35ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                 2     21     21     21     21     21
+communities          95      3      3      4      5     10
+space_page          490      8      7     10     13     49
+space_feed          158      7      7     10     11     12
+thread              316      4      4      5     12     44
+search              158     31     31     38     50     61
+profile              49      4      4      5      5      5
+comment_create       24      6      6      9     10     10
+vote                 38      5      4      7      8      9
+setup                72      7      7     10     12     13
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           490   8.17      8     23     28
+J2           316   5.27      4      5     13
+J3            24   0.40      7     10     11
+J5            38   0.63      5      7      9
+J6           158   2.63     31     38     52
+J7            49   0.82      4      6      6
+nav           95   1.58      3      4      6
+
+all thresholds passed
+

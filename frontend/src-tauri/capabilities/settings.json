@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "settings",
+  "description": "Settings window only: core defaults + the app's own server-URL commands. The main window (remote forum content) is deliberately absent from every capability — remote origins get no Tauri IPC at all.",
+  "windows": ["settings"],
+  "permissions": ["core:default"]
+}

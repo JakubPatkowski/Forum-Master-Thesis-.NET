@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gomx
+  namespace: gomx
+spec:
+  # 1 for the FIRST boot against an empty DB: the bench seed runs in-process at startup (gomx
+  # internal/server/forum.go selectStore → seedStore) with NO lock around the IsEmpty→seed window, so two pods
+  # would both seed and both hit `username_lc UNIQUE` → crash-loop with a half-seeded DB. The deploy script
+  # scales to 2 once "benchmark seed complete" is logged.
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: gomx
+          resources:
+            requests: { cpu: 250m, memory: 256Mi }
+            limits:   { cpu: "1",  memory: 512Mi }
+          # The bench seed hashes 800 PBKDF2 accounts + ~27k row inserts BEFORE the HTTP listener starts
+          # (cmd/server/main.go: NewRouter→buildForum seeds, httpserver.Run listens afterwards). With the base
+          # liveness (initialDelay 5 s, period 10 s, failureThreshold 3) the kubelet kills the pod ~35 s into
+          # seeding; the restart sees IsEmpty=false and skips the seed → PARTIAL dataset. The startupProbe holds
+          # liveness off until the listener is up (≤ 15 min).
+          startupProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 10
+            failureThreshold: 90
+          # timeoutSeconds 5 (k8s default 1 s): identical to A's probes — a saturated pod missing a 1 s deadline
+          # flaps unready and ingress withdraws its endpoint (found live on A in Phase 9c).
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 5
+          # NOTE: no trailing comments after the flow mappings below — kustomize's strategic-merge
+          # re-serialization fails on them ("yaml: line N: could not find expected ':'", kustomize v5.8.1).
+          #   GOMX_AUTH_RATELIMIT=0        recorded in meta.json (F5)
+          #   GOMX_BEACON_RATELIMIT=0      k6 never beacons; harmless
+          #   GOMX_COMPRESS=0              B-04 (no-op until Hubert's flag lands)
+          #   GOMX_NOTIFY_FRIENDS_ON_POST  B-02 (no-op until Hubert's flag lands)
+          #   GOMX_DB_MAX_CONNS=30         B-05a (postgres.go applyPoolEnv)
+          #   GOMX_SECURE_COOKIES=1        TLS ingress (ingress-patch.yaml)
+          #   OTEL_EXPORTER_OTLP_ENDPOINT  "" = unset → tracing off (gomx tracing.go:136-141)
+          env:
+            - { name: GOMX_SEED, value: "bench" }
+            - { name: GOMX_AUTH_RATELIMIT, value: "0" }
+            - { name: GOMX_BEACON_RATELIMIT, value: "0" }
+            - { name: GOMX_COMPRESS, value: "0" }
+            - { name: GOMX_NOTIFY_FRIENDS_ON_POST, value: "0" }
+            - { name: GOMX_DB_MAX_CONNS, value: "30" }
+            - { name: GOMX_SECURE_COOKIES, value: "1" }
+            - { name: GOMX_ALLOWED_ORIGINS, value: "gomx.local" }
+            - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "" }
+            - { name: GOMX_ENV, value: "benchmark" }

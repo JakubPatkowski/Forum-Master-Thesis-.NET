@@ -1,14 +1,17 @@
 name: forum-dotnet
 services:
   postgres:
-    image: postgres:17
+    image: postgres:18
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-forum_net}
       POSTGRES_USER: ${POSTGRES_USER:-forum}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-forum_dev_only}
     ports: ["5432:5432"]
-    volumes: ["pgdata:/var/lib/postgresql/data"]
+    # The 18 image moved its VOLUME to /var/lib/postgresql (PGDATA defaults to a
+    # version-scoped subdir inside it) — mounting the old /var/lib/postgresql/data
+    # path would leave the actual data dir OUTSIDE the named volume.
+    volumes: ["pgdata:/var/lib/postgresql"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-forum} -d ${POSTGRES_DB:-forum_net}"]
       interval: 5s

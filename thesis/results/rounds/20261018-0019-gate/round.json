@@ -1,0 +1,12 @@
+{
+  "label": "gate",
+  "plan": "smoke:1",
+  "started_epoch": 1792275548.262777,
+  "cooldown_s": 60,
+  "reseed_each_run": true,
+  "warmup_each_run": true,
+  "replicas": 2,
+  "mix_version": "v1",
+  "harness_version": "h3-2026-10-17",
+  "order": "ABBA (odd repeat: A then B; even: B then A)"
+}

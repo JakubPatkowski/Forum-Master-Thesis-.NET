@@ -1,0 +1,22 @@
+start 2026-10-18T00:03:29+02:00
+ci-images rc=0 duration_s=24
+go-version rc=0 duration_s=2 end=2026-10-18T00:03:56+02:00
+lint-check-generated rc=0 duration_s=6 end=2026-10-18T00:04:02+02:00
+lint-templ-fmt rc=0 duration_s=1 end=2026-10-18T00:04:03+02:00
+lint-gofmt rc=0 duration_s=3 end=2026-10-18T00:04:06+02:00
+lint-vet rc=1 duration_s=1 end=2026-10-18T00:04:07+02:00
+lint-golangci rc=1 duration_s=4 end=2026-10-18T00:04:11+02:00
+test-go rc=1 duration_s=1 end=2026-10-18T00:04:12+02:00
+test-go-postgres rc=1 duration_s=6 end=2026-10-18T00:04:18+02:00
+test-go-redis rc=1 duration_s=8 end=2026-10-18T00:04:26+02:00
+lint-ts rc=0 duration_s=148 end=2026-10-18T00:06:54+02:00
+working tree unchanged by the gates
+end 2026-10-18T00:06:56+02:00
+rerun-start 2026-10-18T00:09:02+02:00 (Go steps as root in the container; cache is root-owned)
+lint-vet rc=0 duration_s=3 end=2026-10-18T00:09:06+02:00
+lint-golangci rc=0 duration_s=15 end=2026-10-18T00:09:21+02:00
+test-go rc=0 duration_s=65 end=2026-10-18T00:10:26+02:00
+test-go-postgres rc=0 duration_s=12 end=2026-10-18T00:10:38+02:00
+test-go-redis rc=0 duration_s=3 end=2026-10-18T00:10:41+02:00
+working tree unchanged by the rerun
+rerun-end 2026-10-18T00:10:43+02:00

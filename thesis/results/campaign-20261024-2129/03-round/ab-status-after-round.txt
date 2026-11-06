@@ -1,0 +1,22 @@
+round     : /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3
+state     : DONE
+plan      : demo:10,capacity:1
+progress  : 22/22 runs done, 18 valid
+current   : capacity/B/run-1
+detail    : round complete: 18/22 valid
+updated   : 2026-10-25 02:33:36 (heartbeat 108 s ago, pid 308703)
+--- processes
+no ab-round.sh process on this host
+--- last log lines (/home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/round.log)
+    journeys: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/capacity/B/run-1/journeys-b-20261025-021830.json
+    report:   /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/capacity/B/run-1/report-b-20261025-021830.txt
+    samples:  /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/capacity/B/run-1/samples-b-20261025-021830.json
+  window 660s, 43143 journeys: app 303.4 core-s (7.0317 ms/journey, mem avg 175 MiB) | namespace 14.2107 ms/journey | ingress 4.833 ms/journey | idle app 0.0038 cores → marginal 6.9735 ms/journey
+  run.json: valid=False (pod restarts during the run: ['redis-75c79bffcf-dnqb2'])
+    cool-down 0s (of 60s; the idle-window read already waited)
+==> Report
+22 runs (18 valid) → round-summary.json + REPORT.md
+  [ok] report: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/REPORT.md
+  [ok] round complete: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3 (18/22 valid)
+==> Cleanup
+  [ok] A rate limiter restored (tracing stays off, HPA stays deleted — benchmark shape)

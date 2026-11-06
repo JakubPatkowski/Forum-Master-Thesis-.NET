@@ -1,0 +1,22 @@
+round     : /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3
+state     : DONE
+plan      : demo:10
+progress  : 20/20 runs done, 20 valid
+current   : demo/A/run-10
+detail    : round complete: 20/20 valid
+updated   : 2026-10-25 02:11:43 (heartbeat 190 s ago, pid 1146718)
+--- processes
+no ab-round.sh process on this host
+--- last log lines (/home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/round.log)
+    journeys: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/demo/A/run-10/journeys-a-20261025-020108.json
+    report:   /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/demo/A/run-10/report-a-20261025-020108.txt
+    samples:  /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/demo/A/run-10/samples-a-20261025-020108.json
+  window 420s, 31512 journeys: app 192.2 core-s (6.1005 ms/journey, mem avg 407 MiB) | namespace 13.7243 ms/journey | ingress 1.8193 ms/journey | idle app 0.006 cores → marginal 6.0206 ms/journey
+  run.json: valid=True
+    cool-down 0s (of 60s; the idle-window read already waited)
+==> Report
+22 runs (20 valid) → round-summary.json + REPORT.md
+  [ok] report: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3/REPORT.md
+  [ok] round complete: /home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261024-2150-v3 (20/20 valid)
+==> Cleanup
+  [ok] A rate limiter restored (tracing stays off, HPA stays deleted — benchmark shape)

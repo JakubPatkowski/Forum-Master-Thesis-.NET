@@ -1,0 +1,7100 @@
+{
+  "round": "20261031-0024-v4-improvements",
+  "runs": [
+    {
+      "target": "a",
+      "profile": "capacity",
+      "repeat": 1,
+      "position_in_pair": 1,
+      "started_epoch": 1793422013,
+      "finished_epoch": 1793422825,
+      "seed_before": {
+        "users": 800,
+        "threads": 1615,
+        "comments": 9033,
+        "reactions": 15033,
+        "messages": 2011
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 5573,
+        "comments": 22411,
+        "reactions": 29905,
+        "messages": 7210
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 13378,
+          "new_rows": 13378
+        },
+        "threads": {
+          "accepted": 3958,
+          "new_rows": 3958
+        },
+        "messages": {
+          "accepted": 5199,
+          "new_rows": 5199
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 665.0% > 200% (2 cores)"
+      ],
+      "dir": "capacity/A/run-1",
+      "k6": {
+        "cpu_pct_max": 665.0,
+        "cpu_pct_mean": 70.33162393162394,
+        "rss_mib_max": 4294
+      }
+    },
+    {
+      "target": "a",
+      "profile": "capacity",
+      "repeat": 2,
+      "position_in_pair": 2,
+      "started_epoch": 1793437480,
+      "finished_epoch": 1793438291,
+      "seed_before": {
+        "users": 800,
+        "threads": 1619,
+        "comments": 9036,
+        "reactions": 15034,
+        "messages": 2012
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 5512,
+        "comments": 22486,
+        "reactions": 29912,
+        "messages": 7202
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 13450,
+          "new_rows": 13450
+        },
+        "threads": {
+          "accepted": 3893,
+          "new_rows": 3893
+        },
+        "messages": {
+          "accepted": 5190,
+          "new_rows": 5190
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 437.6% > 200% (2 cores)"
+      ],
+      "dir": "capacity/A/run-2",
+      "k6": {
+        "cpu_pct_max": 437.59999999999997,
+        "cpu_pct_mean": 68.626221001221,
+        "rss_mib_max": 4416
+      }
+    },
+    {
+      "target": "a",
+      "profile": "capacity",
+      "repeat": 3,
+      "position_in_pair": 1,
+      "started_epoch": 1793438492,
+      "finished_epoch": 1793439301,
+      "seed_before": {
+        "users": 800,
+        "threads": 1610,
+        "comments": 9033,
+        "reactions": 15034,
+        "messages": 2009
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 5474,
+        "comments": 22509,
+        "reactions": 29740,
+        "messages": 7173
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 13476,
+          "new_rows": 13476
+        },
+        "threads": {
+          "accepted": 3864,
+          "new_rows": 3864
+        },
+        "messages": {
+          "accepted": 5164,
+          "new_rows": 5164
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 691.4% > 200% (2 cores)"
+      ],
+      "dir": "capacity/A/run-3",
+      "k6": {
+        "cpu_pct_max": 691.4,
+        "cpu_pct_mean": 68.83397435897436,
+        "rss_mib_max": 4334
+      }
+    },
+    {
+      "target": "b",
+      "profile": "capacity",
+      "repeat": 1,
+      "position_in_pair": 2,
+      "started_epoch": 1793423097,
+      "finished_epoch": 1793423879,
+      "seed_before": {
+        "users": 800,
+        "threads": 1612,
+        "comments": 9035,
+        "reactions": 15029,
+        "messages": 2006
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 4589,
+        "comments": 19239,
+        "reactions": 26073,
+        "messages": 5997
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 10204,
+          "new_rows": 10204
+        },
+        "threads": {
+          "accepted": 2977,
+          "new_rows": 2977
+        },
+        "messages": {
+          "accepted": 3991,
+          "new_rows": 3991
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 554.8% > 200% (2 cores)"
+      ],
+      "dir": "capacity/B/run-1",
+      "k6": {
+        "cpu_pct_max": 554.8,
+        "cpu_pct_mean": 79.04966887417218,
+        "rss_mib_max": 2722
+      }
+    },
+    {
+      "target": "b",
+      "profile": "capacity",
+      "repeat": 2,
+      "position_in_pair": 1,
+      "started_epoch": 1793424149,
+      "finished_epoch": 1793437285,
+      "seed_before": {
+        "users": 800,
+        "threads": 1617,
+        "comments": 9031,
+        "reactions": 15036,
+        "messages": 2008
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 4649,
+        "comments": 19381,
+        "reactions": 26454,
+        "messages": 5976
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 10350,
+          "new_rows": 10350
+        },
+        "threads": {
+          "accepted": 3032,
+          "new_rows": 3032
+        },
+        "messages": {
+          "accepted": 3968,
+          "new_rows": 3968
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 468.2% > 200% (2 cores)"
+      ],
+      "dir": "capacity/B/run-2",
+      "k6": {
+        "cpu_pct_max": 468.20000000000005,
+        "cpu_pct_mean": 71.26061739825471,
+        "rss_mib_max": 2529
+      }
+    },
+    {
+      "target": "b",
+      "profile": "capacity",
+      "repeat": 3,
+      "position_in_pair": 2,
+      "started_epoch": 1793439573,
+      "finished_epoch": 1793440356,
+      "seed_before": {
+        "users": 800,
+        "threads": 1608,
+        "comments": 9033,
+        "reactions": 15031,
+        "messages": 2011
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 4447,
+        "comments": 18920,
+        "reactions": 25797,
+        "messages": 5770
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 9887,
+          "new_rows": 9887
+        },
+        "threads": {
+          "accepted": 2839,
+          "new_rows": 2839
+        },
+        "messages": {
+          "accepted": 3759,
+          "new_rows": 3759
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 599.8% > 200% (2 cores)"
+      ],
+      "dir": "capacity/B/run-3",
+      "k6": {
+        "cpu_pct_max": 599.8,
+        "cpu_pct_mean": 76.82450331125828,
+        "rss_mib_max": 2745
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 1,
+      "position_in_pair": 1,
+      "started_epoch": 1793402777,
+      "finished_epoch": 1793403303,
+      "seed_before": {
+        "users": 800,
+        "threads": 1614,
+        "comments": 9037,
+        "reactions": 15039,
+        "messages": 2018
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2800,
+        "comments": 13086,
+        "reactions": 19362,
+        "messages": 3598
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4049,
+          "new_rows": 4049
+        },
+        "threads": {
+          "accepted": 1186,
+          "new_rows": 1186
+        },
+        "messages": {
+          "accepted": 1580,
+          "new_rows": 1580
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-1",
+      "k6": {
+        "cpu_pct_max": 124.6,
+        "cpu_pct_mean": 25.01914191419142,
+        "rss_mib_max": 1020
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 10,
+      "position_in_pair": 2,
+      "started_epoch": 1793416960,
+      "finished_epoch": 1793417487,
+      "seed_before": {
+        "users": 800,
+        "threads": 1615,
+        "comments": 9038,
+        "reactions": 15026,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2781,
+        "comments": 13130,
+        "reactions": 19466,
+        "messages": 3557
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4092,
+          "new_rows": 4092
+        },
+        "threads": {
+          "accepted": 1166,
+          "new_rows": 1166
+        },
+        "messages": {
+          "accepted": 1547,
+          "new_rows": 1547
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-10",
+      "k6": {
+        "cpu_pct_max": 121.8,
+        "cpu_pct_mean": 25.904620462046203,
+        "rss_mib_max": 1011
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 2,
+      "position_in_pair": 2,
+      "started_epoch": 1793404995,
+      "finished_epoch": 1793405522,
+      "seed_before": {
+        "users": 800,
+        "threads": 1605,
+        "comments": 9036,
+        "reactions": 15042,
+        "messages": 2009
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2748,
+        "comments": 13153,
+        "reactions": 19360,
+        "messages": 3536
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4117,
+          "new_rows": 4117
+        },
+        "threads": {
+          "accepted": 1143,
+          "new_rows": 1143
+        },
+        "messages": {
+          "accepted": 1527,
+          "new_rows": 1527
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-2",
+      "k6": {
+        "cpu_pct_max": 149.8,
+        "cpu_pct_mean": 26.174257425742574,
+        "rss_mib_max": 1003
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 3,
+      "position_in_pair": 1,
+      "started_epoch": 1793405722,
+      "finished_epoch": 1793406247,
+      "seed_before": {
+        "users": 800,
+        "threads": 1612,
+        "comments": 9035,
+        "reactions": 15039,
+        "messages": 2022
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2742,
+        "comments": 13187,
+        "reactions": 19379,
+        "messages": 3590
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4152,
+          "new_rows": 4152
+        },
+        "threads": {
+          "accepted": 1130,
+          "new_rows": 1130
+        },
+        "messages": {
+          "accepted": 1568,
+          "new_rows": 1568
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-3",
+      "k6": {
+        "cpu_pct_max": 119.19999999999999,
+        "cpu_pct_mean": 24.213861386138614,
+        "rss_mib_max": 1008
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 4,
+      "position_in_pair": 2,
+      "started_epoch": 1793408046,
+      "finished_epoch": 1793408572,
+      "seed_before": {
+        "users": 800,
+        "threads": 1609,
+        "comments": 9045,
+        "reactions": 15036,
+        "messages": 2009
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2739,
+        "comments": 13136,
+        "reactions": 19486,
+        "messages": 3553
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4091,
+          "new_rows": 4091
+        },
+        "threads": {
+          "accepted": 1130,
+          "new_rows": 1130
+        },
+        "messages": {
+          "accepted": 1544,
+          "new_rows": 1544
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-4",
+      "k6": {
+        "cpu_pct_max": 145.0,
+        "cpu_pct_mean": 26.034983498349835,
+        "rss_mib_max": 995
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 5,
+      "position_in_pair": 1,
+      "started_epoch": 1793408773,
+      "finished_epoch": 1793409299,
+      "seed_before": {
+        "users": 800,
+        "threads": 1610,
+        "comments": 9037,
+        "reactions": 15041,
+        "messages": 2014
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2777,
+        "comments": 13024,
+        "reactions": 19377,
+        "messages": 3611
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 3987,
+          "new_rows": 3987
+        },
+        "threads": {
+          "accepted": 1167,
+          "new_rows": 1167
+        },
+        "messages": {
+          "accepted": 1597,
+          "new_rows": 1597
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-5",
+      "k6": {
+        "cpu_pct_max": 123.2,
+        "cpu_pct_mean": 25.794719471947197,
+        "rss_mib_max": 1020
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 6,
+      "position_in_pair": 2,
+      "started_epoch": 1793410993,
+      "finished_epoch": 1793411519,
+      "seed_before": {
+        "users": 800,
+        "threads": 1615,
+        "comments": 9029,
+        "reactions": 15031,
+        "messages": 2015
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2716,
+        "comments": 13229,
+        "reactions": 19348,
+        "messages": 3539
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4200,
+          "new_rows": 4200
+        },
+        "threads": {
+          "accepted": 1101,
+          "new_rows": 1101
+        },
+        "messages": {
+          "accepted": 1524,
+          "new_rows": 1524
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-6",
+      "k6": {
+        "cpu_pct_max": 166.4,
+        "cpu_pct_mean": 25.673927392739273,
+        "rss_mib_max": 1003
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 7,
+      "position_in_pair": 1,
+      "started_epoch": 1793411720,
+      "finished_epoch": 1793412247,
+      "seed_before": {
+        "users": 800,
+        "threads": 1609,
+        "comments": 9029,
+        "reactions": 15041,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2754,
+        "comments": 13172,
+        "reactions": 19408,
+        "messages": 3589
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4143,
+          "new_rows": 4143
+        },
+        "threads": {
+          "accepted": 1145,
+          "new_rows": 1145
+        },
+        "messages": {
+          "accepted": 1579,
+          "new_rows": 1579
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-7",
+      "k6": {
+        "cpu_pct_max": 120.8,
+        "cpu_pct_mean": 25.956435643564358,
+        "rss_mib_max": 1013
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 8,
+      "position_in_pair": 2,
+      "started_epoch": 1793413952,
+      "finished_epoch": 1793414478,
+      "seed_before": {
+        "users": 800,
+        "threads": 1613,
+        "comments": 9032,
+        "reactions": 15035,
+        "messages": 2012
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2766,
+        "comments": 13113,
+        "reactions": 19373,
+        "messages": 3548
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4081,
+          "new_rows": 4081
+        },
+        "threads": {
+          "accepted": 1153,
+          "new_rows": 1153
+        },
+        "messages": {
+          "accepted": 1536,
+          "new_rows": 1536
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-8",
+      "k6": {
+        "cpu_pct_max": 141.79999999999998,
+        "cpu_pct_mean": 26.072937293729375,
+        "rss_mib_max": 1007
+      }
+    },
+    {
+      "target": "a",
+      "profile": "demo",
+      "repeat": 9,
+      "position_in_pair": 1,
+      "started_epoch": 1793414678,
+      "finished_epoch": 1793415206,
+      "seed_before": {
+        "users": 800,
+        "threads": 1609,
+        "comments": 9027,
+        "reactions": 15037,
+        "messages": 2011
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2796,
+        "comments": 13076,
+        "reactions": 19413,
+        "messages": 3462
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4049,
+          "new_rows": 4049
+        },
+        "threads": {
+          "accepted": 1187,
+          "new_rows": 1187
+        },
+        "messages": {
+          "accepted": 1451,
+          "new_rows": 1451
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/A/run-9",
+      "k6": {
+        "cpu_pct_max": 139.39999999999998,
+        "cpu_pct_mean": 25.804620462046206,
+        "rss_mib_max": 996
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 1,
+      "position_in_pair": 2,
+      "started_epoch": 1793403544,
+      "finished_epoch": 1793404052,
+      "seed_before": {
+        "users": 800,
+        "threads": 1611,
+        "comments": 9047,
+        "reactions": 15043,
+        "messages": 2014
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2745,
+        "comments": 13106,
+        "reactions": 19347,
+        "messages": 3508
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4059,
+          "new_rows": 4059
+        },
+        "threads": {
+          "accepted": 1134,
+          "new_rows": 1134
+        },
+        "messages": {
+          "accepted": 1494,
+          "new_rows": 1494
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-1",
+      "k6": {
+        "cpu_pct_max": 152.2,
+        "cpu_pct_mean": 35.477210884353745,
+        "rss_mib_max": 713
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 10,
+      "position_in_pair": 1,
+      "started_epoch": 1793416257,
+      "finished_epoch": 1793416767,
+      "seed_before": {
+        "users": 800,
+        "threads": 1613,
+        "comments": 9045,
+        "reactions": 15033,
+        "messages": 2008
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2823,
+        "comments": 13034,
+        "reactions": 19259,
+        "messages": 3488
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 3989,
+          "new_rows": 3989
+        },
+        "threads": {
+          "accepted": 1210,
+          "new_rows": 1210
+        },
+        "messages": {
+          "accepted": 1480,
+          "new_rows": 1480
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-10",
+      "k6": {
+        "cpu_pct_max": 143.6,
+        "cpu_pct_mean": 36.09625850340136,
+        "rss_mib_max": 708
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 2,
+      "position_in_pair": 1,
+      "started_epoch": 1793404291,
+      "finished_epoch": 1793404799,
+      "seed_before": {
+        "users": 800,
+        "threads": 1611,
+        "comments": 9039,
+        "reactions": 15026,
+        "messages": 2011
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2789,
+        "comments": 13135,
+        "reactions": 19258,
+        "messages": 3545
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4096,
+          "new_rows": 4096
+        },
+        "threads": {
+          "accepted": 1178,
+          "new_rows": 1178
+        },
+        "messages": {
+          "accepted": 1534,
+          "new_rows": 1534
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-2",
+      "k6": {
+        "cpu_pct_max": 187.33333333333334,
+        "cpu_pct_mean": 36.39795918367347,
+        "rss_mib_max": 710
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 3,
+      "position_in_pair": 2,
+      "started_epoch": 1793406596,
+      "finished_epoch": 1793407104,
+      "seed_before": {
+        "users": 800,
+        "threads": 1611,
+        "comments": 9035,
+        "reactions": 15026,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2866,
+        "comments": 12991,
+        "reactions": 19348,
+        "messages": 3506
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 3956,
+          "new_rows": 3956
+        },
+        "threads": {
+          "accepted": 1255,
+          "new_rows": 1255
+        },
+        "messages": {
+          "accepted": 1496,
+          "new_rows": 1496
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-3",
+      "k6": {
+        "cpu_pct_max": 146.0,
+        "cpu_pct_mean": 35.47312925170068,
+        "rss_mib_max": 719
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 4,
+      "position_in_pair": 1,
+      "started_epoch": 1793407344,
+      "finished_epoch": 1793407852,
+      "seed_before": {
+        "users": 800,
+        "threads": 1614,
+        "comments": 9040,
+        "reactions": 15038,
+        "messages": 2013
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2752,
+        "comments": 13091,
+        "reactions": 19375,
+        "messages": 3571
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4051,
+          "new_rows": 4051
+        },
+        "threads": {
+          "accepted": 1138,
+          "new_rows": 1138
+        },
+        "messages": {
+          "accepted": 1558,
+          "new_rows": 1558
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-4",
+      "k6": {
+        "cpu_pct_max": 146.2,
+        "cpu_pct_mean": 35.1687074829932,
+        "rss_mib_max": 709
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 5,
+      "position_in_pair": 2,
+      "started_epoch": 1793409540,
+      "finished_epoch": 1793410049,
+      "seed_before": {
+        "users": 800,
+        "threads": 1616,
+        "comments": 9025,
+        "reactions": 15030,
+        "messages": 2017
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2743,
+        "comments": 13172,
+        "reactions": 19324,
+        "messages": 3603
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4147,
+          "new_rows": 4147
+        },
+        "threads": {
+          "accepted": 1127,
+          "new_rows": 1127
+        },
+        "messages": {
+          "accepted": 1586,
+          "new_rows": 1586
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-5",
+      "k6": {
+        "cpu_pct_max": 139.0,
+        "cpu_pct_mean": 36.14625850340136,
+        "rss_mib_max": 711
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 6,
+      "position_in_pair": 1,
+      "started_epoch": 1793410288,
+      "finished_epoch": 1793410797,
+      "seed_before": {
+        "users": 800,
+        "threads": 1618,
+        "comments": 9037,
+        "reactions": 15026,
+        "messages": 2013
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2812,
+        "comments": 13062,
+        "reactions": 19225,
+        "messages": 3514
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4025,
+          "new_rows": 4025
+        },
+        "threads": {
+          "accepted": 1194,
+          "new_rows": 1194
+        },
+        "messages": {
+          "accepted": 1501,
+          "new_rows": 1501
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 211.7% > 200% (2 cores)"
+      ],
+      "dir": "demo/B/run-6",
+      "k6": {
+        "cpu_pct_max": 211.66666666666666,
+        "cpu_pct_mean": 36.310204081632655,
+        "rss_mib_max": 711
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 7,
+      "position_in_pair": 2,
+      "started_epoch": 1793412489,
+      "finished_epoch": 1793412997,
+      "seed_before": {
+        "users": 800,
+        "threads": 1608,
+        "comments": 9028,
+        "reactions": 15044,
+        "messages": 2014
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2743,
+        "comments": 13155,
+        "reactions": 19408,
+        "messages": 3539
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4127,
+          "new_rows": 4127
+        },
+        "threads": {
+          "accepted": 1135,
+          "new_rows": 1135
+        },
+        "messages": {
+          "accepted": 1525,
+          "new_rows": 1525
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-7",
+      "k6": {
+        "cpu_pct_max": 191.6,
+        "cpu_pct_mean": 36.481632653061226,
+        "rss_mib_max": 718
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 8,
+      "position_in_pair": 1,
+      "started_epoch": 1793413247,
+      "finished_epoch": 1793413756,
+      "seed_before": {
+        "users": 800,
+        "threads": 1614,
+        "comments": 9038,
+        "reactions": 15034,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2745,
+        "comments": 13057,
+        "reactions": 19344,
+        "messages": 3488
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4019,
+          "new_rows": 4019
+        },
+        "threads": {
+          "accepted": 1131,
+          "new_rows": 1131
+        },
+        "messages": {
+          "accepted": 1478,
+          "new_rows": 1478
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-8",
+      "k6": {
+        "cpu_pct_max": 130.39999999999998,
+        "cpu_pct_mean": 35.81190476190476,
+        "rss_mib_max": 714
+      }
+    },
+    {
+      "target": "b",
+      "profile": "demo",
+      "repeat": 9,
+      "position_in_pair": 2,
+      "started_epoch": 1793415479,
+      "finished_epoch": 1793415987,
+      "seed_before": {
+        "users": 800,
+        "threads": 1612,
+        "comments": 9039,
+        "reactions": 15036,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 2746,
+        "comments": 13066,
+        "reactions": 19338,
+        "messages": 3607
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 4027,
+          "new_rows": 4027
+        },
+        "threads": {
+          "accepted": 1134,
+          "new_rows": 1134
+        },
+        "messages": {
+          "accepted": 1597,
+          "new_rows": 1597
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "demo/B/run-9",
+      "k6": {
+        "cpu_pct_max": 131.6,
+        "cpu_pct_mean": 35.94761904761905,
+        "rss_mib_max": 704
+      }
+    },
+    {
+      "target": "a",
+      "profile": "stress",
+      "repeat": 1,
+      "position_in_pair": 1,
+      "started_epoch": 1793417688,
+      "finished_epoch": 1793418188,
+      "seed_before": {
+        "users": 800,
+        "threads": 1617,
+        "comments": 9040,
+        "reactions": 15033,
+        "messages": 2008
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3817,
+        "comments": 16801,
+        "reactions": 23328,
+        "messages": 4939
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 7761,
+          "new_rows": 7761
+        },
+        "threads": {
+          "accepted": 2200,
+          "new_rows": 2200
+        },
+        "messages": {
+          "accepted": 2931,
+          "new_rows": 2931
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 230.2% > 200% (2 cores)"
+      ],
+      "dir": "stress/A/run-1",
+      "k6": {
+        "cpu_pct_max": 230.20000000000002,
+        "cpu_pct_mean": 54.192708333333336,
+        "rss_mib_max": 1700
+      }
+    },
+    {
+      "target": "a",
+      "profile": "stress",
+      "repeat": 2,
+      "position_in_pair": 2,
+      "started_epoch": 1793419872,
+      "finished_epoch": 1793420368,
+      "seed_before": {
+        "users": 800,
+        "threads": 1610,
+        "comments": 9034,
+        "reactions": 15036,
+        "messages": 2016
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3848,
+        "comments": 16791,
+        "reactions": 23301,
+        "messages": 4917
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 7757,
+          "new_rows": 7757
+        },
+        "threads": {
+          "accepted": 2238,
+          "new_rows": 2238
+        },
+        "messages": {
+          "accepted": 2901,
+          "new_rows": 2901
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 269.4% > 200% (2 cores)"
+      ],
+      "dir": "stress/A/run-2",
+      "k6": {
+        "cpu_pct_max": 269.4,
+        "cpu_pct_mean": 54.871929824561406,
+        "rss_mib_max": 1692
+      }
+    },
+    {
+      "target": "a",
+      "profile": "stress",
+      "repeat": 3,
+      "position_in_pair": 1,
+      "started_epoch": 1793420569,
+      "finished_epoch": 1793421068,
+      "seed_before": {
+        "users": 800,
+        "threads": 1617,
+        "comments": 9041,
+        "reactions": 15035,
+        "messages": 2008
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3798,
+        "comments": 16655,
+        "reactions": 23479,
+        "messages": 5006
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 7614,
+          "new_rows": 7614
+        },
+        "threads": {
+          "accepted": 2181,
+          "new_rows": 2181
+        },
+        "messages": {
+          "accepted": 2998,
+          "new_rows": 2998
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "stress/A/run-3",
+      "k6": {
+        "cpu_pct_max": 195.0,
+        "cpu_pct_mean": 54.00631578947368,
+        "rss_mib_max": 1705
+      }
+    },
+    {
+      "target": "b",
+      "profile": "stress",
+      "repeat": 1,
+      "position_in_pair": 2,
+      "started_epoch": 1793418460,
+      "finished_epoch": 1793418941,
+      "seed_before": {
+        "users": 800,
+        "threads": 1612,
+        "comments": 9038,
+        "reactions": 15034,
+        "messages": 2007
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3445,
+        "comments": 15695,
+        "reactions": 22011,
+        "messages": 4418
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 6657,
+          "new_rows": 6657
+        },
+        "threads": {
+          "accepted": 1833,
+          "new_rows": 1833
+        },
+        "messages": {
+          "accepted": 2411,
+          "new_rows": 2411
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 232.2% > 200% (2 cores)"
+      ],
+      "dir": "stress/B/run-1",
+      "k6": {
+        "cpu_pct_max": 232.20000000000002,
+        "cpu_pct_mean": 89.02494824016563,
+        "rss_mib_max": 1154
+      }
+    },
+    {
+      "target": "b",
+      "profile": "stress",
+      "repeat": 2,
+      "position_in_pair": 1,
+      "started_epoch": 1793419201,
+      "finished_epoch": 1793419679,
+      "seed_before": {
+        "users": 800,
+        "threads": 1610,
+        "comments": 9034,
+        "reactions": 15044,
+        "messages": 2010
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3457,
+        "comments": 15401,
+        "reactions": 21771,
+        "messages": 4405
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 6367,
+          "new_rows": 6367
+        },
+        "threads": {
+          "accepted": 1847,
+          "new_rows": 1847
+        },
+        "messages": {
+          "accepted": 2395,
+          "new_rows": 2395
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 270.8% > 200% (2 cores)"
+      ],
+      "dir": "stress/B/run-2",
+      "k6": {
+        "cpu_pct_max": 270.79999999999995,
+        "cpu_pct_mean": 87.4036231884058,
+        "rss_mib_max": 1156
+      }
+    },
+    {
+      "target": "b",
+      "profile": "stress",
+      "repeat": 3,
+      "position_in_pair": 2,
+      "started_epoch": 1793421340,
+      "finished_epoch": 1793421819,
+      "seed_before": {
+        "users": 800,
+        "threads": 1613,
+        "comments": 9040,
+        "reactions": 15030,
+        "messages": 2013
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 3418,
+        "comments": 15545,
+        "reactions": 21960,
+        "messages": 4409
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 6505,
+          "new_rows": 6505
+        },
+        "threads": {
+          "accepted": 1805,
+          "new_rows": 1805
+        },
+        "messages": {
+          "accepted": 2396,
+          "new_rows": 2396
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "valid": false,
+      "invalid_reasons": [
+        "generator spike: k6 peak CPU 234.8% > 200% (2 cores)"
+      ],
+      "dir": "stress/B/run-3",
+      "k6": {
+        "cpu_pct_max": 234.79999999999998,
+        "cpu_pct_mean": 87.66050724637681,
+        "rss_mib_max": 1167
+      }
+    }
+  ],
+  "summary": {
+    "demo/a": {
+      "runs": 10,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 10,
+            "mean": 27.5656,
+            "sd": 0.19546480217391785,
+            "ci95": 0.13981738165707427,
+            "median": 27.548000000000002,
+            "p25": 27.468249999999998,
+            "p75": 27.7,
+            "min": 27.224,
+            "max": 27.857,
+            "values": [
+              27.56,
+              27.529,
+              27.857,
+              27.664,
+              27.712,
+              27.224,
+              27.536,
+              27.448,
+              27.781,
+              27.345
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 6.8,
+            "sd": 0.4216370213557839,
+            "ci95": 0.3016,
+            "median": 7.0,
+            "p25": 7.0,
+            "p75": 7.0,
+            "min": 6,
+            "max": 7,
+            "values": [
+              6,
+              7,
+              7,
+              6,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 14.8,
+            "sd": 0.4216370213557839,
+            "ci95": 0.3016,
+            "median": 15.0,
+            "p25": 15.0,
+            "p75": 15.0,
+            "min": 14,
+            "max": 15,
+            "values": [
+              14,
+              15,
+              15,
+              14,
+              15,
+              15,
+              15,
+              15,
+              15,
+              15
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 22.5,
+            "sd": 2.6352313834736494,
+            "ci95": 1.8849999999999998,
+            "median": 22.5,
+            "p25": 21.0,
+            "p75": 24.5,
+            "min": 18,
+            "max": 26,
+            "values": [
+              20,
+              21,
+              23,
+              18,
+              26,
+              21,
+              25,
+              23,
+              26,
+              22
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 11577.5,
+            "sd": 82.12625781211648,
+            "ci95": 58.74550407478005,
+            "median": 11570.0,
+            "p25": 11536.5,
+            "p75": 11634.0,
+            "min": 11434,
+            "max": 11700,
+            "values": [
+              11575,
+              11562,
+              11700,
+              11619,
+              11639,
+              11434,
+              11565,
+              11528,
+              11668,
+              11485
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 10,
+            "mean": 18.4216,
+            "sd": 0.20659471865896734,
+            "ci95": 0.1477786911291342,
+            "median": 18.474,
+            "p25": 18.30225,
+            "p75": 18.549,
+            "min": 18.09,
+            "max": 18.757,
+            "values": [
+              18.555,
+              18.09,
+              18.562,
+              18.288,
+              18.345,
+              18.757,
+              18.531,
+              18.14,
+              18.431,
+              18.517
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 4.8,
+            "sd": 0.4216370213557839,
+            "ci95": 0.3016,
+            "median": 5.0,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 4,
+            "max": 5,
+            "values": [
+              4,
+              5,
+              5,
+              4,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 7.2,
+            "sd": 0.6324555320336759,
+            "ci95": 0.45239999999999997,
+            "median": 7.0,
+            "p25": 7.0,
+            "p75": 7.75,
+            "min": 6,
+            "max": 8,
+            "values": [
+              7,
+              7,
+              8,
+              6,
+              8,
+              7,
+              7,
+              8,
+              7,
+              7
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 14.760000000000037,
+            "sd": 2.988570821572724,
+            "ci95": 2.137746246494227,
+            "median": 14.5,
+            "p25": 13.0,
+            "p75": 17.25,
+            "min": 10,
+            "max": 19,
+            "values": [
+              13,
+              13,
+              15,
+              10,
+              18,
+              12,
+              19,
+              15,
+              18.600000000000364,
+              14
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 7737.1,
+            "sd": 86.6890355747997,
+            "ci95": 62.00929189113515,
+            "median": 7759.0,
+            "p25": 7687.0,
+            "p75": 7790.5,
+            "min": 7598,
+            "max": 7878,
+            "values": [
+              7793,
+              7598,
+              7796,
+              7681,
+              7705,
+              7878,
+              7783,
+              7619,
+              7741,
+              7777
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 10,
+            "mean": 9.2289,
+            "sd": 0.14443256788780953,
+            "ci95": 0.10331365669668276,
+            "median": 9.218,
+            "p25": 9.136000000000001,
+            "p75": 9.32475,
+            "min": 8.969,
+            "max": 9.476,
+            "values": [
+              9.117,
+              9.219,
+              9.279,
+              9.362,
+              9.217,
+              8.969,
+              9.476,
+              9.34,
+              9.193,
+              9.117
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 5.0,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 15.25,
+            "sd": 1.7519830034690531,
+            "ci95": 1.2532060684500375,
+            "median": 15.0,
+            "p25": 14.25,
+            "p75": 15.875,
+            "min": 13,
+            "max": 18,
+            "values": [
+              15,
+              18,
+              14,
+              13,
+              15.5,
+              13,
+              15,
+              15,
+              18,
+              16
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 24.002,
+            "sd": 5.1619156650736935,
+            "ci95": 3.692355475760145,
+            "median": 21.65000000000009,
+            "p25": 21.0,
+            "p75": 24.03999999999985,
+            "min": 20,
+            "max": 34,
+            "values": [
+              21,
+              33,
+              21,
+              20,
+              21.300000000000182,
+              22,
+              21,
+              22,
+              34,
+              24.7199999999998
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 3876.1,
+            "sd": 60.70593966912226,
+            "ci95": 43.423396136645046,
+            "median": 3871.5,
+            "p25": 3837.0,
+            "p75": 3916.5,
+            "min": 3767,
+            "max": 3980,
+            "values": [
+              3829,
+              3872,
+              3897,
+              3932,
+              3871,
+              3767,
+              3980,
+              3923,
+              3861,
+              3829
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 10,
+            "mean": 2.7398,
+            "sd": 0.06412799700598794,
+            "ci95": 0.04587121841154864,
+            "median": 2.7355,
+            "p25": 2.69775,
+            "p75": 2.77825,
+            "min": 2.621,
+            "max": 2.826,
+            "values": [
+              2.824,
+              2.776,
+              2.721,
+              2.69,
+              2.69,
+              2.779,
+              2.621,
+              2.726,
+              2.745,
+              2.826
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 26.5,
+            "sd": 0.8498365855987975,
+            "ci95": 0.6078942342217106,
+            "median": 27.0,
+            "p25": 26.25,
+            "p75": 27.0,
+            "min": 25,
+            "max": 27,
+            "values": [
+              25,
+              27,
+              27,
+              25,
+              27,
+              27,
+              27,
+              27,
+              27,
+              26
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 465.385,
+            "sd": 15.8443654548444,
+            "ci95": 11.333588795915437,
+            "median": 468.0,
+            "p25": 464.925,
+            "p75": 471.6875,
+            "min": 433.25,
+            "max": 486,
+            "values": [
+              433.25,
+              470.75,
+              472,
+              443.54999999999995,
+              486,
+              467.70000000000005,
+              468,
+              480.5999999999999,
+              464,
+              468
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 568.419,
+            "sd": 22.191218208010927,
+            "ci95": 15.87353831031015,
+            "median": 572.7050000000003,
+            "p25": 561.0624999999997,
+            "p75": 581.53,
+            "min": 514.71,
+            "max": 592,
+            "values": [
+              557,
+              559.7499999999995,
+              589,
+              514.71,
+              574.71,
+              565,
+              592,
+              578.9199999999996,
+              582.4000000000001,
+              570.7000000000005
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 1150.8,
+            "sd": 26.848546412132713,
+            "ci95": 19.20495873882576,
+            "median": 1149.0,
+            "p25": 1133.25,
+            "p75": 1166.75,
+            "min": 1101,
+            "max": 1187,
+            "values": [
+              1186,
+              1166,
+              1143,
+              1130,
+              1130,
+              1167,
+              1101,
+              1145,
+              1153,
+              1187
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 10,
+            "mean": 11.0164,
+            "sd": 0.10845091055403831,
+            "ci95": 0.07757571789574369,
+            "median": 10.975999999999999,
+            "p25": 10.9325,
+            "p75": 11.075,
+            "min": 10.895,
+            "max": 11.198,
+            "values": [
+              10.943,
+              11.183,
+              10.895,
+              10.926,
+              11.198,
+              10.929,
+              10.969,
+              11.057,
+              10.983,
+              11.081
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 6,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 6.0,
+            "p25": 6.0,
+            "p75": 6.0,
+            "min": 6,
+            "max": 6,
+            "values": [
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6,
+              6
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 16,
+            "sd": 1.9436506316151,
+            "ci95": 1.3903073041597673,
+            "median": 16.0,
+            "p25": 15.0,
+            "p75": 16.75,
+            "min": 13,
+            "max": 19,
+            "values": [
+              15,
+              19,
+              14,
+              13,
+              16,
+              15,
+              16,
+              16,
+              19,
+              17
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 25.097999999999956,
+            "sd": 5.087504954952553,
+            "ci95": 3.639128958552589,
+            "median": 23.0,
+            "p25": 22.0,
+            "p75": 25.49499999999989,
+            "min": 21,
+            "max": 37,
+            "values": [
+              23,
+              31,
+              22,
+              21,
+              23.979999999999563,
+              22,
+              22,
+              23,
+              37,
+              26
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 4626.9,
+            "sd": 45.53984824060987,
+            "ci95": 32.57498163990273,
+            "median": 4610.0,
+            "p25": 4591.5,
+            "p75": 4651.5,
+            "min": 4576,
+            "max": 4703,
+            "values": [
+              4596,
+              4697,
+              4576,
+              4589,
+              4703,
+              4590,
+              4607,
+              4644,
+              4613,
+              4654
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 10,
+            "mean": 10.0698,
+            "sd": 0.10591380142990468,
+            "ci95": 0.07576090545499026,
+            "median": 10.0645,
+            "p25": 10.022,
+            "p75": 10.110000000000001,
+            "min": 9.9,
+            "max": 10.276,
+            "values": [
+              10.079,
+              9.96,
+              10.019,
+              10.031,
+              10.05,
+              10.171,
+              10.114,
+              10.276,
+              9.9,
+              10.098
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 8.9,
+            "sd": 0.31622776601683794,
+            "ci95": 0.22619999999999998,
+            "median": 9.0,
+            "p25": 9.0,
+            "p75": 9.0,
+            "min": 8,
+            "max": 9,
+            "values": [
+              9,
+              9,
+              9,
+              8,
+              9,
+              9,
+              9,
+              9,
+              9,
+              9
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 14.8,
+            "sd": 0.7888106377466154,
+            "ci95": 0.5642419339255104,
+            "median": 15.0,
+            "p25": 15.0,
+            "p75": 15.0,
+            "min": 13,
+            "max": 16,
+            "values": [
+              14,
+              15,
+              15,
+              13,
+              15,
+              15,
+              16,
+              15,
+              15,
+              15
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 21.980000000000018,
+            "sd": 1.8023441526091841,
+            "ci95": 1.2892297613691817,
+            "median": 22.5,
+            "p25": 21.0,
+            "p75": 23.0,
+            "min": 18,
+            "max": 24,
+            "values": [
+              21,
+              21,
+              21,
+              18,
+              23.800000000000182,
+              23,
+              24,
+              22,
+              23,
+              23
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 4229.3,
+            "sd": 44.542239628369735,
+            "ci95": 31.86138501007136,
+            "median": 4227.0,
+            "p25": 4209.25,
+            "p75": 4246.25,
+            "min": 4158,
+            "max": 4316,
+            "values": [
+              4233,
+              4183,
+              4208,
+              4213,
+              4221,
+              4272,
+              4248,
+              4316,
+              4158,
+              4241
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 10,
+            "mean": 1.8397,
+            "sd": 0.07043996655939645,
+            "ci95": 0.050386215721762634,
+            "median": 1.8130000000000002,
+            "p25": 1.79075,
+            "p75": 1.89,
+            "min": 1.769,
+            "max": 1.962,
+            "values": [
+              1.793,
+              1.936,
+              1.826,
+              1.905,
+              1.769,
+              1.8,
+              1.771,
+              1.845,
+              1.79,
+              1.962
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 3.0,
+            "p25": 3.0,
+            "p75": 3.0,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 4.9,
+            "sd": 0.31622776601683794,
+            "ci95": 0.22619999999999998,
+            "median": 5.0,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 4,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              5,
+              4,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 9.023000000000014,
+            "sd": 1.6731543729003557,
+            "ci95": 1.1968193809075844,
+            "median": 8.525000000000034,
+            "p25": 8.0,
+            "p75": 9.377500000000026,
+            "min": 7,
+            "max": 12.340000000000032,
+            "values": [
+              8.480000000000018,
+              8,
+              12.340000000000032,
+              8,
+              9.580000000000041,
+              8,
+              8.57000000000005,
+              7,
+              11.490000000000009,
+              8.769999999999982
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 772.7,
+            "sd": 29.51477972511776,
+            "ci95": 21.112134642427797,
+            "median": 761.5,
+            "p25": 752.25,
+            "p75": 793.75,
+            "min": 743,
+            "max": 824,
+            "values": [
+              753,
+              813,
+              767,
+              800,
+              743,
+              756,
+              744,
+              775,
+              752,
+              824
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 10,
+            "mean": 0.143,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0.143,
+            "p25": 0.143,
+            "p75": 0.143,
+            "min": 0.143,
+            "max": 0.143,
+            "values": [
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0.0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 60,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 60.0,
+            "p25": 60.0,
+            "p75": 60.0,
+            "min": 60,
+            "max": 60,
+            "values": [
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 10,
+            "mean": 3.6793,
+            "sd": 0.0980521969837154,
+            "ci95": 0.07013744313816975,
+            "median": 3.6795,
+            "p25": 3.6412500000000003,
+            "p75": 3.75325,
+            "min": 3.455,
+            "max": 3.802,
+            "values": [
+              3.762,
+              3.683,
+              3.636,
+              3.733,
+              3.676,
+              3.802,
+              3.629,
+              3.76,
+              3.657,
+              3.455
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 7.0,
+            "p25": 7.0,
+            "p75": 7.0,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7,
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 18.9,
+            "sd": 1.9119507199599983,
+            "ci95": 1.3676321289001658,
+            "median": 18.0,
+            "p25": 18.0,
+            "p75": 19.75,
+            "min": 17,
+            "max": 23,
+            "values": [
+              18,
+              23,
+              19,
+              17,
+              20,
+              18,
+              17,
+              18,
+              21,
+              18
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 30.31600000000003,
+            "sd": 6.6870358821296705,
+            "ci95": 4.78328495815004,
+            "median": 28.5,
+            "p25": 25.407500000000027,
+            "p75": 30.75,
+            "min": 25,
+            "max": 44.95000000000027,
+            "values": [
+              25.210000000000036,
+              39,
+              27,
+              25,
+              30,
+              26,
+              25,
+              30,
+              44.95000000000027,
+              31
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 1545.3,
+            "sd": 41.23119099797035,
+            "ci95": 29.492968062912897,
+            "median": 1545.5,
+            "p25": 1529.25,
+            "p75": 1576.25,
+            "min": 1451,
+            "max": 1597,
+            "values": [
+              1580,
+              1547,
+              1527,
+              1568,
+              1544,
+              1597,
+              1524,
+              1579,
+              1536,
+              1451
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 10,
+            "mean": 7.3179,
+            "sd": 0.0866095324494429,
+            "ci95": 0.06195242273260986,
+            "median": 7.3454999999999995,
+            "p25": 7.2635000000000005,
+            "p75": 7.3775,
+            "min": 7.133,
+            "max": 7.419,
+            "values": [
+              7.352,
+              7.348,
+              7.133,
+              7.298,
+              7.25,
+              7.398,
+              7.252,
+              7.386,
+              7.419,
+              7.343
+            ]
+          },
+          "med_ms": {
+            "n": 10,
+            "mean": 2,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 2.0,
+            "p25": 2.0,
+            "p75": 2.0,
+            "min": 2,
+            "max": 2,
+            "values": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          },
+          "p95_ms": {
+            "n": 10,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 3.0,
+            "p25": 3.0,
+            "p75": 3.0,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ]
+          },
+          "p99_ms": {
+            "n": 10,
+            "mean": 5.555999999999995,
+            "sd": 0.9558149518720777,
+            "ci95": 0.6837013233744688,
+            "median": 5.0,
+            "p25": 5.0,
+            "p75": 5.889999999999986,
+            "min": 5,
+            "max": 8,
+            "values": [
+              5,
+              5,
+              6,
+              5,
+              5.559999999999945,
+              5,
+              6,
+              5,
+              8,
+              5
+            ]
+          },
+          "count": {
+            "n": 10,
+            "mean": 3073.5,
+            "sd": 36.30809520999109,
+            "ci95": 25.971442166348787,
+            "median": 3085.0,
+            "p25": 3050.75,
+            "p75": 3098.5,
+            "min": 2996,
+            "max": 3116,
+            "values": [
+              3088,
+              3086,
+              2996,
+              3065,
+              3045,
+              3107,
+              3046,
+              3102,
+              3116,
+              3084
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 10,
+          "mean": 91.8792,
+          "sd": 0.08842046017623967,
+          "ci95": 0.06324779238645492,
+          "median": 91.9,
+          "p25": 91.84625,
+          "p75": 91.9235,
+          "min": 91.724,
+          "max": 91.983,
+          "values": [
+            91.983,
+            91.724,
+            91.929,
+            91.898,
+            91.907,
+            91.829,
+            91.9,
+            91.979,
+            91.9,
+            91.743
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 10,
+          "mean": 17.9,
+          "sd": 1.1005049346146119,
+          "ci95": 0.7871991107718554,
+          "median": 18.0,
+          "p25": 17.25,
+          "p75": 18.0,
+          "min": 16,
+          "max": 20,
+          "values": [
+            17,
+            19,
+            18,
+            16,
+            18,
+            17,
+            18,
+            18,
+            20,
+            18
+          ]
+        },
+        "journey_med_ms": {
+          "n": 10,
+          "mean": 5.9,
+          "sd": 0.31622776601683794,
+          "ci95": 0.22619999999999998,
+          "median": 6.0,
+          "p25": 6.0,
+          "p75": 6.0,
+          "min": 5,
+          "max": 6,
+          "values": [
+            6,
+            6,
+            6,
+            5,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ]
+        },
+        "journey_core_p95_ms": {
+          "n": 10,
+          "mean": 14,
+          "sd": 0.6666666666666666,
+          "ci95": 0.47687147115339157,
+          "median": 14.0,
+          "p25": 14.0,
+          "p75": 14.0,
+          "min": 13,
+          "max": 15,
+          "values": [
+            13,
+            15,
+            14,
+            13,
+            14,
+            14,
+            14,
+            14,
+            15,
+            14
+          ]
+        },
+        "journey_core_med_ms": {
+          "n": 10,
+          "mean": 5.9,
+          "sd": 0.31622776601683794,
+          "ci95": 0.22619999999999998,
+          "median": 6.0,
+          "p25": 6.0,
+          "p75": 6.0,
+          "min": 5,
+          "max": 6,
+          "values": [
+            6,
+            6,
+            6,
+            5,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 10,
+          "mean": 8.967432550000002,
+          "sd": 0.5366872033421061,
+          "ci95": 0.3838962243104243,
+          "median": 8.982640500000002,
+          "p25": 8.8587280625,
+          "p75": 9.17747613750001,
+          "min": 7.913520500000006,
+          "max": 9.904412600000004,
+          "values": [
+            8.415722499999998,
+            9.412446599999999,
+            8.895324499999996,
+            7.913520500000006,
+            9.194408000000013,
+            8.84652925,
+            9.12668055,
+            9.027680250000007,
+            9.904412600000004,
+            8.93760075
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "checks_failed_pct": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "checks_failed": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 10,
+          "mean": 79064.7,
+          "sd": 224.31874643016351,
+          "ci95": 160.45681592615503,
+          "median": 79062.5,
+          "p25": 78940.5,
+          "p75": 79202.25,
+          "min": 78724,
+          "max": 79395,
+          "values": [
+            79395,
+            78724,
+            79334,
+            79047,
+            79032,
+            79078,
+            78910,
+            78752,
+            79217,
+            79158
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 10,
+          "mean": 3.2721999999999998,
+          "sd": 0.011877148928369476,
+          "ci95": 0.008495810223869221,
+          "median": 3.2725,
+          "p25": 3.264,
+          "p75": 3.27675,
+          "min": 3.256,
+          "max": 3.293,
+          "values": [
+            3.277,
+            3.256,
+            3.293,
+            3.276,
+            3.287,
+            3.258,
+            3.267,
+            3.263,
+            3.271,
+            3.274
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 4.83992,
+          "sd": 0.1797882631195805,
+          "ci95": 0.1286038402949211,
+          "median": 4.8718,
+          "p25": 4.81265,
+          "p75": 4.938875,
+          "min": 4.3691,
+          "max": 5.0047,
+          "values": [
+            4.8092,
+            4.9069,
+            4.8191,
+            4.3691,
+            4.8367,
+            4.9394,
+            4.9373,
+            4.9663,
+            5.0047,
+            4.8105
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 4.70571,
+          "sd": 0.1437398610917189,
+          "ci95": 0.10281815853328823,
+          "median": 4.7246500000000005,
+          "p25": 4.6766000000000005,
+          "p75": 4.75905,
+          "min": 4.3691,
+          "max": 4.8926,
+          "values": [
+            4.6167,
+            4.7336,
+            4.6722,
+            4.3691,
+            4.6898,
+            4.7499,
+            4.7621,
+            4.8554,
+            4.8926,
+            4.7157
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 10,
+          "mean": 0.01233,
+          "sd": 0.005355174029748136,
+          "ci95": 0.003830594576772645,
+          "median": 0.0135,
+          "p25": 0.010225000000000001,
+          "p75": 0.01605,
+          "min": 0.0,
+          "max": 0.0177,
+          "values": [
+            0.0177,
+            0.0159,
+            0.0135,
+            0.0,
+            0.0135,
+            0.0174,
+            0.0161,
+            0.0102,
+            0.0103,
+            0.0087
+          ]
+        },
+        "app_avg_cores": {
+          "n": 10,
+          "mean": 0.44468,
+          "sd": 0.01650870477455251,
+          "ci95": 0.011808795499016814,
+          "median": 0.44730000000000003,
+          "p25": 0.44255,
+          "p75": 0.453675,
+          "min": 0.4015,
+          "max": 0.4599,
+          "values": [
+            0.4424,
+            0.4501,
+            0.443,
+            0.4015,
+            0.4445,
+            0.4536,
+            0.4537,
+            0.4568,
+            0.4599,
+            0.4413
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 10,
+          "mean": 376.26,
+          "sd": 14.850005611671223,
+          "ci95": 10.622316034010666,
+          "median": 374.65,
+          "p25": 364.47499999999997,
+          "p75": 388.15,
+          "min": 358.4,
+          "max": 398.2,
+          "values": [
+            364.4,
+            398.2,
+            377.8,
+            371.5,
+            394.6,
+            364.7,
+            389.2,
+            358.4,
+            385.0,
+            358.8
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 10,
+          "mean": 417.65,
+          "sd": 17.590859368812353,
+          "ci95": 12.582868479086953,
+          "median": 413.55,
+          "p25": 402.95,
+          "p75": 431.47499999999997,
+          "min": 398.3,
+          "max": 442.1,
+          "values": [
+            405.8,
+            442.1,
+            420.8,
+            406.3,
+            441.7,
+            402.0,
+            428.7,
+            398.4,
+            432.4,
+            398.3
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 2.89314,
+          "sd": 0.06850408260339916,
+          "ci95": 0.04900146397664462,
+          "median": 2.91265,
+          "p25": 2.89095,
+          "p75": 2.93135,
+          "min": 2.719,
+          "max": 2.9595,
+          "values": [
+            2.8458,
+            2.933,
+            2.9001,
+            2.719,
+            2.9087,
+            2.8879,
+            2.9264,
+            2.9344,
+            2.9595,
+            2.9166
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 10,
+          "mean": 0.00659,
+          "sd": 0.002738795355626265,
+          "ci95": 0.00195908005563836,
+          "median": 0.0072,
+          "p25": 0.005725,
+          "p75": 0.00845,
+          "min": 0.0,
+          "max": 0.0095,
+          "values": [
+            0.0068,
+            0.0051,
+            0.0076,
+            0.0,
+            0.0088,
+            0.0086,
+            0.008,
+            0.0057,
+            0.0058,
+            0.0095
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 10,
+          "mean": 232.9,
+          "sd": 22.635665073801857,
+          "ci95": 16.191454356419005,
+          "median": 235.55,
+          "p25": 220.09999999999997,
+          "p75": 242.34999999999997,
+          "min": 187.3,
+          "max": 264.5,
+          "values": [
+            187.3,
+            261.5,
+            218.2,
+            225.8,
+            242.7,
+            216.6,
+            241.3,
+            234.4,
+            264.5,
+            236.7
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 1.20822,
+          "sd": 0.04474830350601759,
+          "ci95": 0.03200878398679962,
+          "median": 1.2227999999999999,
+          "p25": 1.1863,
+          "p75": 1.2298,
+          "min": 1.1134,
+          "max": 1.2587,
+          "values": [
+            1.1623,
+            1.2286,
+            1.1776,
+            1.1134,
+            1.2587,
+            1.2302,
+            1.2124,
+            1.2176,
+            1.2534,
+            1.228
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 10,
+          "mean": 0.05748,
+          "sd": 0.06726395435562464,
+          "ci95": 0.048114391303741955,
+          "median": 0.02345,
+          "p25": 0.0,
+          "p75": 0.12087499999999998,
+          "min": 0.0,
+          "max": 0.164,
+          "values": [
+            0.1268,
+            0.0,
+            0.0,
+            0.0,
+            0.1031,
+            0.164,
+            0.134,
+            0.0,
+            0.0,
+            0.0469
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 10,
+          "mean": 162.51,
+          "sd": 10.409872450921021,
+          "ci95": 7.446256785284804,
+          "median": 165.7,
+          "p25": 152.8,
+          "p75": 169.875,
+          "min": 146.9,
+          "max": 176.3,
+          "values": [
+            151.3,
+            167.7,
+            150.2,
+            146.9,
+            157.3,
+            176.3,
+            170.6,
+            164.0,
+            167.4,
+            173.4
+          ]
+        },
+        "frontend_mem_avg_mib": {
+          "n": 10,
+          "mean": 72.07,
+          "sd": 1.9431074768696304,
+          "ci95": 1.389918781655963,
+          "median": 72.85,
+          "p25": 71.0,
+          "p75": 73.3,
+          "min": 67.8,
+          "max": 73.6,
+          "values": [
+            67.8,
+            72.9,
+            70.2,
+            70.4,
+            73.6,
+            73.6,
+            73.3,
+            73.3,
+            72.8,
+            72.8
+          ]
+        },
+        "ns_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 9.2514,
+          "sd": 0.3304198642131958,
+          "ci95": 0.23635171011847586,
+          "median": 9.23085,
+          "p25": 9.07765,
+          "p75": 9.448275,
+          "min": 8.6936,
+          "max": 9.852,
+          "values": [
+            8.9802,
+            9.234,
+            9.062,
+            8.6936,
+            9.5862,
+            9.2285,
+            9.2332,
+            9.5197,
+            9.852,
+            9.1246
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 8.34297,
+          "sd": 0.8876821666565125,
+          "ci95": 0.6349654510951818,
+          "median": 8.4544,
+          "p25": 7.55095,
+          "p75": 8.95515,
+          "min": 7.1583,
+          "max": 9.6659,
+          "values": [
+            7.3321,
+            8.9964,
+            8.8314,
+            8.6936,
+            8.2152,
+            7.1583,
+            7.502,
+            9.337,
+            9.6659,
+            7.6978
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 10,
+          "mean": 0.08345999999999999,
+          "sd": 0.07400285580075046,
+          "ci95": 0.05293477607288425,
+          "median": 0.0739,
+          "p25": 0.018125,
+          "p75": 0.146425,
+          "min": 0.0,
+          "max": 0.1901,
+          "values": [
+            0.1516,
+            0.0218,
+            0.0212,
+            0.0,
+            0.126,
+            0.1901,
+            0.1591,
+            0.0168,
+            0.0171,
+            0.1309
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 10,
+          "mean": 1268.9,
+          "sd": 66.8806731757721,
+          "ci95": 47.840227513589426,
+          "median": 1286.8,
+          "p25": 1247.2250000000001,
+          "p75": 1305.25,
+          "min": 1126.4,
+          "max": 1359.4,
+          "values": [
+            1126.4,
+            1322.3,
+            1197.0,
+            1241.9,
+            1284.6,
+            1289.0,
+            1297.3,
+            1307.9,
+            1359.4,
+            1263.2
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 10,
+          "mean": 1.05959,
+          "sd": 0.020826396178354464,
+          "ci95": 0.014897271276592898,
+          "median": 1.0609000000000002,
+          "p25": 1.050575,
+          "p75": 1.072125,
+          "min": 1.0166,
+          "max": 1.0853,
+          "values": [
+            1.0498,
+            1.068,
+            1.0835,
+            1.0166,
+            1.0853,
+            1.0726,
+            1.0538,
+            1.0427,
+            1.0707,
+            1.0529
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 10,
+          "mean": 4.1533,
+          "sd": 0.362519593340216,
+          "ci95": 0.2593128776971171,
+          "median": 4.2615,
+          "p25": 4.2532499999999995,
+          "p75": 4.3340000000000005,
+          "min": 3.41,
+          "max": 4.519,
+          "values": [
+            3.561,
+            4.254,
+            4.519,
+            3.41,
+            4.336,
+            4.257,
+            4.253,
+            4.328,
+            4.349,
+            4.266
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 10,
+          "mean": 135.2,
+          "sd": 15.787195937073678,
+          "ci95": 11.292695027848756,
+          "median": 132.0,
+          "p25": 122.14999999999999,
+          "p75": 144.2,
+          "min": 119.19999999999999,
+          "max": 166.4,
+          "values": [
+            124.6,
+            121.8,
+            149.8,
+            119.19999999999999,
+            145.0,
+            123.2,
+            166.4,
+            120.8,
+            141.79999999999998,
+            139.39999999999998
+          ]
+        },
+        "rss_mib_max": {
+          "n": 10,
+          "mean": 1007.6,
+          "sd": 8.720346578229815,
+          "ci95": 6.237726752591845,
+          "median": 1007.5,
+          "p25": 1003.0,
+          "p75": 1012.5,
+          "min": 995,
+          "max": 1020,
+          "values": [
+            1020,
+            1011,
+            1003,
+            1008,
+            995,
+            1020,
+            1003,
+            1013,
+            1007,
+            996
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 10,
+          "mean": 80,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 80.0,
+          "p25": 80.0,
+          "p75": 80.0,
+          "min": 80,
+          "max": 80,
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80
+          ]
+        },
+        "notifications": {
+          "n": 10,
+          "mean": 35672.7,
+          "sd": 3099.622810386236,
+          "ci95": 2217.1825344142417,
+          "median": 35415.0,
+          "p25": 33171.75,
+          "p75": 38250.25,
+          "min": 31295,
+          "max": 39970,
+          "values": [
+            32501,
+            39970,
+            38873,
+            35407,
+            39869,
+            34167,
+            32840,
+            31295,
+            35423,
+            36382
+          ]
+        },
+        "errors": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "early_close": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 10,
+          "mean": 220,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 220.0,
+          "p25": 220.0,
+          "p75": 220.0,
+          "min": 220,
+          "max": 220,
+          "values": [
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220
+          ]
+        },
+        "probes_received": {
+          "n": 10,
+          "mean": 220,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 220.0,
+          "p25": 220.0,
+          "p75": 220.0,
+          "min": 220,
+          "max": 220,
+          "values": [
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 10,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 10,
+          "mean": 2603.35,
+          "sd": 1083.956181207422,
+          "ci95": 775.3616681972935,
+          "median": 2205.75,
+          "p25": 1770.25,
+          "p75": 3641.625,
+          "min": 1234,
+          "max": 4201.5,
+          "values": [
+            1726,
+            4201.5,
+            3097.5,
+            1903,
+            1953.5,
+            1674.5,
+            3962.5,
+            2458,
+            3823,
+            1234
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 10,
+          "mean": 4137.135,
+          "sd": 832.6269966697773,
+          "ci95": 595.5840912359201,
+          "median": 4411.575000000001,
+          "p25": 3444.5375000000004,
+          "p75": 4851.2875,
+          "min": 2879,
+          "max": 4998.05,
+          "values": [
+            4128.1,
+            4998.05,
+            4869.05,
+            3079,
+            4798,
+            3400.05,
+            4695.05,
+            3578,
+            4947.05,
+            2879
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 10,
+          "mean": 4158.9,
+          "sd": 839.7555795190249,
+          "ci95": 600.6832179217594,
+          "median": 4424.5,
+          "p25": 3461.25,
+          "p75": 4869.75,
+          "min": 2893,
+          "max": 5080,
+          "values": [
+            4148,
+            5080,
+            4890,
+            3101,
+            4809,
+            3421,
+            4701,
+            3582,
+            4964,
+            2893
+          ]
+        }
+      }
+    },
+    "demo/b": {
+      "runs": 9,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 9,
+            "mean": 27.269222222222222,
+            "sd": 0.15924256480113697,
+            "ci95": 0.12240445147714062,
+            "median": 27.226,
+            "p25": 27.193,
+            "p75": 27.421,
+            "min": 27.026,
+            "max": 27.488,
+            "values": [
+              27.026,
+              27.193,
+              27.226,
+              27.421,
+              27.488,
+              27.467,
+              27.262,
+              27.114,
+              27.226
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 5,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 15,
+            "sd": 0.8660254037844386,
+            "ci95": 0.6656848603756385,
+            "median": 15,
+            "p25": 14.0,
+            "p75": 16.0,
+            "min": 14,
+            "max": 16,
+            "values": [
+              16,
+              16,
+              15,
+              14,
+              14,
+              14,
+              16,
+              15,
+              15
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 30,
+            "sd": 12.747548783981962,
+            "ci95": 9.798615831954136,
+            "median": 23,
+            "p25": 21.0,
+            "p75": 42.0,
+            "min": 19,
+            "max": 53,
+            "values": [
+              42,
+              44,
+              21,
+              23,
+              19,
+              20,
+              53,
+              22,
+              26
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 11453.111111111111,
+            "sd": 66.8570199089902,
+            "ci95": 51.39076263671046,
+            "median": 11435,
+            "p25": 11421.0,
+            "p75": 11517.0,
+            "min": 11351,
+            "max": 11545,
+            "values": [
+              11351,
+              11421,
+              11435,
+              11517,
+              11545,
+              11536,
+              11450,
+              11388,
+              11435
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 9,
+            "mean": 18.053333333333335,
+            "sd": 0.2714645464881189,
+            "ci95": 0.20866574806720073,
+            "median": 18.138,
+            "p25": 17.752,
+            "p75": 18.238,
+            "min": 17.667,
+            "max": 18.443,
+            "values": [
+              18.143,
+              17.726,
+              18.443,
+              17.752,
+              18.24,
+              18.133,
+              17.667,
+              18.138,
+              18.238
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 3,
+            "p25": 3.0,
+            "p75": 3.0,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 6.333333333333333,
+            "sd": 0.5,
+            "ci95": 0.38433333333333336,
+            "median": 6,
+            "p25": 6.0,
+            "p75": 7.0,
+            "min": 6,
+            "max": 7,
+            "values": [
+              7,
+              7,
+              6,
+              6,
+              6,
+              6,
+              7,
+              6,
+              6
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 20.674444444444312,
+            "sd": 13.378905141220388,
+            "ci95": 10.283918418551405,
+            "median": 14.449999999999818,
+            "p25": 11.0,
+            "p75": 30.80999999999949,
+            "min": 10,
+            "max": 47.80999999999949,
+            "values": [
+              30.80999999999949,
+              33,
+              11,
+              14.449999999999818,
+              10,
+              10,
+              47.80999999999949,
+              13,
+              16
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 7582.444444444444,
+            "sd": 114.01985694508556,
+            "ci95": 87.6432633717891,
+            "median": 7618,
+            "p25": 7456.0,
+            "p75": 7660.0,
+            "min": 7420,
+            "max": 7746,
+            "values": [
+              7620,
+              7445,
+              7746,
+              7456,
+              7661,
+              7616,
+              7420,
+              7618,
+              7660
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 9,
+            "mean": 9.124444444444444,
+            "sd": 0.149511798122348,
+            "ci95": 0.11492473549004482,
+            "median": 9.121,
+            "p25": 9.045,
+            "p75": 9.229,
+            "min": 8.895,
+            "max": 9.35,
+            "values": [
+              9.14,
+              8.974,
+              9.229,
+              8.895,
+              9.121,
+              9.35,
+              9.302,
+              9.045,
+              9.064
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 4.888888888888889,
+            "sd": 0.3333333333333333,
+            "ci95": 0.2562222222222222,
+            "median": 5,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 4,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              5,
+              5,
+              5,
+              4,
+              5,
+              5,
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 15.88888888888889,
+            "sd": 3.3333333333333335,
+            "ci95": 2.5622222222222226,
+            "median": 16,
+            "p25": 14.0,
+            "p75": 18.0,
+            "min": 12,
+            "max": 22,
+            "values": [
+              16,
+              19,
+              14,
+              14,
+              12,
+              12,
+              16,
+              22,
+              18
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 38.987777777777765,
+            "sd": 19.66248825668933,
+            "ci95": 15.113899306641864,
+            "median": 35,
+            "p25": 23.0,
+            "p75": 56.61999999999989,
+            "min": 18.73999999999978,
+            "max": 72.88000000000011,
+            "values": [
+              56.61999999999989,
+              60,
+              23,
+              28.65000000000009,
+              19,
+              18.73999999999978,
+              72.88000000000011,
+              37,
+              35
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 3832.3333333333335,
+            "sd": 62.78335766745834,
+            "ci95": 48.259474260386305,
+            "median": 3831,
+            "p25": 3799.0,
+            "p75": 3876.0,
+            "min": 3736,
+            "max": 3927,
+            "values": [
+              3839,
+              3769,
+              3876,
+              3736,
+              3831,
+              3927,
+              3907,
+              3799,
+              3807
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 9,
+            "mean": 2.7624444444444443,
+            "sd": 0.10728363238527007,
+            "ci95": 0.08246535209347759,
+            "median": 2.702,
+            "p25": 2.7,
+            "p75": 2.805,
+            "min": 2.683,
+            "max": 2.988,
+            "values": [
+              2.7,
+              2.881,
+              2.805,
+              2.988,
+              2.71,
+              2.683,
+              2.702,
+              2.693,
+              2.7
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 167.88888888888889,
+            "sd": 0.7817359599705715,
+            "ci95": 0.600894374564046,
+            "median": 168,
+            "p25": 167.0,
+            "p75": 168.0,
+            "min": 167,
+            "max": 169,
+            "values": [
+              168,
+              168,
+              168,
+              167,
+              167,
+              167,
+              168,
+              169,
+              169
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 614.0999999999999,
+            "sd": 16.262994804155916,
+            "ci95": 12.500822006127848,
+            "median": 613.3499999999999,
+            "p25": 602.1499999999999,
+            "p75": 626.6000000000004,
+            "min": 593.1999999999998,
+            "max": 642.6499999999999,
+            "values": [
+              614.3499999999999,
+              642.6499999999999,
+              602.1499999999999,
+              593.1999999999998,
+              599.2999999999997,
+              626.6000000000004,
+              630.3,
+              605,
+              613.3499999999999
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 735.1588888888889,
+            "sd": 4.3117758651293485,
+            "ci95": 3.3143183816627597,
+            "median": 733.46,
+            "p25": 732.0,
+            "p75": 738.9100000000001,
+            "min": 730.7,
+            "max": 742.6400000000003,
+            "values": [
+              740,
+              738.9100000000001,
+              733.46,
+              732.46,
+              731.2599999999998,
+              735,
+              742.6400000000003,
+              730.7,
+              732
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 1160.2222222222222,
+            "sd": 45.054904776777015,
+            "ci95": 34.632203471749264,
+            "median": 1135,
+            "p25": 1134.0,
+            "p75": 1178.0,
+            "min": 1127,
+            "max": 1255,
+            "values": [
+              1134,
+              1210,
+              1178,
+              1255,
+              1138,
+              1127,
+              1135,
+              1131,
+              1134
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 9,
+            "mean": 10.948444444444444,
+            "sd": 0.12090607006175356,
+            "ci95": 0.09293646585413458,
+            "median": 10.943,
+            "p25": 10.843,
+            "p75": 11.04,
+            "min": 10.781,
+            "max": 11.152,
+            "values": [
+              10.943,
+              10.781,
+              10.829,
+              11.062,
+              11.04,
+              10.843,
+              11.152,
+              10.962,
+              10.924
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 4,
+            "p25": 4.0,
+            "p75": 4.0,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4,
+              4,
+              4,
+              4,
+              4,
+              4,
+              4,
+              4,
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 14.88888888888889,
+            "sd": 3.515837184954831,
+            "ci95": 2.702506849501947,
+            "median": 15,
+            "p25": 13.0,
+            "p75": 18.0,
+            "min": 10,
+            "max": 20,
+            "values": [
+              15,
+              19,
+              13,
+              13,
+              11,
+              10,
+              15,
+              20,
+              18
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 37.32111111111115,
+            "sd": 19.143569706591077,
+            "ci95": 14.715023914466341,
+            "median": 35,
+            "p25": 20.0,
+            "p75": 52.0,
+            "min": 17,
+            "max": 66.34000000000015,
+            "values": [
+              61,
+              52,
+              20,
+              23.550000000000182,
+              18,
+              17,
+              66.34000000000015,
+              35,
+              43
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 4598.333333333333,
+            "sd": 50.86255990411808,
+            "ci95": 39.096354379632096,
+            "median": 4596,
+            "p25": 4554.0,
+            "p75": 4637.0,
+            "min": 4528,
+            "max": 4684,
+            "values": [
+              4596,
+              4528,
+              4548,
+              4646,
+              4637,
+              4554,
+              4684,
+              4604,
+              4588
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 9,
+            "mean": 9.955111111111112,
+            "sd": 0.1623841467357914,
+            "ci95": 0.12481928079091166,
+            "median": 9.971,
+            "p25": 9.852,
+            "p75": 10.026,
+            "min": 9.657,
+            "max": 10.171,
+            "values": [
+              9.971,
+              10.157,
+              10.026,
+              9.938,
+              9.826,
+              9.998,
+              9.657,
+              10.171,
+              9.852
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 16.333333333333332,
+            "sd": 7.035623639735144,
+            "ci95": 5.408049371076415,
+            "median": 14,
+            "p25": 11.0,
+            "p75": 18.0,
+            "min": 10,
+            "max": 29,
+            "values": [
+              27,
+              29,
+              11,
+              18,
+              11,
+              10,
+              14,
+              13,
+              14
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 54.87777777777774,
+            "sd": 18.572663229715932,
+            "ci95": 14.276187135908314,
+            "median": 50,
+            "p25": 38.0,
+            "p75": 67.25,
+            "min": 35,
+            "max": 85,
+            "values": [
+              79.64999999999964,
+              85,
+              38,
+              50,
+              37,
+              35,
+              67.25,
+              47,
+              55
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 146.4744444444444,
+            "sd": 123.17667576606271,
+            "ci95": 94.68180477218021,
+            "median": 96,
+            "p25": 53.899999999999636,
+            "p75": 187.65000000000055,
+            "min": 49,
+            "max": 425.7999999999993,
+            "values": [
+              187.65000000000055,
+              238,
+              53.899999999999636,
+              96,
+              51,
+              49,
+              425.7999999999993,
+              90.28999999999996,
+              126.63000000000011
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 4181.222222222223,
+            "sd": 68.2069970343545,
+            "ci95": 52.4284450537405,
+            "median": 4188,
+            "p25": 4138.0,
+            "p75": 4211.0,
+            "min": 4056,
+            "max": 4272,
+            "values": [
+              4188,
+              4266,
+              4211,
+              4174,
+              4127,
+              4199,
+              4056,
+              4272,
+              4138
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 9,
+            "mean": 1.8134444444444444,
+            "sd": 0.07266379963763094,
+            "ci95": 0.05585424065479231,
+            "median": 1.831,
+            "p25": 1.762,
+            "p75": 1.862,
+            "min": 1.695,
+            "max": 1.914,
+            "values": [
+              1.831,
+              1.814,
+              1.724,
+              1.843,
+              1.862,
+              1.762,
+              1.876,
+              1.914,
+              1.695
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 3,
+            "p25": 3.0,
+            "p75": 3.0,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 6.333333333333333,
+            "sd": 0.7071067811865476,
+            "ci95": 0.5435294124720595,
+            "median": 6,
+            "p25": 6.0,
+            "p75": 7.0,
+            "min": 5,
+            "max": 7,
+            "values": [
+              7,
+              7,
+              6,
+              6,
+              5,
+              6,
+              7,
+              6,
+              7
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 21.452222222222176,
+            "sd": 14.267302458574393,
+            "ci95": 10.966799823157517,
+            "median": 11,
+            "p25": 9.769999999999982,
+            "p75": 32.559999999999945,
+            "min": 9,
+            "max": 43.389999999999986,
+            "values": [
+              36.59999999999968,
+              43.389999999999986,
+              9.769999999999982,
+              11,
+              9,
+              9,
+              32.559999999999945,
+              9.970000000000027,
+              31.779999999999973
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 761.6666666666666,
+            "sd": 30.53686296920494,
+            "ci95": 23.472668668995528,
+            "median": 769,
+            "p25": 740.0,
+            "p75": 782.0,
+            "min": 712,
+            "max": 804,
+            "values": [
+              769,
+              762,
+              724,
+              774,
+              782,
+              740,
+              788,
+              804,
+              712
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 9,
+            "mean": 0.143,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0.143,
+            "p25": 0.143,
+            "p75": 0.143,
+            "min": 0.143,
+            "max": 0.143,
+            "values": [
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143,
+              0.143
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 0,
+            "p25": 0.0,
+            "p75": 0.0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 60,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 60,
+            "p25": 60.0,
+            "p75": 60.0,
+            "min": 60,
+            "max": 60,
+            "values": [
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60,
+              60
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 9,
+            "mean": 3.637,
+            "sd": 0.1065680533743579,
+            "ci95": 0.08191531036042311,
+            "median": 3.631,
+            "p25": 3.557,
+            "p75": 3.71,
+            "min": 3.519,
+            "max": 3.802,
+            "values": [
+              3.557,
+              3.524,
+              3.652,
+              3.562,
+              3.71,
+              3.776,
+              3.631,
+              3.519,
+              3.802
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 5,
+            "p25": 5.0,
+            "p75": 5.0,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5,
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 16.666666666666668,
+            "sd": 3.3166247903554,
+            "ci95": 2.5493789221865173,
+            "median": 16,
+            "p25": 14.0,
+            "p75": 18.0,
+            "min": 13,
+            "max": 23,
+            "values": [
+              17,
+              23,
+              14,
+              16,
+              13,
+              13,
+              16,
+              20,
+              18
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 43.923333333333304,
+            "sd": 26.90216626965195,
+            "ci95": 20.6787984726058,
+            "median": 37,
+            "p25": 22.670000000000073,
+            "p75": 70.20999999999981,
+            "min": 20,
+            "max": 90.07999999999993,
+            "values": [
+              70.20999999999981,
+              73.63000000000011,
+              22.670000000000073,
+              23.249999999999773,
+              20.430000000000064,
+              20,
+              90.07999999999993,
+              37,
+              38.039999999999964
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 1527.5555555555557,
+            "sd": 44.79428286933253,
+            "ci95": 34.4318720988936,
+            "median": 1525,
+            "p25": 1494.0,
+            "p75": 1558.0,
+            "min": 1478,
+            "max": 1597,
+            "values": [
+              1494,
+              1480,
+              1534,
+              1496,
+              1558,
+              1586,
+              1525,
+              1478,
+              1597
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 9,
+            "mean": 7.322333333333333,
+            "sd": 0.11048642450545684,
+            "ci95": 0.08492723163652782,
+            "median": 7.312,
+            "p25": 7.281,
+            "p75": 7.412,
+            "min": 7.143,
+            "max": 7.469,
+            "values": [
+              7.312,
+              7.412,
+              7.186,
+              7.438,
+              7.143,
+              7.298,
+              7.281,
+              7.362,
+              7.469
+            ]
+          },
+          "med_ms": {
+            "n": 9,
+            "mean": 2,
+            "sd": 0.0,
+            "ci95": 0.0,
+            "median": 2,
+            "p25": 2.0,
+            "p75": 2.0,
+            "min": 2,
+            "max": 2,
+            "values": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          },
+          "p95_ms": {
+            "n": 9,
+            "mean": 4.333333333333333,
+            "sd": 0.5,
+            "ci95": 0.38433333333333336,
+            "median": 4,
+            "p25": 4.0,
+            "p75": 5.0,
+            "min": 4,
+            "max": 5,
+            "values": [
+              5,
+              5,
+              4,
+              4,
+              4,
+              4,
+              5,
+              4,
+              4
+            ]
+          },
+          "p99_ms": {
+            "n": 9,
+            "mean": 14.574444444444403,
+            "sd": 10.08927538417779,
+            "ci95": 7.755289678637996,
+            "median": 9,
+            "p25": 8.0,
+            "p75": 21.0,
+            "min": 6.360000000000127,
+            "max": 32.28999999999951,
+            "values": [
+              21,
+              28.88000000000011,
+              8,
+              9,
+              7,
+              6.360000000000127,
+              32.28999999999951,
+              9,
+              9.639999999999873
+            ]
+          },
+          "count": {
+            "n": 9,
+            "mean": 3075.3333333333335,
+            "sd": 46.44351407893249,
+            "ci95": 35.69958115533944,
+            "median": 3071,
+            "p25": 3058.0,
+            "p75": 3113.0,
+            "min": 3000,
+            "max": 3137,
+            "values": [
+              3071,
+              3113,
+              3018,
+              3124,
+              3000,
+              3065,
+              3058,
+              3092,
+              3137
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 9,
+          "mean": 90.88622222222223,
+          "sd": 0.29187659112104936,
+          "ci95": 0.2243558063750466,
+          "median": 90.919,
+          "p25": 90.624,
+          "p75": 91.119,
+          "min": 90.462,
+          "max": 91.31,
+          "values": [
+            90.624,
+            90.462,
+            91.119,
+            90.9,
+            91.14,
+            91.31,
+            90.531,
+            90.919,
+            90.971
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 9,
+          "mean": 37.44444444444444,
+          "sd": 9.234596784796713,
+          "ci95": 7.098326728580407,
+          "median": 37,
+          "p25": 31.0,
+          "p75": 44.0,
+          "min": 22,
+          "max": 53,
+          "values": [
+            46,
+            53,
+            31,
+            37,
+            31,
+            22,
+            44,
+            36,
+            37
+          ]
+        },
+        "journey_med_ms": {
+          "n": 9,
+          "mean": 4.888888888888889,
+          "sd": 0.3333333333333333,
+          "ci95": 0.2562222222222222,
+          "median": 5,
+          "p25": 5.0,
+          "p75": 5.0,
+          "min": 4,
+          "max": 5,
+          "values": [
+            5,
+            5,
+            5,
+            5,
+            4,
+            5,
+            5,
+            5,
+            5
+          ]
+        },
+        "journey_core_p95_ms": {
+          "n": 9,
+          "mean": 25.555555555555557,
+          "sd": 7.501851623284599,
+          "ci95": 5.7664232810980955,
+          "median": 28,
+          "p25": 17.0,
+          "p75": 30.0,
+          "min": 15,
+          "max": 34,
+          "values": [
+            33,
+            34,
+            17,
+            30,
+            16,
+            15,
+            30,
+            27,
+            28
+          ]
+        },
+        "journey_core_med_ms": {
+          "n": 9,
+          "mean": 4.666666666666667,
+          "sd": 0.5,
+          "ci95": 0.38433333333333336,
+          "median": 5,
+          "p25": 4.0,
+          "p75": 5.0,
+          "min": 4,
+          "max": 5,
+          "values": [
+            5,
+            5,
+            5,
+            4,
+            4,
+            4,
+            5,
+            5,
+            5
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 9,
+          "mean": 22.648250349999966,
+          "sd": 7.386856270602077,
+          "ci95": 5.678030186669464,
+          "median": 24.05011469999996,
+          "p25": 14.71759075,
+          "p75": 27.1190208999999,
+          "min": 12.585950599999984,
+          "max": 32.59760615,
+          "values": [
+            30.9990381,
+            32.59760615,
+            14.71759075,
+            24.05011469999996,
+            13.835817,
+            12.585950599999984,
+            27.1190208999999,
+            24.50180334999992,
+            23.427311599999925
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "checks_failed_pct": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "checks_failed": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 9,
+          "mean": 44707,
+          "sd": 149.58943812983588,
+          "ci95": 114.98441477580052,
+          "median": 44716,
+          "p25": 44573.0,
+          "p75": 44789.0,
+          "min": 44492,
+          "max": 44972,
+          "values": [
+            44563,
+            44678,
+            44789,
+            44972,
+            44755,
+            44825,
+            44492,
+            44573,
+            44716
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 9,
+          "mean": 6.418666666666667,
+          "sd": 0.017649362594722932,
+          "ci95": 0.013566476714477027,
+          "median": 6.417,
+          "p25": 6.414,
+          "p75": 6.422,
+          "min": 6.387,
+          "max": 6.453,
+          "values": [
+            6.417,
+            6.453,
+            6.422,
+            6.431,
+            6.42,
+            6.416,
+            6.387,
+            6.408,
+            6.414
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 2.5161555555555557,
+          "sd": 0.04932613686249689,
+          "ci95": 0.03791535720163928,
+          "median": 2.5152,
+          "p25": 2.4883,
+          "p75": 2.5509,
+          "min": 2.4386,
+          "max": 2.5987,
+          "values": [
+            2.4883,
+            2.5534,
+            2.5987,
+            2.4608,
+            2.4386,
+            2.5291,
+            2.5509,
+            2.5104,
+            2.5152
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 2.487788888888889,
+          "sd": 0.05046210074017053,
+          "ci95": 0.038788534768944415,
+          "median": 2.4767,
+          "p25": 2.4684,
+          "p75": 2.5178,
+          "min": 2.3991,
+          "max": 2.5668,
+          "values": [
+            2.4684,
+            2.5335,
+            2.5668,
+            2.4432,
+            2.3991,
+            2.5116,
+            2.5178,
+            2.473,
+            2.4767
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 9,
+          "mean": 0.002577777777777778,
+          "sd": 0.0008642594774976115,
+          "ci95": 0.0006643274517031641,
+          "median": 0.0029,
+          "p25": 0.0018,
+          "p75": 0.0034,
+          "min": 0.0016,
+          "max": 0.0036,
+          "values": [
+            0.0018,
+            0.0018,
+            0.0029,
+            0.0016,
+            0.0036,
+            0.0016,
+            0.003,
+            0.0034,
+            0.0035
+          ]
+        },
+        "app_avg_cores": {
+          "n": 9,
+          "mean": 0.22867777777777779,
+          "sd": 0.004430512887290189,
+          "ci95": 0.0034055875726970593,
+          "median": 0.2288,
+          "p25": 0.2255,
+          "p75": 0.2309,
+          "min": 0.2223,
+          "max": 0.2368,
+          "values": [
+            0.2255,
+            0.231,
+            0.2368,
+            0.2237,
+            0.2223,
+            0.2309,
+            0.2309,
+            0.2282,
+            0.2288
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 9,
+          "mean": 64.88888888888889,
+          "sd": 2.61507382517418,
+          "ci95": 2.0101200802838863,
+          "median": 64.8,
+          "p25": 63.5,
+          "p75": 65.9,
+          "min": 60.3,
+          "max": 68.9,
+          "values": [
+            64.8,
+            68.1,
+            62.9,
+            64.4,
+            65.2,
+            60.3,
+            68.9,
+            65.9,
+            63.5
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 9,
+          "mean": 74.4888888888889,
+          "sd": 5.4494138318823895,
+          "ci95": 4.188782765440263,
+          "median": 73.1,
+          "p25": 71.3,
+          "p75": 76.8,
+          "min": 67.2,
+          "max": 85.2,
+          "values": [
+            76.8,
+            80.1,
+            70.7,
+            71.3,
+            72.0,
+            67.2,
+            85.2,
+            74.0,
+            73.1
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 2.697166666666667,
+          "sd": 0.4324146476473709,
+          "ci95": 0.3323827258249458,
+          "median": 2.7612,
+          "p25": 2.3431,
+          "p75": 2.9561,
+          "min": 1.9587,
+          "max": 3.3116,
+          "values": [
+            3.121,
+            3.3116,
+            2.3431,
+            2.9561,
+            2.2704,
+            1.9587,
+            2.7428,
+            2.7612,
+            2.8096
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 9,
+          "mean": 0.006511111111111111,
+          "sd": 0.004241298281318011,
+          "ci95": 0.0032601446122397775,
+          "median": 0.0081,
+          "p25": 0.0045,
+          "p75": 0.0093,
+          "min": 0.0,
+          "max": 0.0117,
+          "values": [
+            0.0061,
+            0.0099,
+            0.0081,
+            0.0093,
+            0.0,
+            0.0117,
+            0.009,
+            0.0045,
+            0.0
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 9,
+          "mean": 221.17777777777778,
+          "sd": 12.255282307823201,
+          "ci95": 9.420227000613433,
+          "median": 223.5,
+          "p25": 214.5,
+          "p75": 226.3,
+          "min": 202.4,
+          "max": 243.7,
+          "values": [
+            223.5,
+            243.7,
+            214.5,
+            226.3,
+            221.6,
+            202.4,
+            223.7,
+            206.7,
+            228.2
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 0.12076666666666666,
+          "sd": 0.0013874436925511602,
+          "ci95": 0.0010664817183409917,
+          "median": 0.1213,
+          "p25": 0.1203,
+          "p75": 0.1215,
+          "min": 0.1176,
+          "max": 0.122,
+          "values": [
+            0.1213,
+            0.1215,
+            0.1203,
+            0.121,
+            0.1176,
+            0.1219,
+            0.1215,
+            0.122,
+            0.1198
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 9,
+          "mean": 0.008177777777777777,
+          "sd": 0.003292710804860403,
+          "ci95": 0.0025309970386693634,
+          "median": 0.0095,
+          "p25": 0.0093,
+          "p75": 0.0097,
+          "min": 0.0,
+          "max": 0.01,
+          "values": [
+            0.0093,
+            0.0097,
+            0.0,
+            0.01,
+            0.0093,
+            0.0097,
+            0.01,
+            0.0061,
+            0.0095
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 9,
+          "mean": 5.477777777777778,
+          "sd": 0.08333333333333304,
+          "ci95": 0.06405555555555532,
+          "median": 5.5,
+          "p25": 5.4,
+          "p75": 5.5,
+          "min": 5.4,
+          "max": 5.6,
+          "values": [
+            5.4,
+            5.5,
+            5.5,
+            5.6,
+            5.6,
+            5.4,
+            5.5,
+            5.4,
+            5.4
+          ]
+        },
+        "frontend_mem_avg_mib": null,
+        "ns_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 5.647211111111111,
+          "sd": 0.44244076282719597,
+          "ci95": 0.34008946635983794,
+          "median": 5.7142,
+          "p25": 5.3849,
+          "p75": 5.8828,
+          "min": 4.9119,
+          "max": 6.3288,
+          "values": [
+            6.0203,
+            6.3288,
+            5.3849,
+            5.8828,
+            5.12,
+            4.9119,
+            5.711,
+            5.7142,
+            5.751
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 5.434288888888889,
+          "sd": 0.4441245980703065,
+          "ci95": 0.34138377438337564,
+          "median": 5.5602,
+          "p25": 5.2609,
+          "p75": 5.6496,
+          "min": 4.6556,
+          "max": 6.089,
+          "values": [
+            5.8261,
+            6.089,
+            5.2609,
+            5.6496,
+            4.9258,
+            4.6556,
+            5.3366,
+            5.5602,
+            5.6048
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 9,
+          "mean": 0.019344444444444445,
+          "sd": 0.006826988924685449,
+          "ci95": 0.005247678820108215,
+          "median": 0.0177,
+          "p25": 0.014,
+          "p75": 0.0217,
+          "min": 0.0113,
+          "max": 0.0339,
+          "values": [
+            0.0176,
+            0.0217,
+            0.0113,
+            0.0212,
+            0.0177,
+            0.0234,
+            0.0339,
+            0.014,
+            0.0133
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 9,
+          "mean": 657.3111111111111,
+          "sd": 37.129181395650384,
+          "ci95": 28.539964099456597,
+          "median": 665.1,
+          "p25": 632.6,
+          "p75": 682.9,
+          "min": 590.2,
+          "max": 707.2,
+          "values": [
+            590.2,
+            707.2,
+            632.6,
+            643.4,
+            626.0,
+            665.1,
+            682.9,
+            677.5,
+            690.9
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 9,
+          "mean": 1.3220444444444444,
+          "sd": 0.02013567177369001,
+          "ci95": 0.015477619703376388,
+          "median": 1.3276,
+          "p25": 1.3133,
+          "p75": 1.3365,
+          "min": 1.2837,
+          "max": 1.3457,
+          "values": [
+            1.3457,
+            1.3276,
+            1.3299,
+            1.3198,
+            1.3006,
+            1.3133,
+            1.3413,
+            1.2837,
+            1.3365
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 9,
+          "mean": 3.898111111111111,
+          "sd": 0.14789983472306903,
+          "ci95": 0.11368567295713239,
+          "median": 3.949,
+          "p25": 3.764,
+          "p75": 3.994,
+          "min": 3.649,
+          "max": 4.088,
+          "values": [
+            3.752,
+            4.088,
+            4.048,
+            3.764,
+            3.649,
+            3.885,
+            3.994,
+            3.949,
+            3.954
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 9,
+          "mean": 151.9925925925926,
+          "sd": 22.384603946176057,
+          "ci95": 17.20629889996066,
+          "median": 146.0,
+          "p25": 139.0,
+          "p75": 152.2,
+          "min": 130.39999999999998,
+          "max": 191.6,
+          "values": [
+            152.2,
+            143.6,
+            187.33333333333334,
+            146.0,
+            146.2,
+            139.0,
+            191.6,
+            130.39999999999998,
+            131.6
+          ]
+        },
+        "rss_mib_max": {
+          "n": 9,
+          "mean": 711.7777777777778,
+          "sd": 4.790035954399971,
+          "ci95": 3.681940970282111,
+          "median": 711,
+          "p25": 709.0,
+          "p75": 714.0,
+          "min": 704,
+          "max": 719,
+          "values": [
+            713,
+            708,
+            710,
+            719,
+            709,
+            711,
+            718,
+            714,
+            704
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 9,
+          "mean": 80,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 80,
+          "p25": 80.0,
+          "p75": 80.0,
+          "min": 80,
+          "max": 80,
+          "values": [
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80,
+            80
+          ]
+        },
+        "notifications": {
+          "n": 9,
+          "mean": 104246.33333333333,
+          "sd": 940.8791101942905,
+          "ci95": 723.2224093693447,
+          "median": 103980,
+          "p25": 103772.0,
+          "p75": 105240.0,
+          "min": 102991,
+          "max": 105480,
+          "values": [
+            103854,
+            103980,
+            105480,
+            104212,
+            103772,
+            105468,
+            105240,
+            102991,
+            103220
+          ]
+        },
+        "errors": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "early_close": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 9,
+          "mean": 220,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 220,
+          "p25": 220.0,
+          "p75": 220.0,
+          "min": 220,
+          "max": 220,
+          "values": [
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220
+          ]
+        },
+        "probes_received": {
+          "n": 9,
+          "mean": 220,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 220,
+          "p25": 220.0,
+          "p75": 220.0,
+          "min": 220,
+          "max": 220,
+          "values": [
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220,
+            220
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 9,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": 0.0,
+          "median": 0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 9,
+          "mean": 18.333333333333332,
+          "sd": 3.5443617196894563,
+          "ci95": 2.724432708534629,
+          "median": 18,
+          "p25": 17.0,
+          "p75": 21.0,
+          "min": 12,
+          "max": 23,
+          "values": [
+            17,
+            15,
+            21,
+            23,
+            17.5,
+            12,
+            19,
+            18,
+            22.5
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 9,
+          "mean": 51.91666666666666,
+          "sd": 9.106007632327128,
+          "ci95": 6.999484533382119,
+          "median": 47.04999999999998,
+          "p25": 46.0,
+          "p75": 61.0,
+          "min": 41,
+          "max": 64.09999999999997,
+          "values": [
+            41,
+            46.04999999999998,
+            56,
+            61,
+            43,
+            46,
+            63.04999999999998,
+            47.04999999999998,
+            64.09999999999997
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 9,
+          "mean": 79.88888888888889,
+          "sd": 34.1776405141009,
+          "ci95": 26.27121300850556,
+          "median": 71,
+          "p25": 66.0,
+          "p75": 78.0,
+          "min": 47,
+          "max": 166,
+          "values": [
+            47,
+            66,
+            75,
+            87,
+            61,
+            71,
+            78,
+            68,
+            166
+          ]
+        }
+      }
+    },
+    "stress/a": {
+      "runs": 1,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 1,
+            "mean": 56.133,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 56.133,
+            "p25": 56.133,
+            "p75": 56.133,
+            "min": 56.133,
+            "max": 56.133,
+            "values": [
+              56.133
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 9,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 9,
+            "p25": 9,
+            "p75": 9,
+            "min": 9,
+            "max": 9,
+            "values": [
+              9
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 82,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 82,
+            "p25": 82,
+            "p75": 82,
+            "min": 82,
+            "max": 82,
+            "values": [
+              82
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 226.09000000000015,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 226.09000000000015,
+            "p25": 226.09000000000015,
+            "p75": 226.09000000000015,
+            "min": 226.09000000000015,
+            "max": 226.09000000000015,
+            "values": [
+              226.09000000000015
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 21892,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 21892,
+            "p25": 21892,
+            "p75": 21892,
+            "min": 21892,
+            "max": 21892,
+            "values": [
+              21892
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 1,
+            "mean": 37.605,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 37.605,
+            "p25": 37.605,
+            "p75": 37.605,
+            "min": 37.605,
+            "max": 37.605,
+            "values": [
+              37.605
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 5,
+            "p25": 5,
+            "p75": 5,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 62,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 62,
+            "p25": 62,
+            "p75": 62,
+            "min": 62,
+            "max": 62,
+            "values": [
+              62
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 163,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 163,
+            "p25": 163,
+            "p75": 163,
+            "min": 163,
+            "max": 163,
+            "values": [
+              163
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 14666,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 14666,
+            "p25": 14666,
+            "p75": 14666,
+            "min": 14666,
+            "max": 14666,
+            "values": [
+              14666
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 1,
+            "mean": 18.497,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 18.497,
+            "p25": 18.497,
+            "p75": 18.497,
+            "min": 18.497,
+            "max": 18.497,
+            "values": [
+              18.497
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 6,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 6,
+            "p25": 6,
+            "p75": 6,
+            "min": 6,
+            "max": 6,
+            "values": [
+              6
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 79,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 79,
+            "p25": 79,
+            "p75": 79,
+            "min": 79,
+            "max": 79,
+            "values": [
+              79
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 193,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 193,
+            "p25": 193,
+            "p75": 193,
+            "min": 193,
+            "max": 193,
+            "values": [
+              193
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 7214,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7214,
+            "p25": 7214,
+            "p75": 7214,
+            "min": 7214,
+            "max": 7214,
+            "values": [
+              7214
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 1,
+            "mean": 5.592,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 5.592,
+            "p25": 5.592,
+            "p75": 5.592,
+            "min": 5.592,
+            "max": 5.592,
+            "values": [
+              5.592
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 34,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 34,
+            "p25": 34,
+            "p75": 34,
+            "min": 34,
+            "max": 34,
+            "values": [
+              34
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 600,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 600,
+            "p25": 600,
+            "p75": 600,
+            "min": 600,
+            "max": 600,
+            "values": [
+              600
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 860.9999999999991,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 860.9999999999991,
+            "p25": 860.9999999999991,
+            "p75": 860.9999999999991,
+            "min": 860.9999999999991,
+            "max": 860.9999999999991,
+            "values": [
+              860.9999999999991
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 2181,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 2181,
+            "p25": 2181,
+            "p75": 2181,
+            "min": 2181,
+            "max": 2181,
+            "values": [
+              2181
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 1,
+            "mean": 22.859,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 22.859,
+            "p25": 22.859,
+            "p75": 22.859,
+            "min": 22.859,
+            "max": 22.859,
+            "values": [
+              22.859
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7,
+            "p25": 7,
+            "p75": 7,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 94,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 94,
+            "p25": 94,
+            "p75": 94,
+            "min": 94,
+            "max": 94,
+            "values": [
+              94
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 281,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 281,
+            "p25": 281,
+            "p75": 281,
+            "min": 281,
+            "max": 281,
+            "values": [
+              281
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 8915,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 8915,
+            "p25": 8915,
+            "p75": 8915,
+            "min": 8915,
+            "max": 8915,
+            "values": [
+              8915
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 1,
+            "mean": 20.915,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 20.915,
+            "p25": 20.915,
+            "p75": 20.915,
+            "min": 20.915,
+            "max": 20.915,
+            "values": [
+              20.915
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 10,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 10,
+            "p25": 10,
+            "p75": 10,
+            "min": 10,
+            "max": 10,
+            "values": [
+              10
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 76,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 76,
+            "p25": 76,
+            "p75": 76,
+            "min": 76,
+            "max": 76,
+            "values": [
+              76
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 187.4399999999996,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 187.4399999999996,
+            "p25": 187.4399999999996,
+            "p75": 187.4399999999996,
+            "min": 187.4399999999996,
+            "max": 187.4399999999996,
+            "values": [
+              187.4399999999996
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 8157,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 8157,
+            "p25": 8157,
+            "p75": 8157,
+            "min": 8157,
+            "max": 8157,
+            "values": [
+              8157
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 1,
+            "mean": 3.456,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 3.456,
+            "p25": 3.456,
+            "p75": 3.456,
+            "min": 3.456,
+            "max": 3.456,
+            "values": [
+              3.456
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 4,
+            "p25": 4,
+            "p75": 4,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 57,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 57,
+            "p25": 57,
+            "p75": 57,
+            "min": 57,
+            "max": 57,
+            "values": [
+              57
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 101,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 101,
+            "p25": 101,
+            "p75": 101,
+            "min": 101,
+            "max": 101,
+            "values": [
+              101
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 1348,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 1348,
+            "p25": 1348,
+            "p75": 1348,
+            "min": 1348,
+            "max": 1348,
+            "values": [
+              1348
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.308,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.308,
+            "p25": 0.308,
+            "p75": 0.308,
+            "min": 0.308,
+            "max": 0.308,
+            "values": [
+              0.308
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 120,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 120,
+            "p25": 120,
+            "p75": 120,
+            "min": 120,
+            "max": 120,
+            "values": [
+              120
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 1,
+            "mean": 7.687,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7.687,
+            "p25": 7.687,
+            "p75": 7.687,
+            "min": 7.687,
+            "max": 7.687,
+            "values": [
+              7.687
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 10,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 10,
+            "p25": 10,
+            "p75": 10,
+            "min": 10,
+            "max": 10,
+            "values": [
+              10
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 101,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 101,
+            "p25": 101,
+            "p75": 101,
+            "min": 101,
+            "max": 101,
+            "values": [
+              101
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 319.1200000000008,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 319.1200000000008,
+            "p25": 319.1200000000008,
+            "p75": 319.1200000000008,
+            "min": 319.1200000000008,
+            "max": 319.1200000000008,
+            "values": [
+              319.1200000000008
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 2998,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 2998,
+            "p25": 2998,
+            "p75": 2998,
+            "min": 2998,
+            "max": 2998,
+            "values": [
+              2998
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 1,
+            "mean": 14.592,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 14.592,
+            "p25": 14.592,
+            "p75": 14.592,
+            "min": 14.592,
+            "max": 14.592,
+            "values": [
+              14.592
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 2,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 2,
+            "p25": 2,
+            "p75": 2,
+            "min": 2,
+            "max": 2,
+            "values": [
+              2
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 21,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 21,
+            "p25": 21,
+            "p75": 21,
+            "min": 21,
+            "max": 21,
+            "values": [
+              21
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 69,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 69,
+            "p25": 69,
+            "p75": 69,
+            "min": 69,
+            "max": 69,
+            "values": [
+              69
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 5691,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 5691,
+            "p25": 5691,
+            "p75": 5691,
+            "min": 5691,
+            "max": 5691,
+            "values": [
+              5691
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 1,
+          "mean": 187.338,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 187.338,
+          "p25": 187.338,
+          "p75": 187.338,
+          "min": 187.338,
+          "max": 187.338,
+          "values": [
+            187.338
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 1,
+          "mean": 82,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 82,
+          "p25": 82,
+          "p75": 82,
+          "min": 82,
+          "max": 82,
+          "values": [
+            82
+          ]
+        },
+        "journey_med_ms": {
+          "n": 1,
+          "mean": 7,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 7,
+          "p25": 7,
+          "p75": 7,
+          "min": 7,
+          "max": 7,
+          "values": [
+            7
+          ]
+        },
+        "journey_core_p95_ms": {
+          "n": 1,
+          "mean": 74,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 74,
+          "p25": 74,
+          "p75": 74,
+          "min": 74,
+          "max": 74,
+          "values": [
+            74
+          ]
+        },
+        "journey_core_med_ms": {
+          "n": 1,
+          "mean": 7,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 7,
+          "p25": 7,
+          "p75": 7,
+          "min": 7,
+          "max": 7,
+          "values": [
+            7
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 1,
+          "mean": 46.559546899999695,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 46.559546899999695,
+          "p25": 46.559546899999695,
+          "p75": 46.559546899999695,
+          "min": 46.559546899999695,
+          "max": 46.559546899999695,
+          "values": [
+            46.559546899999695
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "checks_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "checks_failed": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 1,
+          "mean": 149503,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 149503,
+          "p25": 149503,
+          "p75": 149503,
+          "min": 149503,
+          "max": 149503,
+          "values": [
+            149503
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 1,
+          "mean": 3.354,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 3.354,
+          "p25": 3.354,
+          "p75": 3.354,
+          "min": 3.354,
+          "max": 3.354,
+          "values": [
+            3.354
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 4.8568,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4.8568,
+          "p25": 4.8568,
+          "p75": 4.8568,
+          "min": 4.8568,
+          "max": 4.8568,
+          "values": [
+            4.8568
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 4.8216,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4.8216,
+          "p25": 4.8216,
+          "p75": 4.8216,
+          "min": 4.8216,
+          "max": 4.8216,
+          "values": [
+            4.8216
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0066,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0066,
+          "p25": 0.0066,
+          "p75": 0.0066,
+          "min": 0.0066,
+          "max": 0.0066,
+          "values": [
+            0.0066
+          ]
+        },
+        "app_avg_cores": {
+          "n": 1,
+          "mean": 0.9099,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.9099,
+          "p25": 0.9099,
+          "p75": 0.9099,
+          "min": 0.9099,
+          "max": 0.9099,
+          "values": [
+            0.9099
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 1,
+          "mean": 364.5,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 364.5,
+          "p25": 364.5,
+          "p75": 364.5,
+          "min": 364.5,
+          "max": 364.5,
+          "values": [
+            364.5
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 1,
+          "mean": 411.1,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 411.1,
+          "p25": 411.1,
+          "p75": 411.1,
+          "min": 411.1,
+          "max": 411.1,
+          "values": [
+            411.1
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 3.2217,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 3.2217,
+          "p25": 3.2217,
+          "p75": 3.2217,
+          "min": 3.2217,
+          "max": 3.2217,
+          "values": [
+            3.2217
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "values": [
+            0.0
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 1,
+          "mean": 448.2,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 448.2,
+          "p25": 448.2,
+          "p75": 448.2,
+          "min": 448.2,
+          "max": 448.2,
+          "values": [
+            448.2
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 0.7303,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.7303,
+          "p25": 0.7303,
+          "p75": 0.7303,
+          "min": 0.7303,
+          "max": 0.7303,
+          "values": [
+            0.7303
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0641,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0641,
+          "p25": 0.0641,
+          "p75": 0.0641,
+          "min": 0.0641,
+          "max": 0.0641,
+          "values": [
+            0.0641
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 1,
+          "mean": 161.3,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 161.3,
+          "p25": 161.3,
+          "p75": 161.3,
+          "min": 161.3,
+          "max": 161.3,
+          "values": [
+            161.3
+          ]
+        },
+        "frontend_mem_avg_mib": {
+          "n": 1,
+          "mean": 59.7,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 59.7,
+          "p25": 59.7,
+          "p75": 59.7,
+          "min": 59.7,
+          "max": 59.7,
+          "values": [
+            59.7
+          ]
+        },
+        "ns_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 8.9912,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8.9912,
+          "p25": 8.9912,
+          "p75": 8.9912,
+          "min": 8.9912,
+          "max": 8.9912,
+          "values": [
+            8.9912
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 8.6085,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8.6085,
+          "p25": 8.6085,
+          "p75": 8.6085,
+          "min": 8.6085,
+          "max": 8.6085,
+          "values": [
+            8.6085
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0717,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0717,
+          "p25": 0.0717,
+          "p75": 0.0717,
+          "min": 0.0717,
+          "max": 0.0717,
+          "values": [
+            0.0717
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 1,
+          "mean": 1447.4,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 1447.4,
+          "p25": 1447.4,
+          "p75": 1447.4,
+          "min": 1447.4,
+          "max": 1447.4,
+          "values": [
+            1447.4
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 1.1721,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 1.1721,
+          "p25": 1.1721,
+          "p75": 1.1721,
+          "min": 1.1721,
+          "max": 1.1721,
+          "values": [
+            1.1721
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 1,
+          "mean": 6.438,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 6.438,
+          "p25": 6.438,
+          "p75": 6.438,
+          "min": 6.438,
+          "max": 6.438,
+          "values": [
+            6.438
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 1,
+          "mean": 195.0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 195.0,
+          "p25": 195.0,
+          "p75": 195.0,
+          "min": 195.0,
+          "max": 195.0,
+          "values": [
+            195.0
+          ]
+        },
+        "rss_mib_max": {
+          "n": 1,
+          "mean": 1705,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 1705,
+          "p25": 1705,
+          "p75": 1705,
+          "min": 1705,
+          "max": 1705,
+          "values": [
+            1705
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 1,
+          "mean": 160,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 160,
+          "p25": 160,
+          "p75": 160,
+          "min": 160,
+          "max": 160,
+          "values": [
+            160
+          ]
+        },
+        "notifications": {
+          "n": 1,
+          "mean": 140648,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 140648,
+          "p25": 140648,
+          "p75": 140648,
+          "min": 140648,
+          "max": 140648,
+          "values": [
+            140648
+          ]
+        },
+        "errors": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "early_close": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 1,
+          "mean": 400,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 400,
+          "p25": 400,
+          "p75": 400,
+          "min": 400,
+          "max": 400,
+          "values": [
+            400
+          ]
+        },
+        "probes_received": {
+          "n": 1,
+          "mean": 400,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 400,
+          "p25": 400,
+          "p75": 400,
+          "min": 400,
+          "max": 400,
+          "values": [
+            400
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 1,
+          "mean": 2399.5,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 2399.5,
+          "p25": 2399.5,
+          "p75": 2399.5,
+          "min": 2399.5,
+          "max": 2399.5,
+          "values": [
+            2399.5
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 1,
+          "mean": 4279.05,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4279.05,
+          "p25": 4279.05,
+          "p75": 4279.05,
+          "min": 4279.05,
+          "max": 4279.05,
+          "values": [
+            4279.05
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 1,
+          "mean": 4338,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4338,
+          "p25": 4338,
+          "p75": 4338,
+          "min": 4338,
+          "max": 4338,
+          "values": [
+            4338
+          ]
+        }
+      }
+    }
+  }
+}

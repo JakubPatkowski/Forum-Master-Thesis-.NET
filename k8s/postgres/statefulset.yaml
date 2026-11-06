@@ -1,4 +1,4 @@
-# PostgreSQL 17 hardened for PSS `restricted` (Phase 10b, G2).
+# PostgreSQL 18 hardened for PSS `restricted` (Phase 10b, G2; 17->18 bump = A-4, J-7 parity with B).
 # max_connections stays at the Postgres default 100 — deliberately NOT raised. The pool math
 # (enforced via `Maximum Pool Size=30` in the CONNECTION_STRING secret, see deploy.sh and the
 # backend deployment comment): 3 backend replicas (HPA max) x 30 = 90, + postgres-exporter (~5,
@@ -25,13 +25,15 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: postgres
-          image: postgres:17
+          image: postgres:18
           # Benchmark-stable tuning; conservative defaults otherwise. See the pool-math header note
           # for why max_connections is pinned to the default rather than raised.
           args: ["-c", "shared_buffers=256MB", "-c", "effective_cache_size=512MB", "-c", "max_connections=100"]
           envFrom: [{ secretRef: { name: postgres-credentials } }]
           # PGDATA subdirectory: with fsGroup ownership the PVC root gets a lost+found dir that
-          # initdb refuses to initialize into; a subdir sidesteps that classic quirk.
+          # initdb refuses to initialize into; a subdir sidesteps that classic quirk. The explicit
+          # env also overrides the 18 image's new default (/var/lib/postgresql/18/docker), keeping
+          # the data dir inside the PVC mount — same pattern as B's postgres:18 manifest.
           env: [{ name: PGDATA, value: /var/lib/postgresql/data/pgdata }]
           ports: [{ name: postgres, containerPort: 5432 }]
           # -d postgres targets the always-present built-in DB: pg_isready with -U alone connects to a

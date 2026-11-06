@@ -46,8 +46,10 @@ spec:
             - name: ConnectionStrings__Forum
               valueFrom: { secretKeyRef: { name: postgres-credentials, key: CONNECTION_STRING } }
           resources:
-            requests: { cpu: "150m", memory: "256Mi" }
-            limits:   { cpu: "750m", memory: "512Mi" }
+            # A/B common resource profile (AB-ALIGNMENT-INSTRUCTIONS-A.md §2 / A-05): identical requests and
+            # limits on gomx's bench overlay. Pool math still holds: 3 replicas x 30 connections <= max_connections=100.
+            requests: { cpu: "250m", memory: "256Mi" }
+            limits:   { cpu: "1000m", memory: "512Mi" }
           # timeoutSeconds 5 (default 1!) — found live in Phase 9c: at the k6 demo plateau a saturated
           # pod misses the 1 s deadline, flaps unready, and the HPA DISCARDS unready pods' CPU samples —
           # the sole replica then never scales out (and ingress 503s while its endpoint is withdrawn).

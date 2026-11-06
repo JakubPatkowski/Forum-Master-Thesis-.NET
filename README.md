@@ -4,7 +4,7 @@
 
 **A deliberately over-engineered, production-grade forum built as a module-first .NET 10 modular monolith with a decoupled React SPA — deployed on hardened Kubernetes with a full CNCF observability stack and a reproducible benchmark harness.**
 
-.NET 10 · ASP.NET Core Minimal APIs · PostgreSQL 17 · RabbitMQ 4 · MinIO · Next.js 15 / React 19 · Kubernetes (minikube + Calico) · Prometheus / Grafana / Loki / Tempo · k6
+.NET 10 · ASP.NET Core Minimal APIs · PostgreSQL 18 · RabbitMQ 4 · MinIO · Next.js 15 / React 19 · Kubernetes (minikube + Calico) · Prometheus / Grafana / Loki / Tempo · k6
 
 <br/>
 
@@ -16,7 +16,7 @@
 <!-- ───────────── CI / quality · live GitHub Actions status ───────────── -->
 [![CI](https://github.com/JakubPatkowski/Forum-Master-Thesis-.NET/actions/workflows/ci.yml/badge.svg)](https://github.com/JakubPatkowski/Forum-Master-Thesis-.NET/actions/workflows/ci.yml)
 [![Security](https://github.com/JakubPatkowski/Forum-Master-Thesis-.NET/actions/workflows/security.yml/badge.svg)](https://github.com/JakubPatkowski/Forum-Master-Thesis-.NET/actions/workflows/security.yml)
-![Backend tests](https://img.shields.io/badge/backend%20tests-238%20passing-2ea44f?logo=dotnet&logoColor=white)
+![Backend tests](https://img.shields.io/badge/backend%20tests-259%20passing-2ea44f?logo=dotnet&logoColor=white)
 ![Frontend tests](https://img.shields.io/badge/frontend%20tests-40%20passing-2ea44f?logo=vitest&logoColor=white)
 ![Format](https://img.shields.io/badge/dotnet%20format-verified-blue?logo=csharp&logoColor=white)
 <!-- TODO: add Codecov badge once coverage upload is wired into ci.yml:
@@ -49,7 +49,7 @@
 ![Tempo](https://img.shields.io/badge/Tempo-traces-7B61FF?logo=grafana&logoColor=white)
 ![k6](https://img.shields.io/badge/k6-load%20profiles-7D64FF?logo=k6&logoColor=white)
 ![Testcontainers](https://img.shields.io/badge/Testcontainers-PG%20%7C%20RMQ%20%7C%20MinIO-291D9B)
-![xUnit](https://img.shields.io/badge/xUnit-278%20tests%20total-5E1F87)
+![xUnit](https://img.shields.io/badge/xUnit-330%20tests%20total-5E1F87)
 
 </div>
 
@@ -140,7 +140,7 @@
 | **Backend** | .NET 10 modular monolith (module-first, CQRS, outbox) | Go + Templ server-side rendering |
 | **Frontend** | React 19 / Next.js 15, pure CSR, TanStack Query | HTMX + Alpine.js over SSR HTML |
 | **Real-time** | WebSocket change-notifications, fetch-then-patch | SSE / HTMX partial swaps |
-| **Data** | PostgreSQL 17 + RabbitMQ + MinIO | PostgreSQL + Redis + MinIO |
+| **Data** | PostgreSQL 18 + RabbitMQ + MinIO | PostgreSQL + Redis + MinIO |
 | **Benchmark role** | The "enterprise-decomposed" contender | The "radically-simple" contender |
 
 The goal of *this* codebase goes beyond "a working forum" — it is **deliberately, professionally over-engineered** to showcase how a serious production system is built end to end:
@@ -176,7 +176,7 @@ Plus the things that only show up when you actually run it in anger:
 
 - 🐛 **Real production-class bugs found & regression-tested**: the exception-path correlation-ID loss, kubelet's 1-second default probe timeout silently freezing HPA scale-up, Completed Job pods poisoning the HPA metric pool, a stalled WebSocket peer head-of-line-blocking a whole replica, `.NET` BackgroundServices dying silently on broker timeouts.
 - 📊 **Measured, archived results**: demo profile sustains **~113 req/s with p95 ≈ 35 ms at 80 VUs and 0.00% errors** while the HPA walks 1→2→3 replicas ([details](#-load-testing--benchmarks)).
-- 🧪 **278 automated tests** including full-pipeline E2E over real Postgres, RabbitMQ and MinIO via Testcontainers — REST call → outbox → broker → consumer → WebSocket push asserted in one test.
+- 🧪 **330 automated tests** (259 backend + 71 frontend) including full-pipeline E2E over real Postgres, RabbitMQ and MinIO via Testcontainers — REST call → outbox → broker → consumer → WebSocket push asserted in one test.
 
 ---
 
@@ -193,8 +193,8 @@ Plus the things that only show up when you actually run it in anger:
 | CQRS command/query handlers | **167** |
 | Database schemas | **6** (`forum_identity`, `forum_authz`, `forum_content`, `forum_files`, `forum_engagement`, `forum_social`) |
 | SQL read views | **13** |
-| EF migrations (incl. raw-SQL: ACL functions, FTS triggers, counters, views) | 13 chains across 5 modules |
-| Automated tests | **238 backend + 40 frontend = 278** |
+| EF migrations (incl. raw-SQL: ACL functions, FTS triggers, counters, views) | 16 migrations across 5 modules (one chain per module) |
+| Automated tests | **259 backend + 71 frontend (Vitest) = 330**, plus 24 Playwright e2e executions (desktop + Pixel 7) |
 | Grafana dashboards / provisioned queries | **9 dashboards · 86 queries** (all live-verified) |
 | Prometheus alert rules | **15** |
 | Architecture Decision Records | **11** |
@@ -303,7 +303,7 @@ flowchart LR
     subgraph K8s["☸️ Kubernetes — namespace forum-dotnet (PSS restricted)"]
         API["Forum.Api<br/>.NET 10 modular monolith<br/>(HPA 1→3 replicas)"]
         FE["Frontend<br/>(Next.js static shell)"]
-        PG[("PostgreSQL 17<br/>6 schemas, 1 per module")]
+        PG[("PostgreSQL 18<br/>6 schemas, 1 per module")]
         RMQ[["RabbitMQ 4<br/>5 topic exchanges<br/>outbox → relay → consumers"]]
         S3[("MinIO<br/>presigned PUT/GET")]
     end
@@ -511,7 +511,7 @@ Every consequential decision is a numbered, immutable record in [`docs/architect
 
 | Concern | Technology | Notes |
 |---|---|---|
-| Local dev infra | Docker Compose | Postgres 17 + RabbitMQ 4 (management) + MinIO |
+| Local dev infra | Docker Compose | Postgres 18 + RabbitMQ 4 (management) + MinIO |
 | Container images | Multi-stage Dockerfiles | Backend on a **chiseled** (shell-less) runtime base, numeric UIDs |
 | Orchestration | Kubernetes via minikube, **Calico CNI** | Calico is required — the default CNI silently ignores NetworkPolicies |
 | Pod security | PSS **`restricted`** (enforce+warn+audit) | Zero warnings on deploy |
@@ -1139,7 +1139,7 @@ The API deliberately has **no global feed endpoint** (`GET /api/content/threads`
 
 **Pages**: `/` (3-column merged feed + pinned + LIVE banner), `/c/[slug]`, `/t/[id]` (author stats, TOC from headings, related-by-tag, attachments rail, realtime NEW glow, live-deleted banner), `/search` (debounced, URL-synced), `/u/[userId]`, `/social` (friends/DMs/groups), `/auth`, plus designed 404/error states.
 
-**Verified**: `npm run typecheck` · `lint` · `test` (40 Vitest tests) · `build`, plus a live smoke against the real migrated stack.
+**Verified**: `npm run typecheck` · `lint` · `test` (71 Vitest tests) · `build`, plus a live smoke against the real migrated stack.
 
 ---
 
@@ -1158,7 +1158,7 @@ All endpoints live under `/api/*` with OpenAPI descriptions (Swagger UI in Devel
 
 ### Endpoint Inventory
 
-**85 routes** total — extracted from the code, one file per endpoint. Expand a module:
+**84 `/api` routes** (81 module endpoints + realtime ticket/WS + the Web Vitals beacon; counted from the code 2026-10-23, one file per module endpoint). Expand a module:
 
 <details>
 <summary><b>🔐 Identity — 12 endpoints</b></summary>
@@ -1529,7 +1529,7 @@ First archived official run (3 repeats, clean baseline):
 
 ## 🧪 Testing & Quality Gates
 
-**278 automated tests** across 10 projects — and the integration tier is the real thing: full REST→outbox→broker→consumer→WebSocket pipelines against **real Postgres 17 + RabbitMQ 4 + MinIO containers** (Testcontainers), not mocks.
+**259 backend tests** across 8 projects (+ 71 Vitest and 24 Playwright executions on the frontend) — and the integration tier is the real thing: full REST→outbox→broker→consumer→WebSocket pipelines against **real Postgres 18 + RabbitMQ 4 + MinIO containers** (Testcontainers), not mocks.
 
 | Suite | Tests | What it proves |
 |---|---:|---|
@@ -1541,7 +1541,7 @@ First archived official run (3 repeats, clean baseline):
 | `Forum.Modules.Engagement.Tests` | 24 | Toggle idempotency, batch validation |
 | `Forum.ArchitectureTests` | 2 rule-sets | **Module boundaries + domain purity — the architecture is compiler-adjacent law** |
 | `Forum.IntegrationTests` | 38 | E2E flows: identity, content keyset/FTS, files presigned lifecycle, engagement cascades, messaging (dedupe, poison, correlation), realtime (two-replica fan-out, mid-connection revocation, reconnect resync), readiness flap, seed determinism |
-| **Backend total** | **238** | `dotnet build` · `dotnet format --verify-no-changes` · `dotnet test` — all green, 0 skipped |
+| **Backend total** | **259** | `dotnet build` · `dotnet format --verify-no-changes` · `dotnet test` — all green, 0 skipped |
 | Frontend (Vitest) | **40** | RFC 7807 quirks, single-flight refresh, feed merge, socket manager, invalidation map, sanitizer & media convention |
 
 Highlight E2E tests worth reading:
@@ -1592,7 +1592,7 @@ Planned pipeline growth (post-defense): coverage collection (coverlet → Codeco
 
 ```bash
 cp .env.example .env
-make infra-up          # Postgres 17 + RabbitMQ 4 + MinIO via docker compose
+make infra-up          # Postgres 18 + RabbitMQ 4 + MinIO via docker compose
 make api ARGS=--migrate  # migrate + run Forum.Api on :5099
 make web               # Next.js dev server on :3000
 ```
@@ -1931,7 +1931,7 @@ What the comparison is designed to surface:
 | Scale-out | Stateless API behind an HPA | Monolith replicas |
 | Real-time | WS notifications + client re-fetch | SSE/HTMX partial swaps |
 | Complexity budget | Spent on boundaries, eventing, observability | Spent on simplicity and locality |
-| Developer experience | Typed contracts, module isolation, 278 tests | One binary, one template tree |
+| Developer experience | Typed contracts, module isolation, 330 tests | One binary, one template tree |
 
 The archived evidence bundles in `thesis/results/` — with git SHAs, image digests, dataset fingerprints and Prometheus snapshots — are what makes the eventual numbers defensible rather than anecdotal.
 

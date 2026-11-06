@@ -40,6 +40,7 @@ public sealed class ContentModule : IModule
         services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
         services.AddScoped<IContentQueries, ContentQueries>();
+        services.AddScoped<ContentReadAccess>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOutboxWriter, OutboxWriter>();
 

@@ -1,0 +1,30 @@
+
+target=a  profile=smoke  mix=v1  harness=h2-2026-10-17  base=https://forum.local
+http_reqs=1225  p95=8ms  p99=23ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                10    262    180    470    476    477
+categories           59      3      2      3      4      5
+feed                271      3      3      5      6     10
+thread              121      3      3      3      4      5
+comments            121      3      3      5      6      7
+reactions_batch     392      3      3      4      5     12
+search               51      8      8     14     14     14
+comment_create       64      9      6     24     33     33
+reaction_add         83      9      7     23     26     27
+reaction_remove       3     29     28     38     39     39
+user_stats            9      7      6      8      9      9
+user_threads          9      4      4      5      5      5
+setup                32      4      4      5      6      6
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           203   3.38      7     16     20
+J2           121   2.02      9     11     13
+J3            64   1.07      6     25     33
+J5            86   1.43      7     24     31
+J6            51   0.85      9     15     18
+J7             9   0.15     11     14     14
+nav           59   0.98      3      4      4
+
+all thresholds passed
+

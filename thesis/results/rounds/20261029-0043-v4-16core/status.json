@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 23/32 valid",
+  "plan": "demo:10,stress:3,capacity:3",
+  "current_run": "capacity/B/run-3",
+  "runs_done": 32,
+  "runs_total": 32,
+  "runs_valid": 23,
+  "round_dir": "/home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261029-0043-v4-16core",
+  "pid": 218508,
+  "updated_epoch": 1793257877,
+  "heartbeat_epoch": 1793257877,
+  "updated": "2026-10-29 08:11:17"
+}

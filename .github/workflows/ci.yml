@@ -13,3 +13,31 @@ jobs:
       - run: dotnet format backend/Forum.slnx --verify-no-changes
       - run: dotnet build backend/Forum.slnx -c Release --no-restore
       - run: dotnet test backend/Forum.slnx -c Release --no-build --logger trx
+
+  # A-5 (Q3 honesty / J-6): the frontend gets the same CI scope it has locally — typecheck,
+  # lint, vitest, production build. Deliberately one honest-sized workflow, not padded to
+  # mirror B's pipeline breadth.
+  frontend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: frontend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  # Both production images must at least build; nothing is pushed (there is no registry in
+  # scope — the cluster loads images via build-images.sh/minikube image load).
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build API image
+        run: docker build -t forum-dotnet-api:ci .
+      - name: Build frontend image  # repo-root context, like scripts/build-images.sh
+        run: docker build -t forum-dotnet-web:ci -f frontend/Dockerfile .

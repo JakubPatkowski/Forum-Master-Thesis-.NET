@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: gomx
+spec:
+  template:
+    spec:
+      # The Debian postgres:18 image runs as uid/gid 999 (the alpine image used by the base runs as 70).
+      # Switching images needs a FRESH data volume — an alpine-initialised PGDATA (0700, uid 70) is
+      # unreadable for uid 999. On minikube the hostpath dir survives a namespace delete, so reset with
+      # forum-dotnet's `scripts/gomx-bench-deploy.sh --fresh` (deletes the namespace AND wipes the dir).
+      # (runAsUser must sit next to runAsGroup at pod level — the docker runtime rejects a pod-level group
+      # without a pod-level user: "runAsGroup is specified without a runAsUser". Same trio as A.)
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+      containers:
+        - name: postgres
+          # Same image + tuning as Architecture A (forum-dotnet k8s/postgres/statefulset.yaml): Debian/glibc
+          # postgres:18, not 18-alpine (musl) — one variable fewer in a DB-bound comparison.
+          image: docker.io/library/postgres:18
+          args:
+            [
+              "-c",
+              "shared_buffers=256MB",
+              "-c",
+              "effective_cache_size=512MB",
+              "-c",
+              "max_connections=100",
+            ]
+          securityContext:
+            runAsUser: 999
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: "1", memory: 1Gi }
+          # A's probe timing: a 1 s exec deadline under a CPU-saturated DB pod must not flap the
+          # endpoint or restart Postgres mid-run (same values on both sides).
+          readinessProbe:
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6

@@ -33,6 +33,41 @@ for local dev.
 | `npm test` | Vitest unit/component suite |
 | `npm run format` / `format:check` | Prettier |
 
+## End-to-end tests (Playwright)
+
+`e2e/` renders the **production bundle** in a real browser against the **real API on the
+Development seed** — the layer that caught nothing when the anonymous home page broke on the A-12
+private-category 404 (backend tests and Vitest never render the SPA). Config: `playwright.config.ts`
+(its header is the full recipe); specs: `home-anonymous` (the regression pin), `browse`,
+`auth-compose`, `mobile-layout`. Two projects: **`desktop`** (Desktop Chrome) and **`android`**
+(Pixel 7 emulation — Chrome-for-Android UA, touch, 412 px at DPR 2.625; the mobile spec runs only
+there).
+
+```bash
+# 1. the stack (repo root) — once; the suite has no webServer block
+make infra-up
+RateLimiting__Global__PermitLimit=100000 RateLimiting__Auth__PermitLimit=1000 \
+  make api ARGS=--migrate            # :8080 — the raised limits are the backend's test knobs
+make seed                            # Development profile (non-empty DB: make seed ARGS=--force)
+cd frontend && NEXT_PUBLIC_API_URL=http://localhost:8080 npm run build && npx next start -p 3000
+
+# 2. the suite (this folder)
+npm run test:e2e                     # both projects
+npm run test:e2e:android             # the phone only
+npx playwright show-report           # playwright-report/ (traces + screenshots on failure)
+```
+
+No `playwright install` is needed: the config uses the portable `chrome-headless-shell` that
+`scripts/lighthouse.sh --bootstrap-chrome` puts in `../.bench/chrome/` (override with
+`E2E_CHROME_PATH`). `E2E_BASE_URL` / `E2E_API_URL` retarget the suite (e.g. the cluster's
+`https://forum.local`; HTTPS errors are ignored for the mkcert cert). Tests only add rows with
+unique titles and never delete, so a run is repeatable; `make seed ARGS=--force` resets the data.
+The `mobile-layout` spec's last block asserts the two phone gaps measured on 2026-10-18 and fixed
+on 2026-10-24 (signed-in TopNav wider than 412 px → the top row now wraps the search onto its own
+line and collapses the button labels at ≤ 720 px; sub-40 px secondary tap targets → every control
+carries a 40 px floor under `@media (pointer: coarse), (max-width: 480px)`, desktop density
+unchanged). They were `test.fail`-pinned until then.
+
 ## Docker image (Phase 10a)
 
 The production image is a **Next.js standalone server** on `node:22-alpine` (`output:

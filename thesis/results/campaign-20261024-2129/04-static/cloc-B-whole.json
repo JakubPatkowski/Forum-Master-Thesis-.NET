@@ -1,0 +1,119 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.10",
+  "elapsed_seconds"    : 0.675787925720215,
+  "n_files"            : 775,
+  "n_lines"            : 111362,
+  "files_per_second"   : 1146.80948046541,
+  "lines_per_second"   : 164788.383694954,
+  "report_file"        : "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/campaign-20261024-2129/04-static/cloc-B-whole.json"},
+"Go" :{
+  "nFiles": 375,
+  "blank": 4752,
+  "comment": 4501,
+  "code": 64215},
+"CSS" :{
+  "nFiles": 11,
+  "blank": 114,
+  "comment": 62,
+  "code": 11743},
+"TypeScript" :{
+  "nFiles": 74,
+  "blank": 691,
+  "comment": 820,
+  "code": 4782},
+"Templ" :{
+  "nFiles": 99,
+  "blank": 375,
+  "comment": 411,
+  "code": 4763},
+"YAML" :{
+  "nFiles": 39,
+  "blank": 143,
+  "comment": 507,
+  "code": 2875},
+"Markdown" :{
+  "nFiles": 77,
+  "blank": 927,
+  "comment": 1,
+  "code": 2699},
+"TOML" :{
+  "nFiles": 4,
+  "blank": 729,
+  "comment": 41,
+  "code": 1422},
+"SQL" :{
+  "nFiles": 22,
+  "blank": 225,
+  "comment": 395,
+  "code": 1163},
+"Bourne Shell" :{
+  "nFiles": 15,
+  "blank": 154,
+  "comment": 284,
+  "code": 829},
+"JSON" :{
+  "nFiles": 23,
+  "blank": 24,
+  "comment": 0,
+  "code": 704},
+"XML" :{
+  "nFiles": 16,
+  "blank": 5,
+  "comment": 8,
+  "code": 339},
+"Kotlin" :{
+  "nFiles": 3,
+  "blank": 21,
+  "comment": 1,
+  "code": 152},
+"Gradle" :{
+  "nFiles": 4,
+  "blank": 15,
+  "comment": 0,
+  "code": 116},
+"DOS Batch" :{
+  "nFiles": 1,
+  "blank": 18,
+  "comment": 0,
+  "code": 64},
+"HTML" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 59},
+"Properties" :{
+  "nFiles": 3,
+  "blank": 9,
+  "comment": 31,
+  "code": 51},
+"Rust" :{
+  "nFiles": 3,
+  "blank": 6,
+  "comment": 8,
+  "code": 37},
+"INI" :{
+  "nFiles": 2,
+  "blank": 6,
+  "comment": 0,
+  "code": 24},
+"Dockerfile" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 11,
+  "code": 7},
+"JavaScript" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 1,
+  "code": 0},
+"ProGuard" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 18,
+  "code": 0},
+"SUM": {
+  "blank": 8218,
+  "comment": 7100,
+  "code": 96044,
+  "nFiles": 775} }

@@ -1,0 +1,13 @@
+start 2026-10-25T02:15:09+01:00
+clone rc=0 duration_s=3 end=2026-10-25T02:15:12+01:00
+describe rc=0 duration_s=0 end=2026-10-25T02:15:12+01:00
+dotnet-info rc=0 duration_s=1 end=2026-10-25T02:15:13+01:00
+build rc=0 duration_s=100 end=2026-10-25T02:16:53+01:00
+test rc=0 duration_s=540 end=2026-10-25T02:25:53+01:00
+format rc=0 duration_s=75 end=2026-10-25T02:27:08+01:00
+fe-ci rc=0 duration_s=141 end=2026-10-25T02:29:29+01:00
+fe-typecheck rc=0 duration_s=12 end=2026-10-25T02:29:41+01:00
+fe-lint rc=0 duration_s=5 end=2026-10-25T02:29:46+01:00
+fe-test rc=0 duration_s=5 end=2026-10-25T02:29:51+01:00
+fe-build rc=0 duration_s=97 end=2026-10-25T02:31:28+01:00
+end 2026-10-25T02:31:28+01:00

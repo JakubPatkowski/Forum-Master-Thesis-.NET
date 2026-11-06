@@ -147,6 +147,60 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
     }
 
     [SkippableFact]
+    public async Task Private_category_content_is_readable_only_by_its_owner_and_moderators()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var owner = await RegisterAndLogin(client, "priv-owner");
+        var outsider = await RegisterAndLogin(client, "priv-outsider");
+        var moderator = await RegisterAndLogin(client, "priv-moderator");
+        await GrantRole(moderator.UserId, ModeratorRoleId);
+
+        var created = await Send(client, owner, HttpMethod.Post, "/api/content/categories",
+            new { slug = "priv-cat", name = "Private club", description = "test", visibility = "private" });
+        created.StatusCode.ShouldBe(HttpStatusCode.Created);
+        var categoryId = (await created.Content.ReadFromJsonAsync<CategoryCreated>())!.CategoryId;
+        var threadId = await CreateThread(client, owner, categoryId, "Secret sturgeon spot");
+        await CreateComment(client, owner, threadId, parentId: null, body: "Bring a sturgeon net.");
+
+        var feedUrl = $"/api/content/threads?categoryId={categoryId}&limit=10";
+        var detailUrl = $"/api/content/threads/{threadId}";
+        var treeUrl = $"/api/content/threads/{threadId}/comments";
+        var userThreadsUrl = $"/api/content/users/{owner.UserId}/threads";
+        var userCommentsUrl = $"/api/content/users/{owner.UserId}/comments";
+
+        // Anonymous and authenticated outsiders: the private category is indistinguishable from a missing one —
+        // the category itself is absent from the list and 404 by slug, item reads 404, list reads silently omit
+        // its rows (A-12). Architecture B's /communities hides private spaces the same way (fairness invariant F5).
+        foreach (var reader in new Session?[] { null, outsider })
+        {
+            (await ListCategorySlugs(client, reader)).ShouldNotContain("priv-cat");
+            (await Get(client, reader, "/api/content/categories/priv-cat")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await Get(client, reader, feedUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            (await ReadPage(client, reader, "/api/content/search?q=sturgeon")).Items.ShouldBeEmpty();
+            (await ReadPage(client, reader, userThreadsUrl)).Items.ShouldBeEmpty();
+            (await ReadActivity(client, reader, userCommentsUrl)).ShouldBe(0);
+        }
+
+        // The owner and a (global) moderator open everything — including the category in the list and by slug.
+        foreach (var reader in new[] { owner, moderator })
+        {
+            (await ListCategorySlugs(client, reader)).ShouldContain("priv-cat");
+            (await Get(client, reader, "/api/content/categories/priv-cat")).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await ReadPage(client, reader, feedUrl)).Items.ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await Get(client, reader, detailUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await Get(client, reader, treeUrl)).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await ReadPage(client, reader, "/api/content/search?q=sturgeon")).Items
+                .ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await ReadPage(client, reader, userThreadsUrl)).Items.ShouldHaveSingleItem().Id.ShouldBe(threadId);
+            (await ReadActivity(client, reader, userCommentsUrl)).ShouldBe(1);
+        }
+    }
+
+    [SkippableFact]
     public async Task Moderator_can_pin_and_delete_someone_elses_thread_but_a_plain_user_cannot()
     {
         Skip.IfNot(_factory.Available, "Docker is not available.");
@@ -183,6 +237,29 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         feed.Items.Select(static item => item.Id).ShouldBe([older]);
 
         (await client.GetAsync($"/api/content/threads/{newer}")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [SkippableFact]
+    public async Task Concurrent_thread_creates_sharing_a_brand_new_tag_all_succeed()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var author = await RegisterAndLogin(client, "tagracer");
+        var categoryId = await CreateCategory(client, author, "tag-race");
+        var slug = $"race-{Ulid.NewUlid().ToString()[^6..].ToLowerInvariant()}";
+
+        // Eight requests race to be the first user of the same slug: before the ON CONFLICT get-or-create the losers
+        // hit the unique index on tags.slug and surfaced as 500s (found by the k6 harness on the Development seed).
+        var responses = await Task.WhenAll(Enumerable.Range(0, 8).Select(i =>
+            Send(client, author, HttpMethod.Post, "/api/content/threads",
+                new { categoryId, title = $"Tag race {i}", body = "same new tag", tagSlugs = new[] { slug } })));
+
+        responses.Select(static response => response.StatusCode).ShouldAllBe(static status => status == HttpStatusCode.Created);
+
+        // Exactly one tag row carries the slug, used by all eight threads.
+        var suggestions = (await client.GetFromJsonAsync<List<TagSuggestion>>($"/api/content/tags?query={slug}"))!;
+        suggestions.Where(tag => tag.Slug == slug).ShouldHaveSingleItem().UsageCount.ShouldBe(8);
     }
 
     private static async Task<Session> RegisterAndLogin(HttpClient client, string username)
@@ -240,6 +317,38 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         return (await client.GetFromJsonAsync<FeedPage>(url))!;
     }
 
+    private static Task<HttpResponseMessage> Get(HttpClient client, Session? session, string url)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        if (session is not null)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", session.AccessToken);
+        }
+
+        return client.SendAsync(request);
+    }
+
+    private static async Task<FeedPage> ReadPage(HttpClient client, Session? session, string url)
+    {
+        var response = await Get(client, session, url);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<FeedPage>())!;
+    }
+
+    private static async Task<List<string>> ListCategorySlugs(HttpClient client, Session? session)
+    {
+        var response = await Get(client, session, "/api/content/categories");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<List<CategoryListItem>>())!.Select(c => c.Slug).ToList();
+    }
+
+    private static async Task<int> ReadActivity(HttpClient client, Session? session, string url)
+    {
+        var response = await Get(client, session, url);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        return (await response.Content.ReadFromJsonAsync<ActivityPage>())!.Items.Count;
+    }
+
     private static Task<HttpResponseMessage> Send(
         HttpClient client, Session session, HttpMethod method, string url, object? body = null)
     {
@@ -270,13 +379,21 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
 
     private sealed record CategoryCreated(string CategoryId, string Slug);
 
+    private sealed record CategoryListItem(string Id, string Slug, string Visibility);
+
     private sealed record ThreadCreated(string ThreadId);
+
+    private sealed record TagSuggestion(string Slug, string Name, int UsageCount);
 
     private sealed record CommentCreated(string CommentId);
 
     private sealed record FeedPage(List<FeedItem> Items, string? NextCursor, bool HasMore);
 
     private sealed record FeedItem(string Id, string Title, bool IsPinned, string Username);
+
+    private sealed record ActivityPage(List<ActivityItem> Items, string? NextCursor, bool HasMore);
+
+    private sealed record ActivityItem(string Id, string ThreadId);
 
     private sealed record ThreadDetail(string Id, string Title, string Body, List<string> Tags);
 

@@ -1,0 +1,12 @@
+# B artifacts out of gomx:bench-46b342c (/app/server, /app/static) — bytes raw / gzip -9 — 2026-10-25T03:00:05+01:00 (v1 path /app/bin/server moved to /app/server; artifact-size-B.log = the failed first attempt)
+artifact_size_bytes{artifact="server",encoding="raw"} 39964834
+artifact_size_bytes{artifact="server",encoding="gzip"} 13174075
+artifact_size_bytes{artifact="styles.css",encoding="raw"} 211324
+artifact_size_bytes{artifact="styles.css",encoding="gzip"} 31479
+artifact_size_bytes{artifact="bridge-alpine.js",encoding="raw"} 62806
+artifact_size_bytes{artifact="bridge-alpine.js",encoding="gzip"} 21718
+artifact_size_bytes{artifact="bridge.js",encoding="raw"} 71629
+artifact_size_bytes{artifact="bridge.js",encoding="gzip"} 21421
+artifact_size_bytes{artifact="forum.js",encoding="raw"} 209100
+artifact_size_bytes{artifact="forum.js",encoding="gzip"} 70639
+web_assets_total_bytes{encoding="gzip"} 145257

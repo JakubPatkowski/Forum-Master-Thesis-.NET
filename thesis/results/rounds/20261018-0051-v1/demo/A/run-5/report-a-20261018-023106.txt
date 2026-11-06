@@ -1,0 +1,34 @@
+
+target=a  profile=demo  mix=v1  harness=h3-2026-10-17  base=https://forum.local
+http_reqs=76531  p95=10ms  p99=16ms  failed=0.00%  (scenario 420s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login               200    113    104    137    433    449
+categories         2961      3      2      5     12     45
+feed              16345      4      3      7     14     53
+thread             8416      3      2      5     12     60
+comments           8416      4      3      7     13     47
+reactions_batch   24761      3      2      5     10     63
+search             4302     11     10     16     24     90
+comment_create     4361      7      6     11     20     56
+reaction_add       4887      8      6     13     25     65
+reaction_remove     124      8      7     16     21     27
+user_stats          823      4      3      5     12     37
+user_threads        823      3      3      5     11     40
+ticket               80     13     10     33     41     46
+setup                32      4      4      6      6      6
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1         12597  29.99      7     18     30
+J2          8416  20.04      9     17     32
+J3          4361  10.38      6     12     20
+J5          5011  11.93      7     14     25
+J6          4302  10.24     10     16     24
+J7           823   1.96      7     11     21
+J8            60   0.14      0      0      0
+nav         2961   7.05      3      6     12
+
+ws: subscribed=80  notifications=35565  errors=0
+
+all thresholds passed
+

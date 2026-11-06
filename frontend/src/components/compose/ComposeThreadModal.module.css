@@ -99,3 +99,11 @@
 .hidden {
   display: none;
 }
+
+/* Phone layout (≤ 720 px): the footer's mono note would wrap into four lines next to the two
+   buttons — drop it, the buttons keep their full-width-friendly row. */
+@media (max-width: 720px) {
+  .footerNote {
+    display: none;
+  }
+}

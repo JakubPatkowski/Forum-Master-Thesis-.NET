@@ -1,0 +1,119 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.06",
+  "elapsed_seconds"    : 0.929219961166382,
+  "n_files"            : 763,
+  "n_lines"            : 109871,
+  "files_per_second"   : 821.118822116415,
+  "lines_per_second"   : 118240.034213306,
+  "report_file"        : "thesis/results/static/2026-10-17/cloc-B-whole.json"},
+"Go" :{
+  "nFiles": 370,
+  "blank": 4647,
+  "comment": 4336,
+  "code": 63230},
+"CSS" :{
+  "nFiles": 11,
+  "blank": 114,
+  "comment": 62,
+  "code": 11743},
+"TypeScript" :{
+  "nFiles": 74,
+  "blank": 691,
+  "comment": 820,
+  "code": 4782},
+"Templ" :{
+  "nFiles": 99,
+  "blank": 375,
+  "comment": 409,
+  "code": 4758},
+"YAML" :{
+  "nFiles": 33,
+  "blank": 143,
+  "comment": 481,
+  "code": 2738},
+"Markdown" :{
+  "nFiles": 76,
+  "blank": 914,
+  "comment": 1,
+  "code": 2646},
+"TOML" :{
+  "nFiles": 4,
+  "blank": 729,
+  "comment": 41,
+  "code": 1422},
+"SQL" :{
+  "nFiles": 22,
+  "blank": 225,
+  "comment": 395,
+  "code": 1163},
+"Bourne Shell" :{
+  "nFiles": 15,
+  "blank": 154,
+  "comment": 284,
+  "code": 829},
+"JSON" :{
+  "nFiles": 23,
+  "blank": 24,
+  "comment": 0,
+  "code": 704},
+"XML" :{
+  "nFiles": 16,
+  "blank": 5,
+  "comment": 8,
+  "code": 339},
+"Kotlin" :{
+  "nFiles": 3,
+  "blank": 21,
+  "comment": 1,
+  "code": 152},
+"Gradle" :{
+  "nFiles": 4,
+  "blank": 15,
+  "comment": 0,
+  "code": 116},
+"DOS Batch" :{
+  "nFiles": 1,
+  "blank": 18,
+  "comment": 0,
+  "code": 64},
+"HTML" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 0,
+  "code": 59},
+"Properties" :{
+  "nFiles": 3,
+  "blank": 9,
+  "comment": 31,
+  "code": 51},
+"Rust" :{
+  "nFiles": 3,
+  "blank": 6,
+  "comment": 8,
+  "code": 37},
+"INI" :{
+  "nFiles": 2,
+  "blank": 6,
+  "comment": 0,
+  "code": 24},
+"Dockerfile" :{
+  "nFiles": 1,
+  "blank": 1,
+  "comment": 11,
+  "code": 7},
+"JavaScript" :{
+  "nFiles": 1,
+  "blank": 0,
+  "comment": 1,
+  "code": 0},
+"ProGuard" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 18,
+  "code": 0},
+"SUM": {
+  "blank": 8100,
+  "comment": 6907,
+  "code": 94864,
+  "nFiles": 763} }

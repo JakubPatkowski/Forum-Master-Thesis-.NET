@@ -1,0 +1,109 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.10",
+  "elapsed_seconds"    : 1.33553600311279,
+  "n_files"            : 1471,
+  "n_lines"            : 212283,
+  "files_per_second"   : 1101.43043435106,
+  "lines_per_second"   : 158949.664782696,
+  "report_file"        : "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/campaign-20261024-2129/04-static/cloc-A-whole.json"},
+"JSON" :{
+  "nFiles": 326,
+  "blank": 0,
+  "comment": 0,
+  "code": 89594},
+"C#" :{
+  "nFiles": 602,
+  "blank": 6788,
+  "comment": 2724,
+  "code": 30951},
+"SVG" :{
+  "nFiles": 11,
+  "blank": 35,
+  "comment": 326,
+  "code": 21509},
+"Markdown" :{
+  "nFiles": 74,
+  "blank": 2831,
+  "comment": 9,
+  "code": 14740},
+"TypeScript" :{
+  "nFiles": 131,
+  "blank": 1405,
+  "comment": 1249,
+  "code": 11382},
+"Text" :{
+  "nFiles": 125,
+  "blank": 294,
+  "comment": 0,
+  "code": 5556},
+"CSS" :{
+  "nFiles": 56,
+  "blank": 919,
+  "comment": 172,
+  "code": 5449},
+"JavaScript" :{
+  "nFiles": 14,
+  "blank": 231,
+  "comment": 565,
+  "code": 3946},
+"HTML" :{
+  "nFiles": 13,
+  "blank": 154,
+  "comment": 18,
+  "code": 3307},
+"Bourne Shell" :{
+  "nFiles": 30,
+  "blank": 274,
+  "comment": 709,
+  "code": 2700},
+"Python" :{
+  "nFiles": 6,
+  "blank": 189,
+  "comment": 128,
+  "code": 1377},
+"YAML" :{
+  "nFiles": 48,
+  "blank": 29,
+  "comment": 426,
+  "code": 1172},
+"Rust" :{
+  "nFiles": 5,
+  "blank": 43,
+  "comment": 30,
+  "code": 333},
+"MSBuild script" :{
+  "nFiles": 18,
+  "blank": 0,
+  "comment": 11,
+  "code": 269},
+"XML" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 19,
+  "code": 99},
+"make" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 8,
+  "code": 93},
+"INI" :{
+  "nFiles": 4,
+  "blank": 7,
+  "comment": 0,
+  "code": 49},
+"Dockerfile" :{
+  "nFiles": 3,
+  "blank": 3,
+  "comment": 65,
+  "code": 48},
+"TOML" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 1,
+  "code": 20},
+"SUM": {
+  "blank": 13229,
+  "comment": 6460,
+  "code": 192594,
+  "nFiles": 1471} }

@@ -1,0 +1,109 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.06",
+  "elapsed_seconds"    : 2.33488416671753,
+  "n_files"            : 1109,
+  "n_lines"            : 151991,
+  "files_per_second"   : 474.970028838336,
+  "lines_per_second"   : 65095.7345835596,
+  "report_file"        : "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/campaign-20261017-2357/04-static/cloc-A-whole.json"},
+"HTML" :{
+  "nFiles": 24,
+  "blank": 4030,
+  "comment": 78,
+  "code": 34052},
+"JSON" :{
+  "nFiles": 108,
+  "blank": 0,
+  "comment": 0,
+  "code": 30637},
+"C#" :{
+  "nFiles": 595,
+  "blank": 6423,
+  "comment": 2512,
+  "code": 29164},
+"Markdown" :{
+  "nFiles": 56,
+  "blank": 2464,
+  "comment": 9,
+  "code": 11871},
+"TypeScript" :{
+  "nFiles": 124,
+  "blank": 1303,
+  "comment": 1070,
+  "code": 10652},
+"CSS" :{
+  "nFiles": 55,
+  "blank": 872,
+  "comment": 129,
+  "code": 5197},
+"JavaScript" :{
+  "nFiles": 11,
+  "blank": 182,
+  "comment": 338,
+  "code": 3024},
+"Bourne Shell" :{
+  "nFiles": 28,
+  "blank": 254,
+  "comment": 592,
+  "code": 2223},
+"Text" :{
+  "nFiles": 21,
+  "blank": 20,
+  "comment": 0,
+  "code": 1211},
+"YAML" :{
+  "nFiles": 48,
+  "blank": 29,
+  "comment": 426,
+  "code": 1172},
+"Python" :{
+  "nFiles": 3,
+  "blank": 74,
+  "comment": 48,
+  "code": 464},
+"Rust" :{
+  "nFiles": 5,
+  "blank": 43,
+  "comment": 30,
+  "code": 333},
+"SVG" :{
+  "nFiles": 1,
+  "blank": 35,
+  "comment": 36,
+  "code": 281},
+"MSBuild script" :{
+  "nFiles": 18,
+  "blank": 0,
+  "comment": 11,
+  "code": 269},
+"XML" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 19,
+  "code": 99},
+"make" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 8,
+  "code": 87},
+"INI" :{
+  "nFiles": 4,
+  "blank": 7,
+  "comment": 0,
+  "code": 49},
+"Dockerfile" :{
+  "nFiles": 3,
+  "blank": 3,
+  "comment": 65,
+  "code": 48},
+"TOML" :{
+  "nFiles": 1,
+  "blank": 3,
+  "comment": 1,
+  "code": 20},
+"SUM": {
+  "blank": 15766,
+  "comment": 5372,
+  "code": 130853,
+  "nFiles": 1109} }

@@ -14,3 +14,36 @@ jobs:
         run: |
           dotnet list backend/Forum.slnx package --vulnerable --include-transitive 2>&1 | tee audit.txt
           ! grep -q "has the following vulnerable packages" audit.txt
+
+  # Mirror of B's `security:trivy-fs` GitLab job (gomx/.gitlab-ci.yml) — same scanner, same
+  # flags, so the H3 CVE metric stays tool-identical across both repos (A-6 / J-5).
+  # Visible-but-non-blocking, like B's allow_failure: true.
+  trivy-fs:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: json
+          output: trivy-report.json
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          format: table
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-report
+          path: trivy-report.json
+          retention-days: 30

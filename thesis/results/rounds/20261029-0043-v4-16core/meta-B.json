@@ -1,0 +1,130 @@
+{
+  "architecture": "B (Go + Templ/HTMX SSR monolith)",
+  "target": "b",
+  "git_sha": "c3c0e03a006a5bb9b947e2ba5e630422104ebc9f",
+  "git_branch": "feature/master-thesis",
+  "git_dirty": false,
+  "harness_git_sha": "01ed4146bc7d692f2d9050543a82ed1b2c6e2c7f",
+  "harness_dirty": false,
+  "deployed_image": "gomx:bench",
+  "image_digest": "sha256:1c9f567f13c85e2d3b20a627dc8e763ab89a7de0c1620826bf580b1887c475f1",
+  "replicas": 2,
+  "resources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "250m",
+      "memory": "256Mi"
+    }
+  },
+  "probes": {
+    "livenessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/healthz",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 5,
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    },
+    "readinessProbe": {
+      "failureThreshold": 3,
+      "httpGet": {
+        "path": "/readyz",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "initialDelaySeconds": 3,
+      "periodSeconds": 5,
+      "successThreshold": 1,
+      "timeoutSeconds": 5
+    },
+    "startupProbe": {
+      "failureThreshold": 90,
+      "httpGet": {
+        "path": "/healthz",
+        "port": "http",
+        "scheme": "HTTP"
+      },
+      "periodSeconds": 10,
+      "successThreshold": 1,
+      "timeoutSeconds": 1
+    }
+  },
+  "env": {
+    "GOMX_SEED": "bench",
+    "GOMX_AUTH_RATELIMIT": "0",
+    "GOMX_BEACON_RATELIMIT": "0",
+    "GOMX_CONTENT_RATELIMIT": "0",
+    "GOMX_UPLOAD_RATELIMIT": "0",
+    "GOMX_COMPRESS": "0",
+    "GOMX_NOTIFY_FRIENDS_ON_POST": "0",
+    "GOMX_CARD_PREVIEW_CHARS": "300",
+    "GOMX_COMMENT_PAGE_SIZE": "0",
+    "GOMX_DB_MAX_CONNS": "30",
+    "GOMX_SECURE_COOKIES": "1",
+    "GOMX_ALLOWED_ORIGINS": "gomx.local",
+    "GOMX_ENV": "benchmark",
+    "GOMX_PORT": "8080",
+    "GOMX_METRICS_PORT": "9090",
+    "GOMX_TRUSTED_PROXIES": "1",
+    "GOMX_LOG_FORMAT": "json",
+    "OTEL_SERVICE_NAME": "gomx"
+  },
+  "postgres": {
+    "image": "docker.io/library/postgres:18",
+    "args": [
+      "-c",
+      "shared_buffers=256MB",
+      "-c",
+      "effective_cache_size=512MB",
+      "-c",
+      "max_connections=100"
+    ],
+    "resources": {
+      "limits": {
+        "cpu": "1",
+        "memory": "1Gi"
+      },
+      "requests": {
+        "cpu": "250m",
+        "memory": "512Mi"
+      }
+    }
+  },
+  "seed_counts": {
+    "users": 800,
+    "threads": 1648,
+    "comments": 9092,
+    "reactions": 15102,
+    "messages": 2031
+  },
+  "k6_version": "k6.bin v2.0.0 (commit/8c3be52cc1, go1.26.3, linux/amd64)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "real_spa": false,
+    "hpa_spec": []
+  },
+  "node": {
+    "kubectl_nodes": "forum   Ready   control-plane   4d2h   v1.35.1   192.168.49.2   <none>   Debian GNU/Linux 12 (bookworm)   7.2.11-arch1-1   containerd://2.2.1",
+    "allocatable": "{\"cpu\":\"16\",\"hugepages-1Gi\":\"0\",\"hugepages-2Mi\":\"0\",\"memory\":\"28403008Ki\",\"pods\":\"110\"}",
+    "wsl_kernel": "7.2.11-arch1-1",
+    "wsl_mem_mb": "27737",
+    "host_cpus": "16"
+  },
+  "seed_deviations_vs_A": [
+    "timestamps: B's bench ages cycle through the feed's range buckets (seedAge(i % 500)); A's are monotonic in the index (newest = highest index). Neutralized for J2/J3/J5/J7 by the whole-corpus thread pool (decision D5).",
+    "social rows: B seeds 2400 friendships + 80 pending + 2000 DMs; A's Benchmark seeds 0 (A-11 P1; J9 not in mix v1).",
+    "soft delete / blocked: A has ~1% soft-deleted threads + comments and 20 blocked users; B has no soft delete (D-8).",
+    "tags: A threads carry 0-5 tags; B has no tags (feature difference, not measured).",
+    "pinned: both 16 (every 100th post) but placed by each seed's own category draw."
+  ]
+}

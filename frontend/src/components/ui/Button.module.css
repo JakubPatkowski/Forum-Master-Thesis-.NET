@@ -92,3 +92,12 @@
     transform: rotate(360deg);
   }
 }
+
+/* Touch floor (coarse pointers / phone widths): 40×40 CSS px minimum hit area — the agreed
+   mobile tap-target floor; desktop density is unchanged. */
+@media (pointer: coarse), (max-width: 480px) {
+  .button {
+    min-height: 40px;
+    min-width: 40px;
+  }
+}

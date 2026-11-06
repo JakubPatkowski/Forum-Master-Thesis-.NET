@@ -1,0 +1,39 @@
+# rate limiter / tracing / runtime posture (live Deployment env) — 2026-10-24T21:32:37+02:00
+## A backend
+ConnectionStrings__Forum=
+Observability__TracingEnabled=false
+RateLimiting__Global__PermitLimit=1000000
+RateLimiting__Auth__PermitLimit=1000000
+## A backend-config (configmap)
+ASPNETCORE_ENVIRONMENT=Production
+Cors__AllowedOrigins__0=https://forum.local
+Cors__AllowedOrigins__1=http://forum.local
+DOTNET_ThreadPool_MinThreads=64
+ForwardedHeaders__KnownNetworks__0=10.244.0.0/16
+Otlp__Endpoint=http://tempo.monitoring.svc.cluster.local:4317
+RabbitMq__Host=rabbitmq
+RateLimiting__Auth__PermitLimit=50
+RateLimiting__Global__PermitLimit=1000
+Storage__Endpoint=minio:9000
+Storage__PublicEndpoint=minio.forum.local
+Storage__PublicUseSsl=true
+## B gomx
+GOMX_SEED=bench
+GOMX_AUTH_RATELIMIT=0
+GOMX_BEACON_RATELIMIT=0
+GOMX_COMPRESS=0
+GOMX_NOTIFY_FRIENDS_ON_POST=0
+GOMX_CARD_PREVIEW_CHARS=300
+GOMX_DB_MAX_CONNS=30
+GOMX_SECURE_COOKIES=1
+GOMX_ALLOWED_ORIGINS=gomx.local
+OTEL_EXPORTER_OTLP_ENDPOINT=
+GOMX_ENV=benchmark
+GOMX_PORT=8080
+GOMX_METRICS_PORT=9090
+GOMX_LOG_FORMAT=json
+OTEL_SERVICE_NAME=gomx
+## replicas / HPA
+2
+2
+No resources found

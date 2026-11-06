@@ -1,0 +1,342 @@
+{
+  "generated": "2026-10-25 03:0x CET",
+  "trivy_version": "Version: 0.72.0\nVulnerability DB:\n  Version: 2\n  UpdatedAt: 2026-10-18 00:43:37.96251718 +0000 UTC\n  NextUpdate: 2026-10-19 00:43:37.96251693 +0000 UTC\n  DownloadedAt: 2026-10-18 01:45:13.865089349 +0000 UTC\nCheck Bundle:\n  Digest: sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058\n  DownloadedAt: 2026-10-18 01:45:14.552081997 +0000 UTC",
+  "cloc_version": "2.10",
+  "trivy_fs_A": {
+    "vulns_total": 0,
+    "vulns_by_severity": {},
+    "distinct_vulnerable_packages": 0,
+    "secrets": 0,
+    "misconfig_total": 5,
+    "misconfig": [
+      "HIGH KSV-0014 Root file system is not read-only (k8s/gomx-bench/app-patch.yaml)",
+      "HIGH KSV-0118 Default security context configured (k8s/gomx-bench/app-patch.yaml)",
+      "HIGH KSV-0118 Default security context configured (k8s/gomx-bench/app-patch.yaml)",
+      "HIGH KSV-0014 Root file system is not read-only (k8s/gomx-bench/postgres-patch.yaml)",
+      "HIGH KSV-0014 Root file system is not read-only (k8s/rabbitmq/statefulset.yaml)"
+    ]
+  },
+  "trivy_fs_B": {
+    "vulns_total": 0,
+    "vulns_by_severity": {},
+    "distinct_vulnerable_packages": 0,
+    "secrets": 0,
+    "misconfig_total": 5,
+    "misconfig": [
+      "HIGH DS-0002 Image user should not be 'root' (ci/e2e.Dockerfile)",
+      "HIGH KSV-0014 Root file system is not read-only (deploy/k8s/bench/app-patch.yaml)",
+      "HIGH KSV-0118 Default security context configured (deploy/k8s/bench/app-patch.yaml)",
+      "HIGH KSV-0118 Default security context configured (deploy/k8s/bench/app-patch.yaml)",
+      "HIGH KSV-0014 Root file system is not read-only (deploy/k8s/bench/postgres-patch.yaml)"
+    ]
+  },
+  "trivy_image_A_api": {
+    "vulns_total": 0,
+    "vulns_by_severity": {},
+    "distinct_vulnerable_packages": 0,
+    "secrets": 0,
+    "misconfig_total": 0,
+    "misconfig": []
+  },
+  "trivy_image_A_web": {
+    "vulns_total": 0,
+    "vulns_by_severity": {},
+    "distinct_vulnerable_packages": 0,
+    "secrets": 0,
+    "misconfig_total": 0,
+    "misconfig": []
+  },
+  "trivy_image_B": {
+    "vulns_total": 0,
+    "vulns_by_severity": {},
+    "distinct_vulnerable_packages": 0,
+    "secrets": 0,
+    "misconfig_total": 0,
+    "misconfig": []
+  },
+  "cloc_A_whole": {
+    "files": 1471,
+    "code": 192594,
+    "comment": 6460,
+    "blank": 13229,
+    "by_language_code": {
+      "JSON": 89594,
+      "C#": 30951,
+      "SVG": 21509,
+      "Markdown": 14740,
+      "TypeScript": 11382,
+      "Text": 5556,
+      "CSS": 5449,
+      "JavaScript": 3946,
+      "HTML": 3307,
+      "Bourne Shell": 2700,
+      "Python": 1377,
+      "YAML": 1172,
+      "Rust": 333,
+      "MSBuild script": 269,
+      "XML": 99,
+      "make": 93,
+      "INI": 49,
+      "Dockerfile": 48,
+      "TOML": 20
+    }
+  },
+  "cloc_A_core": {
+    "files": 797,
+    "code": 53914,
+    "comment": 4112,
+    "blank": 8150,
+    "by_language_code": {
+      "C#": 23922,
+      "TypeScript": 11382,
+      "JSON": 10345,
+      "CSS": 4917,
+      "Markdown": 1941,
+      "HTML": 728,
+      "MSBuild script": 269,
+      "YAML": 125,
+      "XML": 99,
+      "make": 93,
+      "Dockerfile": 48,
+      "INI": 45
+    }
+  },
+  "cloc_B_whole": {
+    "files": 775,
+    "code": 96044,
+    "comment": 7100,
+    "blank": 8218,
+    "by_language_code": {
+      "Go": 64215,
+      "CSS": 11743,
+      "TypeScript": 4782,
+      "Templ": 4763,
+      "YAML": 2875,
+      "Markdown": 2699,
+      "TOML": 1422,
+      "SQL": 1163,
+      "Bourne Shell": 829,
+      "JSON": 704,
+      "XML": 339,
+      "Kotlin": 152,
+      "Gradle": 116,
+      "DOS Batch": 64,
+      "HTML": 59,
+      "Properties": 51,
+      "Rust": 37,
+      "INI": 24,
+      "Dockerfile": 7,
+      "JavaScript": 0,
+      "ProGuard": 0
+    }
+  },
+  "cloc_B_core": {
+    "files": 298,
+    "code": 30575,
+    "comment": 4475,
+    "blank": 4574,
+    "by_language_code": {
+      "Go": 18885,
+      "TypeScript": 2846,
+      "Templ": 2646,
+      "TOML": 1393,
+      "SQL": 1163,
+      "Markdown": 1147,
+      "YAML": 970,
+      "CSS": 777,
+      "JSON": 622,
+      "XML": 42,
+      "Properties": 40,
+      "Bourne Shell": 23,
+      "INI": 14,
+      "Dockerfile": 7
+    }
+  },
+  "image_sizes": {
+    "container_image_size_bytes{image=\"gomx:bench-46b342c\"}": 41202352,
+    "container_image_size_bytes{image=\"forum-dotnet-api:git-64cd5e2\"}": 178863581,
+    "container_image_size_bytes{image=\"forum-dotnet-web:git-64cd5e2\"}": 248770086
+  },
+  "artifacts_A": {
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"raw\"}": 645789,
+    "artifact_size_bytes{artifact=\"first_load_js\",encoding=\"gzip\"}": 195311,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"raw\"}": 73038,
+    "artifact_size_bytes{artifact=\"first_load_css\",encoding=\"gzip\"}": 16582,
+    "web_assets_total_bytes{encoding=\"gzip\"}": 211893,
+    "container_image_size_bytes{image=\"api\"}": 178863581,
+    "container_image_size_bytes{image=\"web\"}": 248770086
+  },
+  "artifacts_B": {
+    "artifact_size_bytes{artifact=\"server\",encoding=\"raw\"}": 39964834,
+    "artifact_size_bytes{artifact=\"server\",encoding=\"gzip\"}": 13174075,
+    "artifact_size_bytes{artifact=\"styles.css\",encoding=\"raw\"}": 211324,
+    "artifact_size_bytes{artifact=\"styles.css\",encoding=\"gzip\"}": 31479,
+    "artifact_size_bytes{artifact=\"bridge-alpine.js\",encoding=\"raw\"}": 62806,
+    "artifact_size_bytes{artifact=\"bridge-alpine.js\",encoding=\"gzip\"}": 21718,
+    "artifact_size_bytes{artifact=\"bridge.js\",encoding=\"raw\"}": 71629,
+    "artifact_size_bytes{artifact=\"bridge.js\",encoding=\"gzip\"}": 21421,
+    "artifact_size_bytes{artifact=\"forum.js\",encoding=\"raw\"}": 209100,
+    "artifact_size_bytes{artifact=\"forum.js\",encoding=\"gzip\"}": 70639,
+    "web_assets_total_bytes{encoding=\"gzip\"}": 145257
+  },
+  "dependency_counts": {
+    "A_nuget_central_package_versions": 42,
+    "A_npm_direct": {
+      "dependencies": 9,
+      "devDependencies": 15
+    },
+    "A_npm_lockfile_packages": 669,
+    "B_go_modules": {
+      "direct": 29,
+      "indirect": 105
+    },
+    "B_bun_direct": {
+      "dependencies": 9,
+      "devDependencies": 27
+    },
+    "B_bun_lock_packages_approx": 1320
+  },
+  "v1_reference_2026-10-18": {
+    "trivy_A": {
+      "vulns_by_severity": {
+        "HIGH": 11,
+        "CRITICAL": 2
+      },
+      "vulns_total": 13,
+      "distinct_vulnerable_packages": 10,
+      "vulnerable_packages": [
+        "next@15.5.20 (fix 15.5.21, 16.2.11) x3",
+        "next@15.5.20 (fix 15.5.24, 16.3.3) x2",
+        "nanoid@3.3.15 (fix 3.3.18, 5.1.6) x1",
+        "nanoid@3.3.15 (fix 3.3.16, 5.1.16) x1",
+        "postcss@8.4.31 (fix 8.5.12) x1",
+        "postcss@8.4.31 (fix 8.5.18) x1",
+        "sharp@0.34.5 (fix 0.35.0) x1",
+        "sharp@0.34.5 (fix 0.35.4) x1",
+        "sharp@0.34.5 (fix 0.35.5) x1",
+        "source-map-js@1.2.1 (fix 1.2.2) x1"
+      ],
+      "secrets": 0,
+      "misconfig_total": 5,
+      "misconfig": [
+        "HIGH KSV-0014 Root file system is not read-only x3",
+        "HIGH KSV-0118 Default security context configured x2"
+      ]
+    },
+    "trivy_B": {
+      "vulns_by_severity": {},
+      "vulns_total": 0,
+      "distinct_vulnerable_packages": 0,
+      "vulnerable_packages": [],
+      "secrets": 0,
+      "misconfig_total": 5,
+      "misconfig": [
+        "HIGH KSV-0014 Root file system is not read-only x2",
+        "HIGH KSV-0118 Default security context configured x2",
+        "HIGH DS-0002 Image user should not be 'root' x1"
+      ]
+    },
+    "cloc_A_core": {
+      "cloc_version": "2.06",
+      "files": 789,
+      "code": 52097,
+      "comment": 3712,
+      "blank": 7861,
+      "by_language_code": {
+        "C#": 23166,
+        "TypeScript": 10652,
+        "JSON": 10305,
+        "CSS": 4666,
+        "Markdown": 1907,
+        "HTML": 728,
+        "MSBuild script": 269,
+        "YAML": 125,
+        "XML": 99,
+        "make": 87,
+        "Dockerfile": 48,
+        "INI": 45
+      }
+    },
+    "cloc_B_core": {
+      "cloc_version": "2.06",
+      "files": 295,
+      "code": 30088,
+      "comment": 4369,
+      "blank": 4520,
+      "by_language_code": {
+        "Go": 18403,
+        "TypeScript": 2846,
+        "Templ": 2641,
+        "TOML": 1393,
+        "SQL": 1163,
+        "Markdown": 1147,
+        "YAML": 970,
+        "CSS": 777,
+        "JSON": 622,
+        "XML": 42,
+        "Properties": 40,
+        "Bourne Shell": 23,
+        "INI": 14,
+        "Dockerfile": 7
+      }
+    },
+    "cloc_A_whole": {
+      "cloc_version": "2.06",
+      "files": 1109,
+      "code": 130853,
+      "comment": 5372,
+      "blank": 15766,
+      "by_language_code": {
+        "HTML": 34052,
+        "JSON": 30637,
+        "C#": 29164,
+        "Markdown": 11871,
+        "TypeScript": 10652,
+        "CSS": 5197,
+        "JavaScript": 3024,
+        "Bourne Shell": 2223,
+        "Text": 1211,
+        "YAML": 1172,
+        "Python": 464,
+        "Rust": 333,
+        "SVG": 281,
+        "MSBuild script": 269,
+        "XML": 99,
+        "make": 87,
+        "INI": 49,
+        "Dockerfile": 48,
+        "TOML": 20
+      }
+    },
+    "cloc_B_whole": {
+      "cloc_version": "2.06",
+      "files": 772,
+      "code": 95512,
+      "comment": 6991,
+      "blank": 8160,
+      "by_language_code": {
+        "Go": 63712,
+        "CSS": 11743,
+        "TypeScript": 4782,
+        "Templ": 4758,
+        "YAML": 2873,
+        "Markdown": 2677,
+        "TOML": 1422,
+        "SQL": 1163,
+        "Bourne Shell": 829,
+        "JSON": 704,
+        "XML": 339,
+        "Kotlin": 152,
+        "Gradle": 116,
+        "DOS Batch": 64,
+        "HTML": 59,
+        "Properties": 51,
+        "Rust": 37,
+        "INI": 24,
+        "Dockerfile": 7,
+        "JavaScript": 0,
+        "ProGuard": 0
+      }
+    }
+  }
+}

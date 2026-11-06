@@ -1,0 +1,38 @@
+
+target=b  profile=smoke  mix=v2  harness=h4-2026-10-18  base=https://gomx.local  reads=anonymous
+http_reqs=732  p95=20ms  p99=32ms  failed=0.00%  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max
+login                10     26     20     36     36     37
+communities          36      2      2      3      4      4
+space_page          170      7      7      9     11     14
+space_feed           56      7      6      9     11     11
+thread              114      4      3      5      7      8
+search               55     14     11     30     32     34
+profile              12      3      3      4      4      4
+comment_create       57      6      4     22     27     33
+vote                 56      7      3     23     35     40
+upload               18     23     13     61     69     71
+upload_poll          18      2      2      2      2      2
+thread_create        18      6      4     21     25     26
+dm_send              21     10      4     31     32     32
+probe_comment         8      4      4      5      5      5
+setup                83      6      6      7      8      9
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           170   2.83      7     21     23
+J2           114   1.90      4      5      7
+J3            57   0.95      4     22     31
+J4            18   0.30   1457   1590   1597
+J5            56   0.93      4     23     35
+J6            55   0.92     12     31     32
+J7            12   0.20      3      4      4
+J8             4   0.07      0      0      0
+J9            21   0.35      5     31     32
+nav           36   0.60      3      3      5
+
+ws: subscribed=4  notifications=166  errors=0
+ws receipt probes: sent=8  received=8  late=0  lost=0  unresolved=0  loss=0%  latency med=5ms p95=7ms max=7ms  (write request start → matching push; A floor = outbox relay poll)
+
+all thresholds passed
+

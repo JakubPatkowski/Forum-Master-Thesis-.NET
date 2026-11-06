@@ -1,0 +1,143 @@
+== A
+  nav (A categories | B /communities)                            foreground=  1  background= 43 {'Npgsql pooled-connection reset (D9)': 12, 'tx control': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · SELECT c.id, c.created_by, c.created_on_utc, c.deleted_by, c.deleted_on_utc, c.description, c.icon_file_id, c.is_deleted, c.last_modified_by
+  J1 page 1 (A feed + batch | B /c/general)                      foreground=  4  background= 67 {'monitoring (postgres-exporter)': 24, 'Npgsql pooled-connection reset (D9)': 12, 'tx control': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · SELECT c.id, c.owner_id, c.visibility = 'private'
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+  J2 heaviest thread (A detail‖tree + batch | B /thread/1)       foreground=  5  background= 46 {'Npgsql pooled-connection reset (D9)': 15, 'tx control': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · SELECT c0.id, c0.owner_id, c0.visibility = 'private'
+      · SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,
+      · SELECT id, thread_id, parent_id, path, depth, body, is_deleted,
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+  J2 typical thread (4 comments)                                 foreground=  5  background= 42 {'Npgsql pooled-connection reset (D9)': 14, 'tx control': 18, 'outbox relay poll': 9, 'health check SELECT 1': 1}
+      · SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,
+      · SELECT c0.id, c0.owner_id, c0.visibility = 'private'
+      · SELECT id, thread_id, parent_id, path, depth, body, is_deleted,
+      · SELECT target_id, reaction_count
+      · SELECT target_id
+  J6 search 'beacon' (rank 50)                                   foreground=  1  background= 43 {'Npgsql pooled-connection reset (D9)': 12, 'tx control': 20, 'outbox relay poll': 10, 'health check SELECT 1': 1}
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+  J7 profile (A stats‖threads | B /u/34)                         foreground=  2  background= 88 {'Npgsql pooled-connection reset (D9)': 18, 'tx control': 30, 'outbox relay poll': 15, 'monitoring (postgres-exporter)': 24, 'health check SELECT 1': 1}
+      · SELECT user_id, username, display_name, thread_count, comment_count, karma
+      · SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+  J3 comment create (+2 s)                                       foreground=  5  background=581 {'Npgsql pooled-connection reset (D9)': 132, 'health check SELECT 1': 13, 'tx control': 244, 'outbox relay poll': 123, 'monitoring (postgres-exporter)': 69}
+      · SELECT t.id, t.body, t.category_id, t.created_by, t.created_on_utc, t.deleted_by, t.deleted_on_utc, t.is_deleted, t.is_pinned, t.last_modifi
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · INSERT INTO forum_content.comments (id, body, created_by, created_on_utc, deleted_by, deleted_on_utc, depth, is_deleted, last_modified_by, l
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+  J5 reaction add / vote                                         foreground=  5  background= 50 {'Npgsql pooled-connection reset (D9)': 16, 'tx control': 22, 'outbox relay poll': 11, 'health check SELECT 1': 1}
+      · SELECT t.category_id, c.owner_id, c.visibility, t.id
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · SELECT r.user_id, r.target_type, r.target_id, r.reaction_type, r.created_on_utc, r.value
+      · INSERT INTO forum_engagement.reactions (reaction_type, target_id, target_type, user_id, created_on_utc, value)
+      · SELECT
+  J5 reaction remove / vote back                                 foreground=  9  background=118 {'Npgsql pooled-connection reset (D9)': 27, 'tx control': 42, 'outbox relay poll': 23, 'health check SELECT 1': 2, 'monitoring (postgres-exporter)': 24}
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+      · SELECT t.category_id, c.owner_id, c.visibility, t.id
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · SELECT r.user_id, r.target_type, r.target_id, r.reaction_type, r.created_on_utc, r.value
+      · DELETE FROM forum_engagement.reactions
+      · SELECT
+      · SAVEPOINT "__EFSavePoint"
+      · RELEASE SAVEPOINT "__EFSavePoint"
+  J4 thread + photo                                              foreground= 10  background= 18 {'Npgsql pooled-connection reset (D9)': 11, 'tx control': 4, 'outbox relay poll': 2, 'health check SELECT 1': 1}
+      · INSERT INTO forum_files.files (id, bucket, committed_on_utc, content_type, created_by, created_on_utc, height, last_modified_by, last_modifi
+      · SELECT f1.id, f1.bucket, f1.committed_on_utc, f1.content_type, f1.created_by, f1.created_on_utc, f1.height, f1.last_modified_by, f1.last_mod
+      · UPDATE forum_files.files SET committed_on_utc = $1, height = $2, last_modified_by = $3, last_modified_on_utc = $4, status = $5, width = $6
+      · SELECT c.id, c.created_by, c.created_on_utc, c.deleted_by, c.deleted_on_utc, c.description, c.icon_file_id, c.is_deleted, c.last_modified_by
+      · SELECT forum_authz.has_permission($1, $2, $3, $4) AS "Value"
+      · INSERT INTO forum_content.threads (id, body, category_id, created_by, created_on_utc, deleted_by, deleted_on_utc, is_deleted, is_pinned, las
+      · SELECT f1.id, f1.bucket, f1.committed_on_utc, f1.content_type, f1.created_by, f1.created_on_utc, f1.height, f1.last_modified_by, f1.last_mod
+      · SELECT t.id, t.body, t.category_id, t.created_by, t.created_on_utc, t.deleted_by, t.deleted_on_utc, t.is_deleted, t.is_pinned, t.last_modifi
+      · SELECT count(*)::int
+      · INSERT INTO forum_files.file_attachments (file_id, target_id, target_type, created_on_utc)
+  J9 DM (A open+send | B send)                                   foreground= 14  background= 18 {'Npgsql pooled-connection reset (D9)': 12, 'health check SELECT 1': 1, 'tx control': 4, 'outbox relay poll': 1}
+      · SELECT 1 FROM forum_identity.users WHERE id = $1 AND status = 'active' LIMIT 1
+      · SELECT EXISTS (
+      · SELECT u.user_id, u.friend_requests, u.group_invites, u.messages, u.show_online_status
+      · SELECT c.id, c.created_by, c.created_on_utc, c.direct_key, c.last_modified_by, c.last_modified_on_utc, c.type
+      · INSERT INTO forum_social.conversations (id, created_by, created_on_utc, direct_key, last_modified_by, last_modified_on_utc, type)
+      · INSERT INTO forum_social.conversation_participants (conversation_id, user_id, is_muted, joined_on_utc, last_read_on_utc, left_on_utc)
+      · INSERT INTO forum_social.conversation_participants (conversation_id, user_id, is_muted, joined_on_utc, last_read_on_utc, left_on_utc)
+      · SELECT c.id, c.created_by, c.created_on_utc, c.direct_key, c.last_modified_by, c.last_modified_on_utc, c.type
+      · SELECT c.conversation_id, c.user_id, c.is_muted, c.joined_on_utc, c.last_read_on_utc, c.left_on_utc
+      · SELECT c.conversation_id, c.user_id, c.is_muted, c.joined_on_utc, c.last_read_on_utc, c.left_on_utc
+      · SELECT EXISTS (
+      · SELECT u.user_id, u.friend_requests, u.group_invites, u.messages, u.show_online_status
+      · UPDATE forum_social.conversation_participants SET last_read_on_utc = $1
+      · INSERT INTO forum_social.messages (id, body, conversation_id, created_by, created_on_utc, deleted_by, deleted_on_utc, edited_on_utc, is_dele
+  idle 20 s (no traffic)                                         foreground=  0  background= 76 {'Npgsql pooled-connection reset (D9)': 18, 'health check SELECT 1': 10, 'monitoring (postgres-exporter)': 48}
+== B
+  nav (A categories | B /communities)                            foreground=  1  background= 28 {'pgx pool ping': 10, 'River poll/maintenance': 14, 'tx control': 4}
+      · -- name: ListCommunities :many
+  J1 page 1 (A feed + batch | B /c/general)                      foreground=  2  background= 22 {'pgx pool ping': 9, 'River poll/maintenance': 11, 'tx control': 2}
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListCommunityPostsCursorNewest :many
+  J2 heaviest thread (A detail‖tree + batch | B /thread/1)       foreground=  3  background= 26 {'tx control': 4, 'River poll/maintenance': 14, 'pgx pool ping': 8}
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListComments :many
+  J2 typical thread (4 comments)                                 foreground=  3  background= 22 {'River poll/maintenance': 12, 'tx control': 4, 'pgx pool ping': 6}
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: ListComments :many
+  J6 search 'beacon' (rank 50)                                   foreground=  1  background= 18 {'pgx pool ping': 9, 'River poll/maintenance': 9}
+      · -- name: SearchPostsPaged :many
+  J7 profile (A stats‖threads | B /u/34)                         foreground=  3  background= 31 {'River poll/maintenance': 16, 'pgx pool ping': 11, 'tx control': 4}
+      · -- name: GetUserByID :one
+      · -- name: AuthorStats :one
+      · -- name: PostsByAuthor :many
+  J3 comment create (+2 s)                                       foreground=  6  background=278 {'pgx pool ping': 107, 'River poll/maintenance': 123, 'tx control': 48}
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: CreateComment :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+  J5 reaction add / vote                                         foreground=  8  background= 27 {'River poll/maintenance': 14, 'pgx pool ping': 7, 'tx control': 6}
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetPostBaseVotesForUpdate :one
+      · -- name: GetPostVoteDir :one
+      · -- name: UpsertPostVote :exec
+      · -- name: SumPostVotes :one
+      · -- name: GetPostVoteDir :one
+  J5 reaction remove / vote back                                 foreground=  8  background= 35 {'River poll/maintenance': 15, 'pgx pool ping': 14, 'tx control': 6}
+      · -- name: GetUserByToken :one
+      · -- name: GetPost :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetPostBaseVotesForUpdate :one
+      · -- name: GetPostVoteDir :one
+      · -- name: DeletePostVote :exec
+      · -- name: SumPostVotes :one
+      · -- name: GetPostVoteDir :one
+  J4 thread + photo                                              foreground= 15  background= 37 {'River poll/maintenance': 22, 'tx control': 8, 'pgx pool ping': 7}
+      · -- name: GetUserByToken :one
+      · -- name: CreateMediaUpload :one
+      · -- name: JobInsertFastMany :many
+      · -- name: PGNotifyMany :exec
+      · -- name: GetUserByToken :one
+      · -- name: GetMediaUpload :one
+      · -- name: UpdateMediaUpload :exec
+      · -- name: JobSetStateIfRunningMany :many
+      · -- name: GetUserByToken :one
+      · -- name: GetMediaUpload :one
+      · -- name: GetUserByToken :one
+      · -- name: GetCommunityBySlug :one
+      · -- name: GetMembership :one
+      · -- name: CreatePost :one
+      · -- name: GetCommunityBySlug :one
+  J9 DM (A open+send | B send)                                   foreground=  6  background= 25 {'pgx pool ping': 9, 'River poll/maintenance': 12, 'tx control': 4}
+      · -- name: GetUserByToken :one
+      · -- name: AreFriends :one
+      · -- name: GetUserByID :one
+      · -- name: InsertDirectMessage :one
+      · -- name: CountUnreadFromPeer :one
+      · -- name: ListUnreadDMCounts :many
+  idle 20 s (no traffic)                                         foreground=  0  background=172 {'River poll/maintenance': 82, 'pgx pool ping': 62, 'tx control': 28}

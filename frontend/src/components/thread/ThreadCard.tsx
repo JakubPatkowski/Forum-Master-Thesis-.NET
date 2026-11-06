@@ -2,8 +2,8 @@
 
 /**
  * Feed/search row (design: Home.dc.html rows). Notes against the contract:
- *  - no excerpt: ThreadFeedItemResponse carries no body text — the card renders without
- *    one rather than inventing content;
+ *  - excerpt: ThreadFeedItemResponse carries a 300-char plain-text excerpt computed server-side
+ *    (A/B parity with Architecture B's card previews); rendered clamped to two lines;
  *  - no comment-count badge: the field is hard-coded 0 server-side (scope decision);
  *  - like count comes from the Engagement batch hydration, not the feed's zeroed field.
  */
@@ -37,7 +37,10 @@ export function ThreadCard({
   isNew = false,
 }: ThreadCardProps) {
   return (
-    <div className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}>
+    <div
+      className={isNew ? `${styles.card} ${styles.cardNew}` : styles.card}
+      data-testid="thread-card"
+    >
       <Link href={`/t/${thread.id}`} className={styles.main}>
         <ThreadIcon
           threadId={thread.id}
@@ -61,6 +64,11 @@ export function ThreadCard({
             {thread.lastModifiedOnUtc ? <Badge>EDITED</Badge> : null}
           </span>
           <span className={styles.title}>{thread.title}</span>
+          {thread.excerpt ? (
+            <span className={styles.excerpt} data-testid="thread-excerpt">
+              {thread.excerpt}
+            </span>
+          ) : null}
           <span className={styles.author}>@{thread.username}</span>
         </span>
       </Link>
@@ -74,7 +82,13 @@ export function ThreadCard({
             {pinAction.pinned ? "UNPIN" : "PIN"}
           </button>
         ) : null}
-        <ReactionButton targetType="thread" targetId={thread.id} initial={reaction} covered size="sm" />
+        <ReactionButton
+          targetType="thread"
+          targetId={thread.id}
+          initial={reaction}
+          covered
+          size="sm"
+        />
       </span>
     </div>
   );

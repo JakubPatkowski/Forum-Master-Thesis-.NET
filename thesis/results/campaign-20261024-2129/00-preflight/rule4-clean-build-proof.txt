@@ -1,0 +1,13 @@
+# Rule-4 proof (clean-tag provenance of A) — 2026-10-24T21:29:01+02:00
+# meta-A.json git_dirty is ALWAYS true during a round: the round writes its own archive under thesis/results/rounds/,
+# which 'git status --porcelain' counts. The real proof of a clean build is recorded here instead.
+## git status --porcelain -- . ':!thesis/results'   (expect empty)
+(end)
+## git diff --quiet HEAD   (expect exit 0)
+exit=0
+## git describe --tags --exact-match   (expect thesis-v3-a)
+thesis-v3-a
+## same checks for B (never written to)
+(end)
+exit=0
+thesis-v3-b

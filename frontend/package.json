@@ -10,24 +10,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --dir src --dir e2e --file playwright.config.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:android": "playwright test --project=android",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
+    "tauri": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.0",
-    "next": "^15.3.0",
+    "next": "^15.5.28",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.1",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.0",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "web-vitals": "^5.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tauri-apps/cli": "2.11.4",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.0",
@@ -36,10 +43,16 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.0",
     "eslint": "^9.17.0",
-    "eslint-config-next": "^15.3.0",
+    "eslint-config-next": "^15.5.28",
     "jsdom": "^25.0.0",
     "prettier": "^3.4.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.31",
+    "nanoid": "^3.3.20",
+    "source-map-js": "^1.2.2",
+    "sharp": "^0.35.5"
   }
 }

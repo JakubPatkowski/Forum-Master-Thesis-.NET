@@ -1,0 +1,19 @@
+{
+  "label": "h4-dryrun",
+  "plan": "smoke:1",
+  "started_epoch": 1792360167.2132852,
+  "cooldown_s": 60,
+  "reseed_each_run": true,
+  "warmup_each_run": true,
+  "replicas": 2,
+  "mix_version": "v2",
+  "harness_version": "h4-2026-10-18",
+  "order": "ABBA (odd repeat: A then B; even: B then A)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "k6_env": []
+  }
+}

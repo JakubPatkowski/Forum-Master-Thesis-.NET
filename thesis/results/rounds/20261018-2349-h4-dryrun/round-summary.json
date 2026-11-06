@@ -1,0 +1,2057 @@
+{
+  "round": "20261018-2349-h4-dryrun",
+  "runs": [
+    {
+      "target": "a",
+      "profile": "smoke",
+      "repeat": 1,
+      "position_in_pair": 1,
+      "started_epoch": 1792360277,
+      "finished_epoch": 1792360363,
+      "seed_before": {
+        "users": 800,
+        "threads": 1611,
+        "comments": 9039,
+        "reactions": 15041
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 1625,
+        "comments": 9086,
+        "reactions": 15117
+      },
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "smoke/A/run-1",
+      "k6": {
+        "cpu_pct_max": 32.33333333333333,
+        "cpu_pct_mean": 12.273333333333333,
+        "rss_mib_max": 93
+      }
+    },
+    {
+      "target": "b",
+      "profile": "smoke",
+      "repeat": 1,
+      "position_in_pair": 2,
+      "started_epoch": 1792360596,
+      "finished_epoch": 1792360680,
+      "seed_before": {
+        "users": 800,
+        "threads": 1612,
+        "comments": 9028,
+        "reactions": 15040
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 1630,
+        "comments": 9093,
+        "reactions": 15094
+      },
+      "pod_restarts_during_run": [],
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "smoke/B/run-1",
+      "k6": {
+        "cpu_pct_max": 33.166666666666664,
+        "cpu_pct_mean": 16.017777777777777,
+        "rss_mib_max": 94
+      }
+    }
+  ],
+  "summary": {
+    "smoke/a": {
+      "runs": 1,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 1,
+            "mean": 3.117,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3.117,
+            "max": 3.117,
+            "values": [
+              3.117
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 6,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 6,
+            "max": 6,
+            "values": [
+              6
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 14,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 14,
+            "max": 14,
+            "values": [
+              14
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 21.53999999999985,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 21.53999999999985,
+            "max": 21.53999999999985,
+            "values": [
+              21.53999999999985
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 187,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 187,
+            "max": 187,
+            "values": [
+              187
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 1,
+            "mean": 1.817,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1.817,
+            "max": 1.817,
+            "values": [
+              1.817
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 9,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 9,
+            "max": 9,
+            "values": [
+              9
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 11,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 11,
+            "max": 11,
+            "values": [
+              11
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 18.60000000000001,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 18.60000000000001,
+            "max": 18.60000000000001,
+            "values": [
+              18.60000000000001
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 109,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 109,
+            "max": 109,
+            "values": [
+              109
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.65,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.65,
+            "max": 0.65,
+            "values": [
+              0.65
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 6,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 6,
+            "max": 6,
+            "values": [
+              6
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 24.1,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 24.1,
+            "max": 24.1,
+            "values": [
+              24.1
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 43.59999999999992,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 43.59999999999992,
+            "max": 43.59999999999992,
+            "values": [
+              43.59999999999992
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 39,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 39,
+            "max": 39,
+            "values": [
+              39
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.233,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.233,
+            "max": 0.233,
+            "values": [
+              0.233
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 473.5,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 473.5,
+            "max": 473.5,
+            "values": [
+              473.5
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 523.4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 523.4,
+            "max": 523.4,
+            "values": [
+              523.4
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 525.48,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 525.48,
+            "max": 525.48,
+            "values": [
+              525.48
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 14,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 14,
+            "max": 14,
+            "values": [
+              14
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 1,
+            "mean": 1.333,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1.333,
+            "max": 1.333,
+            "values": [
+              1.333
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 24.049999999999997,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 24.049999999999997,
+            "max": 24.049999999999997,
+            "values": [
+              24.049999999999997
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 46.41999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 46.41999999999999,
+            "max": 46.41999999999999,
+            "values": [
+              46.41999999999999
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 80,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 80,
+            "max": 80,
+            "values": [
+              80
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.983,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.983,
+            "max": 0.983,
+            "values": [
+              0.983
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 6,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 6,
+            "max": 6,
+            "values": [
+              6
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 9.099999999999994,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 9.099999999999994,
+            "max": 9.099999999999994,
+            "values": [
+              9.099999999999994
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 10,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 10,
+            "max": 10,
+            "values": [
+              10
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 59,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 59,
+            "max": 59,
+            "values": [
+              59
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.133,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.133,
+            "max": 0.133,
+            "values": [
+              0.133
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 6.6499999999999995,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 6.6499999999999995,
+            "max": 6.6499999999999995,
+            "values": [
+              6.6499999999999995
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 6.93,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 6.93,
+            "max": 6.93,
+            "values": [
+              6.93
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 8,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 8,
+            "max": 8,
+            "values": [
+              8
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.067,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.067,
+            "max": 0.067,
+            "values": [
+              0.067
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.4,
+            "max": 0.4,
+            "values": [
+              0.4
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 8,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 8,
+            "max": 8,
+            "values": [
+              8
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 19.24999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 19.24999999999999,
+            "max": 19.24999999999999,
+            "values": [
+              19.24999999999999
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 23.08,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 23.08,
+            "max": 23.08,
+            "values": [
+              23.08
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 24,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 24,
+            "max": 24,
+            "values": [
+              24
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.933,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.933,
+            "max": 0.933,
+            "values": [
+              0.933
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 2,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 2,
+            "max": 2,
+            "values": [
+              2
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 56,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 56,
+            "max": 56,
+            "values": [
+              56
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 1,
+          "mean": 9.6,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 9.6,
+          "max": 9.6,
+          "values": [
+            9.6
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 1,
+          "mean": 22,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 22,
+          "max": 22,
+          "values": [
+            22
+          ]
+        },
+        "journey_med_ms": {
+          "n": 1,
+          "mean": 7,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 7,
+          "max": 7,
+          "values": [
+            7
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 1,
+          "mean": 8.0543325,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8.0543325,
+          "max": 8.0543325,
+          "values": [
+            8.0543325
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 1,
+          "mean": 1228,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1228,
+          "max": 1228,
+          "values": [
+            1228
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 1,
+          "mean": 2.191,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 2.191,
+          "max": 2.191,
+          "values": [
+            2.191
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 10.3455,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 10.3455,
+          "max": 10.3455,
+          "values": [
+            10.3455
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 9.5122,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 9.5122,
+          "max": 9.5122,
+          "values": [
+            9.5122
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.008,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.008,
+          "max": 0.008,
+          "values": [
+            0.008
+          ]
+        },
+        "app_avg_cores": {
+          "n": 1,
+          "mean": 0.0993,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0993,
+          "max": 0.0993,
+          "values": [
+            0.0993
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 1,
+          "mean": 460.0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 460.0,
+          "max": 460.0,
+          "values": [
+            460.0
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 1,
+          "mean": 464.2,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 464.2,
+          "max": 464.2,
+          "values": [
+            464.2
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 2.4913,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 2.4913,
+          "max": 2.4913,
+          "values": [
+            2.4913
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0056,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0056,
+          "max": 0.0056,
+          "values": [
+            0.0056
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 1,
+          "mean": 119.4,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 119.4,
+          "max": 119.4,
+          "values": [
+            119.4
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 8.0538,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8.0538,
+          "max": 8.0538,
+          "values": [
+            8.0538
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.1163,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.1163,
+          "max": 0.1163,
+          "values": [
+            0.1163
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 1,
+          "mean": 85.9,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 85.9,
+          "max": 85.9,
+          "values": [
+            85.9
+          ]
+        },
+        "frontend_mem_avg_mib": {
+          "n": 1,
+          "mean": 44.1,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 44.1,
+          "max": 44.1,
+          "values": [
+            44.1
+          ]
+        },
+        "ns_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 21.3611,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 21.3611,
+          "max": 21.3611,
+          "values": [
+            21.3611
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 7.7257,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 7.7257,
+          "max": 7.7257,
+          "values": [
+            7.7257
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.1309,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.1309,
+          "max": 0.1309,
+          "values": [
+            0.1309
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 1,
+          "mean": 964.9,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 964.9,
+          "max": 964.9,
+          "values": [
+            964.9
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 1.4072,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1.4072,
+          "max": 1.4072,
+          "values": [
+            1.4072
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 1,
+          "mean": 1.103,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1.103,
+          "max": 1.103,
+          "values": [
+            1.103
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 1,
+          "mean": 32.33333333333333,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 32.33333333333333,
+          "max": 32.33333333333333,
+          "values": [
+            32.33333333333333
+          ]
+        },
+        "rss_mib_max": {
+          "n": 1,
+          "mean": 93,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 93,
+          "max": 93,
+          "values": [
+            93
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 1,
+          "mean": 4,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 4,
+          "max": 4,
+          "values": [
+            4
+          ]
+        },
+        "notifications": {
+          "n": 1,
+          "mean": 74,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 74,
+          "max": 74,
+          "values": [
+            74
+          ]
+        },
+        "errors": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probes_received": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 1,
+          "mean": 1846,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1846,
+          "max": 1846,
+          "values": [
+            1846
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 1,
+          "mean": 1864.65,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1864.65,
+          "max": 1864.65,
+          "values": [
+            1864.65
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 1,
+          "mean": 1865,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1865,
+          "max": 1865,
+          "values": [
+            1865
+          ]
+        }
+      }
+    },
+    "smoke/b": {
+      "runs": 1,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 1,
+            "mean": 2.833,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 2.833,
+            "max": 2.833,
+            "values": [
+              2.833
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 20.549999999999983,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 20.549999999999983,
+            "max": 20.549999999999983,
+            "values": [
+              20.549999999999983
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 22.930000000000007,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 22.930000000000007,
+            "max": 22.930000000000007,
+            "values": [
+              22.930000000000007
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 170,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 170,
+            "max": 170,
+            "values": [
+              170
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 1,
+            "mean": 1.9,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1.9,
+            "max": 1.9,
+            "values": [
+              1.9
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 114,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 114,
+            "max": 114,
+            "values": [
+              114
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.95,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.95,
+            "max": 0.95,
+            "values": [
+              0.95
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 22,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 22,
+            "max": 22,
+            "values": [
+              22
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 30.91999999999996,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 30.91999999999996,
+            "max": 30.91999999999996,
+            "values": [
+              30.91999999999996
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 57,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 57,
+            "max": 57,
+            "values": [
+              57
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.3,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.3,
+            "max": 0.3,
+            "values": [
+              0.3
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 1457,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1457,
+            "max": 1457,
+            "values": [
+              1457
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 1589.65,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1589.65,
+            "max": 1589.65,
+            "values": [
+              1589.65
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 1597.1299999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 1597.1299999999999,
+            "max": 1597.1299999999999,
+            "values": [
+              1597.1299999999999
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 18,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 18,
+            "max": 18,
+            "values": [
+              18
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.933,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.933,
+            "max": 0.933,
+            "values": [
+              0.933
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 22.75,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 22.75,
+            "max": 22.75,
+            "values": [
+              22.75
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 35.050000000000026,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 35.050000000000026,
+            "max": 35.050000000000026,
+            "values": [
+              35.050000000000026
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 56,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 56,
+            "max": 56,
+            "values": [
+              56
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.917,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.917,
+            "max": 0.917,
+            "values": [
+              0.917
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 12,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 12,
+            "max": 12,
+            "values": [
+              12
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 31,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 31,
+            "max": 31,
+            "values": [
+              31
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 32.38,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 32.38,
+            "max": 32.38,
+            "values": [
+              32.38
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 55,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 55,
+            "max": 55,
+            "values": [
+              55
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.2,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.2,
+            "max": 0.2,
+            "values": [
+              0.2
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 12,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 12,
+            "max": 12,
+            "values": [
+              12
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.067,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.067,
+            "max": 0.067,
+            "values": [
+              0.067
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.35,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.35,
+            "max": 0.35,
+            "values": [
+              0.35
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 5,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 5,
+            "max": 5,
+            "values": [
+              5
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 31,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 31,
+            "max": 31,
+            "values": [
+              31
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 31.8,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 31.8,
+            "max": 31.8,
+            "values": [
+              31.8
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 21,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 21,
+            "max": 21,
+            "values": [
+              21
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.6,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 0.6,
+            "max": 0.6,
+            "values": [
+              0.6
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 3.25,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 3.25,
+            "max": 3.25,
+            "values": [
+              3.25
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 4.649999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 4.649999999999999,
+            "max": 4.649999999999999,
+            "values": [
+              4.649999999999999
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 36,
+            "sd": 0.0,
+            "ci95": null,
+            "min": 36,
+            "max": 36,
+            "values": [
+              36
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 1,
+          "mean": 8.983,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8.983,
+          "max": 8.983,
+          "values": [
+            8.983
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 1,
+          "mean": 31,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 31,
+          "max": 31,
+          "values": [
+            31
+          ]
+        },
+        "journey_med_ms": {
+          "n": 1,
+          "mean": 6,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 6,
+          "max": 6,
+          "values": [
+            6
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 1,
+          "mean": 20.096588500000003,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 20.096588500000003,
+          "max": 20.096588500000003,
+          "values": [
+            20.096588500000003
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 1,
+          "mean": 732,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 732,
+          "max": 732,
+          "values": [
+            732
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 1,
+          "mean": 15.125,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 15.125,
+          "max": 15.125,
+          "values": [
+            15.125
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 4.9462,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 4.9462,
+          "max": 4.9462,
+          "values": [
+            4.9462
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 4.256,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 4.256,
+          "max": 4.256,
+          "values": [
+            4.256
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0062,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0062,
+          "max": 0.0062,
+          "values": [
+            0.0062
+          ]
+        },
+        "app_avg_cores": {
+          "n": 1,
+          "mean": 0.0444,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0444,
+          "max": 0.0444,
+          "values": [
+            0.0444
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 1,
+          "mean": 49.2,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 49.2,
+          "max": 49.2,
+          "values": [
+            49.2
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 1,
+          "mean": 50.0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 50.0,
+          "max": 50.0,
+          "values": [
+            50.0
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 2.3191,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 2.3191,
+          "max": 2.3191,
+          "values": [
+            2.3191
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0,
+          "max": 0.0,
+          "values": [
+            0.0
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 1,
+          "mean": 131.4,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 131.4,
+          "max": 131.4,
+          "values": [
+            131.4
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 1.1095,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 1.1095,
+          "max": 1.1095,
+          "values": [
+            1.1095
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0,
+          "max": 0.0,
+          "values": [
+            0.0
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 1,
+          "mean": 9.6,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 9.6,
+          "max": 9.6,
+          "values": [
+            9.6
+          ]
+        },
+        "frontend_mem_avg_mib": null,
+        "ns_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 8.8646,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8.8646,
+          "max": 8.8646,
+          "values": [
+            8.8646
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 8.0297,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8.0297,
+          "max": 8.0297,
+          "values": [
+            8.0297
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0075,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.0075,
+          "max": 0.0075,
+          "values": [
+            0.0075
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 1,
+          "mean": 542.1,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 542.1,
+          "max": 542.1,
+          "values": [
+            542.1
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 2.3371,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 2.3371,
+          "max": 2.3371,
+          "values": [
+            2.3371
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 1,
+          "mean": 0.977,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0.977,
+          "max": 0.977,
+          "values": [
+            0.977
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 1,
+          "mean": 33.166666666666664,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 33.166666666666664,
+          "max": 33.166666666666664,
+          "values": [
+            33.166666666666664
+          ]
+        },
+        "rss_mib_max": {
+          "n": 1,
+          "mean": 94,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 94,
+          "max": 94,
+          "values": [
+            94
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 1,
+          "mean": 4,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 4,
+          "max": 4,
+          "values": [
+            4
+          ]
+        },
+        "notifications": {
+          "n": 1,
+          "mean": 166,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 166,
+          "max": 166,
+          "values": [
+            166
+          ]
+        },
+        "errors": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probes_received": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 1,
+          "mean": 4.5,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 4.5,
+          "max": 4.5,
+          "values": [
+            4.5
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 1,
+          "mean": 7,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 7,
+          "max": 7,
+          "values": [
+            7
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 1,
+          "mean": 7,
+          "sd": 0.0,
+          "ci95": null,
+          "min": 7,
+          "max": 7,
+          "values": [
+            7
+          ]
+        }
+      }
+    }
+  }
+}

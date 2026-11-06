@@ -1,0 +1,35 @@
+NAMESPACE       NAME                                                   READY   STATUS      RESTARTS        AGE     IP               NODE    NOMINATED NODE   READINESS GATES
+forum-dotnet    backend-68549cd9d7-g6s4z                               1/1     Running     0               12m     10.244.133.143   forum   <none>           <none>
+forum-dotnet    backend-68549cd9d7-kdl2m                               1/1     Running     0               12m     10.244.133.152   forum   <none>           <none>
+forum-dotnet    frontend-9bb7b77ff-fk9vm                               1/1     Running     0               5h26m   10.244.133.149   forum   <none>           <none>
+forum-dotnet    minio-0                                                1/1     Running     4 (6h2m ago)    8d      10.244.133.176   forum   <none>           <none>
+forum-dotnet    minio-create-bucket-tpjl5                              0/1     Completed   0               5h27m   10.244.133.171   forum   <none>           <none>
+forum-dotnet    postgres-0                                             1/1     Running     3 (35m ago)     6d3h    10.244.133.154   forum   <none>           <none>
+forum-dotnet    rabbitmq-0                                             1/1     Running     19 (14m ago)    8d      10.244.133.144   forum   <none>           <none>
+gomx            gomx-5bc6f46dc7-4f9nt                                  1/1     Running     0               28m     10.244.133.159   forum   <none>           <none>
+gomx            gomx-5bc6f46dc7-bkszv                                  1/1     Running     0               28m     10.244.133.129   forum   <none>           <none>
+gomx            minio-0                                                1/1     Running     5 (33m ago)     7d5h    10.244.133.146   forum   <none>           <none>
+gomx            postgres-0                                             1/1     Running     3               6d3h    10.244.133.132   forum   <none>           <none>
+gomx            redis-75c79bffcf-dnqb2                                 1/1     Running     24 (14m ago)    7d5h    10.244.133.138   forum   <none>           <none>
+ingress-nginx   ingress-nginx-admission-create-d47s7                   0/1     Completed   0               102d    <none>           forum   <none>           <none>
+ingress-nginx   ingress-nginx-admission-patch-ng7vv                    0/1     Completed   2               102d    <none>           forum   <none>           <none>
+ingress-nginx   ingress-nginx-controller-596f8778bc-8ph87              1/1     Running     12              102d    10.244.133.163   forum   <none>           <none>
+kube-system     calico-kube-controllers-565c89d6df-dv5tz               1/1     Running     19 (33m ago)    102d    10.244.133.139   forum   <none>           <none>
+kube-system     calico-node-vj7xh                                      1/1     Running     15 (35m ago)    102d    192.168.49.2     forum   <none>           <none>
+kube-system     coredns-7d764666f9-brznd                               1/1     Running     12 (6h2m ago)   102d    10.244.133.175   forum   <none>           <none>
+kube-system     etcd-forum                                             1/1     Running     12 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+kube-system     kube-apiserver-forum                                   1/1     Running     12 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+kube-system     kube-controller-manager-forum                          1/1     Running     13 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+kube-system     kube-proxy-tzqf4                                       1/1     Running     12 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+kube-system     kube-scheduler-forum                                   1/1     Running     12 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+kube-system     metrics-server-9d74bb658-5rfpq                         1/1     Running     19 (32m ago)    102d    10.244.133.168   forum   <none>           <none>
+kube-system     storage-provisioner                                    1/1     Running     85 (16m ago)    102d    192.168.49.2     forum   <none>           <none>
+monitoring      alloy-rxsrf                                            2/2     Running     24 (6h2m ago)   102d    10.244.133.161   forum   <none>           <none>
+monitoring      loki-0                                                 1/1     Running     12 (6h2m ago)   102d    10.244.133.170   forum   <none>           <none>
+monitoring      monitoring-grafana-68b49db944-jskb5                    3/3     Running     36 (6h2m ago)   102d    10.244.133.141   forum   <none>           <none>
+monitoring      monitoring-kube-prometheus-operator-64fc967869-4s2nb   1/1     Running     18 (6h2m ago)   102d    10.244.133.173   forum   <none>           <none>
+monitoring      monitoring-kube-state-metrics-7c4d864f4b-nx26t         1/1     Running     37 (33m ago)    102d    10.244.133.172   forum   <none>           <none>
+monitoring      monitoring-prometheus-node-exporter-btff8              1/1     Running     13 (6h2m ago)   102d    192.168.49.2     forum   <none>           <none>
+monitoring      postgres-exporter-7487848689-msszm                     1/1     Running     12 (6h2m ago)   102d    10.244.133.174   forum   <none>           <none>
+monitoring      prometheus-monitoring-kube-prometheus-prometheus-0     2/2     Running     28 (32m ago)    102d    10.244.133.177   forum   <none>           <none>
+monitoring      tempo-0                                                1/1     Running     33              102d    10.244.133.157   forum   <none>           <none>

@@ -1,0 +1,65 @@
+LAST SEEN   TYPE     REASON              OBJECT                          MESSAGE
+34m         Normal   Scheduled           pod/backend-5f768ff9fb-zgf2k    Successfully assigned forum-dotnet/backend-5f768ff9fb-zgf2k to forum
+46m         Normal   Scheduled           pod/db-seed-benchmark-8lkpm     Successfully assigned forum-dotnet/db-seed-benchmark-8lkpm to forum
+33m         Normal   Scheduled           pod/backend-5f768ff9fb-lsc5c    Successfully assigned forum-dotnet/backend-5f768ff9fb-lsc5c to forum
+45m         Normal   Scheduled           pod/backend-545f657c65-6t5nn    Successfully assigned forum-dotnet/backend-545f657c65-6t5nn to forum
+45m         Normal   Scheduled           pod/backend-545f657c65-rmhvx    Successfully assigned forum-dotnet/backend-545f657c65-rmhvx to forum
+34m         Normal   Scheduled           pod/db-seed-benchmark-lvszq     Successfully assigned forum-dotnet/db-seed-benchmark-lvszq to forum
+9m33s       Normal   Scheduled           pod/backend-5997446976-zbjvn    Successfully assigned forum-dotnet/backend-5997446976-zbjvn to forum
+9m51s       Normal   Scheduled           pod/db-seed-benchmark-m54gv     Successfully assigned forum-dotnet/db-seed-benchmark-m54gv to forum
+9m33s       Normal   Scheduled           pod/backend-5997446976-nffwh    Successfully assigned forum-dotnet/backend-5997446976-nffwh to forum
+46m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-8lkpm
+46m         Normal   Started             pod/db-seed-benchmark-8lkpm     Container started
+46m         Normal   Pulled              pod/db-seed-benchmark-8lkpm     Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+46m         Normal   Created             pod/db-seed-benchmark-8lkpm     Container created
+45m         Normal   Completed           job/db-seed-benchmark           Job completed
+45m         Normal   Pulled              pod/backend-545f657c65-rmhvx    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+45m         Normal   SuccessfulCreate    replicaset/backend-545f657c65   Created pod: backend-545f657c65-rmhvx
+45m         Normal   Pulled              pod/backend-545f657c65-6t5nn    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+45m         Normal   SuccessfulCreate    replicaset/backend-545f657c65   Created pod: backend-545f657c65-6t5nn
+45m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-545f657c65 from 0 to 2
+45m         Normal   Created             pod/backend-545f657c65-6t5nn    Container created
+45m         Normal   Started             pod/backend-545f657c65-rmhvx    Container started
+45m         Normal   Created             pod/backend-545f657c65-rmhvx    Container created
+45m         Normal   Started             pod/backend-545f657c65-6t5nn    Container started
+34m         Normal   Pulled              pod/db-seed-benchmark-lvszq     Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+34m         Normal   Created             pod/db-seed-benchmark-lvszq     Container created
+34m         Normal   Started             pod/db-seed-benchmark-lvszq     Container started
+34m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-lvszq
+34m         Normal   Completed           job/db-seed-benchmark           Job completed
+34m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-5f768ff9fb from 0 to 1
+34m         Normal   SuccessfulCreate    replicaset/backend-5f768ff9fb   Created pod: backend-5f768ff9fb-zgf2k
+33m         Normal   Started             pod/backend-5f768ff9fb-zgf2k    Container started
+33m         Normal   Created             pod/backend-5f768ff9fb-zgf2k    Container created
+33m         Normal   Pulled              pod/backend-5f768ff9fb-zgf2k    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+33m         Normal   Started             pod/backend-5f768ff9fb-lsc5c    Container started
+33m         Normal   Pulled              pod/backend-5f768ff9fb-lsc5c    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+33m         Normal   SuccessfulCreate    replicaset/backend-5f768ff9fb   Created pod: backend-5f768ff9fb-lsc5c
+33m         Normal   SuccessfulDelete    replicaset/backend-545f657c65   Deleted pod: backend-545f657c65-rmhvx
+33m         Normal   Killing             pod/backend-545f657c65-rmhvx    Stopping container backend
+33m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-5f768ff9fb from 1 to 2
+33m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-545f657c65 from 2 to 1
+33m         Normal   Created             pod/backend-5f768ff9fb-lsc5c    Container created
+33m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-545f657c65 from 1 to 0
+33m         Normal   Killing             pod/backend-545f657c65-6t5nn    Stopping container backend
+33m         Normal   SuccessfulDelete    replicaset/backend-545f657c65   Deleted pod: backend-545f657c65-6t5nn
+22m         Normal   Killing             pod/backend-5f768ff9fb-zgf2k    Stopping container backend
+22m         Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-5f768ff9fb from 2 to 0
+22m         Normal   Killing             pod/backend-5f768ff9fb-lsc5c    Stopping container backend
+22m         Normal   SuccessfulDelete    replicaset/backend-5f768ff9fb   Deleted pod: backend-5f768ff9fb-lsc5c
+22m         Normal   SuccessfulDelete    replicaset/backend-5f768ff9fb   Deleted pod: backend-5f768ff9fb-zgf2k
+9m51s       Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-m54gv
+9m50s       Normal   Pulled              pod/db-seed-benchmark-m54gv     Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+9m50s       Normal   Created             pod/db-seed-benchmark-m54gv     Container created
+9m50s       Normal   Started             pod/db-seed-benchmark-m54gv     Container started
+9m34s       Normal   Completed           job/db-seed-benchmark           Job completed
+9m34s       Normal   NoPods              poddisruptionbudget/backend     No matching pods found
+9m33s       Normal   Pulled              pod/backend-5997446976-nffwh    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+9m33s       Normal   Created             pod/backend-5997446976-zbjvn    Container created
+9m33s       Normal   Pulled              pod/backend-5997446976-zbjvn    Container image "forum-dotnet-api:git-57f63d0-dirty" already present on machine and can be accessed by the pod
+9m33s       Normal   SuccessfulCreate    replicaset/backend-5997446976   Created pod: backend-5997446976-zbjvn
+9m33s       Normal   SuccessfulCreate    replicaset/backend-5997446976   Created pod: backend-5997446976-nffwh
+9m33s       Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-5997446976 from 0 to 2
+9m33s       Normal   Created             pod/backend-5997446976-nffwh    Container created
+9m33s       Normal   Started             pod/backend-5997446976-nffwh    Container started
+9m32s       Normal   Started             pod/backend-5997446976-zbjvn    Container started

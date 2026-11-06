@@ -22,7 +22,7 @@ public sealed class PostgresFixture : IAsyncLifetime
         try
         {
             _container = new PostgreSqlBuilder()
-                .WithImage("postgres:17-alpine")
+                .WithImage("postgres:18-alpine")
                 .WithDatabase("forum_net_test")
                 .WithUsername("forum")
                 .WithPassword("forum")

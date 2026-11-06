@@ -1,0 +1,19 @@
+# TLS — 2026-10-18T00:14:03+02:00
+## forum.local
+ALPN, offering h2
+ALPN, offering http/1.1
+SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+ALPN, server accepted to use h2
+ subject: O=mkcert development certificate; OU=ubuntuwsl@LAPTOP-TEKLEEVL
+ expire date: Jan 17 00:31:00 2029 GMT
+ issuer: O=mkcert development CA; OU=ubuntuwsl@LAPTOP-TEKLEEVL; CN=mkcert ubuntuwsl@LAPTOP-TEKLEEVL
+HTTP/2 200 
+## gomx.local
+ALPN, offering h2
+ALPN, offering http/1.1
+SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+ALPN, server accepted to use h2
+ subject: O=mkcert development certificate; OU=ubuntuwsl@LAPTOP-TEKLEEVL
+ expire date: Jan 17 00:31:00 2029 GMT
+ issuer: O=mkcert development CA; OU=ubuntuwsl@LAPTOP-TEKLEEVL; CN=mkcert ubuntuwsl@LAPTOP-TEKLEEVL
+HTTP/2 200 

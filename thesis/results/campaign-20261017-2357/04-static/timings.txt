@@ -1,0 +1,13 @@
+start 2026-10-18T03:44:54+02:00
+trivy-A rc=1 duration_s=40 end=2026-10-18T03:45:34+02:00
+trivy-B rc=1 duration_s=10 end=2026-10-18T03:45:44+02:00
+cloc-A-whole rc=0 duration_s=2 end=2026-10-18T03:45:46+02:00
+cloc-A-core rc=0 duration_s=1 end=2026-10-18T03:45:47+02:00
+cloc-B-whole rc=0 duration_s=1 end=2026-10-18T03:45:48+02:00
+cloc-B-core rc=0 duration_s=1 end=2026-10-18T03:45:49+02:00
+artifact-size-A rc=0 duration_s=0 end=2026-10-18T03:45:49+02:00
+lighthouse-B rc=0 duration_s=113 end=2026-10-18T03:47:43+02:00
+cloc rerun (from inside each repo, --vcs=git) 2026-10-18T03:50:24+02:00
+lighthouse-A rc=0 duration_s=171 end=2026-10-18T03:50:34+02:00
+end 2026-10-18T03:50:34+02:00
+lighthouse-A-rerun rc=0 duration_s=120 end=2026-10-18T04:02:55+02:00

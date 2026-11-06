@@ -1,0 +1,5 @@
+# health via kubectl port-forward (cluster-internal probes) — 2026-10-24T21:32:33+02:00
+http://localhost:18181/health/live → 200 0.019100s Healthy
+http://localhost:18181/health/ready → 200 0.006410s Healthy
+http://localhost:18182/healthz → 200 0.008116s ok
+http://localhost:18182/readyz → 200 0.005854s ok

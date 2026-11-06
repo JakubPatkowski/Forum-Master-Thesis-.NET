@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Globalization;
 
 using Forum.Common.Paging;
+using Forum.Modules.Content.Application;
 using Forum.Modules.Content.Application.Abstractions;
 using Forum.Modules.Content.Application.Categories;
 using Forum.Modules.Content.Application.Comments;
@@ -28,6 +29,14 @@ internal sealed class ContentQueries : IContentQueries
         created_on_utc, last_modified_on_utc
         """;
 
+    // A-12 list filter: threads in public categories plus the private ones the reader may open (@readable is a
+    // text[] of category ids — empty for anonymous readers). The public set is a tiny semi-join on categories.
+    private const string ReadableCategoryFilter =
+        """
+        (category_id IN (SELECT id FROM forum_content.categories WHERE visibility = 'public')
+         OR category_id = ANY(@readable))
+        """;
+
     private readonly ContentDbContext _db;
 
     public ContentQueries(ContentDbContext db) => _db = db;
@@ -45,18 +54,48 @@ internal sealed class ContentQueries : IContentQueries
         return category is null ? null : MapCategory(category);
     }
 
-    public Task<bool> CategoryExistsAsync(Ulid categoryId, CancellationToken cancellationToken) =>
-        _db.Categories.AnyAsync(category => category.Id == categoryId, cancellationToken);
+    public Task<CategoryReadInfo?> GetCategoryReadInfoAsync(Ulid categoryId, CancellationToken cancellationToken) =>
+        _db.Categories
+            .Where(category => category.Id == categoryId)
+            .Select(static category => new CategoryReadInfo(
+                category.Id, category.OwnerId, category.Visibility == Visibility.Private))
+            .FirstOrDefaultAsync(cancellationToken);
 
-    public Task<bool> ThreadExistsAsync(Ulid threadId, CancellationToken cancellationToken) =>
-        _db.Threads.AnyAsync(thread => thread.Id == threadId, cancellationToken);
+    public Task<CategoryReadInfo?> GetThreadCategoryReadInfoAsync(Ulid threadId, CancellationToken cancellationToken) =>
+        _db.Threads
+            .Where(thread => thread.Id == threadId)
+            .Join(
+                _db.Categories,
+                static thread => thread.CategoryId,
+                static category => category.Id,
+                static (_, category) => new CategoryReadInfo(
+                    category.Id, category.OwnerId, category.Visibility == Visibility.Private))
+            .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<CategoryReadInfo>> ListPrivateCategoriesAsync(CancellationToken cancellationToken) =>
+        await _db.Categories
+            .Where(static category => category.Visibility == Visibility.Private)
+            .Select(static category => new CategoryReadInfo(category.Id, category.OwnerId, true))
+            .ToListAsync(cancellationToken);
+
+    // A/B parity (deviation D2): every card carries a 300-char plain-text excerpt, the length Architecture B renders
+    // under GOMX_CARD_PREVIEW_CHARS=300. The excerpt is computed AFTER the keyset LIMIT through a PK join, so a page
+    // costs exactly `limit + 1` excerpts (never one per scanned/sorted row); the outer ORDER BY repeats the page keys
+    // because a join does not promise to preserve the subquery's order.
+    private static string WithExcerpt(string pagedSql, string pageOrderBy) =>
+        $"""
+        SELECT page.*, forum_content.thread_excerpt(t.body) AS excerpt
+        FROM ({pagedSql}) AS page
+        JOIN forum_content.threads AS t ON t.id = page.id
+        ORDER BY {pageOrderBy}
+        """;
 
     public async Task<CursorPage<ThreadFeedItemResponse>> GetThreadFeedAsync(
         Ulid categoryId, ThreadFeedCursor? cursor, int limit, CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns}
             FROM forum_content.thread_feed_v
@@ -67,7 +106,8 @@ internal sealed class ContentQueries : IContentQueries
                    OR (is_pinned = @cursorPinned AND created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY is_pinned DESC, created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.is_pinned DESC, page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@categoryId", categoryId.ToString(), DbType.String);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
         command.AddParameter("@cursorPinned", cursor?.IsPinned ?? (object)DBNull.Value, DbType.Boolean);
@@ -90,27 +130,34 @@ internal sealed class ContentQueries : IContentQueries
     }
 
     public async Task<CursorPage<ThreadFeedItemResponse>> SearchThreadsAsync(
-        string query, ThreadSearchCursor? cursor, int limit, CancellationToken cancellationToken)
+        string query,
+        ThreadSearchCursor? cursor,
+        int limit,
+        IReadOnlyCollection<Ulid> readablePrivateCategoryIds,
+        CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
 
         // websearch_to_tsquery tolerates arbitrary user input; ts_rank is deterministic per (row, query),
         // so the rank captured on one page is a stable keyset resume point on the next.
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns},
                    ts_rank(search_tsv, query) AS rank
             FROM forum_content.thread_feed_v, websearch_to_tsquery('simple', @query) AS query
             WHERE search_tsv @@ query
+              AND {ReadableCategoryFilter}
               AND (@cursorId IS NULL
                    OR ts_rank(search_tsv, query) < @cursorRank
                    OR (ts_rank(search_tsv, query) = @cursorRank AND created_on_utc < @cursorCreated)
                    OR (ts_rank(search_tsv, query) = @cursorRank AND created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY rank DESC, created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.rank DESC, page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@query", query, DbType.String);
+        command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
         command.AddParameter("@cursorRank", cursor?.Rank ?? (object)DBNull.Value, DbType.Single);
         command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
@@ -133,16 +180,20 @@ internal sealed class ContentQueries : IContentQueries
         return new CursorPage<ThreadFeedItemResponse>(items, nextCursor, hasMore);
     }
 
-    public async Task<ThreadDetailResponse?> GetThreadAsync(Ulid threadId, CancellationToken cancellationToken)
+    public async Task<ThreadDetailRead?> GetThreadAsync(Ulid threadId, CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
+
+        // The category's owner + visibility ride along (same round-trip) so the handler can apply the A-12 read gate.
         command.CommandText =
             """
-            SELECT id, category_id, category_slug, category_name, title, body, is_pinned,
-                   owner_id, username, display_name, tag_slugs, created_on_utc, last_modified_on_utc
-            FROM forum_content.thread_detail_v
-            WHERE id = @id
+            SELECT v.id, v.category_id, v.category_slug, v.category_name, v.title, v.body, v.is_pinned,
+                   v.owner_id, v.username, v.display_name, v.tag_slugs, v.created_on_utc, v.last_modified_on_utc,
+                   c.owner_id, c.visibility = 'private'
+            FROM forum_content.thread_detail_v AS v
+            JOIN forum_content.categories AS c ON c.id = v.category_id
+            WHERE v.id = @id
             """;
         command.AddParameter("@id", threadId.ToString(), DbType.String);
 
@@ -155,7 +206,7 @@ internal sealed class ContentQueries : IContentQueries
                 return null;
             }
 
-            return new ThreadDetailResponse(
+            var detail = new ThreadDetailResponse(
                 ReadUlid(reader, 0),
                 ReadUlid(reader, 1),
                 reader.GetString(2),
@@ -169,6 +220,8 @@ internal sealed class ContentQueries : IContentQueries
                 await reader.GetFieldValueAsync<string[]>(10, cancellationToken),
                 reader.GetFieldValue<DateTimeOffset>(11),
                 reader.IsDBNull(12) ? null : reader.GetFieldValue<DateTimeOffset>(12));
+            var category = new CategoryReadInfo(detail.CategoryId, ReadUlid(reader, 13), reader.GetBoolean(14));
+            return new ThreadDetailRead(detail, category);
         }
         finally
         {
@@ -227,24 +280,31 @@ internal sealed class ContentQueries : IContentQueries
     }
 
     public async Task<CursorPage<ThreadFeedItemResponse>> GetThreadsByOwnerAsync(
-        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken)
+        Ulid ownerId,
+        OwnerActivityCursor? cursor,
+        int limit,
+        IReadOnlyCollection<Ulid> readablePrivateCategoryIds,
+        CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
 
         // Plain chronological keyset — is_pinned is a category-feed concept, not an activity one.
-        command.CommandText =
+        command.CommandText = WithExcerpt(
             $"""
             SELECT {FeedColumns}
             FROM forum_content.thread_feed_v
             WHERE owner_id = @ownerId
+              AND {ReadableCategoryFilter}
               AND (@cursorId IS NULL
                    OR created_on_utc < @cursorCreated
                    OR (created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY created_on_utc DESC, id DESC
             LIMIT @limit
-            """;
+            """,
+            "page.created_on_utc DESC, page.id DESC");
         command.AddParameter("@ownerId", ownerId.ToString(), DbType.String);
+        command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
         command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
         command.AddParameter("@limit", limit + 1);
@@ -265,7 +325,11 @@ internal sealed class ContentQueries : IContentQueries
     }
 
     public async Task<CursorPage<CommentActivityItemResponse>> GetCommentsByOwnerAsync(
-        Ulid ownerId, OwnerActivityCursor? cursor, int limit, CancellationToken cancellationToken)
+        Ulid ownerId,
+        OwnerActivityCursor? cursor,
+        int limit,
+        IReadOnlyCollection<Ulid> readablePrivateCategoryIds,
+        CancellationToken cancellationToken)
     {
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
@@ -279,6 +343,8 @@ internal sealed class ContentQueries : IContentQueries
             JOIN forum_content.threads AS t ON t.id = c.thread_id AND t.is_deleted = false
             WHERE c.owner_id = @ownerId
               AND c.is_deleted = false
+              AND (t.category_id IN (SELECT id FROM forum_content.categories WHERE visibility = 'public')
+                   OR t.category_id = ANY(@readable))
               AND (@cursorId IS NULL
                    OR c.created_on_utc < @cursorCreated
                    OR (c.created_on_utc = @cursorCreated AND c.id < @cursorId))
@@ -286,6 +352,7 @@ internal sealed class ContentQueries : IContentQueries
             LIMIT @limit
             """;
         command.AddParameter("@ownerId", ownerId.ToString(), DbType.String);
+        command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
         command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
         command.AddParameter("@limit", limit + 1);
@@ -394,6 +461,9 @@ internal sealed class ContentQueries : IContentQueries
         {
             var items = new List<ThreadFeedItemResponse>(limit + 1);
             await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            // The excerpt is appended by WithExcerpt after any query-specific trailing columns (search adds `rank`
+            // at 13), so it is read by name rather than by position.
+            var excerptOrdinal = reader.GetOrdinal("excerpt");
             while (await reader.ReadAsync(cancellationToken))
             {
                 items.Add(new ThreadFeedItemResponse(
@@ -409,7 +479,8 @@ internal sealed class ContentQueries : IContentQueries
                     reader.GetInt32(9),
                     reader.GetInt32(10),
                     reader.GetFieldValue<DateTimeOffset>(11),
-                    reader.IsDBNull(12) ? null : reader.GetFieldValue<DateTimeOffset>(12)));
+                    reader.IsDBNull(12) ? null : reader.GetFieldValue<DateTimeOffset>(12),
+                    reader.IsDBNull(excerptOrdinal) ? string.Empty : reader.GetString(excerptOrdinal)));
                 onRow?.Invoke(reader);
             }
 

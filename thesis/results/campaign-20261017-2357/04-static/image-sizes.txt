@@ -1,0 +1,4 @@
+# image sizes (bytes), minikube docker daemon (the deployed images), 2026-10-18
+container_image_size_bytes{image="gomx:bench"} 41188802
+container_image_size_bytes{image="forum-dotnet-api:git-57f63d0-dirty"} 178769346
+container_image_size_bytes{image="forum-dotnet-web:git-57f63d0-dirty"} 243475415

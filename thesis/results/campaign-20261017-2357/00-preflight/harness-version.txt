@@ -1,0 +1,3 @@
+48:// MIX_VERSION: the journey weights (a thesis table never mixes two weightings).
+53:// HARNESS_VERSION: bumps whenever adapter behaviour changes without a weight change.
+54:export const MIX_VERSION = 'v1';

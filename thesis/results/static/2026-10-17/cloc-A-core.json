@@ -1,0 +1,74 @@
+{"header" : {
+  "cloc_url"           : "github.com/AlDanial/cloc",
+  "cloc_version"       : "2.06",
+  "elapsed_seconds"    : 0.561129808425903,
+  "n_files"            : 785,
+  "n_lines"            : 63204,
+  "files_per_second"   : 1398.96328480945,
+  "lines_per_second"   : 112637.038793754,
+  "report_file"        : "thesis/results/static/2026-10-17/cloc-A-core.json"},
+"C#" :{
+  "nFiles": 562,
+  "blank": 5105,
+  "comment": 2380,
+  "code": 22926},
+"TypeScript" :{
+  "nFiles": 124,
+  "blank": 1302,
+  "comment": 1062,
+  "code": 10633},
+"JSON" :{
+  "nFiles": 14,
+  "blank": 0,
+  "comment": 0,
+  "code": 10305},
+"CSS" :{
+  "nFiles": 50,
+  "blank": 765,
+  "comment": 78,
+  "code": 4666},
+"Markdown" :{
+  "nFiles": 5,
+  "blank": 554,
+  "comment": 9,
+  "code": 1900},
+"HTML" :{
+  "nFiles": 1,
+  "blank": 53,
+  "comment": 0,
+  "code": 728},
+"MSBuild script" :{
+  "nFiles": 18,
+  "blank": 0,
+  "comment": 11,
+  "code": 269},
+"XML" :{
+  "nFiles": 3,
+  "blank": 17,
+  "comment": 19,
+  "code": 99},
+"make" :{
+  "nFiles": 1,
+  "blank": 7,
+  "comment": 8,
+  "code": 83},
+"Dockerfile" :{
+  "nFiles": 3,
+  "blank": 3,
+  "comment": 64,
+  "code": 47},
+"INI" :{
+  "nFiles": 3,
+  "blank": 7,
+  "comment": 0,
+  "code": 45},
+"YAML" :{
+  "nFiles": 1,
+  "blank": 4,
+  "comment": 11,
+  "code": 44},
+"SUM": {
+  "blank": 7817,
+  "comment": 3642,
+  "code": 51745,
+  "nFiles": 785} }

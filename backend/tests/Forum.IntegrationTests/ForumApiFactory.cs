@@ -92,13 +92,17 @@ public class ForumApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         try
         {
             _database = new PostgreSqlBuilder()
-                .WithImage("postgres:17-alpine")
+                .WithImage("postgres:18-alpine")
                 .WithDatabase("forum_net")
                 .WithUsername("forum")
                 .WithPassword("forum")
                 .Build();
 
-            _minio = new MinioBuilder().Build();
+            // Pinned to the cluster's release (k8s/minio/statefulset.yaml). The Testcontainers default tag
+            // (RELEASE.2023-01-31) can no longer be pulled — MinIO withdrew its public images in 2025 — and the
+            // catch below would then silently skip the WHOLE integration suite. Fresh machines must load/tag
+            // this image from an existing cache (see docs/runbooks/local-development.md).
+            _minio = new MinioBuilder().WithImage("minio/minio:RELEASE.2025-09-07T16-13-09Z").Build();
 
             _rabbitMq = ConfigureRabbitMq(new RabbitMqBuilder()
                 .WithImage("rabbitmq:4-management")  // same image as compose.yaml / the cluster

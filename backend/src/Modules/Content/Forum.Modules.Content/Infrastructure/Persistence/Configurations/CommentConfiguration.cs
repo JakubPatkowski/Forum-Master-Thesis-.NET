@@ -30,5 +30,11 @@ internal sealed class CommentConfiguration : IEntityTypeConfiguration<Comment>
         // Tree reads are ORDER BY path within a thread — one index serves both the filter and the order.
         builder.HasIndex(comment => new { comment.ThreadId, comment.Path })
             .HasDatabaseName("ix_comments_thread_path");
+
+        // Owner activity (profile comments newest-first, user_stats_v comment_count/karma) — same gap as threads.
+        builder.HasIndex(comment => new { comment.OwnerId, comment.CreatedOnUtc, comment.Id })
+            .IsDescending(false, true, true)
+            .HasFilter("is_deleted = false")
+            .HasDatabaseName("ix_comments_owner_activity");
     }
 }

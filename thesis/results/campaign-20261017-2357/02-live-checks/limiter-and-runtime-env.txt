@@ -1,0 +1,14 @@
+# rate limiter / tracing posture (live Deployment env) — 2026-10-18T00:14:06+02:00
+## A backend
+Observability__TracingEnabled=false
+RateLimiting__Global__PermitLimit=1000000
+RateLimiting__Auth__PermitLimit=1000000
+## B gomx
+GOMX_SEED=bench
+GOMX_AUTH_RATELIMIT=0
+GOMX_BEACON_RATELIMIT=0
+GOMX_COMPRESS=0
+GOMX_NOTIFY_FRIENDS_ON_POST=0
+GOMX_DB_MAX_CONNS=30
+OTEL_EXPORTER_OTLP_ENDPOINT=
+OTEL_SERVICE_NAME=gomx

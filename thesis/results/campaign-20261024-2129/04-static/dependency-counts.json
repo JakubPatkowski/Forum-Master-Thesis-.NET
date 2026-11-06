@@ -1,0 +1,17 @@
+{
+  "A_nuget_central_package_versions": 42,
+  "A_npm_direct": {
+    "dependencies": 9,
+    "devDependencies": 15
+  },
+  "A_npm_lockfile_packages": 669,
+  "B_go_modules": {
+    "direct": 29,
+    "indirect": 105
+  },
+  "B_bun_direct": {
+    "dependencies": 9,
+    "devDependencies": 27
+  },
+  "B_bun_lock_packages_approx": 1320
+}

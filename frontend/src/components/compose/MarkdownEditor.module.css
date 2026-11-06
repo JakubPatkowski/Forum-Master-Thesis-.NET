@@ -133,3 +133,29 @@
 .hiddenInput {
   display: none;
 }
+
+/* Touch floor (coarse pointers / phone widths): toolbar tools measured 28 px, the WRITE/PREVIEW
+   tabs 30 px — all reach 40 CSS px; the toolbar already wraps. */
+@media (pointer: coarse), (max-width: 480px) {
+  .tool {
+    min-width: 40px;
+    height: 40px;
+  }
+
+  .mediaTool {
+    height: 40px;
+  }
+
+  .tab,
+  .tabActive {
+    min-height: 40px;
+  }
+}
+
+/* Phone widths: with 40 px tools the toolbar wraps into three lines; give the spacer a full line
+   so the WRITE / PREVIEW tabs stay together on their own row instead of splitting. */
+@media (max-width: 480px) {
+  .spacer {
+    flex-basis: 100%;
+  }
+}

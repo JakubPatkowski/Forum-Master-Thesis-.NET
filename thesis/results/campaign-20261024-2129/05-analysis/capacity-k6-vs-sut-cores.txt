@@ -1,0 +1,31 @@
+# Capacity (open model) per hold step: offered/achieved journeys/s, core p95, failures, and CPU cores of the LOAD GENERATOR (k6,
+# from samples-*.json k6_cpu_ticks, 5-s samples inside each 45-s hold) vs the SUT (app + DB cores from resources.json.steps).
+# Both runs are INVALID (pod restarts) — kept as evidence that the h6 load generator saturates the shared 8-vCPU host.
+
+## A: knee {'step': 'c04', 'offered_jps': 150, 'reason': 'core p95>500ms'}, sustained 100 j/s, dropped_iterations 117865
+step  offered achieved  core p95  failed% k6 cores avg  k6 max k6 RSS MiB app cores db cores
+c01        25     25.0        22     0.13         0.70    1.01        383     0.218    0.118
+c02        50     50.0        35     0.07         1.41    1.89        502     0.363    0.235
+c03       100     99.6       409     0.14         4.04    5.30        842     0.534    0.481
+c04       150     22.4     60001    14.40         1.32    2.28       1347     0.000    0.000
+c05       200     18.0     25934     0.12         1.10    1.82       1786     0.361    0.157
+c06       250    106.8      7197    58.42         3.72    4.47       2395     0.300    0.270
+c07       300     33.7      5489   100.00          nan     nan          0     0.020    0.090
+c08       350     37.7      5991   100.00         2.44    2.44       3294     0.000    0.000
+c09       400    119.0      1976   100.00         4.89    5.53       3500     0.000    0.000
+c10       450     60.1     10539   100.00         3.70    4.82       3756     0.026    0.008
+c11       500    122.0      2352   100.00         4.82    5.50       3757     0.008    0.000
+
+## B: knee {'step': 'c03', 'offered_jps': 100, 'reason': 'core p95>500ms'}, sustained 50 j/s, dropped_iterations 119696
+step  offered achieved  core p95  failed% k6 cores avg  k6 max k6 RSS MiB app cores db cores
+c01        25     25.0        21     0.00         0.59    0.78        352     0.117    0.043
+c02        50     50.0        34     0.00         1.57    1.99        444     0.227    0.108
+c03       100     97.5      1142     0.00         3.70    4.94        901     0.566    0.432
+c04       150     33.9     29526     0.28         2.35    3.77       1748     0.103    0.000
+c05       200     91.9      8555     0.92         4.29    4.83       1957     0.306    0.501
+c06       250     80.7      5741     0.00         3.69    5.33       2168     0.468    0.455
+c07       300     44.3     16093     0.00         2.79    5.12       2158     0.536    0.556
+c08       350     57.8      9085     0.00         3.54    4.71       2219     0.400    0.346
+c09       400     95.7      6944     0.00         4.03    5.42       2650     0.277    0.355
+c10       450     60.2     17455     0.00         2.84    2.90       2501     0.242    0.358
+c11       500     59.6     21581     0.00         3.46    4.70       2555     0.327    0.000

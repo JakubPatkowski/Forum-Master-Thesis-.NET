@@ -14,13 +14,19 @@ internal sealed record GetCommentTreeQuery(Ulid ThreadId) : IQuery<IReadOnlyList
 internal sealed class GetCommentTreeQueryHandler : IQueryHandler<GetCommentTreeQuery, IReadOnlyList<CommentResponse>>
 {
     private readonly IContentQueries _queries;
+    private readonly ContentReadAccess _readAccess;
 
-    public GetCommentTreeQueryHandler(IContentQueries queries) => _queries = queries;
+    public GetCommentTreeQueryHandler(IContentQueries queries, ContentReadAccess readAccess)
+    {
+        _queries = queries;
+        _readAccess = readAccess;
+    }
 
     public async Task<Result<IReadOnlyList<CommentResponse>>> Handle(
         GetCommentTreeQuery query, CancellationToken cancellationToken)
     {
-        if (!await _queries.ThreadExistsAsync(query.ThreadId, cancellationToken))
+        var category = await _queries.GetThreadCategoryReadInfoAsync(query.ThreadId, cancellationToken);
+        if (category is null || !await _readAccess.CanReadAsync(category, cancellationToken))
         {
             return Result.Failure<IReadOnlyList<CommentResponse>>(ThreadErrors.NotFound);
         }

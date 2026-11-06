@@ -1,0 +1,3 @@
+test-go.jsonl {'pass': 388, 'fail': 0, 'skip': 25}
+test-go-postgres.jsonl {'pass': 81, 'fail': 0, 'skip': 0}
+test-go-redis.jsonl {'pass': 1, 'fail': 0, 'skip': 0}
