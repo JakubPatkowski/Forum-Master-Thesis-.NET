@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Threads;
@@ -29,6 +30,7 @@ internal sealed class UpdateThreadCommandHandler : ICommandHandler<UpdateThreadC
     private readonly ICurrentUser _currentUser;
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
     private readonly TimeProvider _clock;
 
     public UpdateThreadCommandHandler(
@@ -37,6 +39,7 @@ internal sealed class UpdateThreadCommandHandler : ICommandHandler<UpdateThreadC
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
+        IContentReadCache readCache,
         TimeProvider clock)
     {
         _validator = validator;
@@ -44,6 +47,7 @@ internal sealed class UpdateThreadCommandHandler : ICommandHandler<UpdateThreadC
         _currentUser = currentUser;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
         _clock = clock;
     }
 
@@ -70,6 +74,7 @@ internal sealed class UpdateThreadCommandHandler : ICommandHandler<UpdateThreadC
             Ulid.NewUlid(), thread.Id, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _readCache.ThreadChangedAsync(); // READ-CACHE-CONTRACT §3: C1 all, C2 all, C3 all
         return Result.Success();
     }
 }

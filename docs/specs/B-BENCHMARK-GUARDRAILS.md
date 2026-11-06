@@ -1,9 +1,11 @@
 # Benchmark guardrails for Architecture B (`gomx`)
 
 > **Audience:** Hubert and every AI coding agent working in the `gomx` repository (Copilot, Claude, Codex, …).
-> **Status:** binding from 2026-10-24 until the thesis measurements are closed (v2 round + variants + chaos +
-> Lighthouse + static metrics). Written by the A side; companion to `forum-spec.md` (what both systems must do)
-> and `thesis/results/AB-COMPARISON-v1.md` (how it is measured). Questions → ask Jakub before acting, not after.
+> **Status:** binding from 2026-10-24 until the thesis measurements are closed; **v5 (2026-11-06)** — the measured
+> versions are `thesis-v5-a` / `thesis-v5-b`, the read-cache contract `READ-CACHE-CONTRACT.md` is part of this
+> document (§3.5), and both tags are frozen once they exist (§0). Written by the A side; companion to
+> `forum-spec.md` (what both systems must do) and `thesis/results/AB-COMPARISON-v1.md` (how it is measured).
+> Questions → ask Jakub before acting, not after.
 >
 > **How to use this file in gomx:** copy it to `docs/BENCHMARK-GUARDRAILS.md` and add one line to
 > `.github/copilot-instructions.md` (and `AGENTS.md` if present):
@@ -13,14 +15,19 @@
 
 ## 0. TL;DR for an AI agent
 
-1. The **measured** version of B is the git tag **`thesis-v3-b`** (branch `feature/master-thesis`; the commit the
-   owner tags after the 2026-10-24 pre-measurement audit — `thesis-v2-b` = `a457114` is the state before it).
-   It is frozen. Do not move the tag, do not force-push the branch, do not rebase it.
+1. The **measured** version of B is the git tag **`thesis-v5-b`** = `cdabf42` (branch `feature/master-thesis` = the
+   fast-forward of `feature/improvements-libraries` **plus** the 2026-11-06 commit that adds the `GOMX_READ_CACHE`
+   switch, the `gomx_read_cache_lookups_total` metric and the bench-overlay changes; `b7f8fca` alone — where the tag
+   briefly pointed — is NOT the measured version). Earlier tags: `thesis-v2-b` = `a457114`, `thesis-v3-b` =
+   `46b342c`, `thesis-v4-b` = `c3c0e03`. A tag is frozen once both v5 tags exist. Do not move it, do not force-push
+   the branch, do not rebase it; a fix = a new commit + a new tag (`thesis-v5.1-b`).
 2. **`master` is free to evolve** — product work (passkeys, PWA, iOS, Templbook, refactors) belongs there.
    **Nothing from `master` is merged, cherry-picked or rebased into `feature/master-thesis`** without a written
    agreement with Jakub. `master` is NOT what the thesis measures.
 3. On `feature/master-thesis`, only **bug fixes agreed with Jakub** are allowed, and each one must keep every
-   invariant in §3 and pass every gate in §6. A fix = new commit + new tag (`thesis-v2.1-b`), never a moved tag.
+   invariant in §3 and pass every gate in §6. A fix = new commit + new tag (`thesis-v5.1-b`), never a moved tag.
+   After both v5 tags exist nothing on the measured surface changes until the v5 rounds are closed
+   (`READ-CACHE-CONTRACT.md` §6); `feature/admin-panel` is not part of v5.
 4. If you are unsure whether a change touches the benchmark surface (§2), assume it does and stop.
 
 ## 1. Why this exists
@@ -47,7 +54,7 @@ Changing any of these on `feature/master-thesis` changes the experiment.
 | J3 comment | `POST /posts/{id}/comments` form `body` | 303, `Location: /thread/{id}#comment-{new}` |
 | J4 thread + photo | `POST /uploads` multipart `file` → 202 `{upload_id}`; `GET /uploads/{id}/status` polls; `POST /posts` form `community`,`title`,`body` with `![](/uploads/<id>)` | 303, `Location: /thread/{id}` with `id > 0` (rejected → 303 `/`; a failed INSERT is a rejection since thesis-v3-b, never `/thread/0`) |
 | J5 vote toggle | `POST /posts/{id}/vote` form `dir=up` + `HX-Request: true` | 200 fragment, server-side toggle; 404 when the post is missing OR in a community the voter may not see (thesis-v3-b — the gate A applies too) |
-| J6 search | `GET /search?q=<word>` | 200 HTML |
+| J6 search | `GET /search?q=<word>` (B's default sort = newest first; A's J6 sends `sort=newest` since h7 — F1) | 200 HTML |
 | J7 profile | `GET /u/{id}` | 200 HTML |
 | J9 DM | `POST /messages/{peerId}` form `body` | 303 `/messages/{peerId}` when accepted; 303 `/messages/{peerId}?error=rejected` when rejected (thesis-v3-b; the adapter counts the marker as a failed write) |
 | J8 WebSocket | `GET /ws` (cookie) | JSON messages with `html` containing `id="comment-N"` for new comments |
@@ -83,7 +90,8 @@ harness version (`HARNESS_VERSION` in `load/k6/main.js`) must change in the same
 - Bench overlay env (exact): `GOMX_SEED=bench`, `GOMX_AUTH_RATELIMIT=0`, `GOMX_BEACON_RATELIMIT=0`,
   `GOMX_COMPRESS=0` (gzip is done by the shared ingress for both sides), `GOMX_NOTIFY_FRIENDS_ON_POST=0`,
   `GOMX_CARD_PREVIEW_CHARS=300`, `GOMX_DB_MAX_CONNS=30`, `GOMX_SECURE_COOKIES=1`, `GOMX_ALLOWED_ORIGINS=gomx.local`,
-  `GOMX_ENV=benchmark`, OAuth mock off, tracing off.
+  `GOMX_ENV=benchmark`, **`GOMX_READ_CACHE=0` (v5; the harness sets `1`/`0` per round)**, OAuth mock off, tracing
+  off, no `enable-quic` ingress annotation (A's ingress has none).
 - **Any rate limiter that can trigger under k6 must be off in the overlay.** All k6 traffic arrives from one
   client IP; a single 429 invalidates the run. A new limiter = a new `…=0` line in the overlay **and** a new
   expectation in `ab_check_profile`, in the same change.
@@ -104,9 +112,21 @@ before and after every run; a mismatch flags the run.
   and is **not** allowed on the measured build without the same change on A.
 - No response caching that k6 can hit (ETag/304, server-side page caches) — k6 sends no `If-None-Match`, so ETags
   are neutral today, but a server-side cache would not be. Redis stays B's pub/sub + sessions, as measured.
+  **The one exception is §3.5:** the data microcaches of `READ-CACHE-CONTRACT.md`, which exist identically on both
+  sides and are switched together per round.
 - No one-sided performance work. If you find a real performance bug on B, report it; Jakub decides whether the
   equivalent check is done on A and both go in together. (Precedent: B's anonymous-membership N+1 and A's missing
   owner indexes were fixed in the same session.)
+
+### 3.5 Read cache (v5) — `READ-CACHE-CONTRACT.md` is binding
+- Exactly the contract's C1 (space feed page, 2 s), C2 (thread comment tree, 2 s) and C3 (search page, 3 s; viewer
+  scope in the key) — nothing else on a measured path. Keys, normalisation (trim only, case-sensitive), the §3
+  invalidation table (incl. the 2026-11-06 rows: search flush on WebSocket thread create, C3 flush on space
+  join/leave), the generation guard, singleflight and the ≈ 1 000-entry bound are the contract's, not this file's.
+- Switch `GOMX_READ_CACHE` (`1`/`0`), default `1` in the product, `0` in the bench overlay; with `0` every read hits
+  the store (no lookup, no singleflight, nothing stored). Metric `gomx_read_cache_lookups_total{cache,result}`.
+- `scripts/ab-round.sh --read-cache on|off` in `forum-dotnet` sets both sides, `ab_check_profile` verifies both
+  (`GOMX_READ_CACHE` must be explicit), `meta-B.json`/`round.json` record it. A round is never mixed.
 
 ### 3.4 Behaviour (from `forum-spec.md` §3)
 - Private spaces: content hidden from non-members on every path, including WebSocket pushes and search.
@@ -157,10 +177,12 @@ Plus the Postgres lane from CI. Then tell Jakub the new commit/tag; he redeploys
 
 ## 8. Contact and sign-off
 
-Changes to this file are agreed by both authors. Measured versions: A `thesis-v3-a`, B `thesis-v3-b` (the commits
-tagged after the 2026-10-24 audit; `thesis-v2-a` = `e838b3f` / `thesis-v2-b` = `a457114` were the pre-audit state).
+Changes to this file are agreed by both authors. Measured versions for v5: A `thesis-v5-a`, B `thesis-v5-b` (both
+tagged after the 2026-11-06 alignment: read-cache contract on both sides, A's equal-effort pass A1–A5, harness h7).
+History: v3 = `thesis-v3-a` / `thesis-v3-b` (2026-10-24 audit), v2 = `e838b3f` / `a457114`, v4 = A `thesis-v4-a`
+(`a677560`) / B `thesis-v4-b` (`c3c0e03`).
 
 | Author | Agreed (date) |
 |---|---|
-| Jakub Patkowski (A) | 2026-10-24 |
+| Jakub Patkowski (A) | — |
 | Hubert Ożarowski (B) | — |

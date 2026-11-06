@@ -129,7 +129,8 @@ K6_EXTRA=()
 # real SPA pages' cold-cache request sets — D1; REAL_SPA_BATCH_PER_HOST = fan-out concurrency), the J8 receipt-probe
 # cadence, soak/spike sizing. Recorded by main.js in the journeys block, so every archive says which variant it measured.
 for var in CAP_STEPS CAP_RAMP_S CAP_HOLD_S CAP_MAX_VUS WS_HOLD_MS LOGIN_STAGGER_MS \
-           AUTH_READS REAL_SPA REAL_SPA_BATCH_PER_HOST WS_PROBE_INTERVAL_MS WS_PROBE_TIMEOUT_MS SOAK_MINUTES SOAK_VUS SPIKE_VUS; do
+           AUTH_READS REAL_SPA REAL_SPA_BATCH_PER_HOST WS_PROBE_INTERVAL_MS WS_PROBE_TIMEOUT_MS SOAK_MINUTES SOAK_VUS SPIKE_VUS \
+           BOOSTED J4_IMAGE_PX; do   # h7: B's navigation mode and the J4 image size (both recorded in the journeys block)
   [[ -n "${!var:-}" ]] && K6_EXTRA+=(-e "$var=${!var}")
 done
 # K6_OUT (e.g. csv=…/points.csv.gz) streams every metric point out of k6 — ab-chaos.sh needs the per-second error

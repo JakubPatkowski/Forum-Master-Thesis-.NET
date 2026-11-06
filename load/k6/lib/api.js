@@ -81,8 +81,14 @@ export function reactionBatch(baseUrl, targetType, targetIds, opts = {}) {
   return apiGet(baseUrl, `/api/engagement/reactions/batch?targetType=${targetType}&targetIds=${ids}`, 'reactions_batch', null, opts);
 }
 
+/**
+ * J6. sort=newest since h7: the SPA's search page defaults to "Newest" (like B's search page, whose default order is
+ * newest first and which stops after one page for a common word) — A/B v5 J6 parity. sort=relevance (ts_rank over
+ * every match) stays the API default and the RELATED THREADS panel's order.
+ */
 export function searchThreads(baseUrl, query, opts = {}) {
-  return apiGet(baseUrl, `/api/content/search?q=${encodeURIComponent(query)}&limit=20`, 'search', null, opts);
+  const sort = opts.sort || 'newest';
+  return apiGet(baseUrl, `/api/content/search?q=${encodeURIComponent(query)}&sort=${sort}&limit=20`, 'search', null, opts);
 }
 
 export function suggestTags(baseUrl, prefix) {
@@ -173,7 +179,7 @@ export const spaPaths = {
     `/api/content/threads?categoryId=${categoryId}&${cursor ? `cursor=${encodeURIComponent(cursor)}&` : ''}limit=${limit}`,
   thread: (threadId) => `/api/content/threads/${threadId}`,
   comments: (threadId) => `/api/content/threads/${threadId}/comments`,
-  search: (q, limit = 20) => `/api/content/search?q=${encodeURIComponent(q)}&limit=${limit}`,
+  search: (q, limit = 20, sort = null) => `/api/content/search?q=${encodeURIComponent(q)}&${sort ? `sort=${sort}&` : ''}limit=${limit}`,
   userThreads: (userId) => `/api/content/users/${userId}/threads?limit=20`,
   userComments: (userId) => `/api/content/users/${userId}/comments?limit=20`,
   reactionBatch: (targetType, ids) => `/api/engagement/reactions/batch?targetType=${targetType}&targetIds=${ids.join(',')}`,

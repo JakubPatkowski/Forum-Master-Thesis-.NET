@@ -375,6 +375,11 @@ namespace Forum.Modules.Content.Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_threads");
 
+                    b.HasIndex("CreatedOnUtc", "Id")
+                        .IsDescending()
+                        .HasDatabaseName("ix_threads_newest")
+                        .HasFilter("is_deleted = false");
+
                     b.HasIndex("OwnerId", "CreatedOnUtc", "Id")
                         .IsDescending(false, true, true)
                         .HasDatabaseName("ix_threads_owner_activity")

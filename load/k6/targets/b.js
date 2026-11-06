@@ -11,7 +11,8 @@
 //   J2        GET /thread/{id}        J6  GET /search?q=        J7  GET /u/{numericId}
 //   J3        POST /posts/{id}/comments form body → 303 Location /thread/{id}#comment-{new}
 //   J4        POST /uploads multipart `file` → 202 {upload_id} (River + MinIO staging in k8s; 201 {id} without)
-//             → GET /uploads/{upload_id}/status every 1 s (the browser's cadence) until {status:"completed",
+//             → GET /uploads/{upload_id}/status polled like upload.ts (150 ms, × 1.5 per poll, max 1 s; h7 — it was a
+//             fixed 1 s before thesis-v4-b) until {status:"completed",
 //             result:{id,url}} → POST /posts form community+title+body (the browser embeds `![](/uploads/<id>)`
 //             in the body, no attachments field) → 303 /thread/{id} (303 / on rejection); CreatePost needs an
 //             ACTIVE membership — the bench seed pre-joins every user to 3 public spaces (postableSlug)
@@ -43,7 +44,7 @@ import { sleep } from 'k6';
 import http from 'k6/http';
 import ws from 'k6/ws';
 
-import { SEARCH_WORDS as SHARED_WORDS, makePng, threadBody, threadTitle } from '../lib/assets.js';
+import { J4_IMAGE_PX, SEARCH_WORDS as SHARED_WORDS, makePng, threadBody, threadTitle } from '../lib/assets.js';
 import { track } from '../lib/track.js';
 import { BROWSER_HEADERS, DISCARD } from '../lib/wire.js';
 
@@ -55,15 +56,17 @@ export const DEFAULT_BASE_URL = 'https://gomx.local';
 export const SEARCH_WORDS = SHARED_WORDS;
 
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
-// BOOSTED (HTMX hx-boost navigation): When enabled (default: true for gomx), in-app page navigations
-// (J1, J2, J6, J7, nav) send 'HX-Request: true' and 'HX-Boosted: true'. Gomx responds with BoostedPage
-// (only <title> and <main id="page"> content), skipping the persistent outer shell (header, sidebar, modals)
-// and bypassing the withShell database queries (PostableCommunities, TotalUnreadDMs, UnreadCount).
-// This reflects idiomatic HTMX user navigation in the browser and matches Target A's mounted-shell assumption.
-// Set BOOSTED=0 to force cold multi-page document reloads.
+// BOOSTED (HTMX hx-boost navigation, harness h7 default): the read journeys (J1, J2, J6, J7, nav) send
+// `HX-Request: true` + `HX-Boosted: true`, and gomx answers with BoostedPage (<title> + <main id="page"> only) instead
+// of the whole document — what an in-app navigation of B's real browser client does after the first page, the
+// counterpart of A's mounted-SPA model (D1). What it changes: for ANONYMOUS reads (the default) the shell runs no
+// database queries anyway (`withShell` queries PostableCommunities / unread DMs / notifications only for a signed-in
+// viewer), so boosting saves the shell's RENDERING and ≈ 3 KiB of HTML per journey, not DB work; under AUTH_READS it
+// also skips those three shell queries. Set BOOSTED=0 for full-page document loads (the h6 behaviour).
 export const BOOSTED = __ENV.BOOSTED !== '0' && __ENV.BOOSTED !== 'false';
-const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || 256);
-const J4_POLL_INTERVAL_S = Number(__ENV.J4_POLL_INTERVAL_S || 0.15); // upload.ts adaptive polling starts at 150 ms (D12 fix)
+// J4 upload-status polling (D12, h7): B's upload.ts polls adaptively — 150 ms, then × 1.5 per poll up to 1 s — so the
+// adapter does the same (J4_POLL_INTERVAL_S is the FIRST interval); J4_POLL_MAX bounds the attempts.
+const J4_POLL_INTERVAL_S = Number(__ENV.J4_POLL_INTERVAL_S || 0.15);
 const J4_POLL_MAX = Number(__ENV.J4_POLL_MAX || 40);
 
 export const ENDPOINTS = ['login', 'communities', 'space_page', 'space_feed', 'thread', 'search', 'profile',
@@ -299,9 +302,10 @@ export const journeys = {
   },
 
   /**
-   * J4 — thread with a photo through B's ingest: multipart upload (202) → status polls at the browser's 1 s
-   * cadence until the River worker has staged the blob → POST /posts with the image embedded in the body (what the
-   * composer's data-md-insert does). The journey's duration includes the poll waits — exactly what the user sees.
+   * J4 — thread with a photo through B's ingest: multipart upload (202) → status polls at the browser's adaptive
+   * cadence (150 ms × 1.5 → 1 s) until the River worker has staged the blob → POST /posts with the image embedded in
+   * the body (what the composer's data-md-insert does). The journey's duration includes the poll waits — exactly what
+   * the user sees.
    */
   J4(baseUrl, _data, session) {
     const png = makePng(J4_IMAGE_PX, J4_IMAGE_PX, Math.random);

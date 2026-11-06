@@ -24,7 +24,8 @@
 //
 // Variants (harness h4, all recorded in the journeys block): AUTH_READS=1 (reads carry the session — D3),
 // WS_PROBE_INTERVAL_MS / WS_PROBE_TIMEOUT_MS (J8 receipt probes: a push later than the timeout counts as LATE,
-// never pushed by the end of the hold as LOST), SOAK_MINUTES / SOAK_VUS, SPIKE_VUS, J4_IMAGE_PX, and — target a
+// never pushed by the end of the hold as LOST), SOAK_MINUTES / SOAK_VUS, SPIKE_VUS, J4_IMAGE_PX (256 = the shipped
+// fixture, anything else is generated once per VU), and — target a
 // only — REAL_SPA=1 (read journeys replay the real React pages' cold-cache request sets instead of the idealized core
 // calls — D1; targets/README.md has the derived table) with REAL_SPA_BATCH_PER_HOST (fan-out concurrency).
 
@@ -32,7 +33,7 @@ import { check, sleep } from 'k6';
 import exec from 'k6/execution';
 import { Counter, Trend } from 'k6/metrics';
 
-import { commentBody, makePng } from './lib/assets.js';
+import { J4_IMAGE_PX, commentBody } from './lib/assets.js';
 import * as targetA from './targets/a.js';
 import * as targetB from './targets/b.js';
 
@@ -79,7 +80,12 @@ export const MIX_VERSION = 'v2';
 // A's J2/J7 fire their independent calls in parallel like the SPA, A's J4 posts untagged into a per-user space and A's
 // J9 messages a random seeded friend (both = B's rules), capacity logs one session per VU, finer capacity steps,
 // WS early-close counter. Not comparable to h5 at the per-journey level for J2/J4/J7/J9.
-export const HARNESS_VERSION = 'h6-2026-10-24';
+// h7 (2026-11-06, v5 rounds — targets/README.md "Harness h7"): B's read journeys are boosted HTMX navigations by
+// default (BOOSTED=0 = full pages), B's J4 polls adaptively (150 ms × 1.5 → 1 s), the J4 PNG is a shipped fixture
+// (no pixel work in k6 at run time — the v3 generator saturation and the h6 per-VU spikes are gone), the read-cache
+// variant (ab-round.sh --read-cache on|off, READ-CACHE-CONTRACT.md), A's J6 sends sort=newest (B's default order),
+// and the generator gate judges k6's CPU per profile. Not comparable to h6 for J4 (both) and J6 (A).
+export const HARNESS_VERSION = 'h7-2026-11-06';
 const MIX = [
   ['J1', 30], // space feed (page + 30% cursor page 2)
   ['J2', 20], // thread open
@@ -427,9 +433,9 @@ export function setup() {
   if ((__ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true') && TARGET !== 'a') {
     console.warn('REAL_SPA only changes target a (B journeys are full pages already) — ignored and recorded as off.');
   }
-  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}${REAL_SPA ? ` [REAL_SPA batchPerHost=${REAL_SPA_BATCH_PER_HOST}]` : ''}${TARGET === 'b' ? (target.BOOSTED ? ' [BOOSTED]' : ' [FULL_PAGE]') : ''}`);
-  // Pre-warm the J4 PNG template during setup outside the measured window
-  makePng(Number(__ENV.J4_IMAGE_PX || 256), Number(__ENV.J4_IMAGE_PX || 256), Math.random);
+  console.log(`setup[${TARGET}]: ${data.sessions.length} sessions, ${data.spaces.length} public spaces, ${total} threads pooled${data.devMode ? ' [DEV SEED]' : ''}${AUTH_READS ? ' [AUTH_READS]' : ''}${REAL_SPA ? ` [REAL_SPA batchPerHost=${REAL_SPA_BATCH_PER_HOST}]` : ''}${TARGET === 'b' ? (target.BOOSTED ? ' [BOOSTED]' : ' [FULL_PAGE]') : ''}${J4_IMAGE_PX !== 256 ? ` [J4_IMAGE_PX=${J4_IMAGE_PX}]` : ''}`);
+  // (h6 pre-warmed the J4 PNG here — misleading: setup() runs in its own VU, every scenario VU still built its own
+  // copy. h7 loads the image from a fixture in each VU's init context instead; nothing to warm.)
   // The measured window starts HERE: resources and journeys/s exclude the setup phase (200 logins = Argon2id
   // CPU on A vs PBKDF2 on B — Day-0 averaged it into both numbers).
   data.setupEndedAtMs = Date.now();
@@ -756,7 +762,8 @@ export function handleSummary(data) {
       boosted: TARGET === 'b' ? Boolean(target.BOOSTED) : null,
       ws_probe_interval_ms: WS_PROBE ? WS_PROBE.intervalMs : null,
       ws_probe_timeout_ms: WS_PROBE ? WS_PROBE.timeoutMs : null, ws_hold_ms: HOLD_MS,
-      j4_image_px: Number(__ENV.J4_IMAGE_PX || 256), soak_minutes: PROFILE === 'soak' ? SOAK_MINUTES : null,
+      j4_image_px: J4_IMAGE_PX, j4_image_source: J4_IMAGE_PX === 256 ? 'fixture' : 'generated',
+      soak_minutes: PROFILE === 'soak' ? SOAK_MINUTES : null,
       soak_vus: PROFILE === 'soak' ? SOAK_VUS : null, spike_vus: PROFILE === 'spike' ? SPIKE_VUS : null,
     },
     window, journeys: journeySummary,

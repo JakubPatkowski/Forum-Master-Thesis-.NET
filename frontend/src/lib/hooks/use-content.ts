@@ -13,6 +13,7 @@ import type {
   CreateThreadRequest,
   UpdateCategoryRequest,
   UpdateThreadRequest,
+  SearchSort,
 } from "@/lib/api/types";
 
 export function useCategories() {
@@ -74,10 +75,14 @@ export function useThread(threadId: string) {
   });
 }
 
-export function useSearchThreads(q: string, limit = 20) {
+/**
+ * Full-text search, keyset-paged. The search page passes "newest" (its default, like Architecture B's search page);
+ * the RELATED THREADS panel keeps the API default (relevance) — it ranks by the thread's first tag.
+ */
+export function useSearchThreads(q: string, limit = 20, sort: SearchSort = "relevance") {
   return useInfiniteQuery({
-    queryKey: queryKeys.search(q),
-    queryFn: ({ pageParam }) => contentApi.searchThreads(q, pageParam, limit),
+    queryKey: queryKeys.search(q, sort),
+    queryFn: ({ pageParam }) => contentApi.searchThreads(q, pageParam, limit, sort),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => (lastPage.hasMore ? lastPage.nextCursor : null),
     enabled: q.trim().length > 0,

@@ -34,6 +34,14 @@ internal sealed class ThreadConfiguration : IEntityTypeConfiguration<Thread>
             .HasFilter("is_deleted = false")
             .HasDatabaseName("ix_threads_owner_activity");
 
+        // Newest-first search (A/B v5, J6 parity with B's default sort): `search?sort=newest` orders by
+        // (created_on_utc DESC, id DESC) and, with a custom plan, walks this index and stops after one page for a
+        // common word instead of ranking every match. Partial like the feed index — live rows only.
+        builder.HasIndex(thread => new { thread.CreatedOnUtc, thread.Id })
+            .IsDescending(true, true)
+            .HasFilter("is_deleted = false")
+            .HasDatabaseName("ix_threads_newest");
+
         // search_tsv (+ its GIN index and trigger) is added by the AddFtsAndViews raw-SQL migration and is
         // deliberately absent from the EF model, so EF never writes it and never tries to drop it.
     }

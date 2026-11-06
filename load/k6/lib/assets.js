@@ -145,16 +145,18 @@ export function threadTitle(rng) {
   return `Load test: ${a} ${b} ${Math.floor(rng() * 1_000_000)}`;
 }
 
-// --- PNG generator for the J4 image arm (harness h4/h6) -----------------------------------------------------------
-// A real W×H RGBA PNG: the IDAT is a zlib stream of stored (uncompressed) deflate blocks, so no
-// compression library is needed and the file weighs ≈ W×H×4 bytes — a small-photo-sized upload instead of the
-// 68-byte 1×1 (which B would also de-duplicate by SHA-256 after the first upload and skip the object store). Both
-// targets decode it for real: A's ImageProbe reads the IHDR, B's media worker decodes the whole image for its
-// thumbnail.
+// --- The J4 image (harness h7) -----------------------------------------------------------------------------------
+// A real W×H RGBA PNG whose IDAT is a zlib stream of stored (uncompressed) deflate blocks, so the file weighs
+// ≈ W×H×4 bytes — a small-photo-sized upload instead of the 68-byte 1×1 (which B would also de-duplicate by SHA-256
+// after the first upload and skip the object store). Both targets decode it for real: A's ImageProbe reads the IHDR,
+// B's media worker decodes the whole image for its thumbnail.
 //
-// Harness h6+: The heavy uncompressed pixel buffer is built once per VU (cached in runtime memory), and every
-// subsequent upload appends a unique tEXt chunk before IEND. This ensures a distinct SHA-256 digest on every upload
-// (avoiding server-side deduplication) while eliminating the ~600 ms k6 CPU burn in JavaScript per J4 journey.
+// History: h4 built the pixel buffer per journey (≈ 0.7 core-s of k6 CPU per J4 — it saturated the host in campaign
+// v3); h6 built it once per VU (≈ 0.6 s per VU, which still spiked k6's CPU whenever the capacity executor added
+// VUs at the knee). h7 ships the 256×256 image as a FIXTURE (fixtures/j4-256x256.png, generated once, reproducible)
+// loaded with open() in the init context — zero pixel work at run time; the generator below stays only for a
+// non-default J4_IMAGE_PX (a labelled variant), built once per VU in the init context. Every upload still appends a
+// unique tEXt chunk before IEND, so B's SHA-256 de-duplication never sees the same bytes twice.
 const CRC_TABLE = (() => {
   const table = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
@@ -201,13 +203,11 @@ function pngChunk(type, data) {
   return out;
 }
 
-let pngBaseCache = null;
-let uploadNonceSeq = 1;
-
-function buildBasePng(width, height, rng) {
+/** Builds a W×H RGBA PNG with stored deflate blocks (the fixture's exact shape) — only for a non-default size. */
+function buildPng(width, height, seed) {
   const stride = 1 + width * 4; // filter byte + RGBA
   const raw = new Uint8Array(stride * height);
-  let x = (Math.floor(rng() * 0xffffffff) >>> 0) || 0x9e3779b9;
+  let x = (seed >>> 0) || 0x9e3779b9;
   for (let y = 0; y < height; y++) {
     const row = y * stride;
     raw[row] = 0; // filter: none
@@ -245,18 +245,30 @@ function buildBasePng(width, height, rng) {
     out.set(part, o);
     o += part.length;
   }
-  return { width, height, bytes: out };
+  return out;
 }
 
+/** The fixture's edge length; any other J4_IMAGE_PX is generated once per VU below (a labelled variant). */
+export const J4_FIXTURE_PX = 256;
+export const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || J4_FIXTURE_PX);
+
+// Init context (k6 runs this file once per VU before the scenario; open() is only allowed here). The path is
+// relative to THIS module (k6 resolves open() against the calling module's location, verified on v2.1.0).
+const J4_BASE_PNG = J4_IMAGE_PX === J4_FIXTURE_PX
+  ? new Uint8Array(open('../fixtures/j4-256x256.png', 'b'))
+  : buildPng(J4_IMAGE_PX, J4_IMAGE_PX, 0x9e3779b9);
+
+let uploadNonceSeq = 1;
+
 /**
- * Returns { bytes: ArrayBuffer, size } — a valid RGBA PNG of width×height.
- * Uses cached base image buffer and stamps a unique tEXt chunk per call for instant (<0.1 ms) generation.
+ * Returns { bytes: ArrayBuffer, size } — the base PNG with a unique tEXt chunk inserted before IEND (B must never
+ * see the same bytes twice). Pure byte copying: < 0.1 ms per call, no pixel work at run time (h7).
  */
 export function makePng(width, height, rng) {
-  if (!pngBaseCache || pngBaseCache.width !== width || pngBaseCache.height !== height) {
-    pngBaseCache = buildBasePng(width, height, rng);
+  if (width !== J4_IMAGE_PX || height !== J4_IMAGE_PX) {
+    throw new Error(`makePng(${width}, ${height}) does not match J4_IMAGE_PX=${J4_IMAGE_PX} (set the env var instead)`);
   }
-  const base = pngBaseCache.bytes;
+  const base = J4_BASE_PNG;
   const iendOffset = base.length - 12;
 
   const seqStr = String(uploadNonceSeq++);

@@ -262,6 +262,73 @@ public sealed class ContentFlowTests : IClassFixture<ForumApiFactory>
         suggestions.Where(tag => tag.Slug == slug).ShouldHaveSingleItem().UsageCount.ShouldBe(8);
     }
 
+    [SkippableFact]
+    public async Task Search_newest_pages_by_keyset_without_duplicates_and_refuses_a_cursor_of_the_other_sort()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var erin = await RegisterAndLogin(client, "srt-erin");
+        var categoryId = await CreateCategory(client, erin, "srt-cat");
+        var word = $"ptarmigan{Ulid.NewUlid().ToString()[^6..].ToLowerInvariant()}";
+        var created = new List<string>();
+        for (var i = 1; i <= 5; i++)
+        {
+            created.Add(await CreateThread(client, erin, categoryId, $"Newest {i} {word}"));
+        }
+
+        // sort=newest: created_on_utc DESC, id DESC — pages of 2, no duplicates, newest first.
+        var page1 = await ReadPage(client, null, $"/api/content/search?q={word}&sort=newest&limit=2");
+        page1.Items.Count.ShouldBe(2);
+        page1.HasMore.ShouldBeTrue();
+        var page2 = await ReadPage(client, null, $"/api/content/search?q={word}&sort=newest&limit=2&cursor={Uri.EscapeDataString(page1.NextCursor!)}");
+        page2.Items.Count.ShouldBe(2);
+        var page3 = await ReadPage(client, null, $"/api/content/search?q={word}&sort=newest&limit=2&cursor={Uri.EscapeDataString(page2.NextCursor!)}");
+        page3.Items.Count.ShouldBe(1);
+        page3.HasMore.ShouldBeFalse();
+        page3.NextCursor.ShouldBeNull();
+        var seen = page1.Items.Concat(page2.Items).Concat(page3.Items).Select(static item => item.Id).ToArray();
+        seen.Distinct().Count().ShouldBe(5);
+        seen.ShouldBe(created.AsEnumerable().Reverse().ToArray());
+
+        // The relevance order still pages with its own cursor, and the two cursors are not interchangeable.
+        var ranked = await ReadPage(client, null, $"/api/content/search?q={word}&limit=2");
+        ranked.Items.Count.ShouldBe(2);
+        ranked.NextCursor.ShouldNotBe(page1.NextCursor);
+        var mismatch = await Get(client, null, $"/api/content/search?q={word}&sort=newest&limit=2&cursor={Uri.EscapeDataString(ranked.NextCursor!)}");
+        mismatch.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+        var unknownSort = await Get(client, null, $"/api/content/search?q={word}&sort=oldest");
+        unknownSort.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+    }
+
+    [SkippableFact]
+    public async Task Read_cache_is_off_by_default_so_every_lookup_is_a_bypass()
+    {
+        Skip.IfNot(_factory.Available, "Docker is not available.");
+
+        var client = CreateClient();
+        var frank = await RegisterAndLogin(client, "rcoff-frank");
+        var categoryId = await CreateCategory(client, frank, "rcoff-cat");
+        var threadId = await CreateThread(client, frank, categoryId, "Uncached");
+
+        for (var i = 0; i < 2; i++)
+        {
+            (await GetFeed(client, categoryId, null, 20)).Items.Count.ShouldBe(1);
+            (await Get(client, null, $"/api/content/threads/{threadId}/comments")).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await Get(client, null, "/api/content/search?q=Uncached&sort=newest")).StatusCode.ShouldBe(HttpStatusCode.OK);
+        }
+
+        // READ-CACHE-CONTRACT §5: disabled = no lookup, no stampede layer, nothing stored — only bypass is counted.
+        var metrics = await client.GetStringAsync("/metrics");
+        // (label order as the exporter writes it; the scope labels follow, so no closing brace is matched)
+        metrics.ShouldContain("forum_read_cache_lookups_total");
+        metrics.ShouldContain("cache=\"feed\",result=\"bypass\"");
+        metrics.ShouldContain("cache=\"comments\",result=\"bypass\"");
+        metrics.ShouldContain("cache=\"search\",result=\"bypass\"");
+        metrics.ShouldNotContain("result=\"hit\"");
+        metrics.ShouldNotContain("result=\"miss\"");
+    }
+
     private static async Task<Session> RegisterAndLogin(HttpClient client, string username)
     {
         var email = $"{username}@example.com";

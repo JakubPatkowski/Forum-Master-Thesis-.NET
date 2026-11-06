@@ -129,7 +129,27 @@ internal sealed class ContentQueries : IContentQueries
         return new CursorPage<ThreadFeedItemResponse>(items, nextCursor, hasMore);
     }
 
-    public async Task<CursorPage<ThreadFeedItemResponse>> SearchThreadsAsync(
+    // Search statements are planned per execution (SET plan_cache_mode = force_custom_plan around the SELECT, one
+    // batch, no extra round trip): the best plan depends on the word. Verified on the Benchmark seed: the generic plan a
+    // prepared statement switches to after five executions (Npgsql auto-prepare, plan_cache_mode = auto) estimates the
+    // tsquery match at the default 0.5 % selectivity and freezes "GIN bitmap + sort" for every word, which loses the
+    // early stop of the newest order on common words — the trap Architecture B hit and closed with its exec mode. The
+    // SET/RESET pair is session-scoped and undone in the same batch; the pool's RESET ALL covers an aborted batch.
+    private const string CustomPlanPrefix = "SET plan_cache_mode = force_custom_plan;\n";
+    private const string CustomPlanSuffix = ";\nRESET plan_cache_mode";
+
+    public Task<CursorPage<ThreadFeedItemResponse>> SearchThreadsAsync(
+        string query,
+        ThreadSearchSort sort,
+        ThreadSearchCursor? cursor,
+        int limit,
+        IReadOnlyCollection<Ulid> readablePrivateCategoryIds,
+        CancellationToken cancellationToken) =>
+        sort == ThreadSearchSort.Newest
+            ? SearchNewestAsync(query, cursor, limit, readablePrivateCategoryIds, cancellationToken)
+            : SearchByRelevanceAsync(query, cursor, limit, readablePrivateCategoryIds, cancellationToken);
+
+    private async Task<CursorPage<ThreadFeedItemResponse>> SearchByRelevanceAsync(
         string query,
         ThreadSearchCursor? cursor,
         int limit,
@@ -139,23 +159,26 @@ internal sealed class ContentQueries : IContentQueries
         var connection = _db.Database.GetDbConnection();
         await using var command = connection.CreateCommand();
 
-        // websearch_to_tsquery tolerates arbitrary user input; ts_rank is deterministic per (row, query),
-        // so the rank captured on one page is a stable keyset resume point on the next.
-        command.CommandText = WithExcerpt(
+        // websearch_to_tsquery tolerates arbitrary user input and is IMMUTABLE, so a custom plan folds it into a
+        // constant once per statement; ts_rank is deterministic per (row, query), so the rank captured on one page
+        // is a stable keyset resume point on the next.
+        command.CommandText = CustomPlanPrefix + WithExcerpt(
             $"""
             SELECT {FeedColumns},
-                   ts_rank(search_tsv, query) AS rank
-            FROM forum_content.thread_feed_v, websearch_to_tsquery('simple', @query) AS query
-            WHERE search_tsv @@ query
+                   ts_rank(search_tsv, websearch_to_tsquery('simple', @query)) AS rank
+            FROM forum_content.thread_feed_v
+            WHERE search_tsv @@ websearch_to_tsquery('simple', @query)
               AND {ReadableCategoryFilter}
               AND (@cursorId IS NULL
-                   OR ts_rank(search_tsv, query) < @cursorRank
-                   OR (ts_rank(search_tsv, query) = @cursorRank AND created_on_utc < @cursorCreated)
-                   OR (ts_rank(search_tsv, query) = @cursorRank AND created_on_utc = @cursorCreated AND id < @cursorId))
+                   OR ts_rank(search_tsv, websearch_to_tsquery('simple', @query)) < @cursorRank
+                   OR (ts_rank(search_tsv, websearch_to_tsquery('simple', @query)) = @cursorRank
+                       AND created_on_utc < @cursorCreated)
+                   OR (ts_rank(search_tsv, websearch_to_tsquery('simple', @query)) = @cursorRank
+                       AND created_on_utc = @cursorCreated AND id < @cursorId))
             ORDER BY rank DESC, created_on_utc DESC, id DESC
             LIMIT @limit
             """,
-            "page.rank DESC, page.created_on_utc DESC, page.id DESC");
+            "page.rank DESC, page.created_on_utc DESC, page.id DESC") + CustomPlanSuffix;
         command.AddParameter("@query", query, DbType.String);
         command.AddReadableCategories(readablePrivateCategoryIds);
         command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
@@ -174,7 +197,54 @@ internal sealed class ContentQueries : IContentQueries
 
         var last = items.Count > 0 ? items[^1] : null;
         var nextCursor = hasMore && last is not null
-            ? new ThreadSearchCursor(ranks[items.Count - 1], last.CreatedOnUtc, last.Id).Encode()
+            ? ThreadSearchCursor.ForRelevance(ranks[items.Count - 1], last.CreatedOnUtc, last.Id).Encode()
+            : null;
+
+        return new CursorPage<ThreadFeedItemResponse>(items, nextCursor, hasMore);
+    }
+
+    private async Task<CursorPage<ThreadFeedItemResponse>> SearchNewestAsync(
+        string query,
+        ThreadSearchCursor? cursor,
+        int limit,
+        IReadOnlyCollection<Ulid> readablePrivateCategoryIds,
+        CancellationToken cancellationToken)
+    {
+        var connection = _db.Database.GetDbConnection();
+        await using var command = connection.CreateCommand();
+
+        // Newest first along ix_threads_newest (created_on_utc DESC, id DESC WHERE is_deleted = false): with a custom
+        // plan the planner walks that index and stops after limit + 1 matches for a common word, or falls back to the
+        // GIN bitmap + sort for a rare one — the J6 ordering Architecture B's search page uses (A/B v5).
+        command.CommandText = CustomPlanPrefix + WithExcerpt(
+            $"""
+            SELECT {FeedColumns}
+            FROM forum_content.thread_feed_v
+            WHERE search_tsv @@ websearch_to_tsquery('simple', @query)
+              AND {ReadableCategoryFilter}
+              AND (@cursorId IS NULL
+                   OR created_on_utc < @cursorCreated
+                   OR (created_on_utc = @cursorCreated AND id < @cursorId))
+            ORDER BY created_on_utc DESC, id DESC
+            LIMIT @limit
+            """,
+            "page.created_on_utc DESC, page.id DESC") + CustomPlanSuffix;
+        command.AddParameter("@query", query, DbType.String);
+        command.AddReadableCategories(readablePrivateCategoryIds);
+        command.AddParameter("@cursorId", cursor?.Id.ToString() ?? (object)DBNull.Value, DbType.String);
+        command.AddParameter("@cursorCreated", cursor?.CreatedOnUtc ?? (object)DBNull.Value, DbType.DateTimeOffset);
+        command.AddParameter("@limit", limit + 1);
+
+        var items = await ReadFeedRowsAsync(connection, command, limit, cancellationToken);
+        var hasMore = items.Count > limit;
+        if (hasMore)
+        {
+            items.RemoveAt(items.Count - 1);
+        }
+
+        var last = items.Count > 0 ? items[^1] : null;
+        var nextCursor = hasMore && last is not null
+            ? ThreadSearchCursor.ForNewest(last.CreatedOnUtc, last.Id).Encode()
             : null;
 
         return new CursorPage<ThreadFeedItemResponse>(items, nextCursor, hasMore);
@@ -461,6 +531,12 @@ internal sealed class ContentQueries : IContentQueries
         {
             var items = new List<ThreadFeedItemResponse>(limit + 1);
             await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            // A search batch starts with SET plan_cache_mode (a statement without a result set): advance to the
+            // SELECT's rows. Plain feed queries are positioned on their only result set already.
+            while (reader.FieldCount == 0 && await reader.NextResultAsync(cancellationToken))
+            {
+            }
+
             // The excerpt is appended by WithExcerpt after any query-specific trailing columns (search adds `rank`
             // at 13), so it is read by name rather than by position.
             var excerptOrdinal = reader.GetOrdinal("excerpt");

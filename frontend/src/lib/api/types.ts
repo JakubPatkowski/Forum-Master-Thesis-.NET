@@ -99,6 +99,14 @@ export interface ThreadFeedItemResponse {
   excerpt: string;
 }
 
+/**
+ * Search result order (A/B v5, J6 parity with Architecture B): "newest" walks created_on_utc DESC, id DESC and lets
+ * the server stop at the page size; "relevance" ranks every match by ts_rank (title over body). The API default is
+ * "relevance"; the search page defaults to "newest" like B's search page. The cursor carries the sort — a cursor of
+ * the other order is refused with 422 (search.cursor_sort_mismatch).
+ */
+export type SearchSort = "newest" | "relevance";
+
 export interface ThreadDetailResponse {
   id: string;
   categoryId: string;

@@ -5,8 +5,17 @@ public sealed class MessagingOptions
 {
     public const string SectionName = "Messaging";
 
-    /// <summary>How often each module's relay polls its outbox for unpublished rows.</summary>
+    /// <summary>
+    /// How often each module's relay polls its outbox for unpublished rows. With <see cref="WakeRelayOnWrite"/> this
+    /// is the fallback cadence (other replicas' rows, crash recovery); the same replica's writes wake the relay at once.
+    /// </summary>
     public int PollIntervalMilliseconds { get; init; } = 5_000;
+
+    /// <summary>
+    /// Signal the module's relay on this replica as soon as a transaction that inserted outbox rows has committed
+    /// (A/B v5, A4) instead of letting the rows wait for the next poll. Off = pure polling.
+    /// </summary>
+    public bool WakeRelayOnWrite { get; init; } = true;
 
     /// <summary>Outbox rows claimed per relay pass (the FOR UPDATE SKIP LOCKED window).</summary>
     public int BatchSize { get; init; } = 50;

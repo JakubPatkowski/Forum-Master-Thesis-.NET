@@ -10,6 +10,7 @@ import type {
   CreateThreadRequest,
   CreateThreadResponse,
   CursorPage,
+  SearchSort,
   TagSuggestionResponse,
   ThreadDetailResponse,
   ThreadFeedItemResponse,
@@ -76,9 +77,10 @@ export const contentApi = {
   pinThread: (threadId: string, pinned: boolean) =>
     apiFetch(`/api/content/threads/${threadId}/pin`, { method: "POST", body: { pinned } }),
 
-  searchThreads: (q: string, cursor?: string | null, limit = 20) =>
+  /** sort is sent explicitly whenever the caller picks one; omitted = the API default (relevance). */
+  searchThreads: (q: string, cursor?: string | null, limit = 20, sort?: SearchSort) =>
     apiFetch<CursorPage<ThreadFeedItemResponse>>(
-      `/api/content/search?q=${encodeURIComponent(q)}&${pageParams(cursor, limit)}`,
+      `/api/content/search?q=${encodeURIComponent(q)}&${sort ? `sort=${sort}&` : ""}${pageParams(cursor, limit)}`,
     ),
 
   // --- user activity (profile timeline) ---

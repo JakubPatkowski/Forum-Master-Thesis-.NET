@@ -4,7 +4,9 @@
  * Full-text search (design: Search.dc.html): debounced query → keyset-paged results
  * (same ThreadFeedItemResponse shape as the feed), batch like-count hydration, explicit
  * empty state, and the FILTERS · SOON note (category/tag/author filters need API params
- * that don't exist yet).
+ * that don't exist yet). Sort switch NEWEST / MOST RELEVANT (A/B v5): Newest is the default,
+ * like Architecture B's search page; the choice travels in the URL (?sort=) so a shared link
+ * reproduces it. Changing the sort starts a fresh query (the two orders have incompatible cursors).
  */
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,9 +22,11 @@ import { ApiErrorState } from "@/components/ui/ErrorState";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 import { ThreadCardSkeleton } from "@/components/ui/Skeleton";
 import { ApiError } from "@/lib/api/problem";
+import type { SearchSort } from "@/lib/api/types";
 import { useAuth } from "@/lib/auth/auth-context";
 import { useSearchThreads } from "@/lib/hooks/use-content";
 import { useReactionBatch } from "@/lib/hooks/use-reactions";
+import { parseSearchSort, searchUrl } from "@/lib/search/sort";
 
 import styles from "./search.module.css";
 
@@ -35,6 +39,7 @@ function SearchView() {
   const { openCreate } = useCompose();
 
   const initialQuery = searchParams.get("q") ?? "";
+  const sort = parseSearchSort(searchParams.get("sort"));
   const [input, setInput] = useState(initialQuery);
   const [query, setQuery] = useState(initialQuery);
 
@@ -49,14 +54,17 @@ function SearchView() {
       // that floods the network tab and leaves the page stuck in a pending transition (~15s stall).
       const current = searchParams.get("q") ?? "";
       if (trimmed !== current) {
-        const url = trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : "/search";
-        router.replace(url, { scroll: false });
+        router.replace(searchUrl(trimmed, sort), { scroll: false });
       }
     }, DEBOUNCE_MS);
     return () => clearTimeout(handle);
-  }, [input, router, searchParams]);
+  }, [input, router, searchParams, sort]);
 
-  const search = useSearchThreads(query);
+  const setSort = (next: SearchSort) => {
+    if (next !== sort) router.replace(searchUrl(query, next), { scroll: false });
+  };
+
+  const search = useSearchThreads(query, 20, sort);
   const results = useMemo(
     () => search.data?.pages.flatMap((page) => page.items) ?? [],
     [search.data],
@@ -90,6 +98,24 @@ function SearchView() {
       </div>
       <div className={styles.metaRow}>
         <span className={styles.metaNote}>FULL-TEXT · KEYSET CURSOR · NO TOTAL COUNT</span>
+        <div className={styles.sortSwitch} role="group" aria-label="Sort results" data-testid="search-sort">
+          <button
+            type="button"
+            className={sort === "newest" ? styles.sortActive : styles.sortOption}
+            aria-pressed={sort === "newest"}
+            onClick={() => setSort("newest")}
+          >
+            NEWEST
+          </button>
+          <button
+            type="button"
+            className={sort === "relevance" ? styles.sortActive : styles.sortOption}
+            aria-pressed={sort === "relevance"}
+            onClick={() => setSort("relevance")}
+          >
+            MOST RELEVANT
+          </button>
+        </div>
         <span className={styles.metaFilters}>FILTERS</span>
         <Badge
           tone="warning"

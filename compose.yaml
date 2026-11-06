@@ -22,6 +22,10 @@ services:
     image: rabbitmq:4-management
     restart: unless-stopped
     ports: ["5672:5672", "15672:15672"]
+    # Same scheduler setting as k8s/rabbitmq/statefulset.yaml (A/B v5, A5). Explicit only: rabbitmq:4's own defaults
+    # already pass `+sbwt none` (see the statefulset comment).
+    environment:
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "+sbwt none +sbwtdcpu none +sbwtdio none"
 
   minio:
     image: minio/minio:latest

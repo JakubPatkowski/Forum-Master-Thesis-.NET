@@ -4,6 +4,7 @@ using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Common.Telemetry;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Comments;
@@ -34,6 +35,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
     private readonly ICurrentUser _currentUser;
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
     private readonly TimeProvider _clock;
     private readonly ForumMetrics _metrics;
 
@@ -44,6 +46,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
+        IContentReadCache readCache,
         TimeProvider clock,
         ForumMetrics metrics)
     {
@@ -53,6 +56,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
         _currentUser = currentUser;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
         _clock = clock;
         _metrics = metrics;
     }
@@ -119,6 +123,7 @@ internal sealed class CreateCommentCommandHandler : ICommandHandler<CreateCommen
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await _readCache.CommentWrittenAsync(thread.Id); // READ-CACHE-CONTRACT §3: C2 of this thread
         _metrics.CommentCreated();
         return Result.Success(new CreateCommentResponse(comment.Id));
     }

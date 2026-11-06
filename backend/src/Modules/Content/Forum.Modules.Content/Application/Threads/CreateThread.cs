@@ -4,6 +4,7 @@ using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Common.Telemetry;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Categories;
@@ -45,6 +46,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
     private readonly ICurrentUser _currentUser;
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
     private readonly TimeProvider _clock;
     private readonly ForumMetrics _metrics;
 
@@ -56,6 +58,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
+        IContentReadCache readCache,
         TimeProvider clock,
         ForumMetrics metrics)
     {
@@ -66,6 +69,7 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
         _currentUser = currentUser;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
         _clock = clock;
         _metrics = metrics;
     }
@@ -119,6 +123,8 @@ internal sealed class CreateThreadCommandHandler : ICommandHandler<CreateThreadC
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        // Durable → flush this replica's feed, comment-tree and search entries (READ-CACHE-CONTRACT §3).
+        await _readCache.ThreadChangedAsync();
         _metrics.ThreadCreated();
         return Result.Success(new CreateThreadResponse(thread.Id));
     }

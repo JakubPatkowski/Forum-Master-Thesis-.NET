@@ -1,4 +1,9 @@
-import type { GroupListFilter, ReactionTargetType, FileTargetType } from "@/lib/api/types";
+import type {
+  GroupListFilter,
+  ReactionTargetType,
+  FileTargetType,
+  SearchSort,
+} from "@/lib/api/types";
 
 /**
  * Query-key factory — the single naming scheme for every server-state cache entry, so a
@@ -11,7 +16,8 @@ export const queryKeys = {
 
   threadFeed: (categoryId: string) => ["threads", "feed", categoryId] as const,
   thread: (threadId: string) => ["threads", "detail", threadId] as const,
-  search: (q: string) => ["threads", "search", q] as const,
+  // The sort is part of the key: the two orders are different result sets with incompatible cursors.
+  search: (q: string, sort: SearchSort = "relevance") => ["threads", "search", sort, q] as const,
 
   comments: (threadId: string) => ["comments", threadId] as const,
 

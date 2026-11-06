@@ -34,3 +34,6 @@ data:
   # burst starves the pool — hill-climbing adds threads at ~1-2/s, which shows up as p99 spikes on
   # the first benchmark ramp step. Pre-warming the floor to 64 removes that warm-up cliff.
   DOTNET_ThreadPool_MinThreads: "64"
+  # A/B v5 read cache (docs/specs/READ-CACHE-CONTRACT.md §5): OFF in the bench deployment by default, exactly like
+  # B's GOMX_READ_CACHE=0 in its bench overlay; scripts/ab-round.sh --read-cache on|off sets it per round on BOTH.
+  ReadCache__Enabled: "false"

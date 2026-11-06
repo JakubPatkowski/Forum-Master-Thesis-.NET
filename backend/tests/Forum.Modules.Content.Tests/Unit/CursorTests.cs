@@ -1,4 +1,5 @@
 using Forum.Modules.Content.Application.Paging;
+using Forum.Modules.Content.Application.Threads;
 
 using Shouldly;
 
@@ -44,17 +45,62 @@ public sealed class CursorTests
     [Fact]
     public void Search_cursor_round_trips_the_rank_exactly()
     {
-        var cursor = new ThreadSearchCursor(0.60858315f, DateTimeOffset.UtcNow, Ulid.NewUlid());
+        var cursor = ThreadSearchCursor.ForRelevance(0.60858315f, DateTimeOffset.UtcNow, Ulid.NewUlid());
 
         var decoded = ThreadSearchCursor.TryDecode(cursor.Encode());
 
         decoded.ShouldBe(cursor);
+        decoded!.Sort.ShouldBe(ThreadSearchSort.Relevance);
+    }
+
+    [Fact]
+    public void Newest_search_cursor_round_trips_without_a_rank()
+    {
+        var cursor = ThreadSearchCursor.ForNewest(DateTimeOffset.UtcNow, Ulid.NewUlid());
+
+        var decoded = ThreadSearchCursor.TryDecode(cursor.Encode());
+
+        decoded.ShouldBe(cursor);
+        decoded!.Sort.ShouldBe(ThreadSearchSort.Newest);
+        decoded.Rank.ShouldBeNull();
+    }
+
+    [Fact]
+    public void Search_cursors_of_the_two_sorts_never_decode_as_each_other()
+    {
+        var createdOnUtc = DateTimeOffset.UtcNow;
+        var id = Ulid.NewUlid();
+
+        // The sort tag is part of the payload: the same resume point encodes differently per order.
+        var relevance = ThreadSearchCursor.ForRelevance(0.25f, createdOnUtc, id).Encode();
+        var newest = ThreadSearchCursor.ForNewest(createdOnUtc, id).Encode();
+
+        relevance.ShouldNotBe(newest);
+        ThreadSearchCursor.TryDecode(relevance)!.Sort.ShouldBe(ThreadSearchSort.Relevance);
+        ThreadSearchCursor.TryDecode(newest)!.Sort.ShouldBe(ThreadSearchSort.Newest);
+    }
+
+    [Theory]
+    [InlineData("relevance", "relevance")]
+    [InlineData("NEWEST", "newest")]
+    [InlineData(null, "relevance")]
+    [InlineData("", "relevance")]
+    public void Search_sort_parses_known_values_and_defaults_to_relevance(string? value, string expected)
+    {
+        ThreadSearchSortParser.TryParse(value)!.Value.ToValue().ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Search_sort_rejects_unknown_values()
+    {
+        ThreadSearchSortParser.TryParse("oldest").ShouldBeNull();
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("bm90fGN1cnNvcg")] // "not|cursor" — right delimiter, wrong shape
     [InlineData("%%%")]
+    [InlineData("MC42fDEyM3wwMUhaWg")] // the pre-v5 three-part relevance payload (no sort tag) is not accepted
     public void Search_cursor_rejects_malformed_values(string value)
     {
         ThreadSearchCursor.TryDecode(value).ShouldBeNull();

@@ -48,6 +48,35 @@
   flex: 1;
 }
 
+.sortSwitch {
+  display: inline-flex;
+  border: 1px solid var(--color-border-default);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sortOption,
+.sortActive {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 6px 10px;
+  min-height: 28px;
+  background: transparent;
+  border: 0;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.sortOption:hover {
+  color: var(--color-text-primary);
+}
+
+.sortActive {
+  background: var(--color-neutral-800);
+  color: var(--color-text-primary);
+}
+
 .metaFilters {
   font-family: var(--font-mono);
   font-size: 10px;

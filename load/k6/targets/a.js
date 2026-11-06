@@ -5,7 +5,7 @@
 // Bench#Password1, Development fallback alice|bob|charlie@dev.local / Dev#Password1), bearer JWT,
 // feed = GET /api/content/threads?categoryId=… (keyset cursor), thread open = detail + comment tree +
 // reaction batch (the SPA's core 3-call pattern — decision D1: an idealized client, see the v1 report), search =
-// GET /api/content/search?q=, profile = stats + user threads, WS = single-use ticket → /api/realtime/ws →
+// GET /api/content/search?q=&sort=newest (h7: the SPA page's default order, = B's), profile = stats + user threads, WS = single-use ticket → /api/realtime/ws →
 // subscribe category. Harness v1 (2026-10-17): the thread pool is the WHOLE public corpus (setup crawls every
 // public feed to the end — same rule as targets/b.js), J5 always sends the state-changing direction, unparsed
 // bodies are discarded, every request asks for gzip (lib/wire.js).
@@ -34,7 +34,7 @@ import {
   listCategories, listFriends, login, openDirectConversation, reactionBatch, realtimeTicket, removeReaction,
   searchThreads, sendMessage, spaPaths, threadFeed, uploadToPresignedUrl,
 } from '../lib/api.js';
-import { SEARCH_WORDS as SHARED_WORDS, makePng, threadBody, threadTitle } from '../lib/assets.js';
+import { J4_IMAGE_PX, SEARCH_WORDS as SHARED_WORDS, makePng, threadBody, threadTitle } from '../lib/assets.js';
 import { track } from '../lib/track.js';
 
 export const NAME = 'a';
@@ -45,7 +45,7 @@ export const BOOSTED = false;
 const AUTH_READS = __ENV.AUTH_READS === '1' || __ENV.AUTH_READS === 'true';
 // Read journeys replay the real SPA pages' cold-cache waterfalls (deviation D1) — opt-in, see the `spa` section.
 const REAL_SPA = __ENV.REAL_SPA === '1' || __ENV.REAL_SPA === 'true';
-const J4_IMAGE_PX = Number(__ENV.J4_IMAGE_PX || 256); // 256×256 RGBA ≈ 262 KB — a small photo, same bytes on B
+// J4 image: the shipped 256×256 fixture (≈ 262 KB, lib/assets.js, harness h7) — same bytes on B.
 
 // Setup-time calls (login pool, pool discovery) are tagged with this endpoint so they never land in a journey's
 // endpoint row of the summary table.
@@ -400,11 +400,11 @@ const spa = {
     }
   },
 
-  /** /search?q= — J6 (app/search/page.tsx; no sidebar). */
+  /** /search?q= — J6 (app/search/page.tsx; no sidebar). The page's default sort is Newest (h7, like B's search page). */
   search(baseUrl, _data, session, pick) {
     const seen = new Set();
     const w1 = wave([
-      entry(baseUrl, spaPaths.search(pick.word(), 20), 'search', session),
+      entry(baseUrl, spaPaths.search(pick.word(), 20, 'newest'), 'search', session),
       ...chromeEntries(baseUrl, session, seen),
     ]);
     if (w1[0].status !== 200) {
@@ -556,13 +556,13 @@ export const journeys = {
     }
   },
 
-  /** J6 — FTS search with words both seeders actually wrote. */
+  /** J6 — FTS search with words both seeders actually wrote; sort=newest = the SPA page's default (h7, B parity). */
   J6(baseUrl, data, session, pick) {
     if (REAL_SPA) {
       spa.search(baseUrl, data, session, pick);
       return;
     }
-    track(searchThreads(baseUrl, pick.word(), readOpts(session, DISCARD)), 'search');
+    track(searchThreads(baseUrl, pick.word(), readOpts(session, { ...DISCARD, sort: 'newest' })), 'search');
   },
 
   /** J7 — profile: stats + the user's threads (the SPA's /u/[userId] core calls, both at mount → parallel). */

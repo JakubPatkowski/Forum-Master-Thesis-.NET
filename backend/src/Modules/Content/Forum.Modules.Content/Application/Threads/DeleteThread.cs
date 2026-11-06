@@ -1,6 +1,7 @@
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Threads;
 using Forum.SharedKernel.Results;
@@ -16,6 +17,7 @@ internal sealed class DeleteThreadCommandHandler : ICommandHandler<DeleteThreadC
     private readonly ICurrentUser _currentUser;
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
     private readonly TimeProvider _clock;
 
     public DeleteThreadCommandHandler(
@@ -23,12 +25,14 @@ internal sealed class DeleteThreadCommandHandler : ICommandHandler<DeleteThreadC
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
+        IContentReadCache readCache,
         TimeProvider clock)
     {
         _threads = threads;
         _currentUser = currentUser;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
         _clock = clock;
     }
 
@@ -55,6 +59,7 @@ internal sealed class DeleteThreadCommandHandler : ICommandHandler<DeleteThreadC
         _outbox.Enqueue(new ThreadDeletedIntegrationEvent(Ulid.NewUlid(), thread.Id, thread.CategoryId, now));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _readCache.ThreadChangedAsync(); // READ-CACHE-CONTRACT §3: C1 all, C2 all, C3 all
         return Result.Success();
     }
 }

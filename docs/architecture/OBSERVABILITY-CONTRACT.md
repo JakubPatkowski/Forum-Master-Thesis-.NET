@@ -69,6 +69,7 @@ Domain Meter `Forum` (`Forum.Common.Telemetry.ForumMetrics`), plan names plus th
 | **`forum_hosted_service_tick_age_seconds`** (new) | `service` = `outbox-relay-<module>` \| `consumer-<module>` \| `orphan-sweep` \| `realtime-feed` | seconds since each background loop last reported alive (series exists from boot — each loop ticks once on start) |
 | **`forum_web_vitals_duration_seconds_bucket/_sum/_count`** (A-3) | `metric` = `LCP` \| `FCP` \| `INP` \| `TTFB` (allow-listed at the endpoint), `rating` = `good` \| `needs-improvement` \| `poor` \| `unknown` | real-user timing Core Web Vitals beaconed by the SPA to `POST /api/telemetry/vitals` (anonymous, permissive 204); buckets are B's `web_vitals_duration_seconds` values verbatim, so the A/B RUM histograms compare 1:1 |
 | **`forum_web_vitals_cls_bucket/_sum/_count`** (A-3) | `rating` (same closed set) | real-user Cumulative Layout Shift (unitless), separate histogram like B's `web_vitals_cls` |
+| **`forum_read_cache_lookups_total`** (A/B v5) | `cache` = `feed` \| `comments` \| `search`, `result` = `hit` \| `miss` \| `bypass` | Content read-cache lookups (`docs/specs/READ-CACHE-CONTRACT.md` §4; B: `gomx_read_cache_lookups_total`). `hit` = served without running the store query (a caller that joined an in-flight computation counts as a hit), `miss` = the lookup ran the query, `bypass` = the cache is off (`ReadCache:Enabled=false`) or the key was uncacheable — no lookup took place. Hit ratio = hit / (hit + miss) |
 
 ### "Recent errors" rate panel / alert (Prometheus)
 

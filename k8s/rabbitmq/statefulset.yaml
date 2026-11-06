@@ -19,6 +19,15 @@ spec:
         - name: rabbitmq
           image: rabbitmq:4-management
           envFrom: [{ secretRef: { name: rabbitmq-credentials } }]
+          # A/B v5 (A5): no Erlang scheduler busy-waiting. Made explicit here, but NOTE (verified 2026-11-06 on
+          # rabbitmq:4-management = 4.3.2): the image's own rabbitmq-env already passes `+sbwt none +sbwtdcpu none
+          # +sbwtdio none` (RABBITMQ_SCHEDULER_BUSY_WAIT_THRESHOLD defaults to none), so this changes nothing on the
+          # beam command line beyond repeating the flags. The broker's standing CPU in the rounds (≈ 0.1 core) comes
+          # from the EXEC PROBES below instead: every rabbitmq-diagnostics call boots a second Erlang node (measured
+          # 200–275 % container CPU while probes run back-to-back, ≈ 1–1.5 core-s per probe; the 15 s + 30 s cadence
+          # ≈ 0.1 core) — a deployment review item for both authors (tcpSocket/HTTP probes would remove it).
+          env:
+            - { name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS, value: "+sbwt none +sbwtdcpu none +sbwtdio none" }
           ports:
             - { name: amqp, containerPort: 5672 }
             - { name: management, containerPort: 15672 }

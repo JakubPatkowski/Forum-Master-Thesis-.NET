@@ -2,6 +2,9 @@
   <ItemGroup Label="Cross-module access goes through Identity's Contracts only (enforced by ArchitectureTests)">
     <ProjectReference Include="..\..\Identity\Forum.Modules.Identity\Forum.Modules.Identity.csproj" />
   </ItemGroup>
+  <ItemGroup Label="Read cache (C1/C2/C3 of docs/specs/READ-CACHE-CONTRACT.md) — HybridCache as a pure in-process L1">
+    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" />
+  </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Forum.Modules.Content.Tests" />
     <!-- Lets NSubstitute / Castle DynamicProxy mock the module's internal ports in tests. -->

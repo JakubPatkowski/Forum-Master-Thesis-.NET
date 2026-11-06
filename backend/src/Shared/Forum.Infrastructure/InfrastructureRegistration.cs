@@ -2,6 +2,7 @@ using Forum.Common.Messaging;
 using Forum.Common.Security;
 using Forum.Common.Telemetry;
 using Forum.Infrastructure.Messaging;
+using Forum.Infrastructure.Messaging.Outbox;
 using Forum.Infrastructure.Messaging.RabbitMq;
 using Forum.Infrastructure.Persistence;
 using Forum.Infrastructure.Storage;
@@ -40,6 +41,11 @@ public static class InfrastructureRegistration
         services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
         services.Configure<MessagingOptions>(configuration.GetSection(MessagingOptions.SectionName));
         services.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
+
+        // Replica-local outbox wake-up (A/B v5, A4): every module DbContext gets the interceptor, every module relay
+        // waits on its own signal — a committed outbox insert is relayed at once instead of after the next poll.
+        services.AddSingleton<OutboxRelayWakeup>();
+        services.AddSingleton<OutboxWakeupInterceptor>();
 
         // MinIO object storage.
         services.Configure<StorageOptions>(configuration.GetSection("Storage"));

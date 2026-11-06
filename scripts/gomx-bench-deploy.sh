@@ -57,7 +57,16 @@ if $BUILD; then
   eval "$(mk docker-env)"
   docker build -f "$GOMX_DIR/ContainerFile.dev" -t gomx:bench -t "gomx:bench-$GOMX_SHA" --build-arg GIT_SHA="$GOMX_SHA" "$GOMX_DIR"
   eval "$(mk docker-env -u)"
-  podman save gomx:bench | mk image load - >/dev/null 2>&1 || true
+  # Opt-in hand-off for a rootless-podman host (Hubert's set-up): his podman daemon holds the gomx:bench image, so it
+  # is streamed into the minikube node. OFF by default — on a docker host the build above already landed the image in
+  # the node's daemon, and a stale podman image would silently REPLACE the fresh build (found 2026-11-06 in the
+  # `… >/dev/null 2>&1 || true` form). When enabled, every error is visible and fatal.
+  if [[ "${GOMX_IMAGE_FROM_PODMAN:-0}" == "1" ]]; then
+    require_cmd podman "GOMX_IMAGE_FROM_PODMAN=1 needs podman on PATH"
+    step "Loading gomx:bench from podman into the minikube node (GOMX_IMAGE_FROM_PODMAN=1)"
+    podman save gomx:bench | mk image load - || die "podman save | minikube image load failed"
+    ok "podman image gomx:bench loaded into the node"
+  fi
   ok "image gomx:bench (= gomx:bench-$GOMX_SHA) available to the node"
 fi
 

@@ -31,11 +31,13 @@ internal interface IContentQueries
         Ulid categoryId, ThreadFeedCursor? cursor, int limit, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Ranked FTS over threads in public categories plus <paramref name="readablePrivateCategoryIds"/> (A-12: a
-    /// private category's threads never surface to a reader who cannot open the category).
+    /// FTS over threads in public categories plus <paramref name="readablePrivateCategoryIds"/> (A-12: a private
+    /// category's threads never surface to a reader who cannot open the category), ordered by
+    /// <paramref name="sort"/>; the cursor (if any) must have been issued for the same sort.
     /// </summary>
     Task<CursorPage<ThreadFeedItemResponse>> SearchThreadsAsync(
         string query,
+        ThreadSearchSort sort,
         ThreadSearchCursor? cursor,
         int limit,
         IReadOnlyCollection<Ulid> readablePrivateCategoryIds,

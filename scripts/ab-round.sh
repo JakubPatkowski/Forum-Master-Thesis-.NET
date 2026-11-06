@@ -15,6 +15,8 @@
 #   scripts/ab-round.sh --plan demo:3 --label v2-gc --gc-variant            # D8: workstation GC / GOMEMLIMIT
 #   scripts/ab-round.sh --plan demo:3 --label v2-relay --relay-poll-ms 500  # A outbox poll (J8 receipt floor)
 #   scripts/ab-round.sh --plan soak:1 --label v2-soak --k6-env SOAK_MINUTES=60
+#   scripts/ab-round.sh --plan demo:10 --label v5-cache --read-cache on      # v5: the read cache ON on BOTH sides
+#                                                                           #     (default off; READ-CACHE-CONTRACT.md)
 #   scripts/ab-round.sh --resume thesis/results/rounds/<dir> --plan demo:10  # CONTINUE an archive: valid runs are
 #                                                                           #   kept, invalid ones redone, new repeats
 #                                                                           #   appended (demo:5 tonight + demo:10
@@ -79,6 +81,7 @@ while [[ $# -gt 0 ]]; do
     --relay-poll-ms) AB_RELAY_POLL_MS="${2:?--relay-poll-ms needs milliseconds}"; shift 2 ;;
     --auth-reads) AB_AUTH_READS=true; shift ;;
     --real-spa) AB_REAL_SPA=true; shift ;;
+    --read-cache) AB_READ_CACHE="${2:?--read-cache needs on|off}"; shift 2 ;;
     --k6-env) K6_ENV+=("${2:?--k6-env needs KEY=VALUE}"); shift 2 ;;
     --resume) RESUME_DIR="${2:?--resume needs an existing round directory}"; shift 2 ;;
     -h|--help) sed -n '2,48p' "$0"; exit 0 ;;
@@ -89,6 +92,7 @@ IFS=',' read -r -a PLAN_ITEMS <<<"$PLAN"
 for item in "${PLAN_ITEMS[@]}"; do
   [[ "$item" =~ ^(smoke|demo|stress|capacity|soak|spike):[0-9]+$ ]] || die "bad plan item '$item' (profile:repeats; profiles smoke|demo|stress|capacity|soak|spike)"
 done
+[[ "$AB_READ_CACHE" == on || "$AB_READ_CACHE" == off ]] || die "--read-cache must be on or off (got '$AB_READ_CACHE')"
 # Variant env for k6 (main.js records them in the journeys block; run-load-test.sh forwards them).
 [[ "$AB_AUTH_READS" == true ]] && export AUTH_READS=1
 [[ "$AB_REAL_SPA" == true ]] && export REAL_SPA=1   # targets/a.js + main.js read it; the B adapter ignores it
@@ -208,21 +212,23 @@ done
 python3 - "$ROUND/round.json" "$PLAN" "$LABEL" "$COOLDOWN_SECONDS" "$RESEED" "$WARMUP" "$AB_REPLICAS" \
   "$(sed -n "s/^export const MIX_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
   "$(sed -n "s/^export const HARNESS_VERSION = '\([^']*\)';.*/\1/p" "$REPO_ROOT/load/k6/main.js")" \
-  "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "$AB_REAL_SPA" "${K6_ENV[*]}" "$RESUMING" <<'PY'
+  "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "$AB_REAL_SPA" "${K6_ENV[*]}" "$RESUMING" "$AB_READ_CACHE" <<'PY'
 import json, os, sys, time
 out, plan, label, cooldown, reseed, warmup, replicas, mix, harness = sys.argv[1:10]
-hpa, gc, relay, auth, real_spa, k6env, resuming = sys.argv[10:17]
+hpa, gc, relay, auth, real_spa, k6env, resuming, read_cache = sys.argv[10:18]
 doc = {"label": label, "plan": plan, "started_epoch": time.time(), "cooldown_s": int(cooldown),
        "reseed_each_run": reseed == "true", "warmup_each_run": warmup == "true", "replicas": int(replicas),
        "mix_version": mix, "harness_version": harness, "order": "ABBA (odd repeat: A then B; even: B then A)",
        "variants": {"hpa": hpa == "true", "gc_variant": gc == "true", "relay_poll_ms": int(relay) if relay else None,
                     "auth_reads": auth == "true", "real_spa": real_spa == "true",
+                    "read_cache": read_cache,  # v5 (READ-CACHE-CONTRACT.md §5): on|off on BOTH sides, never mixed
                     "k6_env": k6env.split() if k6env else []}}
 if resuming == "true" and os.path.exists(out):
     old = json.load(open(out))
     if old.get("harness_version") != harness or old.get("mix_version") != mix:
         sys.exit(f"--resume: harness/mix changed ({old.get('harness_version')}/{old.get('mix_version')} → {harness}/{mix}) — start a new round instead.")
     if old.get("variants") != doc["variants"]:
+        # Includes read_cache (v5): a round is never continued with the other cache setting.
         sys.exit(f"--resume: variant flags differ from the archive's ({old.get('variants')}) — pass the same flags.")
     old["plan"] = plan  # the plan may grow (demo:5 → demo:10); the archive's history keeps every attempt
     old.setdefault("resumed_epochs", []).append(time.time())
@@ -300,7 +306,7 @@ run_one() {
   fi
   python3 - "$run_dir/run.json" "$t" "$profile" "$k" "$pos" "$rc" "$started" "$finished" "$before" "$after" \
     "$restarts_before" "$restarts_after" "$profile_ok" "$resources_ok" <<'PY'
-import glob, json, statistics, sys
+import glob, json, os, statistics, sys
 out, t, profile, k, pos, rc, started, finished, before, after, rb, ra, profile_ok, resources_ok = sys.argv[1:15]
 def counts(s):
     v = s.split()
@@ -349,30 +355,56 @@ if resources_ok != "true":
     reasons.append("no resources.json (Prometheus window read failed) — H1 data missing")
 if profile_ok != "true":
     reasons.append("common-profile check failed (--allow-mismatch)")
-# Generator sanity gate (§11.2): k6 mean CPU <= 1 core (100%), peak <= 2 cores (200%)
+# Generator sanity gate (h7): k6's own CPU is ALWAYS recorded (mean + peak, % of one core, from the 5-s samples).
+#   demo/stress (closed model): invalid if mean > 1 core or peak > max(2 cores, 25 % of the host's cores) — a
+#     saturated generator inflates every latency it measures.
+#   capacity (open model): judged only over the samples up to the END OF THE LAST HEALTHY STEP (the step before
+#     the knee; every step when no knee was reached). The arrival-rate executor adds VUs once the target saturates, so
+#     k6's spike FOLLOWS the knee — h6's whole-run rule flagged every capacity run although k6 used 23–55 % of a core
+#     until the knee (Hubert's rounds of 2026-10-31…11-02); those knees are trustworthy and are now kept.
 sfiles = sorted(glob.glob(f"{out.rsplit('/', 1)[0]}/samples-*.json"))
+k6_cpu = None
 if sfiles:
     try:
         samples = json.load(open(sfiles[-1]))
         pts = [(s.get("epoch"), s.get("k6_cpu_ticks"), s.get("clk_tck") or 100) for s in samples]
         pts = [p for p in pts if p[0] is not None and p[1] is not None]
-        pct = []
+        series = []  # (epoch of the sample's end, % of one core over the sample)
         for (e0, t0, hz), (e1, t1, _) in zip(pts, pts[1:]):
             if e1 > e0 and t1 >= t0:
-                pct.append((t1 - t0) / hz / (e1 - e0) * 100)
-        if pct:
-            k6_mean, k6_max = statistics.mean(pct), max(pct)
-            if k6_mean > 100:
-                reasons.append(f"generator saturated: k6 mean CPU {k6_mean:.1f}% > 100% (1 core)")
-            elif k6_max > 200:
-                reasons.append(f"generator spike: k6 peak CPU {k6_max:.1f}% > 200% (2 cores)")
-    except Exception:
-        pass
+                series.append((e1, (t1 - t0) / hz / (e1 - e0) * 100))
+        host_cores = os.cpu_count() or 1
+        peak_limit = max(200.0, 25.0 * host_cores)
+        judged = series
+        judged_until = None
+        cap = j.get("capacity") or {}
+        window = j.get("window") or {}
+        if profile == "capacity" and series and cap.get("steps") and window.get("start_ms"):
+            knee = (cap.get("knee") or {}).get("step")
+            healthy = [s for s in cap["steps"] if knee is None or s["step"] < knee]
+            if healthy:
+                judged_until = window["start_ms"] / 1000.0 + max(s["hold_end_s"] for s in healthy)
+                judged = [p for p in series if p[0] <= judged_until] or series[:1]
+        if series:
+            k6_cpu = {"mean_pct": round(statistics.mean(v for _, v in series), 1),
+                      "peak_pct": round(max(v for _, v in series), 1),
+                      "judged_mean_pct": round(statistics.mean(v for _, v in judged), 1),
+                      "judged_peak_pct": round(max(v for _, v in judged), 1),
+                      "judged_until_epoch": int(judged_until) if judged_until else None,
+                      "host_cores": host_cores, "peak_limit_pct": peak_limit,
+                      "rule": "capacity: samples up to the end of the last healthy step" if profile == "capacity" else "whole run"}
+            if k6_cpu["judged_mean_pct"] > 100:
+                reasons.append(f"generator saturated: k6 mean CPU {k6_cpu['judged_mean_pct']:.1f}% > 100% (1 core) over the judged window")
+            elif k6_cpu["judged_peak_pct"] > peak_limit:
+                reasons.append(f"generator spike: k6 peak CPU {k6_cpu['judged_peak_pct']:.1f}% > {peak_limit:.0f}% (max(2 cores, 25% of {host_cores} host cores)) over the judged window")
+    except Exception as exc:  # the gate must never crash a run's bookkeeping; the raw samples stay in the archive
+        k6_cpu = {"error": str(exc)}
 json.dump({"target": t, "profile": profile, "repeat": int(k), "position_in_pair": int(pos),
            "started_epoch": int(started), "finished_epoch": int(finished),
            "seed_before": sb, "seed_after": sa, "write_check": write_check,
            "checks_failed": totals.get("checks_failed"), "checks_failed_pct": totals.get("checks_failed_pct"),
-           "pod_restarts_during_run": restarted, "valid": not reasons, "invalid_reasons": reasons},
+           "pod_restarts_during_run": restarted, "k6_cpu": k6_cpu,
+           "valid": not reasons, "invalid_reasons": reasons},
           open(out, "w"), indent=2)
 print(f"  run.json: valid={not reasons}" + (f" ({'; '.join(reasons)})" if reasons else ""))
 PY

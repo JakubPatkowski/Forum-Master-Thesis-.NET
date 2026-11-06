@@ -23,7 +23,9 @@ namespace Forum.Infrastructure.Messaging.RabbitMq;
 /// API replicas relay disjoint batches concurrently and a crashed replica's claim dies with its transaction —
 /// the standard polling-publisher shape (the Files advisory lock is for a singleton job, a different problem).
 /// Publisher confirms are enabled: a row is only stamped processed after the broker confirmed the publish, which
-/// makes delivery at-least-once; consumers dedupe by EventId.
+/// makes delivery at-least-once; consumers dedupe by EventId. Between passes the relay waits for the poll interval
+/// or for the replica-local wake-up signal (<see cref="OutboxRelayWakeup"/>) — a committed write on this replica is
+/// relayed within milliseconds instead of up to one poll interval.
 /// </summary>
 internal sealed class OutboxRelayService<TContext> : BackgroundService
     where TContext : ForumDbContext
@@ -34,6 +36,7 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
     private readonly MessagingOptions _options;
     private readonly TimeProvider _time;
     private readonly ForumMetrics _metrics;
+    private readonly OutboxRelayWakeup.Signal _wakeup;
     private readonly string _serviceName;
     private readonly ILogger<OutboxRelayService<TContext>> _logger;
     private IChannel? _channel;
@@ -45,6 +48,7 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
         IOptions<MessagingOptions> options,
         TimeProvider time,
         ForumMetrics metrics,
+        OutboxRelayWakeup wakeup,
         ILogger<OutboxRelayService<TContext>> logger)
     {
         _scopeFactory = scopeFactory;
@@ -53,6 +57,7 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
         _options = options.Value;
         _time = time;
         _metrics = metrics;
+        _wakeup = wakeup.For(typeof(TContext));
         _serviceName = $"outbox-relay-{module.ModuleName}";
         _logger = logger;
     }
@@ -89,10 +94,12 @@ internal sealed class OutboxRelayService<TContext> : BackgroundService
                     continue;
                 }
 
-                // A full batch hints at a backlog — drain it before sleeping a poll interval.
+                // A full batch hints at a backlog — drain it before waiting. Otherwise wait for the next poll tick OR
+                // for a write on this replica to wake the relay (Messaging:WakeRelayOnWrite, A/B v5 A4) — whichever
+                // comes first; the poll remains the fallback for other replicas' rows and crash leftovers.
                 if (published < _options.BatchSize)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(_options.PollIntervalMilliseconds), stoppingToken);
+                    await _wakeup.WaitAsync(TimeSpan.FromMilliseconds(_options.PollIntervalMilliseconds), stoppingToken);
                 }
             }
         }

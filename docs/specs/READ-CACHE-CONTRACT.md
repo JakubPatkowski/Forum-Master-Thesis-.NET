@@ -17,11 +17,13 @@ sides — never mixed.
 
 | # | Read | A endpoint | B route | Cache key | TTL |
 |---|---|---|---|---|---|
-| C1 | one space's feed page (first page and every cursor page) | `GET /api/content/threads?categoryId=&cursor=&limit=` | `GET /c/{slug}` and its feed sentinel | space id, sort, cursor, limit (viewer-independent) | 2 s |
+| C1 | one space's feed page (first page and every cursor page) | `GET /api/content/threads?categoryId=&cursor=&limit=` | `GET /c/{slug}` and its feed sentinel | space id, sort, time range, cursor, limit (viewer-independent); B: `comm:{id}:{sort}:{range}:{limit}:{cursor}` | 2 s |
 | C2 | one thread's comment tree | `GET /api/content/threads/{id}/comments` | comment tree of `GET /thread/{id}` (and B's paged variant) | thread id | 2 s |
-| C3 | one search result page | `GET /api/content/search?q=&sort=&cursor=&limit=` | `GET /search?q=&sort=` | viewer scope, normalized query, sort, filter, cursor/offset, limit | 3 s |
+| C3 | one search result page | `GET /api/content/search?q=&sort=&cursor=&limit=` | `GET /search?q=&sort=` | viewer scope, query (trimmed only, case-sensitive), sort, filter, cursor/offset, limit | 3 s |
 
 - **Viewer scope** in C3 = `anonymous` or the signed-in user id (private spaces are visible to some users only).
+  A's scope additionally carries the signed-in reader's readable private-category set (the ids, sorted), so a grant
+  or revocation changes that reader's key — A's realisation of the §3 "space join, leave" row (see the note there).
 - C1 and C2 are stored **only after** the request passed the visibility / read gate; a cache hit never skips that
   gate. Response-level caching in front of the gate (e.g. ASP.NET Core `OutputCache` middleware) is not allowed.
 - Not cached on either side: thread detail, reaction / vote counts and batches, profiles, the space list, DMs,
@@ -30,16 +32,39 @@ sides — never mixed.
 - Allowed and **not** a data cache: a content-addressed render memo whose key is the source text itself
   (B's markdown cache). It can never return stale data.
 
+### 2b. Key schemas, line by line (as implemented for v5)
+
+| # | A (`forum-dotnet`, `HybridContentReadCache`) | B (`gomx`) |
+|---|---|---|
+| C1 | `feed\|{categoryId}\|pinned-newest\|{cursor}\|{limit}` — A's feed has one order (pinned first, then newest) and no time range; the cursor is re-encoded from its decoded form (canonical) | `comm:{id}:{sort}:{range}:{limit}:{cursor}` |
+| C2 | `comments\|{threadId}` (whole tree; A has no paged variant) | `comments:{postId}` and `cmpage:{postId}:{after}:{focus}:{until}:{size}` |
+| C3 | `search\|{scope}\|{q trimmed}\|{relevance\|newest}\|{cursor}\|{limit}`, scope = `anonymous` or `{userId}[+{readable private category ids, sorted}]`; A has no community filter | `sp:{uid}:{q trimmed}:{communityID}:{sort}:{limit}:{offset}` |
+
+Generations on A: every key ends in the cache's generation (`|g{n}`; comment trees carry the cache-wide and the
+per-thread generation, `|g{n}.{m}`). A §3 flush bumps the counter, readers move to the new key at once and a value
+computed across the flush stays under the old key — returned to its waiters, never served again, expired by its TTL
+(= B's `key + gen` singleflight key). HybridCache's own tag invalidation is deliberately NOT used: a value in flight
+during `RemoveByTagAsync` is re-stamped and stored by the library, which would break this row.
+
 ## 3. Invalidation — local to the replica that handled the write, right after the write is durable
 
 | Write | Flush |
 |---|---|
-| thread create, update, delete, pin, move to another space | C1 all, C2 all, C3 all |
+| thread create, update, delete | C1 all, C2 all, C3 all |
+| thread pin, move to another space | A: C1 all, C2 all, C3 all · B: N/A (Pinned is seed-only, threads cannot be moved) |
 | comment create, update | C2 of that thread |
 | comment delete | C1 all, C2 all |
 | reaction / vote toggle on a thread | nothing (cards may show counts up to one TTL old) |
 | like on a comment | C2 of that thread on B; nothing on A (A's tree carries no counts) |
-| space create, update, delete | C1 all, C2 all, C3 all |
+| space create | nothing (a new space has no threads; neither side caches the space list — §2) |
+| space update, delete | A: C1 all, C2 all, C3 all (a visibility change moves the space's threads into or out of readers' scopes) · B: N/A (no space update or delete exists) |
+| space join, leave (any successful membership change of the viewer) | C3 all |
+
+- A note on the last row: A has no space membership; what changes a reader's search visibility there is an owner or
+  `moderate` grant/revocation at the category scope (Identity's ACL/role writes, outside the Content module). A
+  implements the row through the key instead of a flush — the reader's readable private-category set is part of the
+  C3 scope (§2), so the next search after any such change is a miss on every replica, not only the one that handled
+  the write. B flushes C3 locally on join/leave (2026-11-06 decision (6)).
 
 - **No cross-replica invalidation** on either side; the other replica converges within the TTL.
 - **Generation guard:** a result computed across an invalidation is returned to its waiters but not stored

@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Contracts.IntegrationEvents;
 using Forum.Modules.Content.Domain.Comments;
@@ -28,6 +29,7 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
     private readonly ICurrentUser _currentUser;
     private readonly IOutboxWriter _outbox;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
     private readonly TimeProvider _clock;
 
     public UpdateCommentCommandHandler(
@@ -37,6 +39,7 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
         ICurrentUser currentUser,
         IOutboxWriter outbox,
         IUnitOfWork unitOfWork,
+        IContentReadCache readCache,
         TimeProvider clock)
     {
         _validator = validator;
@@ -45,6 +48,7 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
         _currentUser = currentUser;
         _outbox = outbox;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
         _clock = clock;
     }
 
@@ -78,6 +82,7 @@ internal sealed class UpdateCommentCommandHandler : ICommandHandler<UpdateCommen
             Ulid.NewUlid(), comment.Id, comment.ThreadId, thread.CategoryId, _clock.GetUtcNow()));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _readCache.CommentWrittenAsync(comment.ThreadId); // READ-CACHE-CONTRACT §3: C2 of this thread
         return Result.Success();
     }
 }

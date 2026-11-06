@@ -3,6 +3,7 @@ using FluentValidation;
 using Forum.Common.Cqrs;
 using Forum.Common.Security;
 using Forum.Modules.Content.Application.Abstractions;
+using Forum.Modules.Content.Application.Caching;
 using Forum.Modules.Content.Application.Validation;
 using Forum.Modules.Content.Domain.Categories;
 using Forum.SharedKernel.Results;
@@ -29,17 +30,20 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
     private readonly ICategoryRepository _categories;
     private readonly ICurrentUser _currentUser;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IContentReadCache _readCache;
 
     public UpdateCategoryCommandHandler(
         IValidator<UpdateCategoryCommand> validator,
         ICategoryRepository categories,
         ICurrentUser currentUser,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IContentReadCache readCache)
     {
         _validator = validator;
         _categories = categories;
         _currentUser = currentUser;
         _unitOfWork = unitOfWork;
+        _readCache = readCache;
     }
 
     public async Task<Result> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
@@ -64,6 +68,7 @@ internal sealed class UpdateCategoryCommandHandler : ICommandHandler<UpdateCateg
         category.ChangeVisibility(command.Visibility);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _readCache.CategoryChangedAsync(); // READ-CACHE-CONTRACT §3: C1 all, C2 all, C3 all
         return Result.Success();
     }
 }

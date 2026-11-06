@@ -31,6 +31,14 @@ public sealed class ForumMetrics
     public const string ErrorCategoryTimeout = "timeout";
     public const string ErrorCategoryOther = "other";
 
+    // Read cache (A/B v5, docs/specs/READ-CACHE-CONTRACT.md §4): one series per (cache, result).
+    public const string ReadCacheFeed = "feed";
+    public const string ReadCacheComments = "comments";
+    public const string ReadCacheSearch = "search";
+    public const string ReadCacheHit = "hit";
+    public const string ReadCacheMiss = "miss";
+    public const string ReadCacheBypass = "bypass";
+
     private readonly Counter<long> _authAttempts;
     private readonly Counter<long> _threadsCreated;
     private readonly Counter<long> _commentsCreated;
@@ -44,6 +52,7 @@ public sealed class ForumMetrics
     private readonly Counter<long> _wsPushes;
     private readonly Counter<long> _apiRejections;
     private readonly Counter<long> _unhandledErrors;
+    private readonly Counter<long> _readCacheLookups;
     private readonly Histogram<double> _webVitalDuration;
     private readonly Histogram<double> _webVitalCls;
 
@@ -79,6 +88,9 @@ public sealed class ForumMetrics
             "forum.api.rejections", description: "Expected Result-pattern rejections by status code + error type");
         _unhandledErrors = meter.CreateCounter<long>(
             "forum.errors.unhandled", description: "Unhandled exceptions by closed category (client cancellations excluded)");
+        _readCacheLookups = meter.CreateCounter<long>(
+            "forum.read_cache.lookups",
+            description: "Content read-cache lookups by cache (feed|comments|search) and result (hit|miss|bypass)");
         meter.CreateObservableGauge(
             "forum.hosted_service.tick_age", ObserveHostedServiceTickAges, unit: "s",
             description: "Seconds since each background loop last reported alive; a growing value means a dead loop");
@@ -142,6 +154,16 @@ public sealed class ForumMetrics
     /// <summary>Counts an unhandled exception. <paramref name="category"/> must be one of the ErrorCategory consts.</summary>
     public void UnhandledError(string category) =>
         _unhandledErrors.Add(1, new KeyValuePair<string, object?>("category", category));
+
+    /// <summary>
+    /// Counts one read-cache lookup. <paramref name="cache"/> is one of the ReadCache* cache consts
+    /// (feed|comments|search), <paramref name="result"/> one of hit|miss|bypass: <c>hit</c> = served without running
+    /// the store query (a caller that joined an in-flight computation counts here too), <c>miss</c> = this lookup ran
+    /// the query, <c>bypass</c> = the cache is switched off (<c>ReadCache:Enabled=false</c>), no lookup took place.
+    /// </summary>
+    public void ReadCacheLookup(string cache, string result) =>
+        _readCacheLookups.Add(
+            1, new KeyValuePair<string, object?>("cache", cache), new KeyValuePair<string, object?>("result", result));
 
     /// <summary>
     /// Records a timing Core Web Vital (seconds). <paramref name="metric"/> must come from the endpoint's

@@ -80,6 +80,8 @@ internal sealed class CreateCategoryCommandHandler : ICommandHandler<CreateCateg
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        // No cache flush (READ-CACHE-CONTRACT §3 "space create → nothing"): a new category has no threads, and the
+        // category list itself is never cached (§2), so nothing stored can be stale.
         return Result.Success(new CreateCategoryResponse(category.Id, category.Slug));
     }
 }

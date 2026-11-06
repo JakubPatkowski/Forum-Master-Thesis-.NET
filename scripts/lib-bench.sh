@@ -26,11 +26,15 @@
 #   AB_REAL_SPA=true     A's read journeys replay the real React pages' cold-cache request sets instead of the idealized
 #                        core calls (D1; forwarded to k6 as REAL_SPA; load/k6/targets/README.md has the derived table).
 #                        B is unaffected — its journeys are full pages already — so a round reports "A ideal / A real / B"
+#   AB_READ_CACHE=on|off the v5 read-cache variant (docs/specs/READ-CACHE-CONTRACT.md §5): sets A's ReadCache__Enabled
+#                        and B's GOMX_READ_CACHE on the live deployments, verified by ab_check_profile, recorded in
+#                        meta-*.json / round.json / REPORT.md; a round is NEVER mixed (both sides always the same)
 : "${AB_HPA:=false}"
 : "${AB_GC_VARIANT:=false}"
 : "${AB_RELAY_POLL_MS:=}"
 : "${AB_AUTH_READS:=false}"
 : "${AB_REAL_SPA:=false}"
+: "${AB_READ_CACHE:=off}"
 AB_HPA_MIN=1; AB_HPA_MAX=3; AB_HPA_CPU=70
 AB_B_GOMEMLIMIT="384MiB"
 ab_start_replicas() { if [[ "$AB_HPA" == true ]]; then echo "$AB_HPA_MIN"; else echo "$AB_REPLICAS"; fi; }
@@ -96,19 +100,23 @@ ab_apply_profile() {
     fi
     # One `set env` = at most one rollout; identical values are a no-op (no rollout at all). Variant knobs are set
     # or REMOVED (trailing '-') in the same call so a round never inherits a previous round's variant.
-    local gc_a relay_a
+    local gc_a relay_a cache_a
     if [[ "$AB_GC_VARIANT" == true ]]; then gc_a="DOTNET_gcServer=0"; else gc_a="DOTNET_gcServer-"; fi
     if [[ -n "$AB_RELAY_POLL_MS" ]]; then relay_a="Messaging__PollIntervalMilliseconds=$AB_RELAY_POLL_MS"; else relay_a="Messaging__PollIntervalMilliseconds-"; fi
+    # The read cache is set EXPLICITLY both ways (never removed): the configmap's default is false, but a round must
+    # measure a value it verified, not one it inherited (READ-CACHE-CONTRACT.md §5).
+    if [[ "$AB_READ_CACHE" == on ]]; then cache_a="ReadCache__Enabled=true"; else cache_a="ReadCache__Enabled=false"; fi
     kc set env deployment/backend \
       Observability__TracingEnabled=false \
       RateLimiting__Global__PermitLimit=1000000 \
       RateLimiting__Auth__PermitLimit=1000000 \
-      "$gc_a" "$relay_a" >/dev/null
+      "$gc_a" "$relay_a" "$cache_a" >/dev/null
     AB_LIMITER_RAISED=true
   else
-    local gc_b
+    local gc_b cache_b
     if [[ "$AB_GC_VARIANT" == true ]]; then gc_b="GOMEMLIMIT=$AB_B_GOMEMLIMIT"; else gc_b="GOMEMLIMIT-"; fi
-    ab_kubectl b set env deployment/gomx "$gc_b" >/dev/null
+    if [[ "$AB_READ_CACHE" == on ]]; then cache_b="GOMX_READ_CACHE=1"; else cache_b="GOMX_READ_CACHE=0"; fi
+    ab_kubectl b set env deployment/gomx "$gc_b" "$cache_b" >/dev/null
   fi
   ab_scale "$t" "$(ab_start_replicas)"
 }
@@ -138,11 +146,11 @@ ab_check_profile() {
     "$(kubectl -n "$ns" get statefulset postgres -o json)" \
     "$(kubectl -n "$ns" get hpa -o json)" \
     "$( [[ "$t" == a ]] && kc get secret postgres-credentials -o jsonpath='{.data.CONNECTION_STRING}' | base64 -d || echo '')" \
-    "$AB_HPA" "$AB_HPA_MIN" "$AB_HPA_MAX" "$AB_HPA_CPU" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_B_GOMEMLIMIT" <<'PY'
+    "$AB_HPA" "$AB_HPA_MIN" "$AB_HPA_MAX" "$AB_HPA_CPU" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_B_GOMEMLIMIT" "$AB_READ_CACHE" <<'PY'
 import json, sys
 t, replicas, dep, sts, hpa, conn = sys.argv[1], int(sys.argv[2]), json.loads(sys.argv[3]), json.loads(sys.argv[4]), json.loads(sys.argv[5]), sys.argv[6]
 hpa_on, hpa_min, hpa_max, hpa_cpu = sys.argv[7] == "true", int(sys.argv[8]), int(sys.argv[9]), int(sys.argv[10])
-gc_variant, relay_ms, b_gomemlimit = sys.argv[11] == "true", sys.argv[12], sys.argv[13]
+gc_variant, relay_ms, b_gomemlimit, read_cache = sys.argv[11] == "true", sys.argv[12], sys.argv[13], sys.argv[14]
 fails = []
 def check(ok, label):
     print(("  ok    " if ok else "  FAIL  ") + label)
@@ -193,7 +201,11 @@ if t == "a":
         check(env.get("Messaging__PollIntervalMilliseconds") == relay_ms, f"outbox relay poll = {env.get('Messaging__PollIntervalMilliseconds')} ms (want {relay_ms}, recorded)")
     else:
         check("Messaging__PollIntervalMilliseconds" not in env, f"outbox relay poll = appsettings default 5000 ms (override {env.get('Messaging__PollIntervalMilliseconds')!r} absent)")
+    want_a = "true" if read_cache == "on" else "false"
+    check(env.get("ReadCache__Enabled") == want_a, f"read cache (READ-CACHE-CONTRACT §5): ReadCache__Enabled = {env.get('ReadCache__Enabled')} (want {want_a}, explicit)")
 else:
+    want_b = "1" if read_cache == "on" else "0"
+    check(env.get("GOMX_READ_CACHE") == want_b, f"read cache (READ-CACHE-CONTRACT §5): GOMX_READ_CACHE = {env.get('GOMX_READ_CACHE')} (want {want_b}, explicit)")
     if gc_variant:
         check(env.get("GOMEMLIMIT") == b_gomemlimit, f"GC variant: GOMEMLIMIT = {env.get('GOMEMLIMIT')} (want {b_gomemlimit})")
     else:
@@ -318,10 +330,12 @@ ab_meta() {
     "$(kubectl -n "$ns" get statefulset postgres -o json)" \
     "$(ab_seed_counts "$t" 2>/dev/null || echo '')" \
     "$AB_HPA" "$AB_GC_VARIANT" "$AB_RELAY_POLL_MS" "$AB_AUTH_READS" "$AB_REAL_SPA" \
-    "$(kubectl -n "$ns" get hpa -o json 2>/dev/null || echo '{}')" <<'PY'
+    "$(kubectl -n "$ns" get hpa -o json 2>/dev/null || echo '{}')" \
+    "$AB_READ_CACHE" "$(ab_runtime_facts "$t")" <<'PY'
 import json, subprocess, sys
 out, t, name, code, harness, dep, pods, sts, seed = sys.argv[1:10]
 hpa_on, gc_variant, relay_ms, auth_reads, real_spa, hpa_json = sys.argv[10:16]
+read_cache, runtime_facts = sys.argv[16], sys.argv[17]
 dep, pods, sts = json.loads(dep), json.loads(pods), json.loads(sts)
 def sh(cmd):
     try:
@@ -349,7 +363,10 @@ meta = {
     "variants": {"hpa": hpa_on == "true", "gc_variant": gc_variant == "true",
                  "relay_poll_ms": int(relay_ms) if relay_ms else None, "auth_reads": auth_reads == "true",
                  "real_spa": real_spa == "true" and t == "a",  # an A-adapter variant: B's journeys are full pages
+                 "read_cache": read_cache,  # v5: on|off on BOTH sides (READ-CACHE-CONTRACT.md §5)
                  "hpa_spec": [h["spec"] for h in (json.loads(hpa_json).get("items") or [])]},
+    # Record-only runtime facts (v5, B5): nothing here is enforced, every value is what the live deployment runs with.
+    "runtime": json.loads(runtime_facts) if runtime_facts else {},
     "node": {"kubectl_nodes": sh("kubectl get nodes -o wide --no-headers"),
              "allocatable": sh("kubectl get nodes -o jsonpath='{.items[0].status.allocatable}'"),
              "wsl_kernel": sh("uname -r"), "wsl_mem_mb": sh("free -m | awk '/^Mem:/{print $2}'"),
@@ -365,6 +382,41 @@ if t == "b":
         "pinned: both 16 (every 100th post) but placed by each seed's own category draw.",
     ]
 json.dump(meta, open(out, "w"), indent=2)
+PY
+}
+
+# Record-only runtime facts for meta-*.json (v5, B5) — printed as one JSON object. B: GOMAXPROCS from Prometheus
+# (go_sched_gomaxprocs_threads of the gomx pods; TuneRuntime sets it to the CPU quota — Go 1.26's own default under a
+# 1-CPU limit is 2, which is what every round up to v4 ran with) and whether the app log shows the cgroup GOMEMLIMIT
+# line. A: the visible processor count from the .NET runtime meter (dotnet_process_cpu_count), the relay wake-up
+# switch and RabbitMQ's Erlang scheduler flags. Prometheus is read through the round's port-forward when it is up;
+# a missing value is null, never an error (these facts must not fail a round).
+ab_runtime_facts() {
+  local t="$1"
+  python3 - "$t" "$PROM_LOCAL_PORT" "$(ab_ns "$t")" \
+    "$( [[ "$t" == b ]] && ab_kubectl b logs deployment/gomx --all-pods=true --tail=2000 2>/dev/null | grep -i -m3 'GOMEMLIMIT' || true )" \
+    "$( [[ "$t" == a ]] && kc get deployment backend -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="Messaging__WakeRelayOnWrite")].value}' 2>/dev/null || true )" \
+    "$( [[ "$t" == a ]] && kc get configmap backend-config -o jsonpath='{.data.Messaging__WakeRelayOnWrite}' 2>/dev/null || true )" \
+    "$( [[ "$t" == a ]] && kc get statefulset rabbitmq -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS")].value}' 2>/dev/null || true )" <<'PY'
+import json, sys, urllib.parse, urllib.request
+t, port, ns, gomemlimit_lines, wake_env, wake_cm, erl_args = sys.argv[1:8]
+def prom(expr):
+    try:
+        url = f"http://localhost:{port}/api/v1/query?" + urllib.parse.urlencode({"query": expr})
+        with urllib.request.urlopen(url, timeout=10) as r:
+            res = json.load(r).get("data", {}).get("result", [])
+        return sorted({float(x["value"][1]) for x in res}) or None
+    except Exception:
+        return None
+facts = {}
+if t == "b":
+    facts["gomaxprocs"] = prom(f'go_sched_gomaxprocs_threads{{namespace="{ns}"}}')
+    facts["gomemlimit_log_line"] = gomemlimit_lines.strip().splitlines()[:3] or None
+else:
+    facts["dotnet_process_cpu_count"] = prom(f'dotnet_process_cpu_count{{namespace="{ns}"}}')
+    facts["messaging_wake_relay_on_write"] = wake_env or (wake_cm or None) or "appsettings default (true)"
+    facts["rabbitmq_additional_erl_args"] = erl_args or None
+print(json.dumps(facts))
 PY
 }
 

@@ -27,8 +27,8 @@ export function setup(baseUrl, poolSize, loginStaggerMs);
 export const journeys = { J1, J2, J3, J4, J5, J6, J7, J9, nav };
 //   each: (baseUrl, data, session, pick) → void, reporting via lib/track.js `track(res, endpoint, okStatuses)`
 //   pick = { space(data), thread(data) → { thread }, word(), commentBody() } (built by main.js)
-//   J4 = thread WITH a photo (lib/assets.js makePng, J4_IMAGE_PX; A: presigned path + attach, B: ingest + 202/poll;
-//        both post into the VU's per-user public space, untagged — h6);
+//   J4 = thread WITH a photo (lib/assets.js makePng over the shipped fixture — h7; A: presigned path + attach,
+//        B: ingest + 202/adaptive poll; both post into the VU's per-user public space, untagged — h6);
 //   J9 = direct message to a RANDOM seeded friend (A: friends from GET /api/social/friends in setup, one
 //        get-or-create conversation per (user, friend) pair; B: friends from GET /messages, POST /messages/{friend}).
 export function wsHold(baseUrl, data, session, holdMs, counters, pick, probe);
@@ -65,6 +65,32 @@ Harness `h6-2026-10-24` (pre-measurement audit; mix `v2` unchanged):
 - the B adapter requires a positive thread id in `Location` (`/thread/[1-9]\d*$`) and reads the DM rejection
   marker `?error=rejected` (thesis-v3-b); B's receipt-probe latency is bounded below by its own POST time (the
   probe write runs inside the socket's event loop) — stated next to D14.
+
+Harness `h7-2026-11-06` (the v5 rounds; mix `v2` unchanged) — what changed since h6, by effect on the measurement:
+- **B reads are boosted HTMX navigations by default** (`BOOSTED=1`; `BOOSTED=0` = full-page document loads, the h6
+  behaviour): J1/J2/J6/J7/nav send `HX-Request` + `HX-Boosted` and gomx answers with `BoostedPage` (`<title>` +
+  `<main id="page">`), the in-app navigation of B's real client after its first page — the counterpart of A's
+  mounted-SPA model (D1). For anonymous reads it saves the shell's rendering and ≈ 3 KiB of HTML per journey, not DB
+  work (`withShell` queries only for a signed-in viewer); under `AUTH_READS` it also skips those three shell queries.
+  Recorded as `variant.boosted` in the journeys block.
+- **B's J4 polls adaptively** (150 ms, × 1.5 per poll, up to 1 s — B's `upload.ts` since thesis-v4-b; D12 updated).
+- **J4 image = a shipped fixture** (`fixtures/j4-256x256.png`, 262 488 bytes, reproducible; `lib/assets.js` loads it
+  with `open()` in each VU's init context). No pixel work in k6 at run time: v3's per-journey synthesis (≈ 0.7 core-s)
+  saturated the host, h6's per-VU build (≈ 0.6 s) spiked k6 whenever the capacity executor added VUs. Each upload
+  still gets a unique `tEXt` chunk (B's SHA-256 de-duplication never sees the same bytes). `J4_IMAGE_PX` other than
+  256 generates the image once per VU (a labelled variant). k6 RSS with the capacity VU count (320 VUs, each holding
+  the fixture and one stamped copy): ≈ 480 MiB max.
+- **Read-cache variant** (`scripts/ab-round.sh --read-cache on|off`, default `off`; `docs/specs/READ-CACHE-CONTRACT.md`):
+  sets A's `ReadCache__Enabled` and B's `GOMX_READ_CACHE` together, verified by `ab_check_profile` on both,
+  recorded in `meta-*.json` / `round.json` / `REPORT.md`; `--resume` refuses a different setting. Never mixed.
+- **A's J6 sends `sort=newest`** (both the ideal and the `REAL_SPA` path): the SPA's search page now defaults to
+  Newest like B's search page; A's relevance order (`ts_rank` over every match) is no longer what J6 measures (the
+  RELATED THREADS panel of the thread page keeps it). Not comparable to h6 for J6 on A.
+- **Generator gate** (`ab-round.sh` → `run.json.k6_cpu`): k6's mean and peak CPU are always recorded; demo/stress are
+  invalid when the mean exceeds one core or the peak exceeds max(2 cores, 25 % of the host's cores); capacity is judged
+  only over the samples up to the end of the last healthy step (the executor's VU burst follows the knee).
+- Record-only facts in `meta-*.json` (`runtime`): B's live `GOMAXPROCS` (Prometheus) and GOMEMLIMIT log line, A's
+  visible processor count, `Messaging__WakeRelayOnWrite`, RabbitMQ's Erlang scheduler flags.
 
 Rules: every journey must exist on **both** adapters before it gets weight in `main.js` `MIX`
 (bump `MIX_VERSION` when weights change, `HARNESS_VERSION` when adapter behaviour changes); never follow
@@ -129,7 +155,7 @@ responses; the endpoint tag is the summary-table row). Reads are anonymous unles
 | | 2 | `GET /api/files?targetType=avatar&targetId=…` × distinct commenters (owner deduped) | `components/comments/CommentNode.tsx` → `Avatar` | `avatar` |
 | | 3 | `GET /api/files?targetType=category_icon&targetId=…` × distinct categories of the ≤ 4 related rows, unseen only | RELATED THREADS rows → `CategoryIcon` | `category_icon` |
 | | — | *not issued*: comment `ReactionButton`s (`covered`); inline media `GET /api/files/{id}` (`MarkdownView` resolves `image:` tokens — the seeded bodies carry none and J2 draws from the setup pool, never from J4's threads); WS subscribe (frames, J8) | | |
-| `/search?q=` (J6) | 1 | `GET /api/content/search?q=<word>&limit=20` | `app/search/page.tsx` → `useSearchThreads(query)`; no sidebar (`PageShell wide={false}`) | `search` |
+| `/search?q=` (J6) | 1 | `GET /api/content/search?q=<word>&sort=newest&limit=20` | `app/search/page.tsx` → `useSearchThreads(query, 20, "newest")` (the page's default order since v5; `?sort=relevance` is the other switch position); no sidebar (`PageShell wide={false}`) | `search` |
 | | 2 | reaction batch over the result ids (sorted) | `useReactionBatch("thread", resultIds)` | `reactions_batch` |
 | | 2 | `thread_icon` × results, `category_icon` × distinct result categories | `ThreadCard` → `ThreadIcon` (+ fallback) | `thread_icon`, `category_icon` |
 | `/u/[userId]` (J7) | 1 | `GET /api/engagement/users/{id}/stats` | `app/u/[userId]/page.tsx` → `useUserStats(userId)` | `user_stats` |

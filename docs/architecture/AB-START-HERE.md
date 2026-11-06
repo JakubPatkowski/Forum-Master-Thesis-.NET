@@ -7,9 +7,9 @@ hours before.
 
 | | |
 |---|---|
-| **Last updated** | 2026-10-25 — **campaign v3** measured on the clean tags `thesis-v3-a` (`64cd5e2`) / `thesis-v3-b` (`46b342c`), harness h6: `thesis/results/campaign-20261024-2129/` (round `thesis/results/rounds/20261024-2150-v3/`); earlier: 2026-10-24 h6 audit (`AB-COMPARISON-v1.md` §5.9), 2026-10-24 comparability fixes (§5.8), 2026-10-18 first full campaign |
-| **State** | **v3 (2026-10-24/25): demo N = 10 per side valid** — H1 resources per journey are the new headline (B lower app CPU −14 %, DB −18 %, namespace −28 %; memory 412 vs 73 MiB; MW+Holm distinct) — `AB-COMPARISON-v1.md` §9b. **Latency and H2 of v3 are NOT usable:** the k6 load generator saturated the shared host (J4 synthesizes a 256×256 PNG per journey in k6's JS VM, ≈ 0.7 core-s each) → both capacity runs invalid, closed-model latencies contaminated. v1 (round `20261018-0051-v1`, §9) stays the latency/H2 reference. Functional gates green on fresh clones of both tags (A 259/0/0, B 388/0/25 + 81 + 1). |
-| **Next** | (1) owner commits the campaign archive + docs (no code changed tonight); (2) **fix the load generator before any latency/H2 round**: pre-generate the J4 PNG once per VU (vary a few bytes per upload so B cannot de-duplicate) or run with the existing knob `--k6-env J4_IMAGE_PX=64` (32 ms instead of 603 ms per image) as a labelled variant — then the deferred `--resume` to `demo:10,stress:3,capacity:3` (a changed harness requires a NEW round label); (3) variants/chaos/Lighthouse evenings (§8.1); (4) D17 fix (friends list / seed / adapter), Redis/RabbitMQ exec-probe timeouts as a deployment review item for both authors |
+| **Last updated** | **2026-11-06 — v5 alignment implemented on A** (branch `33-feat-phase-14---ab-v5-alignment`, uncommitted; the owner commits and tags `thesis-v5-a`): read cache per `docs/specs/READ-CACHE-CONTRACT.md`, `search?sort=newest`, B's DB tuning mirrored, outbox relay wake-up, RabbitMQ without busy-waiting, harness **h7**, docs (`AB-COMPARISON-v1.md` §5.10, §6, §9c; `B-BENCHMARK-GUARDRAILS.md` v5). Earlier: 2026-10-29 Hubert's v4-16core round (A `git-64cd5e2` vs B `thesis-v4-b`, demo N = 10 valid — the best A/B round so far), 2026-10-25 campaign v3, 2026-10-24 h6 audit |
+| **State** | **Ready for the v5 rounds.** A: this session's changes (A1–A5, h7, docs) await the owner's commit + tag `thesis-v5-a`. B: `thesis-v5-b` = `cdabf42` (2026-11-06 23:46, "GOMX_READ_CACHE switch and read-cache metric") — verified to contain the switch, `gomx_read_cache_lookups_total`, the overlay's `GOMX_READ_CACHE: "0"` and no `enable-quic`; the tag first pointed at the switch-less `b7f8fca` and was moved the same evening (never measured). v4-16core (`thesis/results/rounds/20261029-0043-v4-16core`) is the latest valid A/B round; v3 (`AB-COMPARISON-v1.md` §9b) the last on this laptop; v1 (§9) the latency/H2 reference. |
+| **Next** | (1) owner reviews + commits this session's work, tags `thesis-v5-a`; (2) both authors sign `READ-CACHE-CONTRACT.md` §7 and `B-BENCHMARK-GUARDRAILS.md` §8; (3) rebuild both images from clean trees at the tags (B at `cdabf42`); (4) the two smoke gates and the two rounds — §8.2; (5) results into `AB-COMPARISON-v1.md` §9c, figures via `scripts/thesis_figures.py` |
 | **Deadline context** | thesis-seminar class on **2026-10-25**: a results chapter (subsections, tables with units + in-text references, captioned figures) — skeleton in `AB-STATUS-AND-PLAN-2026-10-23.md` §7, data from round v1 (or v2 if it runs on 2026-10-23/24). Earlier: class 2026-10-18 — done |
 
 ---
@@ -113,6 +113,15 @@ rules, scenario-only measurement windows, reseed + fresh pods per run, ABBA orde
 | campaign v3 | D2 closed for content (300-char excerpts both sides) but the wire gap only halved (feed page gzip B/A 7.9× → 3.6×): B's card markup ≈ 6.4 KB raw vs A's ≈ 0.7 KB JSON per card | paradigm (D-1), recorded |
 | campaign v3 | B's private-comment WebSocket gate verified live (anonymous / non-member sockets 0 frames, member 1) | thesis-v3-b fix confirmed |
 | campaign v3 | `scripts/thesis_figures.py` hard-codes "N = 5" in three figure titles; A build shows 32 NU1903 warnings (SSH.NET 2024.1.0 via Testcontainers, test projects only) | figures rendered with a patched scratch copy (patch archived in the campaign's `05-analysis/`); dependency bump owed |
+| **2026-11-06 (v5 review)** | B's `feature/improvements-libraries` added in-process data microcaches (feed 2 s, comment tree 2 s, search 3 s) with singleflight — a cache tier on one side (F6) — plus a one-sided tuning pass (D18) and `GOMAXPROCS`/`GOMEMLIMIT` runtime tuning; our D-13 was wrong (Go 1.26 under a 1-CPU limit defaults to GOMAXPROCS 2) | `docs/specs/READ-CACHE-CONTRACT.md` (same cache on both, switched per round), A1–A5 on A, D-13/D8/D18 rows, record-only runtime facts in `meta-*.json` |
+| 2026-11-06 | **.NET HybridCache's tag invalidation is not a generation guard:** a value whose computation was in flight during `RemoveByTagAsync` is re-stamped with a later timestamp and stored (`StampedeState.BackgroundFetchAsync`, 10.2.0) — it may have read pre-write data; found by the unit test `A_value_computed_across_an_invalidation_…` | A's cache keys carry generation counters (B's `key + gen` singleflight key); tags unused |
+| 2026-11-06 | Npgsql auto-prepare + `plan_cache_mode = auto`: after five executions the newest-first search switched to the generic plan (GIN bitmap over all 1 600 rows + sort) and lost the early stop a custom plan keeps (25 index entries for a rank-1 word) — the trap B hit and closed with exec mode | `SET plan_cache_mode = force_custom_plan; SELECT …; RESET` in one batch around both search statements (verified with `PREPARE`/`EXECUTE` ×6 on the Benchmark seed) |
+| 2026-11-06 | `fillfactor = 90` on `reaction_counts`/`conversation_participants`: measured with autocommitted toggles on a copy of the seeded counter table, HOT share 98.4 % → 100 % — A's counters were already HOT (no indexed counter column, unlike B's pre-00027 state); applied as the equal-effort setting, effect small | migrations `TuneReactionCountsFillfactor`, `TuneConversationParticipantsFillfactor` |
+| 2026-11-06 | h6's generator gate flagged every capacity run of Hubert's rounds although k6 used 23–55 % of a core until the knee: the arrival-rate executor's VU burst follows saturation; h6's `setup()` "pre-warm" of the J4 PNG warmed only the setup VU | h7: fixture PNG, gate judges capacity up to the last healthy step, mean/peak always in `run.json.k6_cpu` |
+| 2026-11-06 | `scripts/gomx-bench-deploy.sh` had `podman save gomx:bench \| mk image load - >/dev/null 2>&1 \|\| true` after the docker build (Hubert's host): on a host with a stale podman image it silently replaces the fresh build | opt-in `GOMX_IMAGE_FROM_PODMAN=1`, errors visible |
+| 2026-11-06 | k6 `open()` resolves a relative path against the **calling module's** directory (v2.1.0 verified): `lib/assets.js` loads `../fixtures/j4-256x256.png` | documented in `lib/assets.js` |
+| 2026-11-06 | A5's premise was wrong: `rabbitmq:4-management` (4.3.2) already runs the Erlang schedulers with `+sbwt none +sbwtdcpu none +sbwtdio none` (`rabbitmq-env` default) — the env var only repeats them. The broker's standing ≈ 0.1 core is the kubelet **exec probes**: each `rabbitmq-diagnostics` call boots a second Erlang node (200–275 % container CPU while probes run back-to-back, ≈ 1–1.5 core-s each; readiness every 15 s + liveness every 30 s). B's Redis probe (`redis-cli ping`) costs nothing comparable | recorded (D18); proposal for both authors: `tcpSocket` readiness on 5672 + an HTTP liveness through the management API — not changed in v5 |
+| 2026-11-06 | `fillfactor = 90` was already the HOT regime on A's counter table (98.4 % → 100 % under autocommitted toggles) | D18 |
 
 ### 4.3 What remains different (documented, not leveled)
 D1 (default adapter; `--real-spa` variant since 2026-10-24) A's adapter is an idealized SPA client (fewer calls than the real SPA, no client cache) → A's server cost is a
@@ -349,6 +358,31 @@ State after the 2026-10-18 evening gap-closure session (`AB-TEST-GAPS-PROGRESS.m
 | B hot path (optional, Hubert) | `GetCommunityBySlug` recomputes `member_count` with a COUNT per page view (0.19 ms); `Vote` sums all votes (`SumPostVotes`, 0.38 ms on the hottest post) instead of reading the trigger-maintained `vote_score`. **Done 2026-10-24 (for Hubert's review):** 499 for cancelled requests, hub queue 256, private-comment gate, card preview knob | B |
 | D2 / D11 | **done (2026-10-24):** 300-char excerpt on both sides for measured runs (`GOMX_CARD_PREVIEW_CHARS=300`; B product default unchanged) | both |
 | Mobile | real-device / emulator pass of the Tauri Android shells (B has a committed Android project; A has the desktop shell only) | both |
+
+### 8.2 Runbook for the v5 rounds (2026-11-06; supersedes 8.1 for the final measurement)
+
+Preconditions: both tags exist (`thesis-v5-a` on A's branch, `thesis-v5-b` on a commit that **contains**
+`GOMX_READ_CACHE` — `git -C ../gomx grep -l GOMX_READ_CACHE thesis-v5-b` must list files), both checkouts clean
+(`git status` empty — a dirty tree becomes a `-dirty` image tag and `harness_dirty=true` in `meta-*.json`), the
+READ-CACHE-CONTRACT §7 rows signed.
+
+1. Cluster: `minikube -p forum start` (never recreate — the MinIO images are not pullable; §4.4), `make mon-up`,
+   `make mon-check`.
+2. Deploy A from the tag: `git checkout thesis-v5-a && make mk-deploy ARGS=--seed-benchmark` (the configmap carries
+   `ReadCache__Enabled: "false"`, `Messaging__WakeRelayOnWrite` defaults to true, RabbitMQ gets the Erlang flags).
+   Deploy B: `make gomx-deploy ARGS=--reset-db` with `../gomx` at `thesis-v5-b` (`GOMX_IMAGE_FROM_PODMAN=1` only on a
+   podman host). Verify the Zipf bank on both (8.1 step 1).
+3. Profile: `abx 'ab_apply_profile a; ab_check_profile a; ab_check_profile b'` — every line ok, including
+   `ReadCache__Enabled = false` / `GOMX_READ_CACHE = 0` (explicit).
+4. Gates (both must be valid on both sides): `make ab-round ARGS="--plan smoke:1 --label v5-gate-off --read-cache off"`,
+   then `… --label v5-gate-on --read-cache on`. Check in each REPORT.md: failed 0 %, A's J8 receipt median in the
+   tens of ms (the wake-up), `k6_cpu` in `run.json`; with the cache on, hit ratios > 0 on both
+   (`forum_read_cache_lookups_total` / `gomx_read_cache_lookups_total` in Prometheus).
+5. Rounds, detached from the session: `setsid nohup make ab-round ARGS="--plan demo:10,stress:3,capacity:3 --label v5-off --read-cache off" > /tmp/round.log 2>&1 &`
+   (≈ 6 h), then `… --plan demo:10 --label v5-on --read-cache on` (≈ 4 h). `make ab-status` to watch; `--resume`
+   keeps the same `--read-cache` setting or refuses.
+6. Afterwards: `make ab-report`, copy the tables into `AB-COMPARISON-v1.md` §9c, `scripts/thesis_figures.py` on the
+   v5-off directory; `make mk-deploy` restores A's production posture.
 
 ### 8.1 Runbook for the v2 round (next session)
 
