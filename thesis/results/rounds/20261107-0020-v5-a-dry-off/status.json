@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 1/1 valid",
+  "plan": "smoke:1",
+  "current_run": "smoke/A/run-1",
+  "runs_done": 1,
+  "runs_total": 1,
+  "runs_valid": 1,
+  "round_dir": "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261107-0020-v5-a-dry-off",
+  "pid": 251053,
+  "updated_epoch": 1794007516,
+  "heartbeat_epoch": 1794007516,
+  "updated": "2026-11-07 00:25:16"
+}

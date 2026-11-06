@@ -1,0 +1,1399 @@
+{
+  "round": "20261107-0020-v5-a-dry-off",
+  "runs": [
+    {
+      "target": "a",
+      "profile": "smoke",
+      "repeat": 1,
+      "position_in_pair": 1,
+      "started_epoch": 1794007333,
+      "finished_epoch": 1794007420,
+      "seed_before": {
+        "users": 800,
+        "threads": 1613,
+        "comments": 9029,
+        "reactions": 15028,
+        "messages": 2012
+      },
+      "seed_after": {
+        "users": 800,
+        "threads": 1637,
+        "comments": 9095,
+        "reactions": 15107,
+        "messages": 2038
+      },
+      "write_check": {
+        "comments": {
+          "accepted": 66,
+          "new_rows": 66
+        },
+        "threads": {
+          "accepted": 24,
+          "new_rows": 24
+        },
+        "messages": {
+          "accepted": 26,
+          "new_rows": 26
+        }
+      },
+      "checks_failed": 0,
+      "checks_failed_pct": 0,
+      "pod_restarts_during_run": [],
+      "k6_cpu": {
+        "mean_pct": 2.6,
+        "peak_pct": 5.0,
+        "judged_mean_pct": 2.6,
+        "judged_peak_pct": 5.0,
+        "judged_until_epoch": null,
+        "host_cores": 8,
+        "peak_limit_pct": 200.0,
+        "rule": "whole run"
+      },
+      "valid": true,
+      "invalid_reasons": [],
+      "dir": "smoke/A/run-1",
+      "k6": {
+        "cpu_pct_max": 5.0,
+        "cpu_pct_mean": 2.571111111111111,
+        "rss_mib_max": 90
+      }
+    }
+  ],
+  "summary": {
+    "smoke/a": {
+      "runs": 1,
+      "journeys": {
+        "J1": {
+          "per_second": {
+            "n": 1,
+            "mean": 2.7,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 2.7,
+            "p25": 2.7,
+            "p75": 2.7,
+            "min": 2.7,
+            "max": 2.7,
+            "values": [
+              2.7
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 11,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 11,
+            "p25": 11,
+            "p75": 11,
+            "min": 11,
+            "max": 11,
+            "values": [
+              11
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 22.94999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 22.94999999999999,
+            "p25": 22.94999999999999,
+            "p75": 22.94999999999999,
+            "min": 22.94999999999999,
+            "max": 22.94999999999999,
+            "values": [
+              22.94999999999999
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 26,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 26,
+            "p25": 26,
+            "p75": 26,
+            "min": 26,
+            "max": 26,
+            "values": [
+              26
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 162,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 162,
+            "p25": 162,
+            "p75": 162,
+            "min": 162,
+            "max": 162,
+            "values": [
+              162
+            ]
+          }
+        },
+        "J2": {
+          "per_second": {
+            "n": 1,
+            "mean": 1.95,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 1.95,
+            "p25": 1.95,
+            "p75": 1.95,
+            "min": 1.95,
+            "max": 1.95,
+            "values": [
+              1.95
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7,
+            "p25": 7,
+            "p75": 7,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 12,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 12,
+            "p25": 12,
+            "p75": 12,
+            "min": 12,
+            "max": 12,
+            "values": [
+              12
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 26.240000000000038,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 26.240000000000038,
+            "p25": 26.240000000000038,
+            "p75": 26.240000000000038,
+            "min": 26.240000000000038,
+            "max": 26.240000000000038,
+            "values": [
+              26.240000000000038
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 117,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 117,
+            "p25": 117,
+            "p75": 117,
+            "min": 117,
+            "max": 117,
+            "values": [
+              117
+            ]
+          }
+        },
+        "J3": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.967,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.967,
+            "p25": 0.967,
+            "p75": 0.967,
+            "min": 0.967,
+            "max": 0.967,
+            "values": [
+              0.967
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7,
+            "p25": 7,
+            "p75": 7,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 25.599999999999994,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 25.599999999999994,
+            "p25": 25.599999999999994,
+            "p75": 25.599999999999994,
+            "min": 25.599999999999994,
+            "max": 25.599999999999994,
+            "values": [
+              25.599999999999994
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 35.16,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 35.16,
+            "p25": 35.16,
+            "p75": 35.16,
+            "min": 35.16,
+            "max": 35.16,
+            "values": [
+              35.16
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 58,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 58,
+            "p25": 58,
+            "p75": 58,
+            "min": 58,
+            "max": 58,
+            "values": [
+              58
+            ]
+          }
+        },
+        "J4": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.4,
+            "p25": 0.4,
+            "p75": 0.4,
+            "min": 0.4,
+            "max": 0.4,
+            "values": [
+              0.4
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 44,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 44,
+            "p25": 44,
+            "p75": 44,
+            "min": 44,
+            "max": 44,
+            "values": [
+              44
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 65.79999999999998,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 65.79999999999998,
+            "p25": 65.79999999999998,
+            "p75": 65.79999999999998,
+            "min": 65.79999999999998,
+            "max": 65.79999999999998,
+            "values": [
+              65.79999999999998
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 89.32999999999998,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 89.32999999999998,
+            "p25": 89.32999999999998,
+            "p75": 89.32999999999998,
+            "min": 89.32999999999998,
+            "max": 89.32999999999998,
+            "values": [
+              89.32999999999998
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 24,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 24,
+            "p25": 24,
+            "p75": 24,
+            "min": 24,
+            "max": 24,
+            "values": [
+              24
+            ]
+          }
+        },
+        "J5": {
+          "per_second": {
+            "n": 1,
+            "mean": 1.317,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 1.317,
+            "p25": 1.317,
+            "p75": 1.317,
+            "min": 1.317,
+            "max": 1.317,
+            "values": [
+              1.317
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 8,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 8,
+            "p25": 8,
+            "p75": 8,
+            "min": 8,
+            "max": 8,
+            "values": [
+              8
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 26,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 26,
+            "p25": 26,
+            "p75": 26,
+            "min": 26,
+            "max": 26,
+            "values": [
+              26
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 29.75999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 29.75999999999999,
+            "p25": 29.75999999999999,
+            "p75": 29.75999999999999,
+            "min": 29.75999999999999,
+            "max": 29.75999999999999,
+            "values": [
+              29.75999999999999
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 79,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 79,
+            "p25": 79,
+            "p75": 79,
+            "min": 79,
+            "max": 79,
+            "values": [
+              79
+            ]
+          }
+        },
+        "J6": {
+          "per_second": {
+            "n": 1,
+            "mean": 1,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 1,
+            "p25": 1,
+            "p75": 1,
+            "min": 1,
+            "max": 1,
+            "values": [
+              1
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 7,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 7,
+            "p25": 7,
+            "p75": 7,
+            "min": 7,
+            "max": 7,
+            "values": [
+              7
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 10,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 10,
+            "p25": 10,
+            "p75": 10,
+            "min": 10,
+            "max": 10,
+            "values": [
+              10
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 12.409999999999997,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 12.409999999999997,
+            "p25": 12.409999999999997,
+            "p75": 12.409999999999997,
+            "min": 12.409999999999997,
+            "max": 12.409999999999997,
+            "values": [
+              12.409999999999997
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 60,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 60,
+            "p25": 60,
+            "p75": 60,
+            "min": 60,
+            "max": 60,
+            "values": [
+              60
+            ]
+          }
+        },
+        "J7": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.267,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.267,
+            "p25": 0.267,
+            "p75": 0.267,
+            "min": 0.267,
+            "max": 0.267,
+            "values": [
+              0.267
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 4,
+            "p25": 4,
+            "p75": 4,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 13,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 13,
+            "p25": 13,
+            "p75": 13,
+            "min": 13,
+            "max": 13,
+            "values": [
+              13
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 15.399999999999999,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 15.399999999999999,
+            "p25": 15.399999999999999,
+            "p75": 15.399999999999999,
+            "min": 15.399999999999999,
+            "max": 15.399999999999999,
+            "values": [
+              15.399999999999999
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 16,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 16,
+            "p25": 16,
+            "p75": 16,
+            "min": 16,
+            "max": 16,
+            "values": [
+              16
+            ]
+          }
+        },
+        "J8": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.067,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.067,
+            "p25": 0.067,
+            "p75": 0.067,
+            "min": 0.067,
+            "max": 0.067,
+            "values": [
+              0.067
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 0,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0,
+            "p25": 0,
+            "p75": 0,
+            "min": 0,
+            "max": 0,
+            "values": [
+              0
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 4,
+            "p25": 4,
+            "p75": 4,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          }
+        },
+        "J9": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.433,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.433,
+            "p25": 0.433,
+            "p75": 0.433,
+            "min": 0.433,
+            "max": 0.433,
+            "values": [
+              0.433
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 14.5,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 14.5,
+            "p25": 14.5,
+            "p75": 14.5,
+            "min": 14.5,
+            "max": 14.5,
+            "values": [
+              14.5
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 27,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 27,
+            "p25": 27,
+            "p75": 27,
+            "min": 27,
+            "max": 27,
+            "values": [
+              27
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 27.75,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 27.75,
+            "p25": 27.75,
+            "p75": 27.75,
+            "min": 27.75,
+            "max": 27.75,
+            "values": [
+              27.75
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 26,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 26,
+            "p25": 26,
+            "p75": 26,
+            "min": 26,
+            "max": 26,
+            "values": [
+              26
+            ]
+          }
+        },
+        "nav": {
+          "per_second": {
+            "n": 1,
+            "mean": 0.817,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 0.817,
+            "p25": 0.817,
+            "p75": 0.817,
+            "min": 0.817,
+            "max": 0.817,
+            "values": [
+              0.817
+            ]
+          },
+          "med_ms": {
+            "n": 1,
+            "mean": 3,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 3,
+            "p25": 3,
+            "p75": 3,
+            "min": 3,
+            "max": 3,
+            "values": [
+              3
+            ]
+          },
+          "p95_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 4,
+            "p25": 4,
+            "p75": 4,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "p99_ms": {
+            "n": 1,
+            "mean": 4,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 4,
+            "p25": 4,
+            "p75": 4,
+            "min": 4,
+            "max": 4,
+            "values": [
+              4
+            ]
+          },
+          "count": {
+            "n": 1,
+            "mean": 49,
+            "sd": 0.0,
+            "ci95": null,
+            "median": 49,
+            "p25": 49,
+            "p75": 49,
+            "min": 49,
+            "max": 49,
+            "values": [
+              49
+            ]
+          }
+        }
+      },
+      "totals": {
+        "http_journeys_per_second": {
+          "n": 1,
+          "mean": 9.85,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 9.85,
+          "p25": 9.85,
+          "p75": 9.85,
+          "min": 9.85,
+          "max": 9.85,
+          "values": [
+            9.85
+          ]
+        },
+        "journey_p95_ms": {
+          "n": 1,
+          "mean": 28.5,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 28.5,
+          "p25": 28.5,
+          "p75": 28.5,
+          "min": 28.5,
+          "max": 28.5,
+          "values": [
+            28.5
+          ]
+        },
+        "journey_med_ms": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8,
+          "p25": 8,
+          "p75": 8,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "journey_core_p95_ms": {
+          "n": 1,
+          "mean": 23,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 23,
+          "p25": 23,
+          "p75": 23,
+          "min": 23,
+          "max": 23,
+          "values": [
+            23
+          ]
+        },
+        "journey_core_med_ms": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8,
+          "p25": 8,
+          "p75": 8,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "http_req_p95_ms": {
+          "n": 1,
+          "mean": 11.248930100000003,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 11.248930100000003,
+          "p25": 11.248930100000003,
+          "p75": 11.248930100000003,
+          "min": 11.248930100000003,
+          "max": 11.248930100000003,
+          "values": [
+            11.248930100000003
+          ]
+        },
+        "http_req_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "checks_failed_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "checks_failed": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "http_reqs": {
+          "n": 1,
+          "mean": 1296,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 1296,
+          "p25": 1296,
+          "p75": 1296,
+          "min": 1296,
+          "max": 1296,
+          "values": [
+            1296
+          ]
+        },
+        "kib_received_per_journey": {
+          "n": 1,
+          "mean": 3.201,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 3.201,
+          "p25": 3.201,
+          "p75": 3.201,
+          "min": 3.201,
+          "max": 3.201,
+          "values": [
+            3.201
+          ]
+        }
+      },
+      "resources": {
+        "app_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 14.5567,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 14.5567,
+          "p25": 14.5567,
+          "p75": 14.5567,
+          "min": 14.5567,
+          "max": 14.5567,
+          "values": [
+            14.5567
+          ]
+        },
+        "app_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 13.1861,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 13.1861,
+          "p25": 13.1861,
+          "p75": 13.1861,
+          "min": 13.1861,
+          "max": 13.1861,
+          "values": [
+            13.1861
+          ]
+        },
+        "app_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0135,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0135,
+          "p25": 0.0135,
+          "p75": 0.0135,
+          "min": 0.0135,
+          "max": 0.0135,
+          "values": [
+            0.0135
+          ]
+        },
+        "app_avg_cores": {
+          "n": 1,
+          "mean": 0.1434,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.1434,
+          "p25": 0.1434,
+          "p75": 0.1434,
+          "min": 0.1434,
+          "max": 0.1434,
+          "values": [
+            0.1434
+          ]
+        },
+        "app_mem_avg_mib": {
+          "n": 1,
+          "mean": 483.9,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 483.9,
+          "p25": 483.9,
+          "p75": 483.9,
+          "min": 483.9,
+          "max": 483.9,
+          "values": [
+            483.9
+          ]
+        },
+        "app_mem_max_mib": {
+          "n": 1,
+          "mean": 493.9,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 493.9,
+          "p25": 493.9,
+          "p75": 493.9,
+          "min": 493.9,
+          "max": 493.9,
+          "values": [
+            493.9
+          ]
+        },
+        "db_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 4.956,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4.956,
+          "p25": 4.956,
+          "p75": 4.956,
+          "min": 4.956,
+          "max": 4.956,
+          "values": [
+            4.956
+          ]
+        },
+        "db_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0065,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0065,
+          "p25": 0.0065,
+          "p75": 0.0065,
+          "min": 0.0065,
+          "max": 0.0065,
+          "values": [
+            0.0065
+          ]
+        },
+        "db_mem_avg_mib": {
+          "n": 1,
+          "mean": 165.8,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 165.8,
+          "p25": 165.8,
+          "p75": 165.8,
+          "min": 165.8,
+          "max": 165.8,
+          "values": [
+            165.8
+          ]
+        },
+        "bus_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 9.6176,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 9.6176,
+          "p25": 9.6176,
+          "p75": 9.6176,
+          "min": 9.6176,
+          "max": 9.6176,
+          "values": [
+            9.6176
+          ]
+        },
+        "bus_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.0806,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.0806,
+          "p25": 0.0806,
+          "p75": 0.0806,
+          "min": 0.0806,
+          "max": 0.0806,
+          "values": [
+            0.0806
+          ]
+        },
+        "bus_mem_avg_mib": {
+          "n": 1,
+          "mean": 155.6,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 155.6,
+          "p25": 155.6,
+          "p75": 155.6,
+          "min": 155.6,
+          "max": 155.6,
+          "values": [
+            155.6
+          ]
+        },
+        "frontend_mem_avg_mib": {
+          "n": 1,
+          "mean": 38.7,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 38.7,
+          "p25": 38.7,
+          "p75": 38.7,
+          "min": 38.7,
+          "max": 38.7,
+          "values": [
+            38.7
+          ]
+        },
+        "ns_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 29.5212,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 29.5212,
+          "p25": 29.5212,
+          "p75": 29.5212,
+          "min": 29.5212,
+          "max": 29.5212,
+          "values": [
+            29.5212
+          ]
+        },
+        "ns_marginal_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 19.1557,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 19.1557,
+          "p25": 19.1557,
+          "p75": 19.1557,
+          "min": 19.1557,
+          "max": 19.1557,
+          "values": [
+            19.1557
+          ]
+        },
+        "ns_idle_avg_cores": {
+          "n": 1,
+          "mean": 0.1021,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0.1021,
+          "p25": 0.1021,
+          "p75": 0.1021,
+          "min": 0.1021,
+          "max": 0.1021,
+          "values": [
+            0.1021
+          ]
+        },
+        "ns_mem_avg_mib": {
+          "n": 1,
+          "mean": 1074.0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 1074.0,
+          "p25": 1074.0,
+          "p75": 1074.0,
+          "min": 1074.0,
+          "max": 1074.0,
+          "values": [
+            1074.0
+          ]
+        },
+        "ingress_cpu_ms_per_journey": {
+          "n": 1,
+          "mean": 2.1149,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 2.1149,
+          "p25": 2.1149,
+          "p75": 2.1149,
+          "min": 2.1149,
+          "max": 2.1149,
+          "values": [
+            2.1149
+          ]
+        },
+        "node_busy_cores_avg": {
+          "n": 1,
+          "mean": 2.164,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 2.164,
+          "p25": 2.164,
+          "p75": 2.164,
+          "min": 2.164,
+          "max": 2.164,
+          "values": [
+            2.164
+          ]
+        }
+      },
+      "k6": {
+        "cpu_pct_max": {
+          "n": 1,
+          "mean": 5.0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 5.0,
+          "p25": 5.0,
+          "p75": 5.0,
+          "min": 5.0,
+          "max": 5.0,
+          "values": [
+            5.0
+          ]
+        },
+        "rss_mib_max": {
+          "n": 1,
+          "mean": 90,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 90,
+          "p25": 90,
+          "p75": 90,
+          "min": 90,
+          "max": 90,
+          "values": [
+            90
+          ]
+        }
+      },
+      "ws": {
+        "subscribed": {
+          "n": 1,
+          "mean": 4,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 4,
+          "p25": 4,
+          "p75": 4,
+          "min": 4,
+          "max": 4,
+          "values": [
+            4
+          ]
+        },
+        "notifications": {
+          "n": 1,
+          "mean": 57,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 57,
+          "p25": 57,
+          "p75": 57,
+          "min": 57,
+          "max": 57,
+          "values": [
+            57
+          ]
+        },
+        "errors": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "early_close": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probes_sent": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8,
+          "p25": 8,
+          "p75": 8,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probes_received": {
+          "n": 1,
+          "mean": 8,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 8,
+          "p25": 8,
+          "p75": 8,
+          "min": 8,
+          "max": 8,
+          "values": [
+            8
+          ]
+        },
+        "probe_loss_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "probe_late_pct": {
+          "n": 1,
+          "mean": 0,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 0,
+          "p25": 0,
+          "p75": 0,
+          "min": 0,
+          "max": 0,
+          "values": [
+            0
+          ]
+        },
+        "receipt_med_ms": {
+          "n": 1,
+          "mean": 13,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 13,
+          "p25": 13,
+          "p75": 13,
+          "min": 13,
+          "max": 13,
+          "values": [
+            13
+          ]
+        },
+        "receipt_p95_ms": {
+          "n": 1,
+          "mean": 68.55,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 68.55,
+          "p25": 68.55,
+          "p75": 68.55,
+          "min": 68.55,
+          "max": 68.55,
+          "values": [
+            68.55
+          ]
+        },
+        "receipt_max_ms": {
+          "n": 1,
+          "mean": 71,
+          "sd": 0.0,
+          "ci95": null,
+          "median": 71,
+          "p25": 71,
+          "p75": 71,
+          "min": 71,
+          "max": 71,
+          "values": [
+            71
+          ]
+        }
+      }
+    }
+  }
+}
