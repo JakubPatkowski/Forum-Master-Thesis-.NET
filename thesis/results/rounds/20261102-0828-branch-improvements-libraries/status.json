@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 5/7 valid",
+  "plan": "demo:5,stress:1,capacity:1",
+  "current_run": "capacity/B/run-1",
+  "runs_done": 7,
+  "runs_total": 7,
+  "runs_valid": 5,
+  "round_dir": "/home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261102-0828-branch-improvements-libraries",
+  "pid": 772964,
+  "updated_epoch": 1793609938,
+  "heartbeat_epoch": 1793609938,
+  "updated": "2026-11-02 09:58:58"
+}

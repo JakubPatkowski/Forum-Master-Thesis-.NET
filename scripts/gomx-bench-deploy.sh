@@ -57,6 +57,7 @@ if $BUILD; then
   eval "$(mk docker-env)"
   docker build -f "$GOMX_DIR/ContainerFile.dev" -t gomx:bench -t "gomx:bench-$GOMX_SHA" --build-arg GIT_SHA="$GOMX_SHA" "$GOMX_DIR"
   eval "$(mk docker-env -u)"
+  podman save gomx:bench | mk image load - >/dev/null 2>&1 || true
   ok "image gomx:bench (= gomx:bench-$GOMX_SHA) available to the node"
 fi
 

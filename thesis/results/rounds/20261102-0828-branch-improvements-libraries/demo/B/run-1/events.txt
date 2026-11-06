@@ -1,0 +1,95 @@
+LAST SEEN   TYPE      REASON                         OBJECT                                  MESSAGE
+11m         Normal    SuccessfulCreate               statefulset/minio                       Create Claim data-minio-0 Pod minio-0 in StatefulSet minio success
+11m         Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-vfxp7
+11m         Normal    ProvisioningSucceeded          persistentvolumeclaim/data-minio-0      Successfully provisioned volume pvc-b3f1d387-2524-4db1-afb6-4906ac92a5c8
+11m         Normal    ExternalProvisioning           persistentvolumeclaim/data-postgres-0   Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+11m         Normal    Provisioning                   persistentvolumeclaim/data-postgres-0   External provisioner is provisioning volume for claim "gomx/data-postgres-0"
+11m         Normal    ProvisioningSucceeded          persistentvolumeclaim/data-postgres-0   Successfully provisioned volume pvc-7e4974e5-a892-4166-9263-76d76883ae85
+11m         Normal    ScalingReplicaSet              deployment/redis                        Scaled up replica set redis-677c94c855 from 0 to 1
+11m         Normal    SuccessfulCreate               replicaset/redis-677c94c855             Created pod: redis-677c94c855-rbn4b
+11m         Normal    Pulled                         pod/gomx-7d66c4bb49-p7nvx               Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+11m         Normal    Created                        pod/redis-677c94c855-rbn4b              Container created
+11m         Normal    Pulled                         pod/redis-677c94c855-rbn4b              Container image "docker.io/library/redis:7-alpine" already present on machine and can be accessed by the pod
+11m         Normal    Scheduled                      pod/redis-677c94c855-rbn4b              Successfully assigned gomx/redis-677c94c855-rbn4b to forum
+11m         Normal    SuccessfulCreate               statefulset/postgres                    Create Pod postgres-0 in StatefulSet postgres successful
+11m         Normal    SuccessfulCreate               statefulset/postgres                    Create Claim data-postgres-0 Pod postgres-0 in StatefulSet postgres success
+11m         Normal    Created                        pod/gomx-7d66c4bb49-p7nvx               Container created
+11m         Normal    Started                        pod/gomx-7d66c4bb49-p7nvx               Container started
+11m         Normal    Scheduled                      pod/gomx-7d66c4bb49-vfxp7               Successfully assigned gomx/gomx-7d66c4bb49-vfxp7 to forum
+11m         Normal    Scheduled                      pod/postgres-0                          Successfully assigned gomx/postgres-0 to forum
+11m         Warning   FailedScheduling               pod/postgres-0                          0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+11m         Normal    SuccessfulCreate               statefulset/minio                       Create Pod minio-0 in StatefulSet minio successful
+11m         Normal    ExternalProvisioning           persistentvolumeclaim/data-minio-0      Waiting for a volume to be created either by the external provisioner 'k8s.io/minikube-hostpath' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+11m         Normal    Created                        pod/minio-0                             Container created
+11m         Normal    Scheduled                      pod/gomx-7d66c4bb49-p7nvx               Successfully assigned gomx/gomx-7d66c4bb49-p7nvx to forum
+11m         Normal    Pulled                         pod/minio-0                             Container image "docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+11m         Normal    Scheduled                      pod/minio-0                             Successfully assigned gomx/minio-0 to forum
+11m         Warning   FailedScheduling               pod/minio-0                             0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+11m         Normal    Provisioning                   persistentvolumeclaim/data-minio-0      External provisioner is provisioning volume for claim "gomx/data-minio-0"
+11m         Normal    ScalingReplicaSet              deployment/gomx                         Scaled down replica set gomx-7d66c4bb49 from 2 to 1
+11m         Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-p7nvx
+11m         Normal    SuccessfulDelete               replicaset/gomx-7d66c4bb49              Deleted pod: gomx-7d66c4bb49-vfxp7
+11m         Normal    Started                        pod/minio-0                             Container started
+11m         Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-vfxp7               Pod "gomx"/"gomx-7d66c4bb49-vfxp7" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+11m         Normal    Pulled                         pod/postgres-0                          Container image "docker.io/library/postgres:18" already present on machine and can be accessed by the pod
+11m         Normal    Created                        pod/postgres-0                          Container created
+11m         Normal    Started                        pod/postgres-0                          Container started
+11m         Normal    Started                        pod/redis-677c94c855-rbn4b              Container started
+11m         Normal    Pulled                         pod/gomx-7d66c4bb49-p7nvx               Container image "gomx:bench" already present on machine and can be accessed by the pod
+11m         Normal    Started                        pod/gomx-7d66c4bb49-p7nvx               Container started
+11m         Normal    Created                        pod/gomx-7d66c4bb49-p7nvx               Container created
+10m         Normal    Sync                           ingress/gomx                            Scheduled for sync
+10m         Warning   Unhealthy                      pod/gomx-7d66c4bb49-p7nvx               Startup probe failed: Get "http://10.244.133.176:8080/healthz": dial tcp 10.244.133.176:8080: connect: connection refused
+10m         Normal    ScalingReplicaSet              deployment/gomx                         Scaled up replica set gomx-7d66c4bb49 from 1 to 2
+10m         Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-p7nvx               Pod "gomx"/"gomx-7d66c4bb49-p7nvx" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+10m         Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-nmznh
+10m         Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-nmznh               Pod "gomx"/"gomx-7d66c4bb49-nmznh" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+10m         Normal    Scheduled                      pod/gomx-7d66c4bb49-nmznh               Successfully assigned gomx/gomx-7d66c4bb49-nmznh to forum
+10m         Normal    Started                        pod/gomx-7d66c4bb49-nmznh               Container started
+10m         Normal    Created                        pod/gomx-7d66c4bb49-nmznh               Container created
+10m         Normal    Pulled                         pod/gomx-7d66c4bb49-nmznh               Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+10m         Normal    Started                        pod/gomx-7d66c4bb49-nmznh               Container started
+10m         Normal    Created                        pod/gomx-7d66c4bb49-nmznh               Container created
+10m         Normal    Pulled                         pod/gomx-7d66c4bb49-nmznh               Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m54s       Normal    SuccessfulDelete               replicaset/gomx-7d66c4bb49              Deleted pod: gomx-7d66c4bb49-nmznh
+9m54s       Normal    ScalingReplicaSet              deployment/gomx                         Scaled down replica set gomx-7d66c4bb49 from 2 to 0
+9m54s       Normal    Killing                        pod/gomx-7d66c4bb49-nmznh               Stopping container gomx
+9m54s       Normal    Killing                        pod/gomx-7d66c4bb49-p7nvx               Stopping container gomx
+9m54s       Normal    SuccessfulDelete               replicaset/gomx-7d66c4bb49              Deleted pod: gomx-7d66c4bb49-p7nvx
+9m50s       Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-6vpq7
+9m50s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-nmznh               Pod "gomx"/"gomx-7d66c4bb49-nmznh" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m50s       Normal    ScalingReplicaSet              deployment/gomx                         Scaled up replica set gomx-7d66c4bb49 from 0 to 1
+9m50s       Normal    Scheduled                      pod/gomx-7d66c4bb49-6vpq7               Successfully assigned gomx/gomx-7d66c4bb49-6vpq7 to forum
+9m50s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-p7nvx               Pod "gomx"/"gomx-7d66c4bb49-p7nvx" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m49s       Normal    Created                        pod/gomx-7d66c4bb49-6vpq7               Container created
+9m49s       Normal    Pulled                         pod/gomx-7d66c4bb49-6vpq7               Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m49s       Normal    Started                        pod/gomx-7d66c4bb49-6vpq7               Container started
+9m48s       Normal    Pulled                         pod/gomx-7d66c4bb49-6vpq7               Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m48s       Normal    Started                        pod/gomx-7d66c4bb49-6vpq7               Container started
+9m48s       Normal    Created                        pod/gomx-7d66c4bb49-6vpq7               Container created
+8m59s       Warning   Unhealthy                      pod/gomx-7d66c4bb49-6vpq7               Startup probe failed: Get "http://10.244.133.181:8080/healthz": dial tcp 10.244.133.181:8080: connect: connection refused
+8m49s       Normal    SuccessfulDelete               replicaset/gomx-7d66c4bb49              Deleted pod: gomx-7d66c4bb49-6vpq7
+8m49s       Normal    ScalingReplicaSet              deployment/gomx                         Scaled down replica set gomx-7d66c4bb49 from 1 to 0
+8m48s       Normal    Killing                        pod/gomx-7d66c4bb49-6vpq7               Stopping container gomx
+8m45s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-6vpq7               Pod "gomx"/"gomx-7d66c4bb49-6vpq7" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+8m44s       Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-2jpvz
+8m44s       Normal    NoPods                         poddisruptionbudget/gomx                No matching pods found
+8m44s       Normal    Scheduled                      pod/gomx-7d66c4bb49-cqsnq               Successfully assigned gomx/gomx-7d66c4bb49-cqsnq to forum
+8m44s       Normal    ScalingReplicaSet              deployment/gomx                         Scaled up replica set gomx-7d66c4bb49 from 0 to 2
+8m44s       Normal    SuccessfulCreate               replicaset/gomx-7d66c4bb49              Created pod: gomx-7d66c4bb49-cqsnq
+8m44s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-6vpq7               Pod "gomx"/"gomx-7d66c4bb49-6vpq7" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+8m44s       Normal    Scheduled                      pod/gomx-7d66c4bb49-2jpvz               Successfully assigned gomx/gomx-7d66c4bb49-2jpvz to forum
+8m43s       Normal    Created                        pod/gomx-7d66c4bb49-cqsnq               Container created
+8m43s       Normal    Started                        pod/gomx-7d66c4bb49-2jpvz               Container started
+8m43s       Normal    Pulled                         pod/gomx-7d66c4bb49-cqsnq               Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+8m43s       Normal    Started                        pod/gomx-7d66c4bb49-cqsnq               Container started
+8m43s       Normal    Pulled                         pod/gomx-7d66c4bb49-2jpvz               Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+8m43s       Normal    Created                        pod/gomx-7d66c4bb49-2jpvz               Container created
+8m42s       Normal    Pulled                         pod/gomx-7d66c4bb49-cqsnq               Container image "gomx:bench" already present on machine and can be accessed by the pod
+8m42s       Normal    Created                        pod/gomx-7d66c4bb49-2jpvz               Container created
+8m42s       Normal    Pulled                         pod/gomx-7d66c4bb49-2jpvz               Container image "gomx:bench" already present on machine and can be accessed by the pod
+8m42s       Normal    Started                        pod/gomx-7d66c4bb49-2jpvz               Container started
+8m42s       Normal    Created                        pod/gomx-7d66c4bb49-cqsnq               Container created
+8m42s       Normal    Started                        pod/gomx-7d66c4bb49-cqsnq               Container started
+8m33s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-cqsnq               Pod "gomx"/"gomx-7d66c4bb49-cqsnq" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+8m33s       Warning   MultiplePodDisruptionBudgets   pod/gomx-7d66c4bb49-2jpvz               Pod "gomx"/"gomx-7d66c4bb49-2jpvz" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.

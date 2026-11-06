@@ -1,0 +1,24 @@
+LAST SEEN   TYPE     REASON              OBJECT                          MESSAGE
+4h16m       Normal   Killing             pod/backend-6cbfcd85f6-lckf8    Stopping container backend
+4h16m       Normal   SuccessfulDelete    replicaset/backend-6cbfcd85f6   Deleted pod: backend-6cbfcd85f6-9dnqz
+4h16m       Normal   SuccessfulDelete    replicaset/backend-6cbfcd85f6   Deleted pod: backend-6cbfcd85f6-lckf8
+4h16m       Normal   ScalingReplicaSet   deployment/backend              Scaled down replica set backend-6cbfcd85f6 from 2 to 0
+4h16m       Normal   Killing             pod/backend-6cbfcd85f6-9dnqz    Stopping container backend
+15m         Normal   SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-58ktj
+15m         Normal   Scheduled           pod/db-seed-benchmark-58ktj     Successfully assigned forum-dotnet/db-seed-benchmark-58ktj to forum
+15m         Normal   Started             pod/db-seed-benchmark-58ktj     Container started
+15m         Normal   Created             pod/db-seed-benchmark-58ktj     Container created
+15m         Normal   Pulled              pod/db-seed-benchmark-58ktj     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+14m         Normal   NoPods              poddisruptionbudget/backend     No matching pods found
+14m         Normal   Completed           job/db-seed-benchmark           Job completed
+14m         Normal   Scheduled           pod/backend-dcbcc8b85-wmzmq     Successfully assigned forum-dotnet/backend-dcbcc8b85-wmzmq to forum
+14m         Normal   SuccessfulCreate    replicaset/backend-dcbcc8b85    Created pod: backend-dcbcc8b85-njrxz
+14m         Normal   SuccessfulCreate    replicaset/backend-dcbcc8b85    Created pod: backend-dcbcc8b85-wmzmq
+14m         Normal   Scheduled           pod/backend-dcbcc8b85-njrxz     Successfully assigned forum-dotnet/backend-dcbcc8b85-njrxz to forum
+14m         Normal   ScalingReplicaSet   deployment/backend              Scaled up replica set backend-dcbcc8b85 from 0 to 2
+14m         Normal   Pulled              pod/backend-dcbcc8b85-njrxz     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+14m         Normal   Started             pod/backend-dcbcc8b85-wmzmq     Container started
+14m         Normal   Created             pod/backend-dcbcc8b85-wmzmq     Container created
+14m         Normal   Pulled              pod/backend-dcbcc8b85-wmzmq     Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+14m         Normal   Started             pod/backend-dcbcc8b85-njrxz     Container started
+14m         Normal   Created             pod/backend-dcbcc8b85-njrxz     Container created

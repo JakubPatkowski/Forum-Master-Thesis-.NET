@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 6/7 valid",
+  "plan": "demo:5,stress:1,capacity:1",
+  "current_run": "capacity/B/run-1",
+  "runs_done": 7,
+  "runs_total": 7,
+  "runs_valid": 6,
+  "round_dir": "/home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261102-0647-branch-master-thesis",
+  "pid": 554604,
+  "updated_epoch": 1793603915,
+  "heartbeat_epoch": 1793603915,
+  "updated": "2026-11-02 08:18:35"
+}

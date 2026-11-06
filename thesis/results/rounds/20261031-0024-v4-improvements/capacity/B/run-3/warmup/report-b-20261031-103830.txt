@@ -1,0 +1,34 @@
+
+target=b  profile=warmup  mix=v2  harness=h6-2026-10-24  base=https://gomx.local  reads=anonymous  htmx=boosted
+http_reqs=1404  p95=16ms  p99=33ms  failed=0.00%  checks_failed=0 (0.00%)  (scenario 60s, setup excluded)
+
+endpoint          count    avg    med  p(95)  p(99)    max      ok  failed
+login                 2     29     29     35     36     36       0       0
+communities         110      2      2      3      4      5     110       0
+space_page          455      6      5      8     12     22     455       0
+space_feed          132      6      5      9     11     13     132       0
+thread              310      3      3      5     20     24     310       0
+search              170     13     10     29     38     43     170       0
+profile              52      3      3      5      8     12      52       0
+comment_create       33     14     16     25     32     32      33       0
+vote                 31     28     14     25    363    506      31       0
+upload                8     36     33     59     60     60       8       0
+upload_poll           8      2      1      2      2      2       8       0
+thread_create         8     16     15     33     39     40       8       0
+dm_send              11     41     17    165    266    292      11       0
+setup                74      6      6      8     10     10       0       0
+
+journey    count   /sec    med  p(95)  p(99)   (duration ms; /sec over the scenario window)
+J1           455   7.58      6     15     22
+J2           310   5.17      3      6     23
+J3            33   0.55     16     25     33
+J4             8   0.13    628    649    651
+J5            31   0.52     15     26    363
+J6           170   2.83     10     29     38
+J7            52   0.87      3      5      9
+J9            11   0.18     18    166    267
+nav          110   1.83      2      3      5
+core journeys (without J4): med=5ms  p95=18ms  p99=32ms  — the headline latency (B's J4 waits ≥ 1 s for its upload poll by design)
+
+all thresholds passed
+

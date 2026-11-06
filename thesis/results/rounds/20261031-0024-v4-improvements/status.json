@@ -1,0 +1,14 @@
+{
+  "state": "FAILED",
+  "detail": "exit 1 after 32/32 runs \u2014 see round.log; continue with --resume /home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261031-0024-v4-improvements",
+  "plan": "demo:10,stress:3,capacity:3",
+  "current_run": "capacity/B/run-3",
+  "runs_done": 32,
+  "runs_total": 32,
+  "runs_valid": 20,
+  "round_dir": "/home/ozar/master-thesis/Forum-Master-Thesis-.NET/thesis/results/rounds/20261031-0024-v4-improvements",
+  "pid": 215714,
+  "updated_epoch": 1793441051,
+  "heartbeat_epoch": 1793441051,
+  "updated": "2026-10-31 11:04:11"
+}

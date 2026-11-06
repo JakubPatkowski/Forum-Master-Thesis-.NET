@@ -1,0 +1,20 @@
+{
+  "label": "v4-improvements",
+  "plan": "demo:10,stress:3,capacity:3",
+  "started_epoch": 1793402665.2910783,
+  "cooldown_s": 60,
+  "reseed_each_run": true,
+  "warmup_each_run": true,
+  "replicas": 2,
+  "mix_version": "v2",
+  "harness_version": "h6-2026-10-24",
+  "order": "ABBA (odd repeat: A then B; even: B then A)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "real_spa": false,
+    "k6_env": []
+  }
+}

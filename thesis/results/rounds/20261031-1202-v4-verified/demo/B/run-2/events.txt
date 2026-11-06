@@ -1,0 +1,147 @@
+LAST SEEN   TYPE      REASON                         OBJECT                         MESSAGE
+37m         Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-588b98496 from 2 to 0
+37m         Normal    Killing                        pod/gomx-588b98496-prwlt       Stopping container gomx
+37m         Normal    Killing                        pod/gomx-588b98496-x2fr7       Stopping container gomx
+37m         Normal    SuccessfulDelete               replicaset/gomx-588b98496      Deleted pod: gomx-588b98496-prwlt
+37m         Normal    SuccessfulDelete               replicaset/gomx-588b98496      Deleted pod: gomx-588b98496-x2fr7
+37m         Normal    SuccessfulCreate               replicaset/gomx-588b98496      Created pod: gomx-588b98496-jm7qv
+37m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-fnbtl       Pod "gomx"/"gomx-588b98496-fnbtl" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+37m         Normal    Scheduled                      pod/gomx-588b98496-fnbtl       Successfully assigned gomx/gomx-588b98496-fnbtl to forum
+37m         Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-588b98496 from 0 to 2
+37m         Normal    SuccessfulDelete               replicaset/gomx-588b98496      Deleted pod: gomx-588b98496-fnbtl
+37m         Normal    Scheduled                      pod/gomx-588b98496-jm7qv       Successfully assigned gomx/gomx-588b98496-jm7qv to forum
+37m         Normal    SuccessfulCreate               replicaset/gomx-588b98496      Created pod: gomx-588b98496-fnbtl
+37m         Normal    Created                        pod/gomx-588b98496-fnbtl       Container created
+37m         Normal    Started                        pod/gomx-588b98496-jm7qv       Container started
+37m         Normal    Created                        pod/gomx-588b98496-jm7qv       Container created
+37m         Normal    Pulled                         pod/gomx-588b98496-jm7qv       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+37m         Normal    Killing                        pod/gomx-588b98496-fnbtl       Stopping container wait-for-deps
+37m         Normal    Started                        pod/gomx-588b98496-fnbtl       Container started
+37m         Normal    Pulled                         pod/gomx-588b98496-fnbtl       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+37m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-x2fr7       Pod "gomx"/"gomx-588b98496-x2fr7" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+37m         Normal    Pulled                         pod/gomx-588b98496-jm7qv       Container image "gomx:bench" already present on machine and can be accessed by the pod
+37m         Normal    Created                        pod/gomx-588b98496-jm7qv       Container created
+37m         Normal    Started                        pod/gomx-588b98496-jm7qv       Container started
+37m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-fnbtl       Pod "gomx"/"gomx-588b98496-fnbtl" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+37m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-prwlt       Pod "gomx"/"gomx-588b98496-prwlt" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+35m         Warning   Unhealthy                      pod/gomx-588b98496-jm7qv       Startup probe failed: Get "http://10.244.133.159:8080/healthz": dial tcp 10.244.133.159:8080: connect: connection refused
+35m         Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-588b98496 from 1 to 2
+35m         Normal    SuccessfulCreate               replicaset/gomx-588b98496      Created pod: gomx-588b98496-lmxfx
+35m         Normal    Scheduled                      pod/gomx-588b98496-lmxfx       Successfully assigned gomx/gomx-588b98496-lmxfx to forum
+35m         Normal    Pulled                         pod/gomx-588b98496-lmxfx       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+35m         Normal    Started                        pod/gomx-588b98496-lmxfx       Container started
+35m         Normal    Created                        pod/gomx-588b98496-lmxfx       Container created
+35m         Normal    Started                        pod/gomx-588b98496-lmxfx       Container started
+35m         Normal    Created                        pod/gomx-588b98496-lmxfx       Container created
+35m         Normal    Pulled                         pod/gomx-588b98496-lmxfx       Container image "gomx:bench" already present on machine and can be accessed by the pod
+35m         Normal    Scheduled                      pod/gomx-8fb6d65cc-mk2mg       Successfully assigned gomx/gomx-8fb6d65cc-mk2mg to forum
+35m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-mk2mg
+35m         Normal    Started                        pod/gomx-8fb6d65cc-mk2mg       Container started
+35m         Normal    Created                        pod/gomx-8fb6d65cc-mk2mg       Container created
+35m         Normal    Pulled                         pod/gomx-8fb6d65cc-mk2mg       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+35m         Normal    Started                        pod/gomx-8fb6d65cc-mk2mg       Container started
+35m         Normal    Created                        pod/gomx-8fb6d65cc-mk2mg       Container created
+35m         Normal    Pulled                         pod/gomx-8fb6d65cc-mk2mg       Container image "gomx:bench" already present on machine and can be accessed by the pod
+35m         Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-8fb6d65cc from 1 to 2
+35m         Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-588b98496 from 2 to 1
+35m         Normal    Scheduled                      pod/gomx-8fb6d65cc-cqx7q       Successfully assigned gomx/gomx-8fb6d65cc-cqx7q to forum
+35m         Normal    SuccessfulDelete               replicaset/gomx-588b98496      Deleted pod: gomx-588b98496-lmxfx
+35m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-cqx7q
+35m         Normal    Killing                        pod/gomx-588b98496-lmxfx       Stopping container gomx
+35m         Normal    Started                        pod/gomx-8fb6d65cc-cqx7q       Container started
+35m         Normal    Pulled                         pod/gomx-8fb6d65cc-cqx7q       Container image "gomx:bench" already present on machine and can be accessed by the pod
+35m         Normal    Created                        pod/gomx-8fb6d65cc-cqx7q       Container created
+35m         Normal    Pulled                         pod/gomx-8fb6d65cc-cqx7q       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+35m         Normal    Created                        pod/gomx-8fb6d65cc-cqx7q       Container created
+35m         Normal    Started                        pod/gomx-8fb6d65cc-cqx7q       Container started
+35m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-lmxfx       Pod "gomx"/"gomx-588b98496-lmxfx" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+35m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-lmxfx       Pod "gomx"/"gomx-588b98496-lmxfx" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+34m         Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-588b98496 from 1 to 0
+34m         Normal    Killing                        pod/gomx-588b98496-jm7qv       Stopping container gomx
+34m         Normal    SuccessfulDelete               replicaset/gomx-588b98496      Deleted pod: gomx-588b98496-jm7qv
+34m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-jm7qv       Pod "gomx"/"gomx-588b98496-jm7qv" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+34m         Warning   MultiplePodDisruptionBudgets   pod/gomx-588b98496-jm7qv       Pod "gomx"/"gomx-588b98496-jm7qv" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+23m         Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-cqx7q
+23m         Normal    Killing                        pod/gomx-8fb6d65cc-mk2mg       Stopping container gomx
+23m         Normal    Killing                        pod/gomx-8fb6d65cc-cqx7q       Stopping container gomx
+23m         Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-mk2mg
+23m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-mk2mg       Pod "gomx"/"gomx-8fb6d65cc-mk2mg" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+23m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-cqx7q       Pod "gomx"/"gomx-8fb6d65cc-cqx7q" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+23m         Warning   Unhealthy                      pod/gomx-8fb6d65cc-cqx7q       Readiness probe failed: Get "http://10.244.133.135:8080/readyz": dial tcp 10.244.133.135:8080: connect: invalid argument
+23m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-cqx7q       Pod "gomx"/"gomx-8fb6d65cc-cqx7q" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+23m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-mk2mg       Pod "gomx"/"gomx-8fb6d65cc-mk2mg" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+23m         Normal    Started                        pod/gomx-8fb6d65cc-hjcv6       Container started
+23m         Normal    Started                        pod/gomx-8fb6d65cc-hjcv6       Container started
+23m         Normal    Created                        pod/gomx-8fb6d65cc-hjcv6       Container created
+23m         Normal    Pulled                         pod/gomx-8fb6d65cc-hjcv6       Container image "gomx:bench" already present on machine and can be accessed by the pod
+23m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-hjcv6
+23m         Normal    Created                        pod/gomx-8fb6d65cc-hjcv6       Container created
+23m         Normal    Pulled                         pod/gomx-8fb6d65cc-hjcv6       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+23m         Normal    Scheduled                      pod/gomx-8fb6d65cc-hjcv6       Successfully assigned gomx/gomx-8fb6d65cc-hjcv6 to forum
+22m         Warning   Unhealthy                      pod/gomx-8fb6d65cc-hjcv6       Startup probe failed: Get "http://10.244.133.163:8080/healthz": dial tcp 10.244.133.163:8080: connect: connection refused
+22m         Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-hjcv6
+22m         Normal    Killing                        pod/gomx-8fb6d65cc-hjcv6       Stopping container gomx
+22m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-t9q2f
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-hjcv6       Pod "gomx"/"gomx-8fb6d65cc-hjcv6" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+22m         Normal    NoPods                         poddisruptionbudget/gomx-pdb   No matching pods found
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-hjcv6       Pod "gomx"/"gomx-8fb6d65cc-hjcv6" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-t9q2f       Pod "gomx"/"gomx-8fb6d65cc-t9q2f" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+22m         Normal    Scheduled                      pod/gomx-8fb6d65cc-t9q2f       Successfully assigned gomx/gomx-8fb6d65cc-t9q2f to forum
+22m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-v6d67
+22m         Normal    Scheduled                      pod/gomx-8fb6d65cc-v6d67       Successfully assigned gomx/gomx-8fb6d65cc-v6d67 to forum
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-v6d67       Pod "gomx"/"gomx-8fb6d65cc-v6d67" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+22m         Normal    Pulled                         pod/gomx-8fb6d65cc-v6d67       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+22m         Normal    Created                        pod/gomx-8fb6d65cc-v6d67       Container created
+22m         Normal    Started                        pod/gomx-8fb6d65cc-t9q2f       Container started
+22m         Normal    Created                        pod/gomx-8fb6d65cc-t9q2f       Container created
+22m         Normal    Pulled                         pod/gomx-8fb6d65cc-t9q2f       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+22m         Normal    Started                        pod/gomx-8fb6d65cc-v6d67       Container started
+22m         Normal    Started                        pod/gomx-8fb6d65cc-t9q2f       Container started
+22m         Normal    Started                        pod/gomx-8fb6d65cc-v6d67       Container started
+22m         Normal    Created                        pod/gomx-8fb6d65cc-v6d67       Container created
+22m         Normal    Pulled                         pod/gomx-8fb6d65cc-v6d67       Container image "gomx:bench" already present on machine and can be accessed by the pod
+22m         Normal    Pulled                         pod/gomx-8fb6d65cc-t9q2f       Container image "gomx:bench" already present on machine and can be accessed by the pod
+22m         Normal    Created                        pod/gomx-8fb6d65cc-t9q2f       Container created
+11m         Normal    Killing                        pod/gomx-8fb6d65cc-v6d67       Stopping container gomx
+11m         Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-8fb6d65cc from 2 to 0
+11m         Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-v6d67
+11m         Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-t9q2f
+11m         Normal    Killing                        pod/gomx-8fb6d65cc-t9q2f       Stopping container gomx
+11m         Normal    Pulled                         pod/gomx-8fb6d65cc-rppgk       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+11m         Normal    Created                        pod/gomx-8fb6d65cc-rppgk       Container created
+11m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-v6d67       Pod "gomx"/"gomx-8fb6d65cc-v6d67" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+11m         Normal    Scheduled                      pod/gomx-8fb6d65cc-rppgk       Successfully assigned gomx/gomx-8fb6d65cc-rppgk to forum
+11m         Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-8fb6d65cc from 0 to 1
+11m         Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-t9q2f       Pod "gomx"/"gomx-8fb6d65cc-t9q2f" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+11m         Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-rppgk
+11m         Normal    Started                        pod/gomx-8fb6d65cc-rppgk       Container started
+11m         Normal    Pulled                         pod/gomx-8fb6d65cc-rppgk       Container image "gomx:bench" already present on machine and can be accessed by the pod
+11m         Normal    Created                        pod/gomx-8fb6d65cc-rppgk       Container created
+11m         Normal    Started                        pod/gomx-8fb6d65cc-rppgk       Container started
+10m         Warning   Unhealthy                      pod/gomx-8fb6d65cc-rppgk       Startup probe failed: Get "http://10.244.133.170:8080/healthz": dial tcp 10.244.133.170:8080: connect: connection refused
+9m50s       Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-8fb6d65cc from 1 to 0
+9m50s       Normal    SuccessfulDelete               replicaset/gomx-8fb6d65cc      Deleted pod: gomx-8fb6d65cc-rppgk
+9m48s       Normal    Killing                        pod/gomx-8fb6d65cc-rppgk       Stopping container gomx
+9m44s       Normal    Scheduled                      pod/gomx-8fb6d65cc-nxkzv       Successfully assigned gomx/gomx-8fb6d65cc-nxkzv to forum
+9m44s       Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-nxkzv       Pod "gomx"/"gomx-8fb6d65cc-nxkzv" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+9m44s       Normal    Scheduled                      pod/gomx-8fb6d65cc-q47gj       Successfully assigned gomx/gomx-8fb6d65cc-q47gj to forum
+9m44s       Normal    NoPods                         poddisruptionbudget/gomx       No matching pods found
+9m44s       Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-nxkzv
+9m44s       Normal    SuccessfulCreate               replicaset/gomx-8fb6d65cc      Created pod: gomx-8fb6d65cc-q47gj
+9m44s       Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-8fb6d65cc from 0 to 2
+9m44s       Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-rppgk       Pod "gomx"/"gomx-8fb6d65cc-rppgk" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m43s       Normal    Pulled                         pod/gomx-8fb6d65cc-q47gj       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m43s       Normal    Started                        pod/gomx-8fb6d65cc-q47gj       Container started
+9m43s       Normal    Created                        pod/gomx-8fb6d65cc-q47gj       Container created
+9m43s       Normal    Pulled                         pod/gomx-8fb6d65cc-nxkzv       Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m43s       Normal    Started                        pod/gomx-8fb6d65cc-nxkzv       Container started
+9m43s       Normal    Created                        pod/gomx-8fb6d65cc-nxkzv       Container created
+9m42s       Normal    Pulled                         pod/gomx-8fb6d65cc-nxkzv       Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m42s       Normal    Started                        pod/gomx-8fb6d65cc-nxkzv       Container started
+9m42s       Normal    Created                        pod/gomx-8fb6d65cc-nxkzv       Container created
+9m42s       Normal    Pulled                         pod/gomx-8fb6d65cc-q47gj       Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m42s       Normal    Created                        pod/gomx-8fb6d65cc-q47gj       Container created
+9m42s       Normal    Started                        pod/gomx-8fb6d65cc-q47gj       Container started
+9m33s       Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-q47gj       Pod "gomx"/"gomx-8fb6d65cc-q47gj" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m33s       Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-q47gj       Pod "gomx"/"gomx-8fb6d65cc-q47gj" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+9m33s       Warning   MultiplePodDisruptionBudgets   pod/gomx-8fb6d65cc-nxkzv       Pod "gomx"/"gomx-8fb6d65cc-nxkzv" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.

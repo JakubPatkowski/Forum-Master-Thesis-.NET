@@ -1,0 +1,16 @@
+[
+ {
+  "ts": "2026-11-02T07:29:59Z",
+  "epoch": 1793604599,
+  "target": "b",
+  "hpa_current": null,
+  "hpa_desired": null,
+  "hpa_cpu_pct": null,
+  "pods_running": 0,
+  "backend_cpu_millicores": 0,
+  "backend_mem_mib": 0,
+  "k6_cpu_ticks": null,
+  "k6_rss_mib": null,
+  "clk_tck": 100
+ }
+]
