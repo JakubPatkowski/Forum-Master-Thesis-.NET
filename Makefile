@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help preflight infra-up infra-down api web migrate seed test format build \
-        images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-tls tunnels load bench reload-bench security-scan sonar pods logs urls \
+        images scan mk-up mk-deploy mk-down mk-stop mk-delete mk-reset-db mk-prune mk-tls tunnels load bench reload-bench security-scan sonar pods logs urls \
         mon-up mon-down mon-check ab-round ab-report ab-status ab-chaos gomx-deploy bench-b load-b lighthouse lighthouse-cluster artifact-size
 
 help: ## Show this help
@@ -54,6 +54,8 @@ mk-delete:   ## Delete the whole minikube profile (nuke the cluster AND all data
 	@bash scripts/teardown.sh --delete
 mk-reset-db: ## Wipe the in-cluster DB and re-migrate (empty DB, roles/permissions intact, no seed)
 	@bash scripts/reset-db.sh
+mk-prune:    ## Reclaim node disk: old app image tags + build cache; keeps in-use/thesis/archived images (ARGS=--dry-run|--all-cache|"--archive-to DIR")
+	@bash scripts/mk-prune.sh $(ARGS)
 mk-tls:      ## One-time: mint the mkcert TLS cert + forum-tls secret
 	@bash scripts/mkcert-tls.sh $(ARGS)
 tunnels:     ## Port-forward all admin/dev services to localhost (Windows-reachable); Ctrl+C stops

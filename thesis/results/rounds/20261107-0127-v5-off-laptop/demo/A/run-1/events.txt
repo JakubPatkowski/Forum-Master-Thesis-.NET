@@ -1,0 +1,350 @@
+LAST SEEN   TYPE      REASON                         OBJECT                            MESSAGE
+12d         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Liveness probe failed: Get "http://10.244.133.149:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+12d         Warning   Unhealthy                      pod/postgres-0                    Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+12d         Warning   Unhealthy                      pod/minio-0                       Readiness probe failed: Get "http://10.244.133.176:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+12d         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 10s
+12d         Normal    Killing                        pod/rabbitmq-0                    Container rabbitmq failed liveness probe, will be restarted
+12d         Warning   Unhealthy                      pod/rabbitmq-0                    Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 15s
+12d         Normal    Pulled                         pod/rabbitmq-0                    Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+12d         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: FailedPrecondition: container e2a97b530f1148e808822fbbc1be9d96363eb772bc527b763aec367e29f0dcc3 init process is not running: failed precondition
+12d         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed:
+12d         Normal    Created                        pod/rabbitmq-0                    Container created
+12d         Normal    Started                        pod/rabbitmq-0                    Container started
+12d         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Readiness probe failed: HTTP probe failed with statuscode: 503
+12d         Warning   Unhealthy                      pod/backend-5d5b44f66b-97fhw      Readiness probe failed: HTTP probe failed with statuscode: 503
+12d         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Readiness probe failed: Get "http://10.244.133.137:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+93m         Normal    SandboxChanged                 pod/backend-5d5b44f66b-6qdgh      Pod sandbox changed, it will be killed and re-created.
+93m         Normal    Started                        pod/backend-5d5b44f66b-6qdgh      Container started
+93m         Normal    Created                        pod/backend-5d5b44f66b-6qdgh      Container created
+93m         Normal    Pulled                         pod/backend-5d5b44f66b-6qdgh      Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+93m         Normal    SandboxChanged                 pod/frontend-9bb7b77ff-fk9vm      Pod sandbox changed, it will be killed and re-created.
+93m         Normal    SandboxChanged                 pod/backend-5d5b44f66b-97fhw      Pod sandbox changed, it will be killed and re-created.
+93m         Normal    SandboxChanged                 pod/rabbitmq-0                    Pod sandbox changed, it will be killed and re-created.
+93m         Normal    Pulled                         pod/frontend-9bb7b77ff-fk9vm      Container image "forum-dotnet-web:git-64cd5e2" already present on machine and can be accessed by the pod
+93m         Normal    Created                        pod/frontend-9bb7b77ff-fk9vm      Container created
+93m         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Readiness probe failed: Get "http://10.244.133.142:8080/health/ready": dial tcp 10.244.133.142:8080: connect: connection refused
+93m         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Liveness probe failed: Get "http://10.244.133.142:8080/health/live": dial tcp 10.244.133.142:8080: connect: connection refused
+93m         Normal    Started                        pod/frontend-9bb7b77ff-fk9vm      Container started
+93m         Normal    Pulled                         pod/backend-5d5b44f66b-97fhw      Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+93m         Normal    Created                        pod/backend-5d5b44f66b-97fhw      Container created
+93m         Normal    Started                        pod/backend-5d5b44f66b-97fhw      Container started
+92m         Warning   Unhealthy                      pod/minio-0                       Liveness probe failed: Get "http://10.244.133.181:9000/minio/health/live": dial tcp 10.244.133.181:9000: connect: connection refused
+92m         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Liveness probe failed: Get "http://10.244.133.191:3000/": dial tcp 10.244.133.191:3000: connect: connection refused
+92m         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Readiness probe failed: Get "http://10.244.133.191:3000/": dial tcp 10.244.133.191:3000: connect: connection refused
+92m         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Liveness probe failed: Get "http://10.244.133.191:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+91m         Warning   Unhealthy                      pod/minio-0                       Liveness probe failed: Get "http://10.244.133.181:9000/minio/health/live": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+91m         Normal    Sync                           ingress/forum                     Scheduled for sync
+91m         Normal    Sync                           ingress/minio                     Scheduled for sync
+91m         Warning   Unhealthy                      pod/rabbitmq-0                    Liveness probe failed: Error: this command requires the 'rabbit' app to be running on the target node. Start it with 'rabbitmqctl start_app'....
+90m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: Error: this command requires the 'rabbit' app to be running on the target node. Start it with 'rabbitmqctl start_app'....
+90m         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Readiness probe failed: Get "http://10.244.133.142:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+90m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: Error: unable to perform an operation on node 'rabbit@rabbitmq-0'. Please see diagnostics information and suggestions below....
+90m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (241b51ce24e2d55961d26b0d0086a292792c66e59765bd508d8f54ec79aa561d)
+88m         Warning   Unhealthy                      pod/minio-0                       Readiness probe failed: Get "http://10.244.133.181:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+87m         Normal    Killing                        pod/rabbitmq-0                    Container rabbitmq failed liveness probe, will be restarted
+87m         Warning   Unhealthy                      pod/rabbitmq-0                    Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 15s
+87m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 10s
+87m         Warning   Unhealthy                      pod/backend-5d5b44f66b-97fhw      Readiness probe failed: Get "http://10.244.133.185:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+87m         Warning   Unhealthy                      pod/backend-5d5b44f66b-6qdgh      Readiness probe failed: HTTP probe failed with statuscode: 503
+87m         Warning   Unhealthy                      pod/backend-5d5b44f66b-97fhw      Readiness probe failed: HTTP probe failed with statuscode: 503
+86m         Normal    Pulled                         pod/rabbitmq-0                    Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+86m         Normal    Created                        pod/rabbitmq-0                    Container created
+86m         Normal    Started                        pod/rabbitmq-0                    Container started
+83m         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Readiness probe failed: Get "http://10.244.133.191:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+82m         Normal    Scheduled                      pod/backend-7c7ffbd697-4t7sv      Successfully assigned forum-dotnet/backend-7c7ffbd697-4t7sv to forum
+82m         Normal    SuccessfulCreate               replicaset/backend-7c7ffbd697     Created pod: backend-7c7ffbd697-4t7sv
+82m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-7c7ffbd697 from 0 to 1
+82m         Normal    Created                        pod/backend-7c7ffbd697-4t7sv      Container created
+82m         Normal    Pulled                         pod/backend-7c7ffbd697-4t7sv      Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+82m         Normal    Started                        pod/backend-7c7ffbd697-4t7sv      Container started
+82m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-7c7ffbd697 from 1 to 2
+82m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5d5b44f66b from 2 to 1
+82m         Normal    Killing                        pod/backend-5d5b44f66b-97fhw      Stopping container backend
+82m         Normal    SuccessfulCreate               replicaset/backend-7c7ffbd697     Created pod: backend-7c7ffbd697-hv5tt
+82m         Normal    SuccessfulDelete               replicaset/backend-5d5b44f66b     Deleted pod: backend-5d5b44f66b-97fhw
+82m         Normal    Scheduled                      pod/backend-7c7ffbd697-hv5tt      Successfully assigned forum-dotnet/backend-7c7ffbd697-hv5tt to forum
+82m         Normal    Pulled                         pod/backend-7c7ffbd697-hv5tt      Container image "forum-dotnet-api:git-64cd5e2" already present on machine and can be accessed by the pod
+82m         Normal    Started                        pod/backend-7c7ffbd697-hv5tt      Container started
+82m         Normal    Created                        pod/backend-7c7ffbd697-hv5tt      Container created
+82m         Normal    SuccessfulDelete               replicaset/backend-5d5b44f66b     Deleted pod: backend-5d5b44f66b-6qdgh
+82m         Normal    Killing                        pod/backend-5d5b44f66b-6qdgh      Stopping container backend
+82m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5d5b44f66b from 1 to 0
+79m         Normal    SuccessfulDelete               statefulset/rabbitmq              Delete Pod rabbitmq-0 in StatefulSet rabbitmq successful
+79m         Normal    Killing                        pod/rabbitmq-0                    Stopping container rabbitmq
+79m         Normal    SuccessfulCreate               statefulset/rabbitmq              Create Pod rabbitmq-0 in StatefulSet rabbitmq successful
+79m         Normal    Scheduled                      pod/rabbitmq-0                    Successfully assigned forum-dotnet/rabbitmq-0 to forum
+79m         Warning   Unhealthy                      pod/backend-7c7ffbd697-4t7sv      Readiness probe failed: HTTP probe failed with statuscode: 503
+79m         Warning   Unhealthy                      pod/backend-7c7ffbd697-hv5tt      Readiness probe failed: HTTP probe failed with statuscode: 503
+79m         Normal    Started                        pod/minio-create-bucket-x9x6b     Container started
+79m         Normal    SuccessfulCreate               job/minio-create-bucket           Created pod: minio-create-bucket-x9x6b
+79m         Normal    Created                        pod/minio-create-bucket-x9x6b     Container created
+79m         Normal    Pulled                         pod/minio-create-bucket-x9x6b     Container image "minio/mc:RELEASE.2025-08-13T08-35-41Z" already present on machine and can be accessed by the pod
+79m         Normal    Scheduled                      pod/minio-create-bucket-x9x6b     Successfully assigned forum-dotnet/minio-create-bucket-x9x6b to forum
+78m         Normal    Scheduled                      pod/db-migrate-klmb5              Successfully assigned forum-dotnet/db-migrate-klmb5 to forum
+78m         Normal    Completed                      job/minio-create-bucket           Job completed
+78m         Normal    SuccessfulCreate               job/db-migrate                    Created pod: db-migrate-klmb5
+78m         Normal    Started                        pod/db-migrate-klmb5              Container started
+78m         Normal    Created                        pod/db-migrate-klmb5              Container created
+78m         Normal    Pulled                         pod/db-migrate-klmb5              Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+78m         Normal    Scheduled                      pod/backend-6b67746bc7-gf9b6      Successfully assigned forum-dotnet/backend-6b67746bc7-gf9b6 to forum
+78m         Normal    SuccessfulCreate               replicaset/backend-6b67746bc7     Created pod: backend-6b67746bc7-gf9b6
+78m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-6b67746bc7 from 0 to 1
+78m         Normal    Completed                      job/db-migrate                    Job completed
+78m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-5454c668b4 from 0 to 1
+78m         Normal    Scheduled                      pod/backend-5454c668b4-jhkfl      Successfully assigned forum-dotnet/backend-5454c668b4-jhkfl to forum
+78m         Normal    SuccessfulCreate               replicaset/backend-5454c668b4     Created pod: backend-5454c668b4-jhkfl
+78m         Normal    SuccessfulDelete               replicaset/backend-6b67746bc7     Deleted pod: backend-6b67746bc7-gf9b6
+78m         Normal    Started                        pod/backend-5454c668b4-jhkfl      Container started
+78m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-6b67746bc7 from 1 to 0
+78m         Normal    Created                        pod/backend-5454c668b4-jhkfl      Container created
+78m         Normal    Pulled                         pod/backend-5454c668b4-jhkfl      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+78m         Normal    SuccessfulDelete               replicaset/backend-7c7ffbd697     Deleted pod: backend-7c7ffbd697-hv5tt
+78m         Normal    Scheduled                      pod/backend-5454c668b4-x4qhj      Successfully assigned forum-dotnet/backend-5454c668b4-x4qhj to forum
+78m         Normal    SuccessfulCreate               replicaset/backend-5454c668b4     Created pod: backend-5454c668b4-x4qhj
+78m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-7c7ffbd697 from 2 to 1
+78m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-5454c668b4 from 1 to 2
+78m         Normal    Killing                        pod/backend-7c7ffbd697-hv5tt      Stopping container backend
+78m         Normal    Pulled                         pod/backend-5454c668b4-x4qhj      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+78m         Normal    Created                        pod/backend-5454c668b4-x4qhj      Container created
+78m         Normal    Started                        pod/backend-5454c668b4-x4qhj      Container started
+78m         Normal    SuccessfulDelete               replicaset/backend-7c7ffbd697     Deleted pod: backend-7c7ffbd697-4t7sv
+78m         Normal    Killing                        pod/backend-7c7ffbd697-4t7sv      Stopping container backend
+78m         Normal    ScalingReplicaSet              deployment/frontend               Scaled up replica set frontend-b68fcb6d7 from 0 to 1
+78m         Normal    SuccessfulCreate               replicaset/frontend-b68fcb6d7     Created pod: frontend-b68fcb6d7-qhwsj
+78m         Normal    ScalingReplicaSet              deployment/frontend               Scaled down replica set frontend-b68fcb6d7 from 1 to 0
+78m         Normal    Scheduled                      pod/frontend-554b95f66b-m8qmr     Successfully assigned forum-dotnet/frontend-554b95f66b-m8qmr to forum
+78m         Normal    ScalingReplicaSet              deployment/frontend               Scaled up replica set frontend-554b95f66b from 0 to 1
+78m         Normal    Scheduled                      pod/frontend-b68fcb6d7-qhwsj      Successfully assigned forum-dotnet/frontend-b68fcb6d7-qhwsj to forum
+78m         Normal    SuccessfulDelete               replicaset/frontend-b68fcb6d7     Deleted pod: frontend-b68fcb6d7-qhwsj
+78m         Normal    SuccessfulCreate               replicaset/frontend-554b95f66b    Created pod: frontend-554b95f66b-m8qmr
+78m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+78m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+78m         Normal    Killing                        pod/frontend-9bb7b77ff-fk9vm      Stopping container frontend
+78m         Normal    ScalingReplicaSet              deployment/frontend               Scaled down replica set frontend-9bb7b77ff from 1 to 0
+78m         Normal    SuccessfulDelete               replicaset/frontend-9bb7b77ff     Deleted pod: frontend-9bb7b77ff-fk9vm
+78m         Warning   Unhealthy                      pod/frontend-9bb7b77ff-fk9vm      Readiness probe failed: Get "http://10.244.133.191:3000/": dial tcp 10.244.133.191:3000: connect: invalid argument
+77m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-s5brp
+77m         Normal    Scheduled                      pod/db-seed-benchmark-s5brp       Successfully assigned forum-dotnet/db-seed-benchmark-s5brp to forum
+77m         Normal    Created                        pod/db-seed-benchmark-s5brp       Container created
+77m         Normal    Started                        pod/db-seed-benchmark-s5brp       Container started
+77m         Normal    Pulled                         pod/db-seed-benchmark-s5brp       Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+77m         Normal    Completed                      job/db-seed-benchmark             Job completed
+77m         Normal    Created                        pod/backend-8946fbc56-pgt7t       Container created
+77m         Normal    Pulled                         pod/backend-8946fbc56-pgt7t       Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+77m         Normal    Scheduled                      pod/backend-8946fbc56-pgt7t       Successfully assigned forum-dotnet/backend-8946fbc56-pgt7t to forum
+77m         Normal    Started                        pod/backend-8946fbc56-pgt7t       Container started
+77m         Normal    SuccessfulCreate               replicaset/backend-8946fbc56      Created pod: backend-8946fbc56-pgt7t
+77m         Normal    Scheduled                      pod/backend-8946fbc56-tfs6v       Successfully assigned forum-dotnet/backend-8946fbc56-tfs6v to forum
+77m         Normal    SuccessfulDelete               replicaset/backend-5454c668b4     Deleted pod: backend-5454c668b4-jhkfl
+77m         Normal    SuccessfulCreate               replicaset/backend-8946fbc56      Created pod: backend-8946fbc56-tfs6v
+77m         Normal    Killing                        pod/backend-5454c668b4-jhkfl      Stopping container backend
+77m         Normal    Created                        pod/backend-8946fbc56-tfs6v       Container created
+77m         Normal    Pulled                         pod/backend-8946fbc56-tfs6v       Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+77m         Normal    Started                        pod/backend-8946fbc56-tfs6v       Container started
+77m         Normal    Killing                        pod/backend-5454c668b4-x4qhj      Stopping container backend
+77m         Normal    SuccessfulDelete               replicaset/backend-5454c668b4     Deleted pod: backend-5454c668b4-x4qhj
+71m         Normal    Scheduled                      pod/backend-7644786855-mg4g6      Successfully assigned forum-dotnet/backend-7644786855-mg4g6 to forum
+71m         Normal    SuccessfulCreate               replicaset/backend-7644786855     Created pod: backend-7644786855-mg4g6
+71m         Normal    Started                        pod/backend-7644786855-mg4g6      Container started
+71m         Normal    Created                        pod/backend-7644786855-mg4g6      Container created
+71m         Normal    Pulled                         pod/backend-7644786855-mg4g6      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+71m         Normal    SuccessfulCreate               replicaset/backend-7644786855     Created pod: backend-7644786855-khwlr
+71m         Normal    Killing                        pod/backend-8946fbc56-pgt7t       Stopping container backend
+71m         Normal    Pulled                         pod/backend-7644786855-khwlr      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+71m         Normal    SuccessfulDelete               replicaset/backend-8946fbc56      Deleted pod: backend-8946fbc56-pgt7t
+71m         Normal    Scheduled                      pod/backend-7644786855-khwlr      Successfully assigned forum-dotnet/backend-7644786855-khwlr to forum
+71m         Normal    Created                        pod/backend-7644786855-khwlr      Container created
+71m         Normal    Started                        pod/backend-7644786855-khwlr      Container started
+71m         Normal    Killing                        pod/backend-8946fbc56-tfs6v       Stopping container backend
+71m         Normal    SuccessfulDelete               replicaset/backend-8946fbc56      Deleted pod: backend-8946fbc56-tfs6v
+71m         Normal    Started                        pod/db-seed-benchmark-288t4       Container started
+71m         Normal    Created                        pod/db-seed-benchmark-288t4       Container created
+71m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-288t4
+71m         Normal    Scheduled                      pod/db-seed-benchmark-288t4       Successfully assigned forum-dotnet/db-seed-benchmark-288t4 to forum
+71m         Normal    Pulled                         pod/db-seed-benchmark-288t4       Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+71m         Normal    Completed                      job/db-seed-benchmark             Job completed
+71m         Normal    Scheduled                      pod/backend-5dccc5f7d7-m4kzz      Successfully assigned forum-dotnet/backend-5dccc5f7d7-m4kzz to forum
+71m         Normal    SuccessfulCreate               replicaset/backend-5dccc5f7d7     Created pod: backend-5dccc5f7d7-m4kzz
+70m         Normal    Killing                        pod/backend-7644786855-khwlr      Stopping container backend
+70m         Normal    SuccessfulDelete               replicaset/backend-7644786855     Deleted pod: backend-7644786855-khwlr
+70m         Normal    Scheduled                      pod/backend-5dccc5f7d7-smj7q      Successfully assigned forum-dotnet/backend-5dccc5f7d7-smj7q to forum
+70m         Normal    SuccessfulCreate               replicaset/backend-5dccc5f7d7     Created pod: backend-5dccc5f7d7-smj7q
+70m         Normal    Killing                        pod/backend-7644786855-mg4g6      Stopping container backend
+70m         Normal    ScalingReplicaSet              deployment/backend                (combined from similar events): Scaled down replica set backend-7644786855 from 1 to 0
+70m         Normal    SuccessfulDelete               replicaset/backend-7644786855     Deleted pod: backend-7644786855-mg4g6
+37m         Warning   Unhealthy                      pod/postgres-0                    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+37m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+37m         Warning   Unhealthy                      pod/frontend-554b95f66b-m8qmr     Liveness probe failed: Get "http://10.244.133.155:3000/": dial tcp 10.244.133.155:3000: connect: connection refused
+37m         Warning   Unhealthy                      pod/minio-0                       Readiness probe failed: Get "http://10.244.133.181:9000/minio/health/ready": dial tcp 10.244.133.181:9000: connect: connection refused
+37m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-m4kzz      Readiness probe failed: Get "http://10.244.133.154:8080/health/ready": dial tcp 10.244.133.154:8080: connect: connection refused
+37m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-smj7q      Liveness probe failed: Get "http://10.244.133.161:8080/health/live": dial tcp 10.244.133.161:8080: connect: connection refused
+37m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-smj7q      Readiness probe failed: Get "http://10.244.133.161:8080/health/ready": dial tcp 10.244.133.161:8080: connect: connection refused
+37m         Warning   Unhealthy                      pod/postgres-0                    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (60e482f2967475b225d62125677488890f6985786e94146ac383f86156f36e53)
+37m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (dc8fcd3d23c90ca61e2d58f5668e8d6d40d77b2cb76592ebb09a7b577a1d4d3a)
+37m         Warning   Unhealthy                      pod/postgres-0                    Liveness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (60e482f2967475b225d62125677488890f6985786e94146ac383f86156f36e53)
+37m         Warning   Unhealthy                      pod/rabbitmq-0                    Liveness probe errored and resulted in unknown state: rpc error: code = Unknown desc = container not running (dc8fcd3d23c90ca61e2d58f5668e8d6d40d77b2cb76592ebb09a7b577a1d4d3a)
+37m         Warning   Unhealthy                      pod/frontend-554b95f66b-m8qmr     Readiness probe failed: Get "http://10.244.133.155:3000/": dial tcp 10.244.133.155:3000: connect: connection refused
+37m         Normal    SandboxChanged                 pod/backend-5dccc5f7d7-m4kzz      Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged                 pod/minio-0                       Pod sandbox changed, it will be killed and re-created.
+37m         Normal    SandboxChanged                 pod/frontend-554b95f66b-m8qmr     Pod sandbox changed, it will be killed and re-created.
+37m         Normal    Created                        pod/backend-5dccc5f7d7-m4kzz      Container created
+37m         Normal    Pulled                         pod/frontend-554b95f66b-m8qmr     Container image "forum-dotnet-web:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+37m         Normal    SandboxChanged                 pod/postgres-0                    Pod sandbox changed, it will be killed and re-created.
+37m         Normal    Created                        pod/frontend-554b95f66b-m8qmr     Container created
+37m         Normal    Started                        pod/frontend-554b95f66b-m8qmr     Container started
+37m         Normal    Pulled                         pod/backend-5dccc5f7d7-m4kzz      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+37m         Normal    Started                        pod/backend-5dccc5f7d7-m4kzz      Container started
+37m         Normal    Created                        pod/postgres-0                    Container created
+37m         Normal    Started                        pod/minio-0                       Container started
+37m         Normal    Created                        pod/minio-0                       Container created
+37m         Normal    Pulled                         pod/minio-0                       Container image "minio/minio:RELEASE.2025-09-07T16-13-09Z" already present on machine and can be accessed by the pod
+37m         Normal    Pulled                         pod/postgres-0                    Container image "postgres:18" already present on machine and can be accessed by the pod
+37m         Normal    Started                        pod/postgres-0                    Container started
+37m         Warning   Unhealthy                      pod/frontend-554b95f66b-m8qmr     Readiness probe failed: Get "http://10.244.133.146:3000/": dial tcp 10.244.133.146:3000: connect: connection refused
+36m         Normal    SandboxChanged                 pod/backend-5dccc5f7d7-smj7q      Pod sandbox changed, it will be killed and re-created.
+36m         Normal    Pulled                         pod/backend-5dccc5f7d7-smj7q      Container image "forum-dotnet-api:git-9641bdd-dirty" already present on machine and can be accessed by the pod
+36m         Normal    Created                        pod/backend-5dccc5f7d7-smj7q      Container created
+36m         Normal    Started                        pod/backend-5dccc5f7d7-smj7q      Container started
+36m         Normal    SandboxChanged                 pod/rabbitmq-0                    Pod sandbox changed, it will be killed and re-created.
+36m         Normal    Pulled                         pod/rabbitmq-0                    Container image "rabbitmq:4-management" already present on machine and can be accessed by the pod
+36m         Normal    Created                        pod/rabbitmq-0                    Container created
+36m         Normal    Started                        pod/rabbitmq-0                    Container started
+36m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-m4kzz      Readiness probe failed: Get "http://10.244.133.168:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+36m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-smj7q      Readiness probe failed: Get "http://10.244.133.143:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+36m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-m4kzz      Readiness probe failed: HTTP probe failed with statuscode: 503
+36m         Normal    Sync                           ingress/minio                     Scheduled for sync
+36m         Normal    Sync                           ingress/forum                     Scheduled for sync
+36m         Warning   Unhealthy                      pod/backend-5dccc5f7d7-smj7q      Readiness probe failed: HTTP probe failed with statuscode: 503
+35m         Normal    SuccessfulCreate               job/minio-create-bucket           Created pod: minio-create-bucket-8kpr7
+35m         Normal    Scheduled                      pod/minio-create-bucket-8kpr7     Successfully assigned forum-dotnet/minio-create-bucket-8kpr7 to forum
+35m         Normal    Pulled                         pod/minio-create-bucket-8kpr7     Container image "minio/mc:RELEASE.2025-08-13T08-35-41Z" already present on machine and can be accessed by the pod
+35m         Normal    Created                        pod/minio-create-bucket-8kpr7     Container created
+35m         Normal    Started                        pod/minio-create-bucket-8kpr7     Container started
+35m         Normal    Completed                      job/minio-create-bucket           Job completed
+35m         Normal    Pulled                         pod/db-migrate-c9slh              Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+35m         Normal    SuccessfulCreate               job/db-migrate                    Created pod: db-migrate-c9slh
+35m         Normal    Scheduled                      pod/db-migrate-c9slh              Successfully assigned forum-dotnet/db-migrate-c9slh to forum
+35m         Normal    Created                        pod/db-migrate-c9slh              Container created
+35m         Normal    Started                        pod/db-migrate-c9slh              Container started
+35m         Normal    Created                        pod/db-seed-benchmark-7zcgp       Container created
+35m         Normal    Pulled                         pod/db-seed-benchmark-7zcgp       Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+35m         Normal    Scheduled                      pod/db-seed-benchmark-7zcgp       Successfully assigned forum-dotnet/db-seed-benchmark-7zcgp to forum
+35m         Normal    Completed                      job/db-migrate                    Job completed
+35m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-7zcgp
+35m         Normal    Started                        pod/db-seed-benchmark-7zcgp       Container started
+34m         Normal    Completed                      job/db-seed-benchmark             Job completed
+34m         Normal    Created                        pod/backend-d864cd5b5-rc82j       Container created
+34m         Normal    SuccessfulCreate               replicaset/backend-d864cd5b5      Created pod: backend-d864cd5b5-rc82j
+34m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-d864cd5b5 from 0 to 1
+34m         Normal    Started                        pod/backend-d864cd5b5-rc82j       Container started
+34m         Normal    Pulled                         pod/backend-d864cd5b5-rc82j       Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+34m         Normal    Scheduled                      pod/backend-d864cd5b5-rc82j       Successfully assigned forum-dotnet/backend-d864cd5b5-rc82j to forum
+34m         Normal    Scheduled                      pod/backend-d864cd5b5-z2qz6       Successfully assigned forum-dotnet/backend-d864cd5b5-z2qz6 to forum
+34m         Normal    SuccessfulCreate               replicaset/backend-d864cd5b5      Created pod: backend-d864cd5b5-z2qz6
+34m         Normal    Killing                        pod/backend-5dccc5f7d7-smj7q      Stopping container backend
+34m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-d864cd5b5 from 1 to 2
+34m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5dccc5f7d7 from 2 to 1
+34m         Normal    SuccessfulDelete               replicaset/backend-5dccc5f7d7     Deleted pod: backend-5dccc5f7d7-smj7q
+34m         Normal    Created                        pod/backend-d864cd5b5-z2qz6       Container created
+34m         Normal    Pulled                         pod/backend-d864cd5b5-z2qz6       Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+34m         Normal    Started                        pod/backend-d864cd5b5-z2qz6       Container started
+34m         Normal    Scheduled                      pod/frontend-67f77c9848-4p8nj     Successfully assigned forum-dotnet/frontend-67f77c9848-4p8nj to forum
+34m         Normal    SuccessfulDelete               replicaset/backend-5dccc5f7d7     Deleted pod: backend-5dccc5f7d7-m4kzz
+34m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-5dccc5f7d7 from 1 to 0
+34m         Normal    Killing                        pod/backend-5dccc5f7d7-m4kzz      Stopping container backend
+34m         Normal    SuccessfulCreate               replicaset/frontend-67f77c9848    Created pod: frontend-67f77c9848-4p8nj
+34m         Normal    ScalingReplicaSet              deployment/frontend               Scaled up replica set frontend-67f77c9848 from 0 to 1
+34m         Normal    Created                        pod/frontend-67f77c9848-4p8nj     Container created
+34m         Normal    Pulled                         pod/frontend-67f77c9848-4p8nj     Container image "forum-dotnet-web:git-1ae3c46" already present on machine and can be accessed by the pod
+34m         Normal    Started                        pod/frontend-67f77c9848-4p8nj     Container started
+34m         Normal    SuccessfulDelete               replicaset/frontend-554b95f66b    Deleted pod: frontend-554b95f66b-m8qmr
+34m         Normal    ScalingReplicaSet              deployment/frontend               Scaled down replica set frontend-554b95f66b from 1 to 0
+34m         Normal    Killing                        pod/frontend-554b95f66b-m8qmr     Stopping container frontend
+33m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+33m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: did not receive metrics for targeted pods (pods might be unready)
+32m         Warning   Unhealthy                      pod/backend-d864cd5b5-rc82j       Readiness probe failed: Get "http://10.244.133.129:8080/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+31m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+31m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: no metrics returned from resource metrics API
+30m         Warning   FailedComputeMetricsReplicas   horizontalpodautoscaler/backend   invalid metrics (1 invalid out of 1), first error is: failed to get cpu resource metric value: failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+29m         Warning   Unhealthy                      pod/minio-0                       Readiness probe failed: Get "http://10.244.133.182:9000/minio/health/ready": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+29m         Warning   Unhealthy                      pod/rabbitmq-0                    Liveness probe failed: command timed out: "rabbitmq-diagnostics status" timed out after 30s
+29m         Warning   FailedGetResourceMetric        horizontalpodautoscaler/backend   failed to get cpu utilization: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server is currently unable to handle the request (get pods.metrics.k8s.io)
+28m         Warning   Unhealthy                      pod/postgres-0                    Liveness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+28m         Warning   Unhealthy                      pod/postgres-0                    Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+28m         Warning   Unhealthy                      pod/rabbitmq-0                    Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 15s
+26m         Normal    SuccessfulDelete               replicaset/backend-d864cd5b5      Deleted pod: backend-d864cd5b5-rc82j
+26m         Normal    SuccessfulRescale              horizontalpodautoscaler/backend   New size: 1; reason: All metrics below target
+26m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-d864cd5b5 from 2 to 1
+26m         Normal    Killing                        pod/backend-d864cd5b5-rc82j       Stopping container backend
+24m         Normal    Scheduled                      pod/backend-658c7cfc78-p4n6v      Successfully assigned forum-dotnet/backend-658c7cfc78-p4n6v to forum
+24m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-658c7cfc78 from 1 to 2
+24m         Normal    Created                        pod/backend-658c7cfc78-p4n6v      Container created
+24m         Normal    Scheduled                      pod/backend-658c7cfc78-l945w      Successfully assigned forum-dotnet/backend-658c7cfc78-l945w to forum
+24m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-658c7cfc78 from 0 to 1
+24m         Normal    Pulled                         pod/backend-658c7cfc78-p4n6v      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+24m         Normal    SuccessfulCreate               replicaset/backend-658c7cfc78     Created pod: backend-658c7cfc78-l945w
+24m         Normal    Started                        pod/backend-658c7cfc78-p4n6v      Container started
+24m         Normal    SuccessfulCreate               replicaset/backend-658c7cfc78     Created pod: backend-658c7cfc78-p4n6v
+24m         Normal    Created                        pod/backend-658c7cfc78-l945w      Container created
+24m         Normal    Started                        pod/backend-658c7cfc78-l945w      Container started
+24m         Normal    Pulled                         pod/backend-658c7cfc78-l945w      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+24m         Normal    ScalingReplicaSet              deployment/backend                Scaled down replica set backend-d864cd5b5 from 1 to 0
+24m         Normal    SuccessfulDelete               replicaset/backend-d864cd5b5      Deleted pod: backend-d864cd5b5-z2qz6
+24m         Normal    Killing                        pod/backend-d864cd5b5-z2qz6       Stopping container backend
+22m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-slcw2
+22m         Normal    Scheduled                      pod/db-seed-benchmark-slcw2       Successfully assigned forum-dotnet/db-seed-benchmark-slcw2 to forum
+22m         Normal    Started                        pod/db-seed-benchmark-slcw2       Container started
+22m         Normal    Created                        pod/db-seed-benchmark-slcw2       Container created
+22m         Normal    Pulled                         pod/db-seed-benchmark-slcw2       Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+22m         Normal    Completed                      job/db-seed-benchmark             Job completed
+22m         Normal    Started                        pod/backend-7d4776b6f8-kxhhs      Container started
+22m         Normal    SuccessfulCreate               replicaset/backend-7d4776b6f8     Created pod: backend-7d4776b6f8-kxhhs
+22m         Normal    Scheduled                      pod/backend-7d4776b6f8-kxhhs      Successfully assigned forum-dotnet/backend-7d4776b6f8-kxhhs to forum
+22m         Normal    ScalingReplicaSet              deployment/backend                Scaled up replica set backend-7d4776b6f8 from 0 to 1
+22m         Normal    Pulled                         pod/backend-7d4776b6f8-kxhhs      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+22m         Normal    Created                        pod/backend-7d4776b6f8-kxhhs      Container created
+22m         Normal    SuccessfulCreate               replicaset/backend-7d4776b6f8     Created pod: backend-7d4776b6f8-lbmmk
+22m         Normal    SuccessfulDelete               replicaset/backend-658c7cfc78     Deleted pod: backend-658c7cfc78-l945w
+22m         Normal    Killing                        pod/backend-658c7cfc78-l945w      Stopping container backend
+22m         Normal    Scheduled                      pod/backend-7d4776b6f8-lbmmk      Successfully assigned forum-dotnet/backend-7d4776b6f8-lbmmk to forum
+22m         Normal    Created                        pod/backend-7d4776b6f8-lbmmk      Container created
+22m         Normal    Pulled                         pod/backend-7d4776b6f8-lbmmk      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+22m         Normal    Started                        pod/backend-7d4776b6f8-lbmmk      Container started
+21m         Normal    SuccessfulDelete               replicaset/backend-658c7cfc78     Deleted pod: backend-658c7cfc78-p4n6v
+21m         Normal    Killing                        pod/backend-658c7cfc78-p4n6v      Stopping container backend
+17m         Normal    Killing                        pod/backend-7d4776b6f8-kxhhs      Stopping container backend
+17m         Normal    SuccessfulDelete               replicaset/backend-7d4776b6f8     Deleted pod: backend-7d4776b6f8-lbmmk
+17m         Normal    SuccessfulDelete               replicaset/backend-7d4776b6f8     Deleted pod: backend-7d4776b6f8-kxhhs
+17m         Normal    Killing                        pod/backend-7d4776b6f8-lbmmk      Stopping container backend
+17m         Normal    NoPods                         poddisruptionbudget/backend       No matching pods found
+12m         Normal    SuccessfulCreate               replicaset/backend-7d4776b6f8     Created pod: backend-7d4776b6f8-9wb5w
+12m         Normal    SuccessfulCreate               replicaset/backend-7d4776b6f8     Created pod: backend-7d4776b6f8-8njpp
+12m         Normal    Pulled                         pod/backend-7d4776b6f8-8njpp      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+12m         Normal    Scheduled                      pod/backend-7d4776b6f8-8njpp      Successfully assigned forum-dotnet/backend-7d4776b6f8-8njpp to forum
+12m         Normal    Created                        pod/backend-7d4776b6f8-8njpp      Container created
+12m         Normal    Scheduled                      pod/backend-7d4776b6f8-9wb5w      Successfully assigned forum-dotnet/backend-7d4776b6f8-9wb5w to forum
+12m         Normal    Started                        pod/backend-7d4776b6f8-8njpp      Container started
+12m         Normal    Pulled                         pod/backend-7d4776b6f8-9wb5w      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+12m         Normal    Created                        pod/backend-7d4776b6f8-9wb5w      Container created
+12m         Normal    Started                        pod/backend-7d4776b6f8-9wb5w      Container started
+10m         Normal    SuccessfulCreate               job/db-seed-benchmark             Created pod: db-seed-benchmark-qvlsv
+10m         Normal    Scheduled                      pod/db-seed-benchmark-qvlsv       Successfully assigned forum-dotnet/db-seed-benchmark-qvlsv to forum
+10m         Normal    Created                        pod/db-seed-benchmark-qvlsv       Container created
+10m         Normal    Started                        pod/db-seed-benchmark-qvlsv       Container started
+10m         Normal    Pulled                         pod/db-seed-benchmark-qvlsv       Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+10m         Normal    Completed                      job/db-seed-benchmark             Job completed
+10m         Normal    Scheduled                      pod/backend-664df8499c-sm5ks      Successfully assigned forum-dotnet/backend-664df8499c-sm5ks to forum
+10m         Normal    Pulled                         pod/backend-664df8499c-sm5ks      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+10m         Normal    Created                        pod/backend-664df8499c-sm5ks      Container created
+10m         Normal    SuccessfulCreate               replicaset/backend-664df8499c     Created pod: backend-664df8499c-sm5ks
+10m         Normal    Started                        pod/backend-664df8499c-sm5ks      Container started
+10m         Normal    SuccessfulCreate               replicaset/backend-664df8499c     Created pod: backend-664df8499c-75bhr
+10m         Normal    SuccessfulDelete               replicaset/backend-7d4776b6f8     Deleted pod: backend-7d4776b6f8-9wb5w
+10m         Normal    Killing                        pod/backend-7d4776b6f8-9wb5w      Stopping container backend
+10m         Normal    Scheduled                      pod/backend-664df8499c-75bhr      Successfully assigned forum-dotnet/backend-664df8499c-75bhr to forum
+10m         Normal    Created                        pod/backend-664df8499c-75bhr      Container created
+10m         Normal    Started                        pod/backend-664df8499c-75bhr      Container started
+10m         Normal    Pulled                         pod/backend-664df8499c-75bhr      Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+9m52s       Normal    SuccessfulDelete               replicaset/backend-7d4776b6f8     Deleted pod: backend-7d4776b6f8-8njpp
+9m52s       Normal    Killing                        pod/backend-7d4776b6f8-8njpp      Stopping container backend
+9m52s       Normal    ScalingReplicaSet              deployment/backend                (combined from similar events): Scaled down replica set backend-7d4776b6f8 from 1 to 0

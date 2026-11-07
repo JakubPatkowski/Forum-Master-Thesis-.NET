@@ -1,0 +1,121 @@
+LAST SEEN   TYPE      REASON                         OBJECT                         MESSAGE
+60m         Normal    Killing                        pod/gomx-5599f5b976-x9q2j      Stopping container gomx
+60m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-xbhc9
+60m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-x9q2j
+60m         Normal    Killing                        pod/gomx-5599f5b976-xbhc9      Stopping container gomx
+60m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-xbhc9      Pod "gomx"/"gomx-5599f5b976-xbhc9" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+60m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-x9q2j      Pod "gomx"/"gomx-5599f5b976-x9q2j" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+60m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-xbhc9      Pod "gomx"/"gomx-5599f5b976-xbhc9" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+60m         Normal    Scheduled                      pod/gomx-5599f5b976-pddrx      Successfully assigned gomx/gomx-5599f5b976-pddrx to forum
+60m         Normal    Pulled                         pod/gomx-5599f5b976-pddrx      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+60m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-pddrx
+60m         Normal    Started                        pod/gomx-5599f5b976-pddrx      Container started
+60m         Normal    Created                        pod/gomx-5599f5b976-pddrx      Container created
+60m         Normal    Created                        pod/gomx-5599f5b976-pddrx      Container created
+60m         Normal    Started                        pod/gomx-5599f5b976-pddrx      Container started
+60m         Normal    Pulled                         pod/gomx-5599f5b976-pddrx      Container image "gomx:bench" already present on machine and can be accessed by the pod
+59m         Warning   Unhealthy                      pod/gomx-5599f5b976-pddrx      Startup probe failed: Get "http://10.244.133.133:8080/healthz": dial tcp 10.244.133.133:8080: connect: connection refused
+59m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-pddrx
+59m         Normal    Killing                        pod/gomx-5599f5b976-pddrx      Stopping container gomx
+59m         Warning   Unhealthy                      pod/gomx-5599f5b976-pddrx      Readiness probe failed: Get "http://10.244.133.133:8080/readyz": dial tcp 10.244.133.133:8080: connect: connection refused
+59m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-pddrx      Pod "gomx"/"gomx-5599f5b976-pddrx" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+59m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-pddrx      Pod "gomx"/"gomx-5599f5b976-pddrx" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+59m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-b9rxh      Pod "gomx"/"gomx-5599f5b976-b9rxh" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+59m         Normal    Scheduled                      pod/gomx-5599f5b976-b9rxh      Successfully assigned gomx/gomx-5599f5b976-b9rxh to forum
+59m         Normal    Scheduled                      pod/gomx-5599f5b976-t2n7c      Successfully assigned gomx/gomx-5599f5b976-t2n7c to forum
+59m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-b9rxh
+59m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-t2n7c
+59m         Normal    Started                        pod/gomx-5599f5b976-t2n7c      Container started
+59m         Normal    Created                        pod/gomx-5599f5b976-t2n7c      Container created
+59m         Normal    Pulled                         pod/gomx-5599f5b976-b9rxh      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+59m         Normal    Created                        pod/gomx-5599f5b976-b9rxh      Container created
+59m         Normal    Started                        pod/gomx-5599f5b976-b9rxh      Container started
+59m         Normal    Pulled                         pod/gomx-5599f5b976-b9rxh      Container image "gomx:bench" already present on machine and can be accessed by the pod
+59m         Normal    Created                        pod/gomx-5599f5b976-b9rxh      Container created
+59m         Normal    Started                        pod/gomx-5599f5b976-b9rxh      Container started
+59m         Normal    Created                        pod/gomx-5599f5b976-t2n7c      Container created
+59m         Normal    Started                        pod/gomx-5599f5b976-t2n7c      Container started
+59m         Normal    Pulled                         pod/gomx-5599f5b976-t2n7c      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+59m         Normal    Pulled                         pod/gomx-5599f5b976-t2n7c      Container image "gomx:bench" already present on machine and can be accessed by the pod
+48m         Normal    Killing                        pod/gomx-5599f5b976-t2n7c      Stopping container gomx
+48m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-t2n7c
+48m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-b9rxh
+48m         Normal    Killing                        pod/gomx-5599f5b976-b9rxh      Stopping container gomx
+48m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-t2n7c      Pod "gomx"/"gomx-5599f5b976-t2n7c" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+48m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-b9rxh      Pod "gomx"/"gomx-5599f5b976-b9rxh" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+48m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-t2n7c      Pod "gomx"/"gomx-5599f5b976-t2n7c" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+48m         Normal    NoPods                         poddisruptionbudget/gomx-pdb   No matching pods found
+23m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-qv5c6
+23m         Normal    Scheduled                      pod/gomx-5599f5b976-qv5c6      Successfully assigned gomx/gomx-5599f5b976-qv5c6 to forum
+23m         Normal    Created                        pod/gomx-5599f5b976-qv5c6      Container created
+23m         Normal    Pulled                         pod/gomx-5599f5b976-qv5c6      Container image "gomx:bench" already present on machine and can be accessed by the pod
+23m         Normal    Started                        pod/gomx-5599f5b976-qv5c6      Container started
+23m         Normal    Created                        pod/gomx-5599f5b976-qv5c6      Container created
+23m         Normal    Pulled                         pod/gomx-5599f5b976-qv5c6      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+23m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-qv5c6      Pod "gomx"/"gomx-5599f5b976-qv5c6" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+23m         Normal    Started                        pod/gomx-5599f5b976-qv5c6      Container started
+22m         Warning   Unhealthy                      pod/gomx-5599f5b976-qv5c6      Startup probe failed: Get "http://10.244.133.181:8080/healthz": dial tcp 10.244.133.181:8080: connect: connection refused
+22m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-qv5c6
+22m         Normal    Killing                        pod/gomx-5599f5b976-qv5c6      Stopping container gomx
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-qv5c6      Pod "gomx"/"gomx-5599f5b976-qv5c6" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+22m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-p4849      Pod "gomx"/"gomx-5599f5b976-p4849" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+22m         Normal    Scheduled                      pod/gomx-5599f5b976-p4849      Successfully assigned gomx/gomx-5599f5b976-p4849 to forum
+22m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-p4849
+22m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-dpcm2
+22m         Normal    Scheduled                      pod/gomx-5599f5b976-dpcm2      Successfully assigned gomx/gomx-5599f5b976-dpcm2 to forum
+22m         Normal    Created                        pod/gomx-5599f5b976-dpcm2      Container created
+22m         Normal    Pulled                         pod/gomx-5599f5b976-p4849      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+22m         Normal    Started                        pod/gomx-5599f5b976-dpcm2      Container started
+22m         Normal    Pulled                         pod/gomx-5599f5b976-dpcm2      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+22m         Normal    Created                        pod/gomx-5599f5b976-p4849      Container created
+22m         Normal    Started                        pod/gomx-5599f5b976-p4849      Container started
+22m         Normal    Created                        pod/gomx-5599f5b976-dpcm2      Container created
+22m         Normal    Started                        pod/gomx-5599f5b976-dpcm2      Container started
+22m         Normal    Pulled                         pod/gomx-5599f5b976-dpcm2      Container image "gomx:bench" already present on machine and can be accessed by the pod
+22m         Normal    Started                        pod/gomx-5599f5b976-p4849      Container started
+22m         Normal    Created                        pod/gomx-5599f5b976-p4849      Container created
+22m         Normal    Pulled                         pod/gomx-5599f5b976-p4849      Container image "gomx:bench" already present on machine and can be accessed by the pod
+11m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-p4849
+11m         Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-dpcm2
+11m         Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-5599f5b976 from 2 to 0
+11m         Normal    Killing                        pod/gomx-5599f5b976-dpcm2      Stopping container gomx
+11m         Normal    Killing                        pod/gomx-5599f5b976-p4849      Stopping container gomx
+11m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-dpcm2      Pod "gomx"/"gomx-5599f5b976-dpcm2" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+11m         Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-p4849      Pod "gomx"/"gomx-5599f5b976-p4849" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+10m         Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-5599f5b976 from 0 to 1
+10m         Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-5wz7w
+10m         Normal    Scheduled                      pod/gomx-5599f5b976-5wz7w      Successfully assigned gomx/gomx-5599f5b976-5wz7w to forum
+10m         Normal    Started                        pod/gomx-5599f5b976-5wz7w      Container started
+10m         Normal    Pulled                         pod/gomx-5599f5b976-5wz7w      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+10m         Normal    Created                        pod/gomx-5599f5b976-5wz7w      Container created
+10m         Normal    Pulled                         pod/gomx-5599f5b976-5wz7w      Container image "gomx:bench" already present on machine and can be accessed by the pod
+10m         Normal    Started                        pod/gomx-5599f5b976-5wz7w      Container started
+10m         Normal    Created                        pod/gomx-5599f5b976-5wz7w      Container created
+9m59s       Warning   Unhealthy                      pod/gomx-5599f5b976-5wz7w      Startup probe failed: Get "http://10.244.133.162:8080/healthz": dial tcp 10.244.133.162:8080: connect: connection refused
+9m48s       Normal    ScalingReplicaSet              deployment/gomx                Scaled down replica set gomx-5599f5b976 from 1 to 0
+9m48s       Normal    SuccessfulDelete               replicaset/gomx-5599f5b976     Deleted pod: gomx-5599f5b976-5wz7w
+9m47s       Normal    Killing                        pod/gomx-5599f5b976-5wz7w      Stopping container gomx
+9m44s       Warning   Unhealthy                      pod/gomx-5599f5b976-5wz7w      Readiness probe failed: Get "http://10.244.133.162:8080/readyz": dial tcp 10.244.133.162:8080: connect: connection refused
+9m43s       Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-5wz7w      Pod "gomx"/"gomx-5599f5b976-5wz7w" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+9m43s       Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-5wz7w      Pod "gomx"/"gomx-5599f5b976-5wz7w" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m43s       Normal    NoPods                         poddisruptionbudget/gomx       No matching pods found
+9m42s       Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-krfgs
+9m42s       Normal    ScalingReplicaSet              deployment/gomx                Scaled up replica set gomx-5599f5b976 from 0 to 2
+9m42s       Normal    SuccessfulCreate               replicaset/gomx-5599f5b976     Created pod: gomx-5599f5b976-qb6t8
+9m42s       Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-krfgs      Pod "gomx"/"gomx-5599f5b976-krfgs" matches multiple PodDisruptionBudgets.  Chose "gomx-pdb" arbitrarily.
+9m42s       Normal    Scheduled                      pod/gomx-5599f5b976-krfgs      Successfully assigned gomx/gomx-5599f5b976-krfgs to forum
+9m42s       Normal    Scheduled                      pod/gomx-5599f5b976-qb6t8      Successfully assigned gomx/gomx-5599f5b976-qb6t8 to forum
+9m41s       Normal    Started                        pod/gomx-5599f5b976-krfgs      Container started
+9m41s       Normal    Created                        pod/gomx-5599f5b976-krfgs      Container created
+9m41s       Normal    Started                        pod/gomx-5599f5b976-krfgs      Container started
+9m41s       Normal    Pulled                         pod/gomx-5599f5b976-krfgs      Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m41s       Normal    Started                        pod/gomx-5599f5b976-qb6t8      Container started
+9m41s       Normal    Pulled                         pod/gomx-5599f5b976-qb6t8      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m41s       Normal    Pulled                         pod/gomx-5599f5b976-krfgs      Container image "docker.io/library/busybox:1.36" already present on machine and can be accessed by the pod
+9m41s       Normal    Created                        pod/gomx-5599f5b976-qb6t8      Container created
+9m41s       Normal    Started                        pod/gomx-5599f5b976-qb6t8      Container started
+9m41s       Normal    Created                        pod/gomx-5599f5b976-krfgs      Container created
+9m41s       Normal    Created                        pod/gomx-5599f5b976-qb6t8      Container created
+9m41s       Normal    Pulled                         pod/gomx-5599f5b976-qb6t8      Container image "gomx:bench" already present on machine and can be accessed by the pod
+9m31s       Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-krfgs      Pod "gomx"/"gomx-5599f5b976-krfgs" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.
+9m31s       Warning   MultiplePodDisruptionBudgets   pod/gomx-5599f5b976-qb6t8      Pod "gomx"/"gomx-5599f5b976-qb6t8" matches multiple PodDisruptionBudgets.  Chose "gomx" arbitrarily.

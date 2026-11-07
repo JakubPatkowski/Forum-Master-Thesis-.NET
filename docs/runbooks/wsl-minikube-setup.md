@@ -259,9 +259,52 @@ Run **Claude Code inside WSL** (`claude` in the Ubuntu terminal, ideally VS Code
 integrated one). Pointing Windows-side Claude Code at `\\wsl$\Ubuntu\...` works but
 is slow and permission-fragile — avoid it.
 
+## 6. Disk space (C: fills up)
+
+The whole distro, minikube included, is one file on C::
+`%LOCALAPPDATA%\Packages\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc\LocalState\ext4.vhdx`.
+It grows when Linux writes and **never shrinks by itself** — deleting files frees space
+inside WSL only.
+
+What grows (measured 2026-11-07, 109 GB used inside WSL): every `make mk-deploy` /
+`make gomx-deploy` builds into the minikube node's Docker under a new `git-<sha>[-dirty]`
+tag, and the BuildKit cache behind those builds reached 34 GB; MinIO keeps every J4 upload
+across reseeds (A 8.7 GB, B 1.3 GB — reseeding wipes Postgres, not the bucket).
+
+1. **Prune the node:** `make mk-prune ARGS=--dry-run` prints the plan, `make mk-prune` runs it.
+   It removes only our own image tags (`forum-dotnet-api/web`, `gomx`) and untagged leftovers,
+   keeps every image a workload uses, every `thesis-*` build and every image whose tag or ID
+   appears under `thesis/results`, and trims the build cache LRU to `MK_PRUNE_CACHE_KEEP`
+   (default 10GB; `ARGS=--all-cache` drops all of it). It refuses to run during a benchmark.
+   `ARGS="--archive-to /mnt/d/<dir>"` moves the archive-referenced images out of the node too:
+   they are saved to `<dir>/minikube-images-<stamp>.tar` (manifest checked before removal; the
+   `.txt` beside it lists tag → ID and the `docker load` restore command).
+   Other regenerable caches inside WSL: `docker builder prune -af` (host daemon),
+   `~/.cache/gomx-gocache`, `~/.cache/trivy`, `frontend/src-tauri/target`.
+2. **Compact the file** (gives the space back to Windows; stops WSL and every session in it):
+   run `sudo fstrim -av` in Ubuntu, close VS Code, then in an **administrator** PowerShell:
+   ```text
+   wsl --shutdown
+   diskpart
+     select vdisk file="C:\Users\<you>\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc\LocalState\ext4.vhdx"
+     attach vdisk readonly
+     compact vdisk
+     detach vdisk
+     exit
+   ```
+   Then `minikube -p forum start` (pods self-heal in 2–3 min). `Optimize-VHD` needs Hyper-V,
+   which Windows Home does not have — diskpart works everywhere.
+3. **Do not move the distro to D: on the thesis laptop.** D: there is a 5400 rpm HDD and C: an
+   NVMe SSD: Postgres, image builds and the whole cluster would slow down several times, and
+   rounds measured on the SSD would no longer be comparable with rounds measured afterwards.
+   Move cold data (ISOs, downloads, backups) to D: instead.
+
+Docker Desktop is not needed: the cluster and the test suites use docker-ce inside the distro
+(`docker context` `default`), and Docker Desktop's WSL integration is off on this machine.
+
 ## Config knobs
 
 All in `.env` (see `.env.example`): DB creds, `MINIKUBE_CPUS/MEMORY/DRIVER`,
 `K8S_NAMESPACE`, `IMAGE_TAG` (default `git-<sha>`), `INGRESS_HOST`,
 `RABBITMQ_USER/PASSWORD`, `JWT_SIGNING_KEY` (empty = generated),
-`APPLY_NETWORK_POLICIES` (default true).
+`APPLY_NETWORK_POLICIES` (default true), `MK_PRUNE_CACHE_KEEP` (default `10GB`).

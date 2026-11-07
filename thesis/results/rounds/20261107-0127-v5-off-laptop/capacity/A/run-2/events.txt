@@ -1,0 +1,29 @@
+LAST SEEN   TYPE      REASON              OBJECT                          MESSAGE
+52m         Warning   Unhealthy           pod/frontend-67f77c9848-4p8nj   Liveness probe failed: Get "http://10.244.133.191:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+52m         Warning   Unhealthy           pod/frontend-67f77c9848-4p8nj   Readiness probe failed: Get "http://10.244.133.191:3000/": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+52m         Warning   Unhealthy           pod/postgres-0                  Liveness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+52m         Warning   Unhealthy           pod/postgres-0                  Readiness probe failed: command timed out: "pg_isready -U forum -d postgres" timed out after 5s
+52m         Warning   Unhealthy           pod/rabbitmq-0                  Readiness probe failed: command timed out: "rabbitmq-diagnostics check_port_connectivity" timed out after 15s
+50m         Normal    SuccessfulDelete    replicaset/backend-7b5c7f4fd9   Deleted pod: backend-7b5c7f4fd9-ggzzh
+50m         Normal    Killing             pod/backend-7b5c7f4fd9-ggzzh    Stopping container backend
+50m         Normal    Killing             pod/backend-7b5c7f4fd9-pvqtr    Stopping container backend
+50m         Normal    SuccessfulDelete    replicaset/backend-7b5c7f4fd9   Deleted pod: backend-7b5c7f4fd9-pvqtr
+50m         Normal    ScalingReplicaSet   deployment/backend              Scaled down replica set backend-7b5c7f4fd9 from 2 to 0
+15m         Normal    SuccessfulCreate    job/db-seed-benchmark           Created pod: db-seed-benchmark-wsgpr
+15m         Normal    Started             pod/db-seed-benchmark-wsgpr     Container started
+15m         Normal    Created             pod/db-seed-benchmark-wsgpr     Container created
+15m         Normal    Scheduled           pod/db-seed-benchmark-wsgpr     Successfully assigned forum-dotnet/db-seed-benchmark-wsgpr to forum
+15m         Normal    Pulled              pod/db-seed-benchmark-wsgpr     Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+14m         Normal    Completed           job/db-seed-benchmark           Job completed
+14m         Normal    NoPods              poddisruptionbudget/backend     No matching pods found
+14m         Normal    ScalingReplicaSet   deployment/backend              Scaled up replica set backend-77547d4dcb from 0 to 2
+14m         Normal    Scheduled           pod/backend-77547d4dcb-6244w    Successfully assigned forum-dotnet/backend-77547d4dcb-6244w to forum
+14m         Normal    SuccessfulCreate    replicaset/backend-77547d4dcb   Created pod: backend-77547d4dcb-6244w
+14m         Normal    SuccessfulCreate    replicaset/backend-77547d4dcb   Created pod: backend-77547d4dcb-68nzr
+14m         Normal    Scheduled           pod/backend-77547d4dcb-68nzr    Successfully assigned forum-dotnet/backend-77547d4dcb-68nzr to forum
+14m         Normal    Started             pod/backend-77547d4dcb-68nzr    Container started
+14m         Normal    Created             pod/backend-77547d4dcb-68nzr    Container created
+14m         Normal    Pulled              pod/backend-77547d4dcb-68nzr    Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod
+14m         Normal    Started             pod/backend-77547d4dcb-6244w    Container started
+14m         Normal    Created             pod/backend-77547d4dcb-6244w    Container created
+14m         Normal    Pulled              pod/backend-77547d4dcb-6244w    Container image "forum-dotnet-api:git-1ae3c46" already present on machine and can be accessed by the pod

@@ -1,0 +1,51 @@
+{
+  "target": "b",
+  "profile": "demo",
+  "repeat": 8,
+  "position_in_pair": 1,
+  "started_epoch": 1794021849,
+  "finished_epoch": 1794022356,
+  "seed_before": {
+    "users": 800,
+    "threads": 1611,
+    "comments": 9035,
+    "reactions": 15039,
+    "messages": 2014
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 2780,
+    "comments": 12971,
+    "reactions": 19286,
+    "messages": 3542
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 3936,
+      "new_rows": 3936
+    },
+    "threads": {
+      "accepted": 1169,
+      "new_rows": 1169
+    },
+    "messages": {
+      "accepted": 1528,
+      "new_rows": 1528
+    }
+  },
+  "checks_failed": 0,
+  "checks_failed_pct": 0,
+  "pod_restarts_during_run": [],
+  "k6_cpu": {
+    "mean_pct": 21.6,
+    "peak_pct": 47.8,
+    "judged_mean_pct": 21.6,
+    "judged_peak_pct": 47.8,
+    "judged_until_epoch": null,
+    "host_cores": 8,
+    "peak_limit_pct": 200.0,
+    "rule": "whole run"
+  },
+  "valid": true,
+  "invalid_reasons": []
+}

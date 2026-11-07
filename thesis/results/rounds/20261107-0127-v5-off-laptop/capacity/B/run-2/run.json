@@ -1,0 +1,51 @@
+{
+  "target": "b",
+  "profile": "capacity",
+  "repeat": 2,
+  "position_in_pair": 1,
+  "started_epoch": 1794028306,
+  "finished_epoch": 1794029086,
+  "seed_before": {
+    "users": 800,
+    "threads": 1611,
+    "comments": 9029,
+    "reactions": 15030,
+    "messages": 2011
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 6419,
+    "comments": 25699,
+    "reactions": 31160,
+    "messages": 8618
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 16670,
+      "new_rows": 16670
+    },
+    "threads": {
+      "accepted": 4808,
+      "new_rows": 4808
+    },
+    "messages": {
+      "accepted": 6607,
+      "new_rows": 6607
+    }
+  },
+  "checks_failed": 0,
+  "checks_failed_pct": 0,
+  "pod_restarts_during_run": [],
+  "k6_cpu": {
+    "mean_pct": 61.7,
+    "peak_pct": 167.6,
+    "judged_mean_pct": 63.7,
+    "judged_peak_pct": 167.6,
+    "judged_until_epoch": 1794029055,
+    "host_cores": 8,
+    "peak_limit_pct": 200.0,
+    "rule": "capacity: samples up to the end of the last healthy step"
+  },
+  "valid": true,
+  "invalid_reasons": []
+}

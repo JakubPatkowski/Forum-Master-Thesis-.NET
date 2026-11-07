@@ -1,0 +1,14 @@
+{
+  "state": "DONE",
+  "detail": "round complete: 2/2 valid",
+  "plan": "smoke:1",
+  "current_run": "smoke/B/run-1",
+  "runs_done": 2,
+  "runs_total": 2,
+  "runs_valid": 2,
+  "round_dir": "/home/ubuntuwsl/projects/forum-dotnet/thesis/results/rounds/20261107-0114-v5-gate-off-laptop",
+  "pid": 428989,
+  "updated_epoch": 1794011171,
+  "heartbeat_epoch": 1794011171,
+  "updated": "2026-11-07 01:26:11"
+}

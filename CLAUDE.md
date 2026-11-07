@@ -81,7 +81,7 @@ dotnet run --project src/Bootstrap/Forum.Api
 # per-module migrations (each module owns its DbContext):
 dotnet ef migrations add <Name> -p src/Modules/Identity/Forum.Modules.Identity -s src/Bootstrap/Forum.Api -c IdentityDbContext
 ```
-Cluster (Phase 10b): `make mk-up` (calico CNI + ingress + metrics-server) → `make mk-tls` (once; mkcert cert) → `make mk-deploy ARGS=--seed` (both images into minikube, secrets generate-if-missing, full apply order + Jobs) → `make tunnels` (admin/Windows access; Ctrl+C stops all). Load: `../scripts/run-load-test.sh smoke`. Windows browser/DataGrip access: `docs/runbooks/wsl-minikube-setup.md` §4.
+Cluster (Phase 10b): `make mk-up` (calico CNI + ingress + metrics-server) → `make mk-tls` (once; mkcert cert) → `make mk-deploy ARGS=--seed` (both images into minikube, secrets generate-if-missing, full apply order + Jobs) → `make tunnels` (admin/Windows access; Ctrl+C stops all). Disk: `make mk-prune [ARGS=--dry-run]` (old app tags + build cache in the node; keeps in-use/`thesis-*`/archived images) + compaction, runbook §6 — never move WSL to D: (HDD on the laptop). Load: `../scripts/run-load-test.sh smoke`. Windows browser/DataGrip access: `docs/runbooks/wsl-minikube-setup.md` §4.
 Dev observability: **`/dev/monitor`** (Development only; `Forum.Api/DevTools/` — embedded single-file page + `/dev/monitor/bus` WS tap: passive exclusive `#`-bound queue on all module exchanges, never competes with real consumers) — live view of bus events AND the Phase 7 hub as a real client (login → ticket → subscribe, auto-reconnect), correlation-id tracing across both streams; needs local infra migrated (`dotnet run … migrate`).
 
 ## Build order (next work) — see `docs/architecture/IMPLEMENTATION-PLAN.md` for full per-phase detail
