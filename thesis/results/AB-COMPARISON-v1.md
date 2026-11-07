@@ -268,6 +268,24 @@ healthy step, and `meta-*.json` carries record-only runtime facts (B's live `GOM
 visible processor count, relay wake-up switch, RabbitMQ Erlang flags). h7 is not comparable to h6 for J4 (both
 sides) and J6 (A).
 
+### 5.11 Orchestrator v5.1 (2026-11-07) — validity gates only, the measurement is unchanged
+
+The independent review of 2026-11-07 (`AB-V5-REVIEW-PL.md`, outside the repo) found four places where a run could be
+wrong while every rule said "valid". v5.1 closes them in `scripts/` only; `load/` (k6, `HARNESS_VERSION` h7), the
+applications and the cluster manifests are byte-identical to `thesis-v5-a`, so v5.1 runs are comparable with h7 runs.
+
+| Gate | Where | Rule |
+|---|---|---|
+| Host memory | `run-load-test.sh` sampler (`host_mem_available_mib`, `host_swap_used_mib`, `host_pswpin`, `host_pswpout` every 5 s) → `run.json.host_mem` | invalid when more than 64 MiB were read back from swap, more than 512 MiB swapped out, or MemAvailable fell below 768 MiB, inside the judged window; a slow swap-out of idle pages is benign (the laptop moves 16–37 MiB per smoke minute) (capacity: up to the end of the last healthy step, as for the generator gate). Reason: the laptop capacity runs of `20261107-0127-v5-off-laptop` swapped (posthoc/README.md) and stayed "valid" |
+| Provenance | `lib-bench.sh ab_check_provenance`, after every reseed (`provenance.txt` per run; also `ab-chaos.sh`) | A: backend and frontend run `git-<sha>` without `-dirty`, one imageID across pods, and `<sha>` has the same app tree as HEAD (backend/, frontend/, Dockerfile, .dockerignore). B: every pod's start-up line `forum server starting` carries one clean `version`, and that commit has the same tree as the gomx HEAD outside docs/ and *.md. A mismatch stops the round |
+| B environment | `ab_check_profile b` | also `GOMX_COMMENT_PAGE_SIZE=0`, `GOMX_ENV=benchmark`, `GOMX_BEACON/CONTENT/UPLOAD/WS_RATELIMIT=0`, `GOMX_WS_MAX_CONNS_PER_IP=0` (every bench value of the overlay) |
+| Resume | `ab-round.sh --resume` | the pod imageID must match the archive's (B's image name is always `gomx:bench`) |
+
+Bookkeeping: `meta-*.json` adds `git_dirty_tracked` and `git_untracked` (A's `git_dirty` was always true during a round
+because the round's own archive is untracked); REPORT.md prints the precise note and a host-memory line. Fixed: two
+rounds chained in one shell no longer fail the second preflight (the heartbeat's `sleep 60` child kept the log pipe
+open), and the preflight ignores this script's own subshells.
+
 ## 6. Fairness invariants and the deviation register
 
 ### 6.1 Invariants (all enforced or verified in v1)
@@ -883,3 +901,52 @@ lists why; re-run just that profile with `--plan <profile>:<n>`.
   needs a mirror or its integration job skips silently.
 
 What a *full* comparison still needs (owners, priorities): `docs/architecture/AB-START-HERE.md` §8.
+
+## 13. Protocol revision history, effort asymmetry and hypothesis revision (recorded 2026-11-07)
+
+The April 2026 documents (`Selection_of_Research_Methods_EN.docx`, `article_part1_JCSI.docx`) state that H1–H3
+were pre-registered "to prevent HARKing". The protocol has changed since, before any of the v3/v5 results existed and
+for technical reasons. Every change is listed here so that it reads as a dated revision, not as a post-hoc fit. Polish
+text for the thesis and the article: `thesis/text/rewizja-protokolu-i-hipotez-PL.md`.
+
+### 13.1 Revisions
+
+| Date | Item | April 2026 | Now | Reason |
+|---|---|---|---|---|
+| 2026-06 (implementation start) | Subject | enterprise inventory / workflow dashboard | discussion forum (shared `forum-spec.md`) | both authors had a working forum; a shared specification of one existing domain is easier to keep equivalent than two new dashboards |
+| 2026-10-17 (harness v1) | Repeats | ≥ 30 per scenario | ≥ 10 valid demo runs per side, ≥ 3 stress / capacity / fault injection | one demo run takes ≈ 12 min incl. reseed; the exact Mann-Whitney test with Holm over 18 metrics reaches p = 0.003 at 8 vs 8 with complete separation, so N = 10 has margin |
+| 2026-10-17 (harness v1) | Isolation | full system reboot between architectures | reseed + fresh pods before every run, the idle side scaled to 0, ABBA order | both stacks share one minikube host; ABBA cancels drift, the reseed gives every run the same dataset |
+| 2026-10-17 (harness v1) | Hardware | Ryzen 9 7900X / 64 GB, tc 100 Mb/s | laptop WSL2 8 cores / 12 GB (replication) and a native Linux host 16 cores / 28 GB (main table), no traffic shaping | hardware actually available; the ingress is on the same host |
+| 2026-10-25 (thesis info sheet) | H2 definition | "concurrency ceiling comparable or exceeding", no knee | open model, knee = first step with core p95 > 500 ms, failures > 1 % or achieved < 95 % | the April wording was not testable |
+| 2026-10-25 (thesis info sheet) | H3 metrics | dependencies, CVEs, CI/CD pipeline duration | dependencies, CVEs, cyclomatic complexity, local dev loop | the two CI systems (GitLab, GitHub) run on different runners and are not comparable |
+| 2026-11-07 | H1 scope | server and desktop | server only (proposed, see 13.3) | the desktop WebView was never measured on either side; B's desktop sidecar runs an in-memory store, so the two desktop apps are not equivalent |
+| 2026-11-07 | H3 metrics | complexity + dev loop | dependencies, CVEs, code size, cyclomatic complexity with one tool for all languages (proposed, see 13.3) | dev-loop timings depend on caches and network and B's toolchain is not installed on the laptop; SonarQube was never run |
+| 2026-11-07 | Validity | k6 CPU gate only | + host memory, provenance, full B environment (§5.11) | laptop capacity runs swapped while "valid"; nothing tied the image to the tag |
+
+### 13.2 Effort asymmetry (threat to internal validity, D18)
+
+After the first measurements B went through a dedicated, multi-day optimisation pass: about 50 commits between
+`thesis-v4-b` and `thesis-v5-b` (PGO from a test profile, `GOMAXPROCS`/`GOMEMLIMIT` tuning, a read cache with
+singleflight, an early stop for search, keyset indexes with an id tiebreak, `fillfactor 90`, GIN `fastupdate = off`,
+render buffer pools, an O(n) comment tree, ETag, pgx statement cache). A received only the mirrored data-layer items
+A1–A5 (the same read cache C1–C3, `sort=newest` with custom plans, GIN and fillfactor tuning, the relay wake-up; the
+Erlang flags were already the default). A had no comparable profiling pass of the .NET runtime; .NET 10 enables Dynamic
+PGO and tiered JIT by default, so part of what B gained through an explicit profile A has without work. The history of
+B/A app CPU per journey shows the effect: v1 0.96, v3 0.86, v4 0.50, v5 0.33 (A stayed at 4.8–5.8 ms, B fell from 4.84
+to 1.86 ms). The database layer is levelled by the read-cache contract and the mirrored tuning; the runtime layer is
+not. Results must be read as "B after a tuning pass vs A after mirrored data-layer tuning", and the thesis must say so.
+
+### 13.3 Proposed hypothesis revision (needs both authors and the supervisor)
+
+- **H1 (resource efficiency, server).** At equivalent load B uses significantly less memory and less CPU per served
+  journey on the server side, and ships smaller deployment artifacts, than A. The desktop clause is removed (13.1).
+  Wire bytes per journey are reported as an observation (they go the other way: B ≈ 1.95× A in v5 demo).
+- **H2 (ceiling)** unchanged; the text must state that the knee is the 1-CPU database on both sides, so the mechanism is
+  SQL cost per journey, not goroutines.
+- **H3 (maintainability, static).** B has a smaller dependency surface (direct and transitive dependencies from the lock
+  files), lower known-vulnerability exposure (fixable HIGH/CRITICAL findings in the shipped images, one Trivy version
+  and database for both), a smaller code base (cloc, generated code, tests and vendored code excluded) and lower
+  cyclomatic complexity measured with one tool for C#, TypeScript and Go (lizard: CCN sum, CCN per 1 000 NLOC, share of
+  functions above CCN 10). All four are measured on the tags, are reproducible and do not depend on the machine.
+  CI/CD durations and dev-loop timings stay descriptive.
+

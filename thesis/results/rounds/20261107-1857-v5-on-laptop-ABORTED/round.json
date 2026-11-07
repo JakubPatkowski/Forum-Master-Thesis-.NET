@@ -1,0 +1,21 @@
+{
+  "label": "v5-on-laptop",
+  "plan": "demo:8",
+  "started_epoch": 1794074266.0969076,
+  "cooldown_s": 60,
+  "reseed_each_run": true,
+  "warmup_each_run": true,
+  "replicas": 2,
+  "mix_version": "v2",
+  "harness_version": "h7-2026-11-06",
+  "order": "ABBA (odd repeat: A then B; even: B then A)",
+  "variants": {
+    "hpa": false,
+    "gc_variant": false,
+    "relay_poll_ms": null,
+    "auth_reads": false,
+    "real_spa": false,
+    "read_cache": "on",
+    "k6_env": []
+  }
+}

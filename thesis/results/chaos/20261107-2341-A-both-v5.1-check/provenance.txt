@@ -1,0 +1,6 @@
+  ok    2 running app pod(s)
+  ok    all running app pods share one imageID (1 distinct: 396d3f979c28d308648)
+  ok    backend image 'forum-dotnet-api:git-1ae3c46' carries a git-<sha> tag
+  ok    backend image built from a clean tree (forum-dotnet-api:git-1ae3c46)
+  ok    frontend image 'forum-dotnet-web:git-1ae3c46' is the same build (git-1ae3c46)
+  ok    image source 1ae3c46 has the same app tree as HEAD 3b02e6d76 (backend/ frontend/ Dockerfile .dockerignore)

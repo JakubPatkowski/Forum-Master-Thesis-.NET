@@ -1,0 +1,62 @@
+{
+  "target": "a",
+  "profile": "smoke",
+  "repeat": 1,
+  "position_in_pair": 1,
+  "started_epoch": 1794090769,
+  "finished_epoch": 1794090856,
+  "seed_before": {
+    "users": 800,
+    "threads": 1613,
+    "comments": 9042,
+    "reactions": 15032,
+    "messages": 2015
+  },
+  "seed_after": {
+    "users": 800,
+    "threads": 1630,
+    "comments": 9116,
+    "reactions": 15096,
+    "messages": 2036
+  },
+  "write_check": {
+    "comments": {
+      "accepted": 74,
+      "new_rows": 74
+    },
+    "threads": {
+      "accepted": 17,
+      "new_rows": 17
+    },
+    "messages": {
+      "accepted": 21,
+      "new_rows": 21
+    }
+  },
+  "checks_failed": 0,
+  "checks_failed_pct": 0,
+  "pod_restarts_during_run": [],
+  "k6_cpu": {
+    "mean_pct": 2.4,
+    "peak_pct": 3.7,
+    "judged_mean_pct": 2.4,
+    "judged_peak_pct": 3.7,
+    "judged_until_epoch": null,
+    "host_cores": 8,
+    "peak_limit_pct": 200.0,
+    "rule": "whole run"
+  },
+  "host_mem": {
+    "swap_out_mib": 15.7,
+    "swap_in_mib": 0.1,
+    "mem_available_min_mib": 4670,
+    "swap_used_start_mib": 279,
+    "swap_used_max_mib": 294,
+    "samples": 16,
+    "judged_until_epoch": null,
+    "rule": "invalid if swap_out + swap_in > 128 MiB or MemAvailable < 256 MiB in the judged window"
+  },
+  "provenance_ok": true,
+  "valid": true,
+  "invalid_reasons": []
+}

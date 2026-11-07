@@ -81,6 +81,9 @@ if $RESEED; then
   ab_reseed "$TARGET"
   ok "dataset reset to the Benchmark seed, fresh pods"
 fi
+# v5.1: same provenance rule as ab-round.sh — a fault run on the wrong build is not a result.
+ab_check_provenance "$TARGET" >"$RUN/provenance.txt" 2>&1 \
+  || { cat "$RUN/provenance.txt"; die "the running $(ab_dir "$TARGET") build does not match the checked-out code (see provenance.txt)."; }
 ab_meta "$TARGET" "$RUN/meta.json"
 TARGET="$TARGET" RESULTS_DIR="$RUN/warmup" LOGIN_POOL=2 bash "$LIB_DIR/run-load-test.sh" warmup "$(ab_base "$TARGET")" >/dev/null 2>&1 \
   || warn "warm-up reported a failure (discarded)."

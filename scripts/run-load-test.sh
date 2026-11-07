@@ -91,19 +91,31 @@ k6_proc() {
     printf 'null null'
   fi
 }
+# Host memory of the machine k6 and the cluster share (v5.1): MemAvailable + swap in use (MiB) from /proc/meminfo
+# and the cumulative swap-in/swap-out page counters from /proc/vmstat. The laptop capacity runs of 2026-11-07 swapped
+# while every other rule said "valid" (thesis/results/rounds/20261107-0127-v5-off-laptop/posthoc/); ab-round.sh
+# judges these fields. Missing files → nulls, never an error.
+host_mem() {
+  local mem vm
+  mem="$(awk '/^MemAvailable:/{a=$2} /^SwapTotal:/{t=$2} /^SwapFree:/{f=$2} END{if (a == "") print "null null"; else printf "%d %d", a/1024, (t-f)/1024}' /proc/meminfo 2>/dev/null)"
+  vm="$(awk '/^pswpin /{i=$2} /^pswpout /{o=$2} END{if (o == "") print "null null"; else printf "%d %d", i, o}' /proc/vmstat 2>/dev/null)"
+  printf '%s %s' "${mem:-null null}" "${vm:-null null}"
+}
 sampler() {
   while :; do
-    local ts hpa_line top cpu_m mem_mi pods k6p
+    local ts hpa_line top cpu_m mem_mi pods k6p hm mem_avail swap_used swp_in swp_out
     ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    hm="$(host_mem)"; read -r mem_avail swap_used swp_in swp_out <<<"$hm"
     hpa_line="$(bk get hpa "$BENCH_HPA" -o jsonpath='{.status.currentReplicas} {.status.desiredReplicas} {.status.currentMetrics[0].resource.current.averageUtilization}' 2>/dev/null || echo '')"
     top="$(bk top pods -l "$BENCH_LABEL" --no-headers 2>/dev/null || true)"
     cpu_m="$(awk '{gsub(/m/,"",$2); s+=$2} END{print s+0}' <<<"$top")"
     mem_mi="$(awk '{gsub(/Mi/,"",$3); s+=$3} END{print s+0}' <<<"$top")"
     pods="$(grep -c . <<<"$top" || true)"
     k6p="$(k6_proc)"
-    printf '{"ts":"%s","epoch":%s,"target":"%s","hpa_current":%s,"hpa_desired":%s,"hpa_cpu_pct":%s,"pods_running":%s,"backend_cpu_millicores":%s,"backend_mem_mib":%s,"k6_cpu_ticks":%s,"k6_rss_mib":%s,"clk_tck":%s}\n' \
+    printf '{"ts":"%s","epoch":%s,"target":"%s","hpa_current":%s,"hpa_desired":%s,"hpa_cpu_pct":%s,"pods_running":%s,"backend_cpu_millicores":%s,"backend_mem_mib":%s,"k6_cpu_ticks":%s,"k6_rss_mib":%s,"clk_tck":%s,"host_mem_available_mib":%s,"host_swap_used_mib":%s,"host_pswpin":%s,"host_pswpout":%s}\n' \
       "$ts" "$(date +%s)" "$TARGET" "${hpa_line%% *}" "$(cut -d' ' -f2 <<<"$hpa_line " )" "$(cut -d' ' -f3 <<<"$hpa_line  " )" \
       "${pods:-0}" "${cpu_m:-0}" "${mem_mi:-0}" "${k6p%% *}" "${k6p##* }" "$CLK_TCK" \
+      "${mem_avail:-null}" "${swap_used:-null}" "${swp_in:-null}" "${swp_out:-null}" \
       | sed 's/:,/:null,/g; s/:}/:null}/g' >>"$SAMPLES_TMP"
     sleep 5
   done

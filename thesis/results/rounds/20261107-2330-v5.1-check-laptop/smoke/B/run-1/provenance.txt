@@ -1,0 +1,6 @@
+  ok    2 running app pod(s)
+  ok    all running app pods share one imageID (1 distinct: bb09f16a69f947f5bdf)
+  ok    every running pod logged its start-up version ({'gomx-5599f5b976-dphr2': 'cdabf42', 'gomx-5599f5b976-m7pqc': 'cdabf42'})
+  ok    one version across pods (['cdabf42'])
+  ok    B built from a clean gomx tree (version cdabf42)
+  ok    B build cdabf42 has the same tree as gomx HEAD cdabf42e8 outside docs/ and *.md

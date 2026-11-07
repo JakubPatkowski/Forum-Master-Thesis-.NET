@@ -103,9 +103,20 @@ step "Preflight"
 require_cmd k6 "install: https://grafana.com/docs/k6/latest/set-up/install-k6/"
 require_cmd kubectl; require_cmd python3; require_cmd curl; require_cmd timeout
 mk status >/dev/null 2>&1 || die "minikube profile $MINIKUBE_PROFILE is not running (make mk-up)."
-if pgrep -f "scripts/ab-round.sh" | grep -qv "^$$\$"; then
-  # Two rounds would fight over the same cluster (scale-to-0, limiter, port-forward port).
-  others="$(pgrep -f "scripts/ab-round.sh" | grep -v "^$$\$" | tr '\n' ' ')"
+# Two rounds would fight over the same cluster (scale-to-0, limiter, port-forward port). v5.1: our own forked
+# subshells (pipeline members, command substitutions) carry this script's command line too, so only processes that
+# are neither this shell nor its children count.
+other_rounds() {
+  local p pp
+  for p in $(pgrep -f "scripts/ab-round.sh" || true); do
+    [[ "$p" == "$$" ]] && continue
+    pp="$(ps -o ppid= -p "$p" 2>/dev/null | tr -d ' ')"
+    [[ -z "$pp" || "$pp" == "$$" ]] && continue
+    printf '%s ' "$p"
+  done
+}
+others="$(other_rounds)"
+if [[ -n "$others" ]]; then
   die "another ab-round.sh is running (pid $others) — wait for it or stop it (make ab-status)."
 fi
 for t in a b; do
@@ -174,6 +185,10 @@ cleanup() {
   local rc=$?
   set +e
   step "Cleanup"
+  # v5.1: the heartbeat's own `sleep 60` child kept the log pipe (exec > >(tee …)) open for up to a minute after
+  # exit, so the tee subshell — whose command line is this script's — made a round started right after this one
+  # fail its preflight. Kill the children first.
+  pkill -P "$HB_PID" 2>/dev/null || true
   kill "$HB_PID" 2>/dev/null || true
   ab_restore_limiter_a && ok "A rate limiter restored (tracing stays off, HPA stays deleted — benchmark shape)"
   ab_prom_stop
@@ -205,6 +220,12 @@ for t in a b; do
     orig="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("deployed_image",""))' "$ROUND/meta-$(ab_dir "$t").json")"
     now="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("deployed_image",""))' "$ROUND/meta-$(ab_dir "$t").resume-$STAMP.json")"
     [[ "$orig" == "$now" ]] || die "--resume: $(ab_dir "$t") image changed ($orig → $now) — a resumed round must measure the same build."
+    # v5.1: B's image is always named gomx:bench, so the name alone proves nothing — compare the pod imageIDs too
+    # (skipped when either record has none, e.g. the app was scaled to 0; the per-run provenance check covers it).
+    orig_d="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("image_digest") or "")' "$ROUND/meta-$(ab_dir "$t").json")"
+    now_d="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("image_digest") or "")' "$ROUND/meta-$(ab_dir "$t").resume-$STAMP.json")"
+    [[ -z "$orig_d" || -z "$now_d" || "$orig_d" == "$now_d" ]] \
+      || die "--resume: $(ab_dir "$t") image digest changed (${orig_d: -19} → ${now_d: -19}) — a resumed round must measure the same build."
   else
     ab_meta "$t" "$ROUND/meta-$(ab_dir "$t").json"
   fi
@@ -275,6 +296,10 @@ run_one() {
   local profile_ok=true
   ab_check_profile "$t" >"$run_dir/profile-check.txt" || profile_ok=false
   $profile_ok || $ALLOW_MISMATCH || { cat "$run_dir/profile-check.txt"; die "profile drifted before the run."; }
+  # v5.1: the fresh pods must run the build of the checked-out code (lib-bench.sh ab_check_provenance).
+  local provenance_ok=true
+  ab_check_provenance "$t" >"$run_dir/provenance.txt" 2>&1 || provenance_ok=false
+  $provenance_ok || $ALLOW_MISMATCH || { cat "$run_dir/provenance.txt"; die "the running $(ab_dir "$t") build does not match the checked-out code (see provenance.txt)."; }
 
   if $WARMUP; then
     ab_status RUNNING "warm-up before $CURRENT"
@@ -305,9 +330,9 @@ run_one() {
     fi
   fi
   python3 - "$run_dir/run.json" "$t" "$profile" "$k" "$pos" "$rc" "$started" "$finished" "$before" "$after" \
-    "$restarts_before" "$restarts_after" "$profile_ok" "$resources_ok" <<'PY'
+    "$restarts_before" "$restarts_after" "$profile_ok" "$resources_ok" "$provenance_ok" <<'PY'
 import glob, json, os, statistics, sys
-out, t, profile, k, pos, rc, started, finished, before, after, rb, ra, profile_ok, resources_ok = sys.argv[1:15]
+out, t, profile, k, pos, rc, started, finished, before, after, rb, ra, profile_ok, resources_ok, provenance_ok = sys.argv[1:16]
 def counts(s):
     v = s.split()
     keys = ["users", "threads", "comments", "reactions", "messages"]
@@ -355,6 +380,8 @@ if resources_ok != "true":
     reasons.append("no resources.json (Prometheus window read failed) — H1 data missing")
 if profile_ok != "true":
     reasons.append("common-profile check failed (--allow-mismatch)")
+if provenance_ok != "true":
+    reasons.append("provenance check failed: the running build is not the checked-out code (--allow-mismatch, provenance.txt)")
 # Generator sanity gate (h7): k6's own CPU is ALWAYS recorded (mean + peak, % of one core, from the 5-s samples).
 #   demo/stress (closed model): invalid if mean > 1 core or peak > max(2 cores, 25 % of the host's cores) — a
 #     saturated generator inflates every latency it measures.
@@ -399,11 +426,49 @@ if sfiles:
                 reasons.append(f"generator spike: k6 peak CPU {k6_cpu['judged_peak_pct']:.1f}% > {peak_limit:.0f}% (max(2 cores, 25% of {host_cores} host cores)) over the judged window")
     except Exception as exc:  # the gate must never crash a run's bookkeeping; the raw samples stay in the archive
         k6_cpu = {"error": str(exc)}
+# Host memory gate (v5.1): k6 and the cluster share one machine. A host that swaps slows everything it measures while
+# every rule above still says "valid" — the laptop capacity runs of 2026-11-07 (posthoc/README.md of that round).
+# Judged over the same window as the generator gate (capacity: up to the end of the last healthy step; otherwise
+# the whole run). The harm signals are pages read BACK from swap (processes stall on them) and running out of memory;
+# a slow swap-out of idle pages is benign (the laptop moves 16-37 MiB per smoke minute, mostly the idle side's pods).
+# Invalid when more than 64 MiB were swapped in, more than 512 MiB swapped out, or MemAvailable fell below 768 MiB.
+# Samples without the fields (pre-v5.1 sampler) are recorded as unknown, never as a failure.
+host_mem = None
+if sfiles:
+    try:
+        samples = json.load(open(sfiles[-1]))
+        pts = [s for s in samples if s.get("epoch") is not None and s.get("host_pswpout") is not None
+               and s.get("host_pswpin") is not None]
+        until = (k6_cpu or {}).get("judged_until_epoch") if isinstance(k6_cpu, dict) else None
+        if until:
+            pts = [s for s in pts if s["epoch"] <= until] or pts[:1]
+        if len(pts) >= 2:
+            page_mib = os.sysconf("SC_PAGE_SIZE") / 1048576
+            out_mib = (pts[-1]["host_pswpout"] - pts[0]["host_pswpout"]) * page_mib
+            in_mib = (pts[-1]["host_pswpin"] - pts[0]["host_pswpin"]) * page_mib
+            avail = [s["host_mem_available_mib"] for s in pts if s.get("host_mem_available_mib") is not None]
+            swap = [s["host_swap_used_mib"] for s in pts if s.get("host_swap_used_mib") is not None]
+            host_mem = {"swap_out_mib": round(out_mib, 1), "swap_in_mib": round(in_mib, 1),
+                        "mem_available_min_mib": min(avail) if avail else None,
+                        "swap_used_start_mib": swap[0] if swap else None, "swap_used_max_mib": max(swap) if swap else None,
+                        "samples": len(pts), "judged_until_epoch": int(until) if until else None,
+                        "rule": "invalid if swap_in > 64 MiB, swap_out > 512 MiB or MemAvailable < 768 MiB in the judged window"}
+            if in_mib > 64:
+                reasons.append(f"host memory pressure: {in_mib:.0f} MiB read back from swap in the judged window (> 64 MiB)")
+            elif out_mib > 512:
+                reasons.append(f"host memory pressure: {out_mib:.0f} MiB swapped out in the judged window (> 512 MiB)")
+            elif avail and min(avail) < 768:
+                reasons.append(f"host memory pressure: MemAvailable fell to {min(avail)} MiB in the judged window (< 768 MiB)")
+        else:
+            host_mem = {"unknown": "no host-memory samples (pre-v5.1 sampler or no cluster)"}
+    except Exception as exc:  # never crash the bookkeeping
+        host_mem = {"error": str(exc)}
 json.dump({"target": t, "profile": profile, "repeat": int(k), "position_in_pair": int(pos),
            "started_epoch": int(started), "finished_epoch": int(finished),
            "seed_before": sb, "seed_after": sa, "write_check": write_check,
            "checks_failed": totals.get("checks_failed"), "checks_failed_pct": totals.get("checks_failed_pct"),
-           "pod_restarts_during_run": restarted, "k6_cpu": k6_cpu,
+           "pod_restarts_during_run": restarted, "k6_cpu": k6_cpu, "host_mem": host_mem,
+           "provenance_ok": provenance_ok == "true",
            "valid": not reasons, "invalid_reasons": reasons},
           open(out, "w"), indent=2)
 print(f"  run.json: valid={not reasons}" + (f" ({'; '.join(reasons)})" if reasons else ""))

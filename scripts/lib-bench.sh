@@ -210,9 +210,14 @@ else:
         check(env.get("GOMEMLIMIT") == b_gomemlimit, f"GC variant: GOMEMLIMIT = {env.get('GOMEMLIMIT')} (want {b_gomemlimit})")
     else:
         check("GOMEMLIMIT" not in env, f"default GC policy (GOMEMLIMIT unset, found {env.get('GOMEMLIMIT')!r})")
+    # Every bench-relevant value of the overlay (deploy/k8s/bench/app-patch.yaml at thesis-v5-b). v5.1 added the
+    # comment paging, the remaining limiters and the environment name: a deploy from another overlay would have
+    # changed J2 (paging) or rejected traffic (limiters) without any FAIL line (review 2026-11-07, §3.2).
     want = {"GOMX_SEED": "bench", "GOMX_AUTH_RATELIMIT": "0", "GOMX_COMPRESS": "0",
             "GOMX_NOTIFY_FRIENDS_ON_POST": "0", "GOMX_DB_MAX_CONNS": "30",
-            "GOMX_CARD_PREVIEW_CHARS": "300"}
+            "GOMX_CARD_PREVIEW_CHARS": "300", "GOMX_COMMENT_PAGE_SIZE": "0", "GOMX_ENV": "benchmark",
+            "GOMX_BEACON_RATELIMIT": "0", "GOMX_CONTENT_RATELIMIT": "0", "GOMX_UPLOAD_RATELIMIT": "0",
+            "GOMX_WS_RATELIMIT": "0", "GOMX_WS_MAX_CONNS_PER_IP": "0"}
     for k, v in want.items():
         check(env.get(k) == v, f"{k} = {env.get(k)} (want {v})")
     check(not (env.get("OTEL_EXPORTER_OTLP_ENDPOINT") or env.get("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")),
@@ -227,6 +232,78 @@ check(cpu(pr.get("requests", {}).get("cpu", "0")) == 250 and mem(pr.get("request
       f"postgres requests {pr.get('requests')} (want 250m/512Mi)")
 check(cpu(pr.get("limits", {}).get("cpu", "0")) == 1000 and mem(pr.get("limits", {}).get("memory", "0")) == 1024,
       f"postgres limits {pr.get('limits')} (want 1/1Gi)")
+sys.exit(1 if fails else 0)
+PY
+}
+
+# Provenance (v5.1): the build the cluster RUNS must come from the checked-out code. The 2026-11-07 review found that
+# nothing tied the image to the tag — Hubert's v4 rounds measured A on the v3 image (correct then, A had not changed)
+# and B's image is always named gomx:bench, so a stale build would pass every other check. Prints ok/FAIL lines like
+# ab_check_profile; ab-round.sh runs it after every reseed (fresh pods) and stops the round on a mismatch.
+#   A: backend + frontend run forum-dotnet-api/web:git-<sha> (same sha, no -dirty), every running backend pod has one
+#      imageID, and <sha> has the same app tree as HEAD (backend/ frontend/ Dockerfile .dockerignore) — a docs- or
+#      tooling-only commit after the build stays valid.
+#   B: every running gomx pod's start-up line "forum server starting" carries version <sha> (gomx-bench-deploy.sh
+#      stamps it from the checkout; no -dirty), all pods share one imageID, and <sha> has the same tree as the gomx HEAD
+#      outside docs/ and *.md.
+ab_check_provenance() {
+  local t="$1" ns label logs="" p
+  ns="$(ab_ns "$t")"; label="$(ab_label "$t")"
+  if [[ "$t" == b ]]; then
+    for p in $(kubectl -n "$ns" get pods -l "$label" --field-selector=status.phase=Running -o name 2>/dev/null); do
+      # The start-up lines are at the top of the log; --limit-bytes reads from the start (B logs every request).
+      logs+="${p#pod/} $(kubectl -n "$ns" logs "$p" -c gomx --limit-bytes=65536 2>/dev/null | grep -m1 'forum server starting' || echo MISSING)"$'\n'
+    done
+  fi
+  python3 - "$t" "$(ab_code "$t")" \
+    "$(kubectl -n "$ns" get deployment "$(ab_deploy "$t")" -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null)" \
+    "$( [[ "$t" == a ]] && kc get deployment frontend -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || true )" \
+    "$(kubectl -n "$ns" get pods -l "$label" -o json 2>/dev/null || echo '{}')" "$logs" <<'PY'
+import json, re, subprocess, sys
+t, code, image, web_image, pods, logs = sys.argv[1:7]
+pods = json.loads(pods or "{}")
+fails = []
+def check(ok, label):
+    print(("  ok    " if ok else "  FAIL  ") + label)
+    if not ok:
+        fails.append(label)
+def git(*args):
+    return subprocess.run(["git", "-C", code, *args], capture_output=True, text=True)
+def same_tree(sha, paths):
+    if git("rev-parse", "--verify", "--quiet", f"{sha}^{{commit}}").returncode != 0:
+        return None
+    return git("diff", "--quiet", sha, "HEAD", "--", *paths).returncode == 0
+head = git("rev-parse", "HEAD").stdout.strip()
+running = [p for p in pods.get("items", [])
+           if p.get("status", {}).get("phase") == "Running" and not p["metadata"].get("deletionTimestamp")]
+ids = sorted({((p["status"].get("containerStatuses") or [{}])[0]).get("imageID") for p in running} - {None})
+check(len(running) >= 1, f"{len(running)} running app pod(s)")
+check(len(ids) == 1, f"all running app pods share one imageID ({len(ids)} distinct: {', '.join(i[-19:] for i in ids)})")
+if t == "a":
+    m = re.fullmatch(r".*:git-([0-9a-f]{7,40})(-dirty)?", image or "")
+    check(m is not None, f"backend image {image!r} carries a git-<sha> tag")
+    if m:
+        sha, dirty = m.group(1), m.group(2)
+        check(not dirty, f"backend image built from a clean tree ({image})")
+        check((web_image or "").endswith(f":git-{sha}"), f"frontend image {web_image!r} is the same build (git-{sha})")
+        same = same_tree(sha, ["backend", "frontend", "Dockerfile", ".dockerignore"])
+        check(same is True, f"image source {sha} has the same app tree as HEAD {head[:9]} (backend/ frontend/ Dockerfile .dockerignore)"
+                            + (" — commit not found in this checkout" if same is None else ""))
+else:
+    versions = {}
+    for line in logs.splitlines():
+        pod, _, rest = line.partition(" ")
+        mv = re.search(r'"version"\s*:\s*"([^"]+)"', rest)
+        versions[pod] = mv.group(1) if mv else None
+    check(bool(versions) and all(versions.values()), f"every running pod logged its start-up version ({versions})")
+    vs = sorted({v for v in versions.values() if v})
+    check(len(vs) == 1, f"one version across pods ({vs})")
+    if len(vs) == 1:
+        v = vs[0]
+        check(not v.endswith("-dirty"), f"B built from a clean gomx tree (version {v})")
+        same = same_tree(v.removesuffix("-dirty"), [".", ":(exclude)docs", ":(exclude)*.md"])
+        check(same is True, f"B build {v} has the same tree as gomx HEAD {head[:9]} outside docs/ and *.md"
+                            + (" — commit not found in this checkout" if same is None else ""))
 sys.exit(1 if fails else 0)
 PY
 }
@@ -350,6 +427,10 @@ meta = {
     "architecture": name, "target": t,
     "git_sha": sh(f"git -C {code} rev-parse HEAD"), "git_branch": sh(f"git -C {code} branch --show-current"),
     "git_dirty": bool(sh(f"git -C {code} status --porcelain")),
+    # v5.1: git_dirty above also counts untracked files — during a round that is always true on A (the round's own
+    # archive directory). The two fields below separate "the code was modified" from "new files exist".
+    "git_dirty_tracked": bool(sh(f"git -C {code} status --porcelain --untracked-files=no")),
+    "git_untracked": int(sh(f"git -C {code} status --porcelain --untracked-files=normal | grep -c '^??' || true") or 0),
     "harness_git_sha": sh(f"git -C {harness} rev-parse HEAD"), "harness_dirty": bool(sh(f"git -C {harness} status --porcelain load scripts")),
     "deployed_image": c["image"],
     "image_digest": running[0]["status"]["containerStatuses"][0].get("imageID") if running else None,
@@ -376,7 +457,8 @@ if t == "b":
     meta["seed_deviations_vs_A"] = [
         "timestamps: B's bench ages cycle through the feed's range buckets (seedAge(i % 500)); A's are monotonic in "
         "the index (newest = highest index). Neutralized for J2/J3/J5/J7 by the whole-corpus thread pool (decision D5).",
-        "social rows: B seeds 2400 friendships + 80 pending + 2000 DMs; A's Benchmark seeds 0 (A-11 P1; J9 not in mix v1).",
+        "social rows: both seed 2400 accepted + 80 pending friendships and 2000 direct messages (A's BenchSocialGraph "
+        "mirrors B's ring since 2026-10-24); A additionally creates the 800 direct conversations as rows.",
         "soft delete / blocked: A has ~1% soft-deleted threads + comments and 20 blocked users; B has no soft delete (D-8).",
         "tags: A threads carry 0-5 tags; B has no tags (feature difference, not measured).",
         "pinned: both 16 (every 100th post) but placed by each seed's own category draw.",

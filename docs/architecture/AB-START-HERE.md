@@ -122,6 +122,11 @@ rules, scenario-only measurement windows, reseed + fresh pods per run, ABBA orde
 | 2026-11-06 | k6 `open()` resolves a relative path against the **calling module's** directory (v2.1.0 verified): `lib/assets.js` loads `../fixtures/j4-256x256.png` | documented in `lib/assets.js` |
 | 2026-11-06 | A5's premise was wrong: `rabbitmq:4-management` (4.3.2) already runs the Erlang schedulers with `+sbwt none +sbwtdcpu none +sbwtdio none` (`rabbitmq-env` default) — the env var only repeats them. The broker's standing ≈ 0.1 core is the kubelet **exec probes**: each `rabbitmq-diagnostics` call boots a second Erlang node (200–275 % container CPU while probes run back-to-back, ≈ 1–1.5 core-s each; readiness every 15 s + liveness every 30 s). B's Redis probe (`redis-cli ping`) costs nothing comparable | recorded (D18); proposal for both authors: `tcpSocket` readiness on 5672 + an HTTP liveness through the management API — not changed in v5 |
 | 2026-11-06 | `fillfactor = 90` was already the HOT regime on A's counter table (98.4 % → 100 % under autocommitted toggles) | D18 |
+| 2026-11-07 | The laptop capacity runs of `20261107-0127-v5-off-laptop` swapped (host swap 3 650/4 096 MiB before the run, MemAvailable 548 MiB, k6 RSS 4.3 GiB) and every rule still said "valid" | v5.1 host-memory gate (`AB-COMPARISON-v1.md` §5.11); those capacity runs are not data (posthoc/README.md) |
+| 2026-11-07 | Nothing tied the running image to the tag: Hubert's v4 rounds ran A on the v3 image (correct then, A unchanged); B's image is always `gomx:bench`, so `--resume`'s name check proved nothing for B | v5.1 `ab_check_provenance` after every reseed + imageID check on `--resume` |
+| 2026-11-07 | Two rounds chained in one shell: the second failed its preflight ("another ab-round.sh is running") — the heartbeat's orphaned `sleep 60` kept the `tee` pipe open and the `tee` subshell carries the script's command line | v5.1 cleanup kills the heartbeat's children; preflight ignores its own subshells |
+| 2026-11-07 | After a host/WSL restart B's init container `nc -w 2 redis 6379` can hang for good (connected while Redis was starting; busybox `-w` does not bound an open connection) → gomx pods stuck in `Error` | `kubectl -n gomx delete pod -l app=gomx`; never during a round (reseed does not restart Redis). B manifest, frozen — fix after the campaign |
+| 2026-11-07 | The thesis info sheet pre-registers ≥ 10 demo / ≥ 3 stress, capacity and fault runs per side; the first v5 plans were 8/2/2–3 | top-ups with `--resume`; protocol history and effort asymmetry written down (`AB-COMPARISON-v1.md` §13, Polish `thesis/text/rewizja-protokolu-i-hipotez-PL.md`) |
 
 ### 4.3 What remains different (documented, not leveled)
 D1 (default adapter; `--real-spa` variant since 2026-10-24) A's adapter is an idealized SPA client (fewer calls than the real SPA, no client cache) → A's server cost is a
@@ -383,6 +388,21 @@ READ-CACHE-CONTRACT §7 rows signed.
    keeps the same `--read-cache` setting or refuses.
 6. Afterwards: `make ab-report`, copy the tables into `AB-COMPARISON-v1.md` §9c, `scripts/thesis_figures.py` on the
    v5-off directory; `make mk-deploy` restores A's production posture.
+
+### 8.3 v5.1 (2026-11-07): who measures what
+
+- **Main table = Hubert's host** (native Linux, 16 cores / 28 GB; the only one without swap pressure). He stays on
+  `thesis-v5-a` / `thesis-v5-b` for the whole v5 archive (OFF round demo:8, stress:2, capacity:3 measured 2026-11-07;
+  top-up to demo:10, stress:3 with `--resume`; then the cache-ON round demo:10). The v5.1 gates are not in his
+  scripts, so he runs them by hand before each round: A image `git-1ae3c46` + `search?sort=bogus` → 422; B log
+  `version cdabf42`; `GOMX_*` values of the overlay; `vmstat 5` during capacity.
+- **Laptop = replication + capacity under the memory gate + fault injection**, from the commit tagged `thesis-v5.1-a`
+  (app identical to `thesis-v5-a`; the provenance check accepts the `git-1ae3c46` image because the app tree is
+  unchanged — no redeploy). Start from a fresh WSL (`wsl --shutdown`), no other load on Windows, keep-awake on.
+  Order (≈ 6 h): smoke gate → `--plan capacity:3 --label v5.1-capacity-laptop --read-cache off` (first, while swap is
+  empty) → `--resume thesis/results/rounds/20261107-0127-v5-off-laptop --plan demo:10,stress:3,capacity:2 --read-cache off`
+  → `make ab-chaos ARGS="--target a|b --fault both"` × 3 per side → `--fault pod-delete` × 3 per side if time remains.
+  The capacity runs of the 0127 archive stay in it but are not data (swap); laptop capacity comes from the new round.
 
 ### 8.1 Runbook for the v2 round (next session)
 

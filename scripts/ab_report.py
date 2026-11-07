@@ -167,6 +167,13 @@ def aggregate(runs):
             }
         k6 = [r["k6"] for r in rs if r.get("k6")]
         entry["k6"] = {"cpu_pct_max": stat([x["cpu_pct_max"] for x in k6]), "rss_mib_max": stat([x["rss_mib_max"] for x in k6])}
+        # v5.1: host memory of the shared machine (run.json host_mem, judged window); worst run per side.
+        hm = [r["host_mem"] for r in rs if isinstance(r.get("host_mem"), dict) and "swap_out_mib" in r["host_mem"]]
+        entry["host_mem"] = {"runs_with_data": len(hm),
+                             "swap_in_mib_worst": max((h["swap_in_mib"] for h in hm), default=None),
+                             "swap_out_mib_worst": max((h["swap_out_mib"] for h in hm), default=None),
+                             "mem_available_min_mib_worst": min((h["mem_available_min_mib"] for h in hm
+                                                                 if h.get("mem_available_min_mib") is not None), default=None)}
         caps = [(r["journeys_doc"].get("capacity"), r.get("resources") or {}) for r in rs if r["journeys_doc"].get("capacity")]
         if caps:
             steps = {}
@@ -197,6 +204,17 @@ def aggregate(runs):
             }
         summary[f"{profile}/{target}"] = entry
     return summary
+
+
+def dirty_note(meta):
+    """v5.1 metadata separates modified tracked files from untracked ones (A's own round archive is always untracked
+    during a round); older archives only have git_dirty, which counts both."""
+    if "git_dirty_tracked" in meta:
+        if meta["git_dirty_tracked"]:
+            return " (dirty: modified tracked files)"
+        n = meta.get("git_untracked") or 0
+        return f" (clean code; {n} untracked path(s), e.g. result archives)" if n else ""
+    return " (dirty incl. untracked files)" if meta.get("git_dirty") else ""
 
 
 def fmt(s, digits=1, ci=True):
@@ -259,8 +277,8 @@ def report(round_dir, runs, summary):
     md.append(table([
         ["plan", rnd.get("plan", "?"), "order", rnd.get("order", "?")],
         ["mix", rnd.get("mix_version", "?"), "harness", rnd.get("harness_version", "?")],
-        ["A image", f"`{ma.get('deployed_image', '?')}`", "A git", f"{ma.get('git_branch', '?')} @ {str(ma.get('git_sha', '?'))[:9]}{' (dirty)' if ma.get('git_dirty') else ''}"],
-        ["B image", f"`{mb.get('deployed_image', '?')}`", "B git", f"{mb.get('git_branch', '?')} @ {str(mb.get('git_sha', '?'))[:9]}{' (dirty)' if mb.get('git_dirty') else ''}"],
+        ["A image", f"`{ma.get('deployed_image', '?')}`", "A git", f"{ma.get('git_branch', '?')} @ {str(ma.get('git_sha', '?'))[:9]}{dirty_note(ma)}"],
+        ["B image", f"`{mb.get('deployed_image', '?')}`", "B git", f"{mb.get('git_branch', '?')} @ {str(mb.get('git_sha', '?'))[:9]}{dirty_note(mb)}"],
         ["replicas", str(rnd.get("replicas", "?")), "reseed / warm-up each run", f"{rnd.get('reseed_each_run')} / {rnd.get('warmup_each_run')}"],
         ["variants", variants_label(rnd), "k6 env", " ".join((rnd.get("variants") or {}).get("k6_env") or []) or "—"],
     ], ["", "", "", ""]))
@@ -379,6 +397,15 @@ def report(round_dir, runs, summary):
         md.append(f"Load generator (k6 on the same host): max CPU A {fmt(ka.get('cpu_pct_max'), 0, False)} % / "
                   f"B {fmt(kb.get('cpu_pct_max'), 0, False)} % of one core, max RSS A {fmt(ka.get('rss_mib_max'), 0, False)} MiB / "
                   f"B {fmt(kb.get('rss_mib_max'), 0, False)} MiB.")
+        ha, hb = (a or {}).get("host_mem") or {}, (b or {}).get("host_mem") or {}
+        if ha.get("runs_with_data") or hb.get("runs_with_data"):
+            def hm_txt(h):
+                if not h.get("runs_with_data"):
+                    return "no data"
+                return (f"worst run {h['swap_in_mib_worst']:.0f} MiB swapped in / {h['swap_out_mib_worst']:.0f} MiB out, "
+                        f"lowest MemAvailable {h['mem_available_min_mib_worst']} MiB ({h['runs_with_data']} runs)")
+            md.append(f"Host memory (judged window; v5.1 gate: invalid above 64 MiB swapped in, 512 MiB swapped out or below "
+                      f"768 MiB available): A {hm_txt(ha)}; B {hm_txt(hb)}.")
         md.append("")
 
         ca, cb = (a or {}).get("capacity"), (b or {}).get("capacity")
